@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
-
+//!!!!!!!!!!!!!!!!! ¥ı¿ÃªÛ æ»æ∏
 public class PlayerMove : MonoBehaviour
 {
 
