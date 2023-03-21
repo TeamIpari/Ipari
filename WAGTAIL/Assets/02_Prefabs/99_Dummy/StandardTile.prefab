@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6071474011511259144}
+  - component: {fileID: 1289612675}
+  - component: {fileID: 2122871551}
   m_Layer: 0
   m_Name: StandardTile
   m_TagString: Tile
@@ -32,6 +34,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1289612675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6071474011511259145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ce51f49c60d4994080166bb2e7ea7bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshData: {fileID: 3758545008950480753}
+--- !u!65 &2122871551
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6071474011511259145}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &6071474012393642096
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -99,8 +127,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: block
       objectReference: {fileID: 0}
+    - target: {fileID: 6947714708911855361, guid: e8dc90d5695519f4fb26b0c6b9ad36c2,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8dc90d5695519f4fb26b0c6b9ad36c2, type: 3}
+--- !u!23 &3758545008950480753 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6947714708911855361, guid: e8dc90d5695519f4fb26b0c6b9ad36c2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6071474012393642096}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6037229297700208539 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e8dc90d5695519f4fb26b0c6b9ad36c2,
