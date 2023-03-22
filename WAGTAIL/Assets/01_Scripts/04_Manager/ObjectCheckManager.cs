@@ -12,22 +12,30 @@ public class ObjectCheckManager : MonoBehaviour
 
     }
 
+
+    [System.Serializable]
+    public class SerializeDic : SerializeDictionary<Vector3, GameObject> { }
+    [SerializeField]
+    public SerializeDic dic_Object = new SerializeDic ();
+
     [SerializeField]
     public Transform _Player;
 
     public float radius;
 
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        if(instance == null)
-            instance = this;
 
         if (_Player == null)
             Debug.LogError("Player가 존재하지 않음.");
-
-
 
     }
 
@@ -52,14 +60,20 @@ public class ObjectCheckManager : MonoBehaviour
 
     void FirstCheck()
     {
-        //RaycastHit hit;
         Collider[] collider = Physics.OverlapSphere(_Player.position, radius);
 
         foreach(var obj in collider)
         {
-            
-            obj.GetComponent<Objects>()?.ShowMeshData();
+            obj.gameObject.SetActive(true);
+            //obj.GetComponent<Objects>()?.ShowMeshData();
 
         }
     }
+
+    public void AddTiles(GameObject obj)
+    {
+        dic_Object.Add(obj.transform.position, obj);
+        obj.SetActive(false);
+    }
+
 }

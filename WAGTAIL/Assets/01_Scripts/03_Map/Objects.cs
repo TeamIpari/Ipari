@@ -11,8 +11,10 @@ public class Objects : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(meshData != null)
-            meshData.enabled = false;
+        //if(meshData != null)
+        //    meshData.enabled = false;
+
+        ObjectCheckManager.Instance.AddTiles(this.gameObject);
 
     }
 
@@ -22,7 +24,7 @@ public class Objects : MonoBehaviour
     
     public void ShowMeshData()
     {
-        meshData.enabled = true;
+        //meshData.enabled = true;
     }
 
     // Update is called once per frame
