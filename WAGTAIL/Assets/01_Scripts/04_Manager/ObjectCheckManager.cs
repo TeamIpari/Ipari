@@ -21,6 +21,7 @@ public class ObjectCheckManager : MonoBehaviour
     [SerializeField]
     public Transform _Player;
 
+    [Header("인식 범위(float)")]
     public float radius;
 
     private void Awake()
@@ -44,6 +45,7 @@ public class ObjectCheckManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 초당 한 번 씩 인식되는 타일들에게 신호 보내기
         FirstCheck();
     }
 
@@ -60,14 +62,22 @@ public class ObjectCheckManager : MonoBehaviour
 
     void FirstCheck()
     {
-        Collider[] collider = Physics.OverlapSphere(_Player.position, radius);
 
-        foreach(var obj in collider)
-        {
-            obj.gameObject.SetActive(true);
-            //obj.GetComponent<Objects>()?.ShowMeshData();
 
-        }
+
+        //Collider[] collider = Physics.OverlapSphere(_Player.position, radius);
+
+        //foreach(var obj in collider)
+        //{
+        //    obj.gameObject.SetActive(true);
+
+        //}
+
+        // 플레이어 기준으로 일정 범위 체크 후 범위 내의 타일들 SetActive(On);
+
+        
+        
+
     }
 
     public void AddTiles(GameObject obj)
