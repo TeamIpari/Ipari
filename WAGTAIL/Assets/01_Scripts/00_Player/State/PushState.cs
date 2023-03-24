@@ -80,7 +80,6 @@ public class PushState : State
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(0, 0, input.y);
         }
-        Debug.Log(player.transform.eulerAngles.y);
     }
 
     public override void LogicUpdate()

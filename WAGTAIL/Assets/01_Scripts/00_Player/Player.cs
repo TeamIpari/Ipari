@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     public StateMachine movementSM;
     public IdleState idle;
     public JumpingState jump;
+    public LandingState landing;
     public PushState push;
     public ClimbingState climbing;
     public CarryState carry;
@@ -66,23 +67,27 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        // GetComponets
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         playerInput = GetComponent<PlayerInput>();
         cameraTransform = Camera.main.transform;
 
+        // State
         movementSM = new StateMachine();
         idle = new IdleState(this, movementSM);
         jump = new JumpingState(this, movementSM);
+        landing = new LandingState(this, movementSM);
         climbing = new ClimbingState(this, movementSM);
         push = new PushState(this, movementSM);
         carry = new CarryState(this, movementSM);
         pickup = new PickUpState(this, movementSM);
         drop = new DropState(this, movementSM);
 
-
+        // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);
 
+        // 초기 Collider 저장
         normalColliderHeight = controller.height;
         normalColliderCenter = controller.center;
         normalColliderRadius = controller.radius;
