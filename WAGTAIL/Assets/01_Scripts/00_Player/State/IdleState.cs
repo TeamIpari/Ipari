@@ -9,6 +9,7 @@ public class IdleState : State
     bool climbing;
     bool push;
     bool carry;
+    bool jump = false;
     Vector3 currentVelocity;
     bool isGrounded;
     float playerSpeed;
@@ -27,6 +28,7 @@ public class IdleState : State
     {
         base.Enter();
 
+        jump = false;
         climbing = player.isClimbing;
         push = player.isPush;
         carry = player.isCarry;
@@ -44,6 +46,11 @@ public class IdleState : State
     public override void HandleInput()
     {
         base.HandleInput();
+
+        if(jumpAction.triggered)
+        {
+            jump = true;
+        }
 
         climbing = player.isClimbing;
         push = player.isPush;
@@ -72,6 +79,11 @@ public class IdleState : State
         if (push)
         {
             stateMachine.ChangeState(player.push);
+        }
+
+        if (jump)
+        {
+            stateMachine.ChangeState(player.jump);
         }
     }
 
