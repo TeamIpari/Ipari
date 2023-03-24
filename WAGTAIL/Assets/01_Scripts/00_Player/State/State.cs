@@ -11,10 +11,12 @@ public class State
     protected Vector3 gravityVelocity;
     protected Vector3 velocity;
     protected Vector2 input;
+    
 
     public InputAction moveAction;
     public InputAction interactionAction;
     public InputAction climbingAction;
+    public InputAction jumpAction;
     public InputAction pushZAxisAction; // »óÇÏ
     public InputAction pushXAxisAction; // ÁÂ¿ì
 
@@ -26,6 +28,7 @@ public class State
 
         //PlayerInput
         moveAction = player.playerInput.actions["Move"];
+        jumpAction = player.playerInput.actions["jump"];
         interactionAction = player.playerInput.actions["Interaction"];
         climbingAction = player.playerInput.actions["Climbing"];
         pushXAxisAction = player.playerInput.actions["MoveXAxis"];
