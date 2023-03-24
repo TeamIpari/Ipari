@@ -21,8 +21,8 @@ public class ObjectCheckManager : MonoBehaviour
     [SerializeField]
     public Transform _Player;
 
-    [Header("인식 범위(float)")]
-    public float radius;
+    [Header("인식 범위(int)")]
+    public int radius;
 
     private void Awake()
     {
@@ -45,8 +45,6 @@ public class ObjectCheckManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 초당 한 번 씩 인식되는 타일들에게 신호 보내기
-        FirstCheck();
     }
 
 
@@ -63,8 +61,28 @@ public class ObjectCheckManager : MonoBehaviour
     void FirstCheck()
     {
 
+        int _x = (int)_Player.position.x;
+        int _y = (int)_Player.position.y;
+        int _z = (int)_Player.position.z;
 
-
+        Vector3 _vec = new Vector3();
+        
+        for(int x = _x - radius ; x < _x + radius; x++)
+        {
+            //for(int y = _y; y < _y + radius; y++)
+            {
+                for(int z = _z - radius; z < _z + radius; z++)
+                {
+                    _vec = new Vector3(x + .5f, _y, z + .5f);
+                    //Debug.Log(x.ToString() + ", " +y.ToString() + ", " + z.ToString());
+                    if (dic_Object.ContainsKey(_vec))
+                    {
+                        Debug.Log("get");
+                        dic_Object[_vec].gameObject.SetActive(true);
+                    }
+                }
+            }
+        }
         //Collider[] collider = Physics.OverlapSphere(_Player.position, radius);
 
         //foreach(var obj in collider)
@@ -75,8 +93,13 @@ public class ObjectCheckManager : MonoBehaviour
 
         // 플레이어 기준으로 일정 범위 체크 후 범위 내의 타일들 SetActive(On);
 
-        
-        
+
+    }
+
+    private void FixedUpdate()
+    {
+        // 초당 한 번 씩 인식되는 타일들에게 신호 보내기
+        FirstCheck();
 
     }
 
