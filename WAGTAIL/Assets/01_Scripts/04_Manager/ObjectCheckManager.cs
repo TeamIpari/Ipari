@@ -25,8 +25,10 @@ public class ObjectCheckManager : MonoBehaviour
     [Header("인식 범위(int)")]
     public int radius;
 
-    public float _seconds = 0.5f;
+    public float _seconds = 0.35f;
     public float _ms = 0;
+
+    public int count = 0;
 
     private void Awake()
     {
@@ -78,7 +80,7 @@ public class ObjectCheckManager : MonoBehaviour
         
         for(int x = _x - radius ; x < _x + radius; x++)
         {
-            for (int y = _y - radius / 2; y < _y + radius / 2; y++)
+            for (int y = _y - 2; y < _y + 2; y++)
             {
                 for(int z = _z - radius; z < _z + radius; z++)
                 {
@@ -117,20 +119,29 @@ public class ObjectCheckManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _ms += Time.deltaTime;
-        // 초당 한 번 씩 인식되는 타일들에게 신호 보내기
-        if (_ms >= _seconds)
-        {
-            FirstCheck();
-            _ms = 0;
-        }
+        //_ms += Time.deltaTime;
+        //// 초당 한 번 씩 인식되는 타일들에게 신호 보내기
+        //if (_ms >= _seconds)
+        //{
+        //    FirstCheck();
+        //    _ms = 0;
+        //}
 
     }
 
     public void AddTiles(GameObject obj)
     {
-        Object_Pool.Add(obj.transform.position, obj);
-        obj.SetActive(false);
+        if (!Object_Pool.ContainsKey(obj.transform.position))
+        {
+            Object_Pool.Add(obj.transform.position, obj);
+            //obj.SetActive(false);
+        }
+        else
+        {
+            Destroy(obj);
+            count++;
+            Debug.Log(count.ToString());
+        }
     }
 
 }

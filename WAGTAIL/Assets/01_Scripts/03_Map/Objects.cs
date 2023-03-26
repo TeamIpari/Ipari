@@ -6,7 +6,7 @@ public class Objects : MonoBehaviour
 {
     public MeshRenderer meshData;
 
-    private float targetTime = 1.2f;
+    private float targetTime = 0.75f;
     public float curTime = 0;
 
 
@@ -38,11 +38,11 @@ public class Objects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        curTime += Time.deltaTime;
-        if(curTime >= targetTime)
-        {
-            this.gameObject.SetActive(false);
-        }
+        //curTime += Time.deltaTime;
+        //if(curTime >= targetTime)
+        //{
+        //    this.gameObject.SetActive(false);
+        //}
         
     }
 
