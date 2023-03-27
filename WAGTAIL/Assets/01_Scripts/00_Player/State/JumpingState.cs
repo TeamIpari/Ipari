@@ -39,6 +39,7 @@ public class JumpingState : State
     {
         base.HandleInput();
 
+
         input = moveAction.ReadValue<Vector2>();
     }
 
@@ -48,7 +49,9 @@ public class JumpingState : State
 
         if(isGrounded) 
         {
-            stateMachine.ChangeState(player.landing);
+            
+            stateMachine.ChangeState(player.idle);
+            //stateMachine.ChangeState(player.landing);
         }
     }
 
