@@ -16,8 +16,6 @@ public class IdleState : State
 
     Vector3 cVelocity;
 
-    MeshFilter test;
-
     public IdleState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
         player = _player;
@@ -58,6 +56,9 @@ public class IdleState : State
 
         input = moveAction.ReadValue<Vector2>();
         velocity = new Vector3(input.x, 0, input.y);
+
+        velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
+        velocity.y = 0f;
     }
 
     public override void LogicUpdate()
@@ -92,6 +93,7 @@ public class IdleState : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;
 
