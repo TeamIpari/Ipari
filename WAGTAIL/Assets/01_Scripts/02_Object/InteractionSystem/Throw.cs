@@ -19,7 +19,6 @@ public class Throw : MonoBehaviour, IInteractable
             return true;
         }
 
-        // isCarry를 isThro
         else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.idle)
         {
             Throwing();
@@ -41,6 +40,6 @@ public class Throw : MonoBehaviour, IInteractable
     {
         // 포물선을 그리며 던진 후
 
-        // _playerEquipPoint.transform.DetachChildren();
+        _playerEquipPoint.transform.DetachChildren();
     }
 }
