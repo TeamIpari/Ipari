@@ -9,7 +9,7 @@ public class IdleState : State
     bool climbing;
     bool push;
     bool carry;
-    bool jump = false;
+    bool jump;
     Vector3 currentVelocity;
     bool isGrounded;
     float playerSpeed;
