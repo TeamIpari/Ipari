@@ -18,7 +18,6 @@ public class Objects : MonoBehaviour
 
         ObjectCheckManager.Instance.AddTiles(this.gameObject);
         curTime = 0;
-
     }
 
     // 어떻게 구현을 할 것인가? 
@@ -32,9 +31,6 @@ public class Objects : MonoBehaviour
         //meshData.enabled = true;
     }
 
-
-
-
     // Update is called once per frame
     void Update()
     {
@@ -43,8 +39,8 @@ public class Objects : MonoBehaviour
         //{
         //    this.gameObject.SetActive(false);
         //}
-        
     }
 
+    
 
 }
