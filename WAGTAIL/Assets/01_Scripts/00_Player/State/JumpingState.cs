@@ -63,11 +63,17 @@ public class JumpingState : State
         {
             velocity = player.playerVelocity;
             airVelocity = new Vector3(input.x, 0, input.y);
-
+            
+            velocity = velocity.x * player.cameraTransform.right.normalized + 
+                velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
-            airVelocity.y = 0f;
 
-            player.controller.Move(gravityVelocity * Time.deltaTime + (airVelocity * player.airControl + velocity * (1 - player.airControl)) * playerSpeed * Time.deltaTime);
+            airVelocity = airVelocity.x * player.cameraTransform.right.normalized +
+                airVelocity.z * player.cameraTransform.forward.normalized;
+            airVelocity.y = 0;
+
+            player.controller.Move(gravityVelocity * Time.deltaTime + 
+                (airVelocity * player.airControl + velocity * (1 - player.airControl)) * playerSpeed * Time.deltaTime);
 
             gravityVelocity.y += gravityValue * Time.deltaTime;
             isGrounded = player.controller.isGrounded;
