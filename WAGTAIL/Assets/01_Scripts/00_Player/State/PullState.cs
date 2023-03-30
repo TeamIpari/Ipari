@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class CarryState : State
+public class PullState : State
 {
-    float gravityValue;
-    Vector3 currentVelocity;
-    bool isGrounded;
-    bool carry;
     float playerSpeed;
+    float gravityValue;
 
+    bool isPullOut;
+    bool isGrounded;
+
+    Vector3 currentVelocity;
     Vector3 cVelocity;
 
-    public CarryState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
+    public PullState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
         player = _player;
         stateMachine = _stateMachine;
@@ -23,40 +24,28 @@ public class CarryState : State
     {
         base.Enter();
 
-        input = Vector2.zero;
-        velocity = Vector3.zero;
-        currentVelocity = Vector3.zero;
-        gravityVelocity.y = 0;
-        carry = player.isCarry;
-
-        playerSpeed = player.playerSpeed;
+        isPullOut = false;
         isGrounded = player.controller.isGrounded;
+
         gravityValue = player.gravityValue;
+        playerSpeed = player.playerSpeed;
+        gravityVelocity.y = 0;
     }
 
     public override void HandleInput()
     {
         base.HandleInput();
 
-        carry = player.isCarry;
         input = moveAction.ReadValue<Vector2>();
-        velocity = new Vector3(input.x, 0, input.y);
-
-        velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
-        velocity.y = 0f;
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
 
-        // TODO : animator 적용
-
-        if (!carry)
+        if(isPullOut)
         {
-            // 상태에 따른 state 변화 시켜주기
-            // TODO : Drop 상태로 이동하기
-            stateMachine.ChangeState(player.drop);
+            //stateMachine.ChangeState(player.pullout);
         }
     }
 
@@ -67,6 +56,7 @@ public class CarryState : State
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;
 
+        // 바닥과 닿아 있을 때는 중력 적용 X
         if (isGrounded && gravityVelocity.y < 0)
         {
             gravityVelocity.y = 0f;
@@ -82,11 +72,9 @@ public class CarryState : State
         }
     }
 
-    public override void Exit()
+    public override void Exit() 
     {
         base.Exit();
-
-        gravityVelocity.y = 0f;
-        player.playerVelocity = new Vector3(input.x, 0, input.y);
     }
+
 }
