@@ -34,7 +34,6 @@ public class Interactor : MonoBehaviour
             {
                 interactable.Interact(this);
                 player.currentInteractable = _colliders[0].gameObject;
-                Debug.Log(player.currentInteractable);
             }
         }
     }
