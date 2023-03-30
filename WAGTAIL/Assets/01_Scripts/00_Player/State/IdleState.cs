@@ -10,6 +10,7 @@ public class IdleState : State
     bool push;
     bool carry;
     bool jump;
+    bool pull;
     Vector3 currentVelocity;
     bool isGrounded;
     float playerSpeed;
@@ -29,6 +30,7 @@ public class IdleState : State
         jump = false;
         climbing = player.isClimbing;
         push = player.isPush;
+        pull = player.isPull;
         carry = player.isCarry;
 
         input = Vector2.zero;
@@ -53,6 +55,7 @@ public class IdleState : State
         climbing = player.isClimbing;
         push = player.isPush;
         carry = player.isCarry;
+        pull = player.isPull;
 
         input = moveAction.ReadValue<Vector2>();
         velocity = new Vector3(input.x, 0, input.y);
@@ -86,6 +89,12 @@ public class IdleState : State
         {
             stateMachine.ChangeState(player.jump);
         }
+
+        if (pull)
+        {
+            stateMachine.ChangeState(player.pull);
+        }
+
         // TODO : Idle 상태일때 추락 후 땅에 닿았을 때 landingState호출 해주기
     }
 
