@@ -64,7 +64,7 @@ public class IdleState : State
     {
         base.LogicUpdate();
 
-        // TODO : animator Àû¿ë
+        // TODO : animator ì ìš©
 
         if (climbing)
         {
@@ -85,6 +85,7 @@ public class IdleState : State
         {
             stateMachine.ChangeState(player.jump);
         }
+        // TODO : Idle ìƒíƒœì¼ë•Œ ì¶”ë½ í›„ ë•…ì— ë‹¿ì•˜ì„ ë•Œ landingStateí˜¸ì¶œ í•´ì£¼ê¸°
     }
 
     public override void PhysicsUpdate()
@@ -93,7 +94,7 @@ public class IdleState : State
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;
 
-        // ¹Ù´Ú°ú ´ê¾Æ ÀÖÀ» ¶§´Â Áß·Â Àû¿ë X
+        // ë°”ë‹¥ê³¼ ë‹¿ì•„ ìˆì„ ë•ŒëŠ” ì¤‘ë ¥ ì ìš© X
         if(isGrounded && gravityVelocity.y < 0 )
         {
             gravityVelocity.y = 0f;

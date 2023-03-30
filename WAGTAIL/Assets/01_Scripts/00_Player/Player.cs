@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {
     [Header("Controls")]
     public float playerSpeed = 15.0f;
-    // Á¡ÇÁ »ç¿ëÇÒÁö ¸»Áö ¸ô¶ó¼­ ÀÏ´Ü ±âÀÔ¸¸ ÇØµÒ
+    // ì í”„ ì‚¬ìš©í• ì§€ ë§ì§€ ëª°ë¼ì„œ ì¼ë‹¨ ê¸°ì…ë§Œ í•´ë‘ 
     // =======================================
     public float jumpHeight = 0.8f;
     public float gravityMultiplier = 2;
@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     public StateMachine movementSM;
     public IdleState idle;
     public JumpingState jump;
+    public LandingState landing;
     public PushState push;
     public ClimbingState climbing;
     public CarryState carry;
@@ -66,23 +67,27 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        // GetComponets
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         playerInput = GetComponent<PlayerInput>();
         cameraTransform = Camera.main.transform;
 
+        // State
         movementSM = new StateMachine();
         idle = new IdleState(this, movementSM);
         jump = new JumpingState(this, movementSM);
+        landing = new LandingState(this, movementSM);
         climbing = new ClimbingState(this, movementSM);
         push = new PushState(this, movementSM);
         carry = new CarryState(this, movementSM);
         pickup = new PickUpState(this, movementSM);
         drop = new DropState(this, movementSM);
 
-
+        // ì‹œì‘í• ë•Œ Init í•´ì¤„ State ì§€ì •
         movementSM.Initialize(idle);
 
+        // ì´ˆê¸° Collider ì €ì¥
         normalColliderHeight = controller.height;
         normalColliderCenter = controller.center;
         normalColliderRadius = controller.radius;
