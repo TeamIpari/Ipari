@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {
     [Header("Controls")]
     public float playerSpeed = 15.0f;
-    // Á¡ÇÁ »ç¿ëÇÒÁö ¸»Áö ¸ô¶ó¼­ ÀÏ´Ü ±âÀÔ¸¸ ÇØµÒ
+    // ì í”„ ì‚¬ìš©í• ì§€ ë§ì§€ ëª°ë¼ì„œ ì¼ë‹¨ ê¸°ì…ë§Œ í•´ë‘ 
     // =======================================
     public float jumpHeight = 0.8f;
     public float gravityMultiplier = 2;
@@ -84,10 +84,10 @@ public class Player : MonoBehaviour
         pickup = new PickUpState(this, movementSM);
         drop = new DropState(this, movementSM);
 
-        // ½ÃÀÛÇÒ¶§ Init ÇØÁÙ State ÁöÁ¤
+        // ì‹œì‘í• ë•Œ Init í•´ì¤„ State ì§€ì •
         movementSM.Initialize(idle);
 
-        // ÃÊ±â Collider ÀúÀå
+        // ì´ˆê¸° Collider ì €ì¥
         normalColliderHeight = controller.height;
         normalColliderCenter = controller.center;
         normalColliderRadius = controller.radius;
