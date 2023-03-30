@@ -87,6 +87,7 @@ public class Player : MonoBehaviour
         carry = new CarryState(this, movementSM);
         pickup = new PickUpState(this, movementSM);
         drop = new DropState(this, movementSM);
+        pull = new PullingState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);
