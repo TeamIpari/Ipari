@@ -23,14 +23,19 @@ public class Interactor : MonoBehaviour
 
     private void Update()
     {
-        _numFound = Physics.OverlapSphereNonAlloc(_interactionPoint.position, _interactionPointRadius, _colliders, 
-            _interactableMask);
+        interaction();
+    }
+
+    private void interaction()
+    {
+        _numFound = Physics.OverlapSphereNonAlloc(_interactionPoint.position, _interactionPointRadius, _colliders,
+    _interactableMask);
 
         if (_numFound > 0)
         {
             var interactable = _colliders[0].GetComponent<IInteractable>();
 
-            if (interactable != null && Keyboard.current.fKey.wasPressedThisFrame) 
+            if (interactable != null && Keyboard.current.fKey.wasPressedThisFrame)
             {
                 interactable.Interact(this);
                 player.currentInteractable = _colliders[0].gameObject;
