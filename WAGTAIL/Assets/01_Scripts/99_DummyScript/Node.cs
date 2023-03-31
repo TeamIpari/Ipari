@@ -60,4 +60,19 @@ public class Node : MonoBehaviour
     {
         _next = next;
     }
+
+    public float Calcsize(GameObject _calcTarget)
+    {
+        MeshFilter _mf = GetComponent<MeshFilter>();
+
+        Vector3[] _vertices = _mf.mesh.vertices;
+
+        foreach(var _vertice in _vertices)
+        {
+            //Vector3 _pos = 
+        }
+
+        return new float();
+    }
+
 }
