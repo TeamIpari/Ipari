@@ -41,10 +41,13 @@ public class Pulling : MonoBehaviour, IInteractable
         transform.SetParent(_playerEquipPoint.transform);
         transform.localPosition = Vector3.zero;
         transform.rotation = new Quaternion(0, 0, 0, 0);
+        gameObject.GetComponent<Node>().GetNode();
     }
 
     public void Drop()
     {
         _playerEquipPoint.transform.DetachChildren();
+        gameObject.GetComponent<Node>().GetNode();
+        gameObject.GetComponent<Node>().SetNode();
     }
 }

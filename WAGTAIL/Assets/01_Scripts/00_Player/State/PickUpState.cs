@@ -18,16 +18,17 @@ public class PickUpState : State
         base.Enter();
 
         timePassed = 0f;
-        //player.animator.SetTrigger("PickUp");
+        // player.animator.SetTrigger("PickUp");
         // TODO : 물건 드는 시간 애니메이터와 상의 후 정하기
         // !!! pickUpTime 반드시 수정해야함 !!! 
-        pickUpTime = 1.5f;
+        // 이 시간 이후 움직임이 가능해짐.
+        pickUpTime = 1.5f;      
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
+        // 물건을 들고 일정 시간 후 현재 상태를 carry(들고 움직이기)로 바꿔줌.
         if (timePassed > pickUpTime)
         {
             //player.animator.SetTrigger("Carry");
