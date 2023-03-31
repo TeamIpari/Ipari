@@ -21,7 +21,7 @@ public class Node : MonoBehaviour
         // 이전의 위치를 선형 보간으로 따라감. - x(크기)만큼 떨어져서
         if (_next != null && !_useNode)
         {
-            Debug.Log("Slerp");
+            //Debug.Log("Slerp");
             // 휘는 기능
             transform.position 
                 = Vector3.Lerp(_prev.transform.position, _next.transform.position, 0.5f);
