@@ -24,7 +24,7 @@ public class Interactor : MonoBehaviour
     private void Update()
     {
         interaction();
-    }
+    } 
 
     private void interaction()
     {

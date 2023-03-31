@@ -8,7 +8,6 @@ public class PickUp : MonoBehaviour, IInteractable
     //======================================================================================
     [SerializeField] GameObject _playerEquipPoint; // Pickup을 위한 변수
 
-
     public string InteractionPrompt => _promt;
 
     public bool Interact(Interactor interactor)

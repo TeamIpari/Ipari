@@ -6,13 +6,14 @@ public class LinearInterpolation : MonoBehaviour
 {
     public List<GameObject> m_Rope = new List<GameObject>();
     public GameObject HeadRope;
+    public GameObject TailRope;
     // Start is called before the first frame update
     void Start()
     {
-        Node temp;
-        for (int rN = 0; rN < m_Rope.Count -1 ; rN++)
+
+        for (int rN = 0; rN <= m_Rope.Count -1 ; rN++)
         {
-            temp = m_Rope[rN].AddComponent<Node>();
+            m_Rope[rN].AddComponent<Node>().Setparent(this.gameObject);
             Sorting(rN);
         }
 

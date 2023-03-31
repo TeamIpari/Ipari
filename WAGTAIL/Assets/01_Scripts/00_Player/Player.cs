@@ -29,6 +29,9 @@ public class Player : MonoBehaviour
     public bool isClimbing = false;
     public bool isPush = false;
     public bool isCarry = false;
+    // 당기는데, 원점으로부터 멀어지면 멀어질 수록 최대 도달점과 비교하여
+    // 퍼센테이지로 이동속도를 줄임.
+    public bool isPull = false;
     
     //============================================//
     // State
@@ -41,6 +44,7 @@ public class Player : MonoBehaviour
     public CarryState carry;
     public PickUpState pickup;
     public DropState drop;
+    public PullingState pull;
 
     //============================================//
     // Move
@@ -83,6 +87,7 @@ public class Player : MonoBehaviour
         carry = new CarryState(this, movementSM);
         pickup = new PickUpState(this, movementSM);
         drop = new DropState(this, movementSM);
+        pull = new PullingState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);
