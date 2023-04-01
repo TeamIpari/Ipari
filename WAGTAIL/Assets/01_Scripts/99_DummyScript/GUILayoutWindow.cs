@@ -59,9 +59,6 @@ public class GUILayoutWindow : EditorWindow
         GUILayout.EndArea();
 
 
-
-
-
     }
 
 }

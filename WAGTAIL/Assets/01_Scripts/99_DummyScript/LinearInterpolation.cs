@@ -53,6 +53,7 @@ public class LinearInterpolation : MonoBehaviour
 
     public void Linear()
     {
+
     }
 
    
