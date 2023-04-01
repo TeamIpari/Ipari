@@ -27,16 +27,10 @@ public class ThrowState : State
         carry = player.isCarry;
     }
 
-
-    // Start is called before the first frame update
-    void Start()
+    public override void PhysicsUpdate()
     {
-        
+        base.PhysicsUpdate();
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
