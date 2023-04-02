@@ -48,7 +48,18 @@ public class LinearInterpolation : MonoBehaviour
         else if(_rN == m_Rope.Count - 1)
         {
             m_Rope[_rN].GetComponent<Node>().SetPrev(m_Rope[_rN - 1]);
+            TailRope = m_Rope[_rN];
         }
+    }
+
+    public bool CheckUsingRope()
+    {
+        for(int i = 0; i < m_Rope.Count; i++)
+        {
+            if (m_Rope[i].GetComponent<Node>()._useNode)
+                return true;
+        }
+        return false;
     }
 
     public void Linear()

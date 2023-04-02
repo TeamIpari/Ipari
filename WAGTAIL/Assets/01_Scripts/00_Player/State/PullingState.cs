@@ -13,6 +13,8 @@ public class PullingState : State
     float playerSpeed;
     bool isPull;
 
+    GameObject RopeHead;
+
     Vector3 cVelocity;
     
 
@@ -31,6 +33,7 @@ public class PullingState : State
         currentVelocity = Vector3.zero;
         gravityVelocity.y = 0;
         isPull = player.isPull;
+        RopeHead = player.currentInteractable;
 
         playerSpeed = player.playerSpeed;
         isGrounded = player.controller.isGrounded;
@@ -78,16 +81,18 @@ public class PullingState : State
 
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
         player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
-
-        if (velocity.sqrMagnitude > 0)
-        {
-            //player.transform.rotation =
-            //    Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation());
+        player.transform.LookAt(RopeHead.GetComponent<Node>().GetParent().TailRope.transform.position);
 
 
-            //player.transform.rotation =
-            //    Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity), player.rotationDampTime);
-        }
+        //if (velocity.sqrMagnitude > 0)
+        //{
+        //    //player.transform.rotation =
+        //    //    Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation());
+
+
+        //    //player.transform.rotation =
+        //    //    Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity), player.rotationDampTime);
+        //}
     }
 
     public override void Exit()

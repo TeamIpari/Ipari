@@ -17,38 +17,50 @@ public class Node : MonoBehaviour
     {
 
         _useNode = false;
-        float longer = Calcsize();
-        halfsize_1 = longer * 0.5f;
-        halfsize_2 = longer * 0.5f;
+        halfsize_1 = Calcsize();
+         //= longer;
 
-        Debug.Log(__next);
+        //Debug.Log(__next);
     }
 
     // Update is called once per frame
     void Update()
     {
         // 이전의 위치를 선형 보간으로 따라감. - x(크기)만큼 떨어져서
-        if (_next != null && !_useNode)
+        if (_next != null && !_useNode 
+            && !_parent.GetComponent<LinearInterpolation>().CheckUsingRope())
         {
             // 휘는 기능
-            transform.position 
-                = Vector3.Lerp(GetPrev(), GetNext (), 0.5f);
+            transform.position
+                = Vector3.Lerp(transform.position, _next.GetComponent<Node>().GetPrev(), 0.5f);
 
             // 역동적이게 휘는 기능
-            //transform.position = Vector3.Slerp(_prev.transform.position, _next.transform.position, 0.5f);
+            // transform.position = Vector3.Slerp(_prev.transform.position, _next.transform.position, 0.5f);
+        }
+        else if (!_useNode && _next != null)
+        {
+            transform.position 
+                = Vector3.Lerp(_prev.transform.position, _next.transform.position, 0.5f);
         }
     }
 
     public Vector3 GetPrev()
     {
-        return new Vector3(transform.position.x - halfsize_1, transform.position.y, transform.position.z);
+        return new Vector3(transform.position.x - halfsize_1, transform.position.y, transform.position.z );
 
     }
 
+
     public Vector3 GetNext()
     {
-        return new Vector3(transform.position.x + halfsize_1, transform.position.y, transform.position.z);
+        // 안 쓸 예정
+        return new Vector3(transform.position.x + halfsize_1, transform.position.y, transform.position.z );
 
+    }
+
+    public LinearInterpolation GetParent()
+    {
+        return _parent.GetComponent<LinearInterpolation>();
     }
 
     // 현재 노드가 사용중이라는 것을 알려주는 메서드
@@ -84,7 +96,6 @@ public class Node : MonoBehaviour
 
     public float Calcsize()
     {
-        int count =0;
         float _height = 0f;
 
         MeshFilter _mf = GetComponent<MeshFilter>();
@@ -93,16 +104,15 @@ public class Node : MonoBehaviour
 
         foreach(var _vertice in _vertices)
         {
-            //Debug.Log(_vertice);
-            count++;
-            //Vector3 _pos = transform.TransformPoint(_vertice);
+            
+            Vector3 _pos = transform.TransformPoint(_vertice);
 
-            //if(_pos.y > _height)
-            //{
-            //    _height = _pos.y;
-            //}
+            if (_pos.y > _height)
+            {
+                _height = _pos.y;
+            }
         }
-        Debug.Log(count);
+
 
         return _height;
     }
