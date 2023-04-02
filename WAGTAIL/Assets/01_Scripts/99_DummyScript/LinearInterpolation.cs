@@ -9,7 +9,7 @@ public class LinearInterpolation : MonoBehaviour
     public GameObject TailRope;
     [HideInInspector]
     public float max_Distance;
-    [HideInInspector]
+
     public float destroy_Distance = 5f;
     [HideInInspector]
     public float min_Distance;
@@ -82,7 +82,4 @@ public class LinearInterpolation : MonoBehaviour
     {
 
     }
-
-   
-
 }

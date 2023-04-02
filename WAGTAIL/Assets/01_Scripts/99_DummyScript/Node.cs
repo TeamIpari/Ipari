@@ -15,7 +15,6 @@ public class Node : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         _useNode = false;
         halfsize_1 = Calcsize();
     }
@@ -23,8 +22,45 @@ public class Node : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        NodeSlerp_1();
+    }
+    
+    public void NodeSlerp_1()
+    {
+        if(_useNode && _parent.GetComponent<LinearInterpolation>().CheckUsingRope())       // Use상태면 사용하지 않음.
+        {
+            _prev?.GetComponent<Node>().PrevSlerp();
+            _next?.GetComponent<Node>().NextSlerp();
+        }
+        else if(!_parent.GetComponent<LinearInterpolation>().CheckUsingRope())
+        {
+            NodeSlerp();
+        }
+        //else
+        //{
+        //    NodeSlerp();
+        //}
+    }
+
+    public void PrevSlerp()
+    {
+        transform.position
+            = Vector3.Lerp(_prev.transform.position, _next.transform.position, 0.5f);
+
+    }
+
+    public void NextSlerp()
+    {
+        // 휘는 기능
+        transform.position
+            = Vector3.Lerp(_next.transform.position, _prev.transform.position, 0.5f);
+
+    }
+
+    public void NodeSlerp()
+    {
         // 이전의 위치를 선형 보간으로 따라감. - x(크기)만큼 떨어져서
-        if (_next != null && !_useNode 
+        if (_next != null && !_useNode
             && !_parent.GetComponent<LinearInterpolation>().CheckUsingRope())
         {
             // 휘는 기능
@@ -35,7 +71,7 @@ public class Node : MonoBehaviour
         }
         else if (!_useNode && _next != null)
         {
-            transform.position 
+            transform.position
                 = Vector3.Lerp(_prev.transform.position, _next.transform.position, 0.5f);
         }
     }
