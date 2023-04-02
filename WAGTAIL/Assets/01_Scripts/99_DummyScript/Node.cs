@@ -18,9 +18,6 @@ public class Node : MonoBehaviour
 
         _useNode = false;
         halfsize_1 = Calcsize();
-         //= longer;
-
-        //Debug.Log(__next);
     }
 
     // Update is called once per frame
@@ -33,7 +30,6 @@ public class Node : MonoBehaviour
             // 휘는 기능
             transform.position
                 = Vector3.Lerp(transform.position, _next.GetComponent<Node>().GetPrev(), 0.5f);
-
             // 역동적이게 휘는 기능
             // transform.position = Vector3.Slerp(_prev.transform.position, _next.transform.position, 0.5f);
         }
@@ -47,7 +43,6 @@ public class Node : MonoBehaviour
     public Vector3 GetPrev()
     {
         return new Vector3(transform.position.x - halfsize_1, transform.position.y, transform.position.z );
-
     }
 
 
@@ -55,7 +50,6 @@ public class Node : MonoBehaviour
     {
         // 안 쓸 예정
         return new Vector3(transform.position.x + halfsize_1, transform.position.y, transform.position.z );
-
     }
 
     public LinearInterpolation GetParent()
@@ -104,7 +98,6 @@ public class Node : MonoBehaviour
 
         foreach(var _vertice in _vertices)
         {
-            
             Vector3 _pos = transform.TransformPoint(_vertice);
 
             if (_pos.y > _height)
@@ -112,9 +105,6 @@ public class Node : MonoBehaviour
                 _height = _pos.y;
             }
         }
-
-
         return _height;
     }
-
 }

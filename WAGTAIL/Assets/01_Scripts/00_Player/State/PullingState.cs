@@ -80,9 +80,10 @@ public class PullingState : State
         }
 
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-        player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
+        player.controller.Move(currentVelocity * Time.deltaTime * (playerSpeed - (playerSpeed * subtract()) / 100)+ gravityVelocity * Time.deltaTime);  // 속도 조절
         player.transform.LookAt(RopeHead.GetComponent<Node>().GetParent().TailRope.transform.position);
 
+        subtract();
 
         //if (velocity.sqrMagnitude > 0)
         //{
@@ -94,6 +95,14 @@ public class PullingState : State
         //    //    Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity), player.rotationDampTime);
         //}
     }
+
+    public int subtract()
+    {
+        // 시작점과 끝점을 비교하여 내 위치가 현재 얼마나 떨어졌는지 퍼센테이지로 계산. 
+        
+        return RopeHead.GetComponent<Node>().GetParent().Percent();
+    }
+
 
     public override void Exit()
     {

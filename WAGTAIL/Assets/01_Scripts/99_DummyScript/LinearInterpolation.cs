@@ -7,6 +7,14 @@ public class LinearInterpolation : MonoBehaviour
     public List<GameObject> m_Rope = new List<GameObject>();
     public GameObject HeadRope;
     public GameObject TailRope;
+    [HideInInspector]
+    public float max_Distance;
+    [HideInInspector]
+    public float destroy_Distance = 5f;
+    [HideInInspector]
+    public float min_Distance;
+    [HideInInspector]
+    public float cur_Distance;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,20 +24,18 @@ public class LinearInterpolation : MonoBehaviour
             m_Rope[rN].AddComponent<Node>().Setparent(this.gameObject);
             Sorting(rN);
         }
-
+        min_Distance = Vector3.Distance(HeadRope.transform.position, TailRope.transform.position);  // A to B 의 거리를 체크     
+        max_Distance = min_Distance + destroy_Distance;
+        cur_Distance = min_Distance;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Linear();
-    }
-
-    public void Sorting(Node _node)
-    {
 
     }
+
     public void Sorting(int _rN)
     {
         // 중간일 때
@@ -60,6 +66,16 @@ public class LinearInterpolation : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    public int Percent()
+    {
+        cur_Distance = Vector3.Distance(HeadRope.transform.position, TailRope.transform.position);
+        
+        //Debug.Log();
+
+        return (int)((cur_Distance - max_Distance) / destroy_Distance * 100);
+
     }
 
     public void Linear()
