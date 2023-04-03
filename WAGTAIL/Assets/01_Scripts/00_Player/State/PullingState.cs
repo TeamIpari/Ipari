@@ -79,11 +79,22 @@ public class PullingState : State
             gravityVelocity.y = 0f;
         }
 
-        currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-        player.controller.Move(currentVelocity * Time.deltaTime * (playerSpeed - (playerSpeed * subtract()) / 100)+ gravityVelocity * Time.deltaTime);  // 속도 조절
-        player.transform.LookAt(RopeHead.GetComponent<Node>().GetParent().TailRope.transform.position);
 
-        subtract();
+
+        if (RopeHead != null)
+        {
+            float curSpeed = (playerSpeed - (playerSpeed * subtract()) / 100);
+            currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
+            player.controller.Move(currentVelocity * Time.deltaTime * curSpeed + gravityVelocity * Time.deltaTime);  // 속도 조절
+            player.transform.LookAt(RopeHead.GetComponent<Node>().GetParent()._TailRope.transform.position);
+            if (subtract() >= 90)        // 10% 미만일 경우 로프 파괴
+            {
+                RopeHead.GetComponent<Node>().GetParent().BrokenRope(); ;
+                player.isPull = false ;
+            }
+        }
+
+        //subtract();
 
         //if (velocity.sqrMagnitude > 0)
         //{
@@ -99,7 +110,7 @@ public class PullingState : State
     public int subtract()
     {
         // 시작점과 끝점을 비교하여 내 위치가 현재 얼마나 떨어졌는지 퍼센테이지로 계산. 
-        
+
         return RopeHead.GetComponent<Node>().GetParent().Percent();
     }
 

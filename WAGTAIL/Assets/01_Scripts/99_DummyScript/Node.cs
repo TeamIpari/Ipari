@@ -12,6 +12,7 @@ public class Node : MonoBehaviour
     public bool _useNode;
     public float halfsize_1 = 0;
     public float halfsize_2 = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,47 +28,47 @@ public class Node : MonoBehaviour
     
     public void NodeSlerp_1()
     {
-        if(_useNode && _parent.GetComponent<LinearInterpolation>().CheckUsingRope())       // Use상태면 사용하지 않음.
+        if(_useNode &&  _parent.GetComponent<LinearInterpolation>().CheckUsingNode())       // Use상태면 사용하지 않음.
         {
             _prev?.GetComponent<Node>().PrevSlerp();
             _next?.GetComponent<Node>().NextSlerp();
         }
-        else if(!_parent.GetComponent<LinearInterpolation>().CheckUsingRope())
+        else if(!_parent.GetComponent<LinearInterpolation>().CheckUsingNode())
         {
             NodeSlerp();
         }
-        //else
-        //{
-        //    NodeSlerp();
-        //}
     }
 
     public void PrevSlerp()
     {
-        transform.position
-            = Vector3.Lerp(_prev.transform.position, _next.transform.position, 0.5f);
-
+        if (_parent.GetComponent<LinearInterpolation>()._HeadRope != this.gameObject)
+        {
+            transform.position
+                = Vector3.Lerp(_prev.transform.position, _next.transform.position, 0.5f);
+            _prev?.GetComponent<Node>().PrevSlerp();
+        }
     }
 
     public void NextSlerp()
     {
-        // 휘는 기능
-        transform.position
-            = Vector3.Lerp(_next.transform.position, _prev.transform.position, 0.5f);
-
+        if (_parent.GetComponent<LinearInterpolation>()._TailRope != this.gameObject)
+        {  
+            // 휘는 기능
+            transform.position
+                = Vector3.Lerp(_next.transform.position, _prev.transform.position, 0.5f);
+            _next?.GetComponent<Node>().NextSlerp();
+        }
     }
 
     public void NodeSlerp()
     {
         // 이전의 위치를 선형 보간으로 따라감. - x(크기)만큼 떨어져서
-        if (_next != null && !_useNode
-            && !_parent.GetComponent<LinearInterpolation>().CheckUsingRope())
+        if (_next != null && !_useNode &&
+            !_parent.GetComponent<LinearInterpolation>().CheckUsingNode())
         {
             // 휘는 기능
             transform.position
                 = Vector3.Lerp(transform.position, _next.GetComponent<Node>().GetPrev(), 0.5f);
-            // 역동적이게 휘는 기능
-            // transform.position = Vector3.Slerp(_prev.transform.position, _next.transform.position, 0.5f);
         }
         else if (!_useNode && _next != null)
         {
@@ -97,8 +98,10 @@ public class Node : MonoBehaviour
     public void GetNode()
     {
         _useNode = _useNode == true ? false : true;
+
+        if (_useNode)
+            _parent.GetComponent<LinearInterpolation>()._CurRope = this.gameObject;
     }
-    
 
     // parent에 선택된 노드를 다시 넣어주는 메서드
     public void SetNode()
@@ -124,6 +127,7 @@ public class Node : MonoBehaviour
         _next = next;
     }
 
+
     public float Calcsize()
     {
         float _height = 0f;
@@ -141,6 +145,7 @@ public class Node : MonoBehaviour
                 _height = _pos.y;
             }
         }
+
         return _height;
     }
 }
