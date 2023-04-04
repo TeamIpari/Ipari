@@ -65,7 +65,7 @@ public class ObjectCheckManager : MonoBehaviour
         float temp = Mathf.Pow(1.0f, 2) - Mathf.Pow(x, 2);
         float z = Mathf.Sqrt(temp);
 
-        return (new Vector3(x, 0.0f, z) /** Random.Range(0.0f, radius)*/);
+        return (new Vector3(x, 0.0f, z));
 
     }
 

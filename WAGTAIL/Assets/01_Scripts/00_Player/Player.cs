@@ -68,6 +68,7 @@ public class Player : MonoBehaviour
     public Vector3 playerVelocity;
     [HideInInspector]
     public GameObject currentInteractable;
+    
 
     private void Start()
     {
