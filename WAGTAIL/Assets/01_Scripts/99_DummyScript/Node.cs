@@ -28,7 +28,7 @@ public class Node : MonoBehaviour
     
     public void NodeSlerp_1()
     {
-        if(_useNode &&  _parent.GetComponent<LinearInterpolation>().CheckUsingNode())       // Use»óÅÂ¸é »ç¿ëÇÏÁö ¾ÊÀ½.
+        if(_useNode &&  _parent.GetComponent<LinearInterpolation>().CheckUsingNode())       // Useìƒíƒœë©´ ì‚¬ìš©í•˜ì§€ ì•ŠìŒ.
         {
             _prev?.GetComponent<Node>().PrevSlerp();
             _next?.GetComponent<Node>().NextSlerp();
@@ -53,7 +53,7 @@ public class Node : MonoBehaviour
     {
         if (_parent.GetComponent<LinearInterpolation>()._TailRope != this.gameObject)
         {  
-            // ÈÖ´Â ±â´É
+            // íœ˜ëŠ” ê¸°ëŠ¥
             transform.position
                 = Vector3.Lerp(_next.transform.position, _prev.transform.position, 0.5f);
             _next?.GetComponent<Node>().NextSlerp();
@@ -62,11 +62,11 @@ public class Node : MonoBehaviour
 
     public void NodeSlerp()
     {
-        // ÀÌÀüÀÇ À§Ä¡¸¦ ¼±Çü º¸°£À¸·Î µû¶ó°¨. - x(Å©±â)¸¸Å­ ¶³¾îÁ®¼­
+        // ì´ì „ì˜ ìœ„ì¹˜ë¥¼ ì„ í˜• ë³´ê°„ìœ¼ë¡œ ë”°ë¼ê°. - x(í¬ê¸°)ë§Œí¼ ë–¨ì–´ì ¸ì„œ
         if (_next != null && !_useNode &&
             !_parent.GetComponent<LinearInterpolation>().CheckUsingNode())
         {
-            // ÈÖ´Â ±â´É
+            // íœ˜ëŠ” ê¸°ëŠ¥
             transform.position
                 = Vector3.Lerp(transform.position, _next.GetComponent<Node>().GetPrev(), 0.5f);
         }
@@ -85,7 +85,7 @@ public class Node : MonoBehaviour
 
     public Vector3 GetNext()
     {
-        // ¾È ¾µ ¿¹Á¤
+        // ì•ˆ ì“¸ ì˜ˆì •
         return new Vector3(transform.position.x + halfsize_1, transform.position.y, transform.position.z );
     }
 
@@ -94,7 +94,7 @@ public class Node : MonoBehaviour
         return _parent.GetComponent<LinearInterpolation>();
     }
 
-    // ÇöÀç ³ëµå°¡ »ç¿ëÁßÀÌ¶ó´Â °ÍÀ» ¾Ë·ÁÁÖ´Â ¸Ş¼­µå
+    // í˜„ì¬ ë…¸ë“œê°€ ì‚¬ìš©ì¤‘ì´ë¼ëŠ” ê²ƒì„ ì•Œë ¤ì£¼ëŠ” ë©”ì„œë“œ
     public void GetNode()
     {
         _useNode = _useNode == true ? false : true;
@@ -103,25 +103,25 @@ public class Node : MonoBehaviour
             _parent.GetComponent<LinearInterpolation>()._CurRope = this.gameObject;
     }
 
-    // parent¿¡ ¼±ÅÃµÈ ³ëµå¸¦ ´Ù½Ã ³Ö¾îÁÖ´Â ¸Ş¼­µå
+    // parentì— ì„ íƒëœ ë…¸ë“œë¥¼ ë‹¤ì‹œ ë„£ì–´ì£¼ëŠ” ë©”ì„œë“œ
     public void SetNode()
     {
         transform.SetParent(_parent.transform);
     }
 
-    // ¾î¶² µ¢±¼ÀÇ ÀÚ½Ä°´Ã¼ÀÎÁö ¼¼ÆÃÇÏ´Â ¸Ş¼­µå
+    // ì–´ë–¤ ë©êµ´ì˜ ìì‹ê°ì²´ì¸ì§€ ì„¸íŒ…í•˜ëŠ” ë©”ì„œë“œ
     public void Setparent(GameObject parent)
     {
         _parent = parent;
     }
 
-    // ÇöÀç ³ëµåÀÇ ÀÌÀü ³ëµå¸¦ ¼¼ÆÃÇÏ´Â ¸Ş¼­µå (Head´Â Á¦¿Ü)
+    // í˜„ì¬ ë…¸ë“œì˜ ì´ì „ ë…¸ë“œë¥¼ ì„¸íŒ…í•˜ëŠ” ë©”ì„œë“œ (HeadëŠ” ì œì™¸)
     public void SetPrev(GameObject prev)
     {
         _prev = prev;
     }
 
-    // ÇöÀç ³ëµåÀÇ ´ÙÀ½ ³ëµå¸¦ ¼¼ÆÃÇÏ´Â ¸Ş¼­µå (tailÀº Á¦¿Ü)
+    // í˜„ì¬ ë…¸ë“œì˜ ë‹¤ìŒ ë…¸ë“œë¥¼ ì„¸íŒ…í•˜ëŠ” ë©”ì„œë“œ (tailì€ ì œì™¸)
     public void SetNext(GameObject next)
     {
         _next = next;
