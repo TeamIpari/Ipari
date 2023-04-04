@@ -7,7 +7,8 @@ public class Node : MonoBehaviour
     public GameObject _parent;
     public GameObject _prev;
     public GameObject _next;
-    public Vector3 __next;
+    //public Vector3 __next;
+    public Vector3 _origin;
 
     public bool _useNode;
     public float halfsize_1 = 0;
@@ -18,6 +19,7 @@ public class Node : MonoBehaviour
     {
         _useNode = false;
         halfsize_1 = Calcsize();
+        _origin = transform.transform.position;
     }
 
     // Update is called once per frame
@@ -66,9 +68,14 @@ public class Node : MonoBehaviour
         if (_next != null && !_useNode &&
             !_parent.GetComponent<LinearInterpolation>().CheckUsingNode())
         {
+            //// 휘는 기능
+            //transform.position
+            //    = Vector3.Lerp(transform.position, _next.GetComponent<Node>().GetPrev(), 0.5f);
+            //Debug.Log(GetPrev_1());
             // 휘는 기능
             transform.position
-                = Vector3.Lerp(transform.position, _next.GetComponent<Node>().GetPrev(), 0.5f);
+                = Vector3.Lerp(transform.position, _next.GetComponent<Node>().GetPrev_1(), 0.5f);
+
         }
         else if (!_useNode && _next != null)
         {
@@ -77,11 +84,20 @@ public class Node : MonoBehaviour
         }
     }
 
+    public Vector3 GetOriginPos()
+    {
+        return _origin;
+    }
+
+    public Vector3 GetPrev_1()
+    {
+        return transform.position + ( _prev.GetComponent<Node>().GetOriginPos() - transform.position);
+    }
+
     public Vector3 GetPrev()
     {
         return new Vector3(transform.position.x - halfsize_1, transform.position.y, transform.position.z );
     }
-
 
     public Vector3 GetNext()
     {
