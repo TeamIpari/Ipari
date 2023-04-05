@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
     {
         // GetComponets
         controller = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         playerInput = GetComponent<PlayerInput>();
         cameraTransform = Camera.main.transform;
 
