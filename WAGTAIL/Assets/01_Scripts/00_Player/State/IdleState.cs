@@ -69,6 +69,7 @@ public class IdleState : State
         base.LogicUpdate();
 
         // TODO : animator 적용
+        player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
 
         if (climbing)
         {

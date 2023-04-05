@@ -28,10 +28,8 @@ public class JumpingState : State
         playerSpeed = player.playerSpeed;
         gravityVelocity.y = 0;
 
-        //==========================================//
-        //player.animator.SetFloat("speed",0);
-        //player.animator.SetTrigger("jump");
-        //==========================================//
+        player.animator.SetFloat("speed",0);
+        player.animator.SetTrigger("jump");
         Jump();
     }
 
@@ -50,8 +48,8 @@ public class JumpingState : State
         if(isGrounded) 
         {
             
-            stateMachine.ChangeState(player.idle);
-            //stateMachine.ChangeState(player.landing);
+            //stateMachine.ChangeState(player.idle);
+            stateMachine.ChangeState(player.landing);
         }
     }
 

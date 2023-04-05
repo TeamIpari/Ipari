@@ -18,11 +18,8 @@ public class LandingState : State
         base.Enter();
 
         timePassed = 0f;
-        //=========================================//
-        // TODO : Animator Setting //
-        //player.animator.SetTrigger("land");
-        //=========================================//
-        landingTime = 0.5f;
+        player.animator.SetTrigger("land");
+        landingTime = 0.2f;
     }
 
     public override void LogicUpdate()
@@ -31,10 +28,8 @@ public class LandingState : State
 
         if (timePassed > landingTime)
         {
-            //=========================================//
             // TODO : Animator Setting //
-            //player.animator.SetTrigger("move");
-            //=========================================//
+            player.animator.SetTrigger("move");
             stateMachine.ChangeState(player.idle);
         }
         timePassed += Time.deltaTime;
