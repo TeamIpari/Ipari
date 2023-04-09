@@ -34,7 +34,4 @@ public class LandingState : State
         }
         timePassed += Time.deltaTime;
     }
-
-
-
 }

@@ -120,6 +120,7 @@ public class IdleState : State
             player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity),
                 player.rotationDampTime);
         }
+
     }
 
     public override void Exit()

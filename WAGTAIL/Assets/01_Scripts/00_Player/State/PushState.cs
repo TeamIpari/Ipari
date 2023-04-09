@@ -27,10 +27,7 @@ public class PushState : State
     {
         base.Enter();
 
-        // ========================================= //
-        // TODO : 애니메이션 세팅하기 Idle To Push
-        // player.animator.SetTrigger("push");
-        // ========================================= //
+        player.animator.SetTrigger("push");
 
         input = Vector2.zero;
         velocity = Vector3.zero;
@@ -58,9 +55,8 @@ public class PushState : State
         gravityVelocity.y = 0f;
         player.playerVelocity = new Vector3(input.x, 0, input.y);
 
-        // ========================================= //
         // TODO : 애니메이션 세팅하기 Push To Idle
-        // player.animator.SetTrigger("Idle");
+        player.animator.SetTrigger("move");
         // ========================================= //
     }
 
@@ -74,12 +70,19 @@ public class PushState : State
         {
             input = pushXAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(input.x, 0, 0);
+
+            //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
+            velocity.y = 0f;
         }
+
         // 그러니까 오일러 각으로 변환한 플레이어의 로테이션이 180이거나 0일 경우 실행을 한다는 이야기인 것 같은데... 왜?
         else if (player.transform.eulerAngles.y == 180 || player.transform.eulerAngles.y == 0)
         {
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(0, 0, input.y);
+
+            //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
+            velocity.y = 0f;
         }
     }
 
