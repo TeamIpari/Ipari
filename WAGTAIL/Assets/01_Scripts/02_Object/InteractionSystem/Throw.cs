@@ -48,6 +48,7 @@ public class Throw : MonoBehaviour, IInteractable
         GetComponent<Rigidbody>().useGravity = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().freezeRotation = true;
+        GetComponent<Rigidbody>().isKinematic = false;
 
         // Object를 Player의 머리 위로 옮김
         transform.SetParent(_playerEquipPoint.transform);
