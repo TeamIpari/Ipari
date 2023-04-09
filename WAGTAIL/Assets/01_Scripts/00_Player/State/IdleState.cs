@@ -60,15 +60,13 @@ public class IdleState : State
         input = moveAction.ReadValue<Vector2>();
         velocity = new Vector3(input.x, 0, input.y);
 
-        //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
+        velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
         velocity.y = 0f;
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
-        Debug.Log(Camera.main.transform.TransformDirection(new Vector3(input.x, 0, input.y)));
 
         // TODO : animator 적용
         player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);

@@ -7,6 +7,10 @@ public class Pulling : MonoBehaviour, IInteractable
     [SerializeField] private string _promt;
     //======================================================================================
     [SerializeField] GameObject _playerEquipPoint;  // Pickup을 위한 변수;
+
+    //======================================================================================
+    // Distory 이후 작동을 위한 함수
+    [SerializeField] GameObject _object;
     
     public string InteractionPrompt => _promt;
 
@@ -49,5 +53,11 @@ public class Pulling : MonoBehaviour, IInteractable
         _playerEquipPoint.transform.DetachChildren();
         gameObject.GetComponent<Node>().GetNode();
         gameObject.GetComponent<Node>().SetNode();
+    }
+
+    // 추가한 코드
+    public void OnDestroy()
+    {
+        _object.GetComponent<IInteractable>().Interact(null);
     }
 }

@@ -56,7 +56,7 @@ public class PushState : State
         player.playerVelocity = new Vector3(input.x, 0, input.y);
 
         // TODO : 애니메이션 세팅하기 Push To Idle
-        // player.animator.SetTrigger("Idle");
+        player.animator.SetTrigger("move");
         // ========================================= //
     }
 
