@@ -50,7 +50,6 @@ public class BrokenDoorManager : MonoBehaviour, IInteractable
             if (child.name != transform.name)
             {
                 child.GetComponent<BrokenDoorController>().Throw(destroyTime, force, player);
-                Debug.Log(child.name);
             }
         }
         isBoom = true;
