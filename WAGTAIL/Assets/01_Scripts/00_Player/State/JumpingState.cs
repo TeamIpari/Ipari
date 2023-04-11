@@ -75,6 +75,12 @@ public class JumpingState : State
 
             gravityVelocity.y += gravityValue * Time.deltaTime;
             isGrounded = player.controller.isGrounded;
+
+            if (airVelocity.sqrMagnitude > 0)
+            {
+                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(airVelocity),
+                    player.rotationDampTime);
+            }
         }
     }
 
