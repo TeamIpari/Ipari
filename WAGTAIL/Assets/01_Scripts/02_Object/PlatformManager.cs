@@ -16,6 +16,7 @@ public class PlatformManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(_startPoint.position, _pointSize);
         Gizmos.color = Color.blue;
