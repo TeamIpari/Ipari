@@ -49,6 +49,7 @@ public class BrokenDoorManager : MonoBehaviour, IInteractable
             // 자기 자신은 무시
             if (child.name != transform.name)
             {
+                child.GetComponent<Rigidbody>().isKinematic = false;
                 child.GetComponent<BrokenDoorController>().Throw(destroyTime, force, player);
             }
         }
