@@ -173,7 +173,7 @@ public class Test_Editor : Editor
     {
 
         Test Generator = (Test)target;
-        for(int _num = 0;_num < Generator.point.Count; _num ++ )
+        for(int _num = 0;_num < Generator.point.Count; _num++ )
         {
             // 전역 변수로 지정한 네 가지의 포인트를 씬 내부에서 보고 이동할 수 있도록 해줄 것임.
             vec_point curPoint = Generator.point[_num];
@@ -188,6 +188,7 @@ public class Test_Editor : Editor
             curPoint.P3 = Handles.PositionHandle(curPoint.P3, Quaternion.identity);
             curPoint.P4 = Handles.PositionHandle(curPoint.P4, Quaternion.identity);
 
+            Generator.point[_num] = curPoint;
             // 한 정점에서 또다른 정점까지 선을 그려주는 기능
             Handles.DrawLine(curPoint.P1, curPoint.P2);
             //Handles.DrawLine(Generator.p2, Generator.p3);

@@ -14,10 +14,14 @@ public class CamManager : MonoBehaviour
 [CustomEditor(typeof(CamManager))]
 public class CustomCamLine : Editor
 {
+
     public override void OnInspectorGUI()
     {
         //base.OnInspectorGUI();
+        if(GUILayout.Button("A"))
+        {
 
+        }
 
     }
 }
