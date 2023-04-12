@@ -24,7 +24,7 @@ public class HitCollision : MonoBehaviour
     private void Update()
     {
         //_Distance += Time.deltaTime;
-        Debug.Log(_Distance);
+        //Debug.Log(_Distance);
         if(b_Open && Vector3.Distance(Door_1.position, Door_2.position) <= _Distance)
         {
             Debug.Log("aa");
