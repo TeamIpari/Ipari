@@ -65,7 +65,7 @@ public class PushState : State
         base.HandleInput();
 
         push = player.isPush;
-        // 오일러 y값이 90이거나 270일 경우? 무슨 뜻이지?
+
         if (player.transform.eulerAngles.y == 90 || player.transform.eulerAngles.y == 270)
         {
             input = pushXAxisAction.ReadValue<Vector2>();
@@ -75,7 +75,6 @@ public class PushState : State
             velocity.y = 0f;
         }
 
-        // 그러니까 오일러 각으로 변환한 플레이어의 로테이션이 180이거나 0일 경우 실행을 한다는 이야기인 것 같은데... 왜?
         else if (player.transform.eulerAngles.y == 180 || player.transform.eulerAngles.y == 0)
         {
             input = pushZAxisAction.ReadValue<Vector2>();

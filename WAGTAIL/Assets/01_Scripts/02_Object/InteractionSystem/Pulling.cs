@@ -1,63 +1,66 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Pulling : MonoBehaviour, IInteractable
 {
     [SerializeField] private string _promt;
-    //======================================================================================
-    [SerializeField] GameObject _playerEquipPoint;  // Pickup을 위한 변수;
+    [SerializeField] GameObject _playerEquipPoint;
 
-    //======================================================================================
-    // Distory 이후 작동을 위한 함수
-    [SerializeField] GameObject _object;
-    
+    private float _vAxis;
+    private float _hAxis;
+
+    Vector3 _playerPos;
+    public Vector3 dir;
+
+    Vector3 curPos;
+
     public string InteractionPrompt => _promt;
+
+    public SkinnedMeshRenderer _skMesh;
+
+    public int value = 0;
 
     public bool Interact(Interactor interactor)
     {
-        // 들기
-        if (_playerEquipPoint.transform.childCount == 0 &&
-            interactor.player.movementSM.currentState == interactor.player.idle) // Player 손에 오브젝트가 있는지 확인
+        if (interactor.player.movementSM.currentState == interactor.player.idle)
         {
-            // TODO : 애니메이션 넣으면 추후 로직 수정해야함
-            Pickup();
             interactor.player.isPull = true;
-            Debug.Log("Pick Up Object!");
+            // player가 object를 미는 방향으로 보게끔 조절
+            // TODO : 더 깔끔하게 해보기
+            _playerPos = interactor.gameObject.transform.position;
+            _hAxis = _playerPos.x - gameObject.transform.position.x;
+            _vAxis = _playerPos.z - gameObject.transform.position.z;
+            dir = new Vector3(_hAxis, 0, _vAxis).normalized;
+            dir.x = -Mathf.Round(dir.x);
+            dir.z = -Mathf.Round(dir.z);
+            interactor.transform.LookAt(interactor.transform.position + dir);
+
+            transform.SetParent(_playerEquipPoint.transform, true);
             return true;
         }
 
-        // 내려놓기
-        else if (_playerEquipPoint.transform.GetChild(0).name == gameObject.name)
+        else if (interactor.player.movementSM.currentState == interactor.player.pull)
         {
-            // TODO : 애니메이션 넣으면 추후 로직 수정해야함
-            Drop();
             interactor.player.isPull = false;
-            Debug.Log("Drop Object!");
+            _playerEquipPoint.transform.DetachChildren();
             return true;
         }
 
-        return true;
+        return false;
     }
 
-    public void Pickup()
+    public float GetMeshfloat()
     {
-        transform.SetParent(_playerEquipPoint.transform);
-        transform.localPosition = Vector3.zero;
-        transform.rotation = new Quaternion(0, 0, 0, 0);
-        gameObject.GetComponent<Node>().GetNode();
+        float  a = (100 - _skMesh.GetBlendShapeWeight(0)) / 100;
+        //Debug.Log(a);
+        return a;
+        // (현재 위치 - 최대 위치) / 100
     }
 
-    public void Drop()
+    public void SetMeshfloat(int a)
     {
-        _playerEquipPoint.transform.DetachChildren();
-        gameObject.GetComponent<Node>().GetNode();
-        gameObject.GetComponent<Node>().SetNode();
-    }
-
-    // 추가한 코드
-    public void OnDestroy()
-    {
-        _object.GetComponent<IInteractable>().Interact(null);
+        //_skMesh.SetBlendShapeWeight(0);
     }
 }

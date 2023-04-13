@@ -14,12 +14,14 @@ public class Node : MonoBehaviour
     public float halfsize_1 = 0;
     public float halfsize_2 = 0;
 
+
     // Start is called before the first frame update
     void Start()
     {
         _useNode = false;
         halfsize_1 = Calcsize();
         _origin = transform.transform.position;
+        
     }
 
     // Update is called once per frame
