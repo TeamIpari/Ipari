@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DropState : State
+public class PullOutState : State
 {
     float timePassed;
     float dropTime;
 
-    public DropState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
+    public PullOutState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
         player = _player;
         stateMachine = _stateMachine;
@@ -18,7 +18,7 @@ public class DropState : State
         base.Enter();
 
         timePassed = 0f;
-        //player.animator.SetTrigger("Drop");
+        player.animator.SetTrigger("pullout");
         // TODO : 물건 내려놓는 시간 애니메이터와 상의 후 정하기
         // !!! dropTime 반드시 수정해야함 !!! 
         dropTime = 1.5f;
