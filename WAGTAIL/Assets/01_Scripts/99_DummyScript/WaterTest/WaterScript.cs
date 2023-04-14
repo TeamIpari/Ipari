@@ -38,7 +38,7 @@ public class WaterScript : MonoBehaviour
         if(other.gameObject.tag == "Player")
         {
             Debug.Log("ABC");
-            other.GetComponent<CharacterController>().Move(new Vector3(_ForceX, 0, _ForceZ) * _vals);
+            other.GetComponent<CharacterController>()?.Move(new Vector3(_ForceX, 0, _ForceZ) * _vals);
 
         }
     }

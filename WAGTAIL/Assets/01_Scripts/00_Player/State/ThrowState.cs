@@ -15,7 +15,7 @@ public class ThrowState : State
         player = _player;
         stateMachine = _stateMachine;
     }
-
+                                                                                                                                
     public override void Enter()
     {
         base.Enter();
