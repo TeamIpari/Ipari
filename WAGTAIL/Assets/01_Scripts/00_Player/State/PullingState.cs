@@ -64,9 +64,9 @@ public class PullingState : State
         if (player.transform.eulerAngles.y == 90)
         {
             //if((player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() > 0))
-            input = pushXAxisAction.ReadValue<Vector2>();
-            velocity = new Vector3(input.x, 0, 0);
-            Debug.Log(input.x);
+            input = pushZAxisAction.ReadValue<Vector2>();
+            velocity = new Vector3(input.y, 0, 0);
+            Debug.Log(input.y);
 
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
@@ -74,9 +74,9 @@ public class PullingState : State
         else if (player.transform.eulerAngles.y == 270)
         {
             //if((player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() > 0))
-            input = pushXAxisAction.ReadValue<Vector2>();
-            velocity = new Vector3(-input.x, 0, 0);
-            Debug.Log(-input.x);
+            input = pushZAxisAction.ReadValue<Vector2>();
+            velocity = new Vector3(-input.y, 0, 0);
+            Debug.Log(-input.y);
 
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
@@ -84,8 +84,8 @@ public class PullingState : State
         else if (player.transform.eulerAngles.y == 180)
         {
             input = pushZAxisAction.ReadValue<Vector2>();
-            velocity = new Vector3(0, 0, input.y);
-            Debug.Log(input.y);
+            velocity = new Vector3(0, 0, -input.y);
+            Debug.Log(-input.y);
 
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
@@ -93,8 +93,8 @@ public class PullingState : State
         else if (player.transform.eulerAngles.y == 0)
         {
             input = pushZAxisAction.ReadValue<Vector2>();
-            velocity = new Vector3(0, 0, -input.y);
-            Debug.Log(-input.y);
+            velocity = new Vector3(0, 0, input.y);
+            Debug.Log(input.y);
 
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
