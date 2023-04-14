@@ -36,7 +36,6 @@ public class Pulling : MonoBehaviour, IInteractable
             dir.x = -Mathf.Round(dir.x);
             dir.z = -Mathf.Round(dir.z);
             interactor.transform.LookAt(interactor.transform.position + dir);
-
             transform.SetParent(_playerEquipPoint.transform, true);
             return true;
         }
@@ -51,16 +50,18 @@ public class Pulling : MonoBehaviour, IInteractable
         return false;
     }
 
-    public float GetMeshfloat()
+    public int GetMeshfloat()
     {
-        float  a = (100 - _skMesh.GetBlendShapeWeight(0)) / 100;
+        int  a = 100 - (100 - (int)_skMesh.GetBlendShapeWeight(0));
         //Debug.Log(a);
         return a;
         // (현재 위치 - 최대 위치) / 100
     }
 
-    public void SetMeshfloat(int a)
+    public void SetMeshfloat(float val)
     {
-        //_skMesh.SetBlendShapeWeight(0);
+        float _val = _skMesh.GetBlendShapeWeight(0) + val;
+
+        _skMesh.SetBlendShapeWeight(0, _val);
     }
 }
