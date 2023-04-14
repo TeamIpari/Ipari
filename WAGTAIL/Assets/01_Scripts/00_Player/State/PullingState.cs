@@ -41,7 +41,7 @@ public class PullingState : State
         isPull = player.isPull;
         RopeHead = player.currentInteractable;
 
-        playerSpeed = player.playerSpeed;
+        playerSpeed = player.playerSpeed * 0.5f;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
     }
@@ -51,6 +51,7 @@ public class PullingState : State
 
         base.HandleInput();
         isPull = player.isPull;
+        float _val =0;
         //input = moveAction.ReadValue<Vector2>();
         // 3차원 공간에서는 y축(점프 제외)으로 이동하지 않기 때문에
         // 2차원에서의 이동 좌표에서 y축을 z축으로 사용함.
@@ -67,7 +68,7 @@ public class PullingState : State
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(input.y, 0, 0);
             Debug.Log(input.y);
-
+            _val = input.y;
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
@@ -77,6 +78,7 @@ public class PullingState : State
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(-input.y, 0, 0);
             Debug.Log(-input.y);
+            _val = -input.y;
 
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
@@ -86,6 +88,7 @@ public class PullingState : State
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(0, 0, -input.y);
             Debug.Log(-input.y);
+            _val = input.y;
 
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
@@ -95,12 +98,13 @@ public class PullingState : State
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(0, 0, input.y);
             Debug.Log(input.y);
+            _val = -input.y;
 
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
-
-
+        if(player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() < 90)
+            player.currentInteractable.GetComponent<Pulling>().SetMeshfloat(_val);
         //isPull = player.isPull;
 
     }
@@ -108,8 +112,10 @@ public class PullingState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
+
         //Debug.Log("State == Pulling");
-        if(!isPull)
+        if (!isPull)
         {
             stateMachine.ChangeState(player.drop);
         }
@@ -127,13 +133,18 @@ public class PullingState : State
         {
             gravityVelocity.y = 0f;
         }
-        float curSpeed = playerSpeed - (playerSpeed * player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() );     // 여기에 (n - 100 ) /   ; 퍼센트 계산
+        
+        float curSpeed = playerSpeed - (playerSpeed * player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() / 100 );     // 여기에 (n - 100 ) /   ; 퍼센트 계산
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
         player.controller.Move(currentVelocity * Time.deltaTime * curSpeed + gravityVelocity * Time.deltaTime);
+
+        if (player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() >= 90)
+        {
+            Debug.Log("aaaa");
+            player.isPull = false;
+        }
         //player.currentInteractable.GetComponent<Pulling>().;
         //Debug.Log(curSpeed);
-
-
 
         //if (RopeHead != null)
         //{
