@@ -44,6 +44,8 @@ public class PullingState : State
         playerSpeed = player.playerSpeed * 0.5f;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
+
+        player.animator.SetTrigger("pulling");
     }
 
     public override void HandleInput()
@@ -72,6 +74,7 @@ public class PullingState : State
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
+
         else if (player.transform.eulerAngles.y == 270)
         {
             //if((player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() > 0))
@@ -83,6 +86,7 @@ public class PullingState : State
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
+
         else if (player.transform.eulerAngles.y == 180)
         {
             input = pushZAxisAction.ReadValue<Vector2>();
@@ -93,16 +97,18 @@ public class PullingState : State
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
+
         else if (player.transform.eulerAngles.y == 0)
         {
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(0, 0, input.y);
-            Debug.Log(input.y);
+            //Debug.Log(input.y);
             _val = -input.y;
 
             //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
+
         if(player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() < 90)
             player.currentInteractable.GetComponent<Pulling>().SetMeshfloat(_val);
         //isPull = player.isPull;
@@ -117,7 +123,7 @@ public class PullingState : State
         //Debug.Log("State == Pulling");
         if (!isPull)
         {
-            stateMachine.ChangeState(player.drop);
+            stateMachine.ChangeState(player.pullOut);
         }
     }
 
@@ -140,9 +146,11 @@ public class PullingState : State
 
         if (player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() >= 90)
         {
-            Debug.Log("aaaa");
+            //Debug.Log("aaaa");
             player.isPull = false;
         }
+
+        /*
         //player.currentInteractable.GetComponent<Pulling>().;
         //Debug.Log(curSpeed);
 
@@ -170,6 +178,7 @@ public class PullingState : State
         //    //player.transform.rotation =
         //    //    Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity), player.rotationDampTime);
         //}
+        */
     }
 
     public int subtract()
@@ -183,7 +192,6 @@ public class PullingState : State
     public override void Exit()
     {
         base.Exit();
-
         //player.controller.height = player.normalColliderHeight;
         //player.controller.center = player.normalColliderCenter;
         //player.controller.radius = player.normalColliderRadius;

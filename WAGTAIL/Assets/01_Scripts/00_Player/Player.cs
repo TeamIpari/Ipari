@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
     public PickUpState pickup;
     public DropState drop;
     public PullingState pull;
+    public PullOutState pullOut;
 
     //============================================//
     // Move
@@ -89,6 +90,7 @@ public class Player : MonoBehaviour
         pickup = new PickUpState(this, movementSM);
         drop = new DropState(this, movementSM);
         pull = new PullingState(this, movementSM);
+        pullOut = new PullOutState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);

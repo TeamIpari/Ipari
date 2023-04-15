@@ -14,6 +14,8 @@ public class Throw : MonoBehaviour, IInteractable
     [SerializeField] float _yForce = 1.0f;
     [Range(0, 1)]
     [SerializeField] float _yAngle = 0.45f;
+    [Range(100, 500)]
+    [SerializeField] float _power = 100f;
 
     Vector3 _playerForwardTransform;
     Vector3 _nomalInteractionPoint;
@@ -34,7 +36,7 @@ public class Throw : MonoBehaviour, IInteractable
 
         else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
         {
-            Throwing(interactor);
+            StartCoroutine( Throwing(interactor));
             interactor.player.isCarry = false;
             return true;
         }
@@ -60,8 +62,11 @@ public class Throw : MonoBehaviour, IInteractable
         _playerInteractionPoint.transform.localPosition = _playerEquipPoint.transform.localPosition;
     }
 
-    public void Throwing(Interactor interactor)
+
+    public IEnumerator Throwing(Interactor interactor)
     {
+        yield return new WaitForSeconds(0.1f);
+        Debug.Log("Throw");
         // interactionPoint의 Position을 초기상태로 되돌림
         _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;
 
@@ -69,6 +74,7 @@ public class Throw : MonoBehaviour, IInteractable
         _playerEquipPoint.transform.DetachChildren();
 
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
+        //GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
         GetComponent<Rigidbody>().freezeRotation = false;
         GetComponent<Rigidbody>().useGravity = true;
 
@@ -77,7 +83,8 @@ public class Throw : MonoBehaviour, IInteractable
         _playerForwardTransform.x *= _force;
         _playerForwardTransform.y = _yForce * _yAngle;
         _playerForwardTransform.z *= _force;
+        Debug.Log(_playerForwardTransform);
 
-        GetComponent<Rigidbody>().AddForce(_playerForwardTransform);
+        GetComponent<Rigidbody>().AddForce(_playerForwardTransform * _power);
     }
 }
