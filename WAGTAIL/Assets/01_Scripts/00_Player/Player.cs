@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
     // 당기는데, 원점으로부터 멀어지면 멀어질 수록 최대 도달점과 비교하여
     // 퍼센테이지로 이동속도를 줄임.
     public bool isPull = false;
-    
+    public bool isLockOn = false;
     //============================================//
     // State
     public StateMachine movementSM;
@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
     public DropState drop;
     public PullingState pull;
     public PullOutState pullOut;
+    public LockOnState _lock;
 
     //============================================//
     // Move
@@ -69,6 +70,7 @@ public class Player : MonoBehaviour
     public Vector3 playerVelocity;
     [HideInInspector]
     public GameObject currentInteractable;
+
     
 
     private void Start()
@@ -91,6 +93,7 @@ public class Player : MonoBehaviour
         drop = new DropState(this, movementSM);
         pull = new PullingState(this, movementSM);
         pullOut = new PullOutState(this, movementSM);
+        _lock = new LockOnState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);

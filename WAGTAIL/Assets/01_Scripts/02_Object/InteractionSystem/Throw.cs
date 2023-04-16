@@ -36,7 +36,7 @@ public class Throw : MonoBehaviour, IInteractable
 
         else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
         {
-            StartCoroutine( Throwing(interactor));
+            Throwing(interactor);
             interactor.player.isCarry = false;
             return true;
         }
@@ -63,9 +63,9 @@ public class Throw : MonoBehaviour, IInteractable
     }
 
 
-    public IEnumerator Throwing(Interactor interactor)
+    public void Throwing(Interactor interactor)
     {
-        yield return new WaitForSeconds(0.1f);
+        //yield return new WaitForSeconds(0.1f);
         Debug.Log("Throw");
         // interactionPoint의 Position을 초기상태로 되돌림
         _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;

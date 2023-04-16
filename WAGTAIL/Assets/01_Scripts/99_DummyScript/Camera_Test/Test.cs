@@ -138,9 +138,9 @@ public class Test : MonoBehaviour
         float _value )
     {
 
-        Vector3 A = Vector3.Lerp(_p1, _p2, _value);
+        Vector3 A = Vector3.Lerp(_p1, _p3, _value);
 
-        Vector3 B = Vector3.Lerp(_p2, _p3, _value);
+        Vector3 B = Vector3.Lerp(_p3, _p3, _value);
 
         Vector3 C = Vector3.Lerp(_p3, _p4, _value);
 
