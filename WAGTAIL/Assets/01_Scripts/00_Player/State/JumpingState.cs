@@ -12,10 +12,10 @@ public class JumpingState : State
 
     Vector3 airVelocity;
 
-    public JumpingState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
+    public JumpingState(Player player, StateMachine stateMachine) : base(player, stateMachine)
     {
-        player = _player;
-        stateMachine = _stateMachine;
+        base.player = player;
+        base.stateMachine = stateMachine;
     }
 
     public override void Enter()

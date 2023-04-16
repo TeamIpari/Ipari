@@ -83,7 +83,7 @@ public class Throw : MonoBehaviour, IInteractable
         _playerForwardTransform.x *= _force;
         _playerForwardTransform.y = _yForce * _yAngle;
         _playerForwardTransform.z *= _force;
-        Debug.Log(_playerForwardTransform);
+        // Debug.Log(_playerForwardTransform);
 
         GetComponent<Rigidbody>().AddForce(_playerForwardTransform * _power);
     }
