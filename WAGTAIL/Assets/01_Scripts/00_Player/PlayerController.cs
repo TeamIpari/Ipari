@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
 
     public InputAction moveAction;
 
-
     private float _vAxis;
     private float _hAxis;
 
@@ -49,6 +48,7 @@ public class PlayerController : MonoBehaviour
         transform.position += _moveVec * _moveSpeed * Time.deltaTime;
 
         transform.LookAt(transform.position + _moveVec);
+
     }
 
     void Idle()

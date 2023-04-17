@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroyPlatform : MonoBehaviour
+public class DestroyPlatform : MonoBehaviour, IEnvironment
 {
     [Range(0.0f, 10.0f)]
     [Tooltip("파괴 시간")]
@@ -16,9 +16,17 @@ public class DestroyPlatform : MonoBehaviour
     public GameObject body;
     private bool _hit = false;
     private bool _alive = false;
+
+    private MeshRenderer _mesh;
+    private Collider _collider;
+
+    public string InteractionPrompt => throw new System.NotImplementedException();
+
     // Start is called before the first frame update
     void Start()
     {
+        _mesh = GetComponent<MeshRenderer>();
+        _collider = GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -43,20 +51,16 @@ public class DestroyPlatform : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Start");
-        if (!_hit && other.gameObject.tag == "Player")
-        {
-            // Destroy 사용 불가. 때문에 boolean값으로 체크를 함.
-            _hit = true;
-            StartCoroutine(HideComponent());
-        }
+
     }
 
     IEnumerator HideComponent()
     {
         yield return new WaitForSeconds(_destroyTime);
 
-        body.SetActive(false);
+        //body.SetActive(false);
+        _mesh.enabled = false;
+        _collider.enabled = false;
         //_alive = true;
         StartCoroutine(ShowComponent());
 
@@ -67,8 +71,22 @@ public class DestroyPlatform : MonoBehaviour
     {
         yield return new WaitForSeconds(_produceTime);
 
-        body.SetActive(true);
+        //body.SetActive(true);
+        _mesh.enabled = true;
+        _collider.enabled = true;
         //_alive = false;
         _hit = false;
+    }
+
+    public bool Interact()
+    {
+        if (!_hit)
+        {
+            _hit = true;
+            StartCoroutine(HideComponent());
+
+        }
+
+        return false;
     }
 }

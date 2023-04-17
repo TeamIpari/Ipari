@@ -7,6 +7,7 @@ public class BrokenDoorManager : MonoBehaviour, IInteractable
     [SerializeField] float destroyTime;
     [SerializeField] GameObject player;
     [SerializeField] float force;
+    //[SerializeField] bool 
 
     float time;
     Transform[] allChildren;

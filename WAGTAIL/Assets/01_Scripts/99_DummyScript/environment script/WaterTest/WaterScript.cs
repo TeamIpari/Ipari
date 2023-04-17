@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class WaterScript : MonoBehaviour
 {
-    
     public LayerMask _playerMask;
     [Header("수치값들")]
     [Tooltip("가해지는 힘")]
@@ -16,12 +15,12 @@ public class WaterScript : MonoBehaviour
     
 
     [Tooltip("")]
-    public float R; 
+    public float R;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(_playerMask.value);
         
     }
 
@@ -38,18 +37,17 @@ public class WaterScript : MonoBehaviour
         if(other.gameObject.tag == "Player")
         {
             Debug.Log("ABC");
-            other.GetComponent<CharacterController>()?.Move(new Vector3(_ForceX, 0, _ForceZ) * _vals
-                );
-
+            other.GetComponent<CharacterController>()?.Move(new Vector3(_ForceX, 0, _ForceZ) * _vals);
+            other.GetComponent<Player>().jumpHeight = 0.5f;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.tag == "Stone") // 임시 스크립트
+        if(other.gameObject.tag == "Player")
         {
-            // 들 수 없게 만들어야함 <- 보류
-
+            other.GetComponent<Player>().jumpHeight = 1.0f;
         }
     }
+
 }

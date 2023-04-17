@@ -10,6 +10,7 @@ public class LockOnState : State
 
     bool isGrounded; // 점프를 체크함.
     bool Lock;
+    bool _hand;
     float playerSpeed;
 
     [Range(10f, 50f)]
@@ -76,6 +77,7 @@ public override void HandleInput()
         }
     }
 
+    // 타겟 서치 기능
     public bool targetSearch()
     {
         // 플레이어가 바라보는 기준으로 원뿔형으로 서치를 시작.
@@ -88,7 +90,7 @@ public override void HandleInput()
         for (int i = 0; i < obj.Length; i++)
         {
             float targetRadian = Vector3.Dot(player.transform.forward,
-    (obj[i].transform.position - player.transform.position).normalized);
+                (obj[i].transform.position - player.transform.position).normalized);
 
             // 라디안 범위에 들어오면
             if (targetRadian > RadianRange)

@@ -117,4 +117,14 @@ public class Player : MonoBehaviour
     {
         movementSM.currentState.PhysicsUpdate();
     }
+
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(hit.gameObject.tag == "Enviroment")
+        {
+            hit.gameObject.GetComponent<IEnvironment>().Interact();
+        }
+    }
+
 }
