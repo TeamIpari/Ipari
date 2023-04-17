@@ -5,17 +5,9 @@ using UnityEngine.InputSystem;
 
 public class InteractionUIManager : MonoBehaviour
 {
-    [SerializeField] private Transform _interactionPoint;
-    [SerializeField] private float _interactionPointRadius = 1.0f;
-    [SerializeField] private LayerMask _interactableMask;
-    [SerializeField] private int _numFound;
-    [SerializeField] private GameObject _player; 
-    private readonly Collider[] _colliders = new Collider[1];
     private bool _isActive;
     private Animator _animator;
-
-    //private static int testAniHash = Animator.StringToHash("fadein");
-
+    [SerializeField] private Player _player;
 
     private void Start()
     {
@@ -24,37 +16,44 @@ public class InteractionUIManager : MonoBehaviour
         _animator.speed = 0f;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        interactionUI();
-    }
-
-    private void interactionUI()
-    {
-        _numFound = Physics.OverlapSphereNonAlloc(_interactionPoint.position, _interactionPointRadius, 
-            _colliders,_interactableMask);
-
-        if(_numFound > 0 && !_isActive)
+        if( _player.isCarry || _player.isPull || _player.isClimbing || _player.isPush)
         {
-            _isActive = true;
-            if (_animator.speed > 0f)
+            if(_isActive)
             {
-                _animator.SetTrigger("fadein");
+                _isActive = false;
+                _animator.SetTrigger("fadeout");
             }
-            _animator.speed = 1.0f;
-        }
-
-        else if(_numFound == 0 && _isActive)
-        {
-            _isActive = false;
-            _animator.SetTrigger("fadeout");
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnTriggerEnter(Collider other)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(_interactionPoint.position, _interactionPointRadius);
+        if (other.transform.tag == "Player")
+        {
+            if (!_isActive)
+            {
+                _isActive = true;
+                if (_animator.speed > 0f)
+                {
+                    _animator.SetTrigger("fadein");
+                }
+                _animator.speed = 1.0f;
+            }
+        }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.transform.tag == "Player")
+        {
+            if (_isActive)
+            {
+                _isActive = false;
+                _animator.SetTrigger("fadeout");
+            }
+        }
+    }
+
 }
