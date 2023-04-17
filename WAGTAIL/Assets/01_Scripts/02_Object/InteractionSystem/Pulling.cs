@@ -50,6 +50,11 @@ public class Pulling : MonoBehaviour, IInteractable
         return false;
     }
 
+    public void Drop()
+    {
+        _playerEquipPoint.transform.DetachChildren();
+    }
+
     public int GetMeshfloat()
     {
         int  a = 100 - (100 - (int)_skMesh.GetBlendShapeWeight(0));
