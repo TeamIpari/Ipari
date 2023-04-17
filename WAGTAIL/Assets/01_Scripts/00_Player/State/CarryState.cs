@@ -51,11 +51,13 @@ public class CarryState : State
         base.LogicUpdate();
 
         // TODO : animator 적용
+        player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
 
         if (!carry)
         {
             // 상태에 따른 state 변화 시켜주기
             // TODO : Drop 상태로 이동하기
+            
             stateMachine.ChangeState(player.drop);
         }
     }

@@ -19,7 +19,7 @@ public class LandingState : State
 
         timePassed = 0f;
         player.animator.SetTrigger("land");
-        landingTime = 0.2f;
+        landingTime = 0.1f;
     }
 
     public override void LogicUpdate()

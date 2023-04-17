@@ -27,6 +27,7 @@ public class IdleState : State
     {
         base.Enter();
 
+        player.isIdle = true;
         jump = false;
         climbing = player.isClimbing;
         push = player.isPush;
@@ -73,6 +74,7 @@ public class IdleState : State
 
         if (climbing)
         {
+            
             stateMachine.ChangeState(player.climbing);
         }
 
@@ -132,6 +134,7 @@ public class IdleState : State
     {
         base.Exit();
 
+        player.isIdle = false;
         gravityVelocity.y = 0f;
         player.playerVelocity = new Vector3(input.x, 0, input.y);
 

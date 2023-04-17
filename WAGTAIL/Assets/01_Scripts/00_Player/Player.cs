@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     public float airControl = 0.5f;
 
     [Header("Interaction")]
+    public bool isIdle = true;
     public bool isClimbing = false;
     public bool isPush = false;
     public bool isCarry = false;

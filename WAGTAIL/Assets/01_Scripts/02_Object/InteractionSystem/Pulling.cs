@@ -7,6 +7,8 @@ public class Pulling : MonoBehaviour, IInteractable
 {
     [SerializeField] private string _promt;
     [SerializeField] GameObject _playerEquipPoint;
+    [SerializeField] private GameObject _root;
+    [SerializeField] private GameObject _interactable;
 
     private float _vAxis;
     private float _hAxis;
@@ -53,6 +55,9 @@ public class Pulling : MonoBehaviour, IInteractable
     public void Drop()
     {
         _playerEquipPoint.transform.DetachChildren();
+        _interactable.GetComponent<IInteractable>().Interact(null);
+        Destroy(_root);
+        Destroy(this.gameObject);
     }
 
     public int GetMeshfloat()
