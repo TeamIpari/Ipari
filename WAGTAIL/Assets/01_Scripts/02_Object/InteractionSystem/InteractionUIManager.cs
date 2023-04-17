@@ -9,7 +9,7 @@ public class InteractionUIManager : MonoBehaviour
     [SerializeField] private float _interactionPointRadius = 1.0f;
     [SerializeField] private LayerMask _interactableMask;
     [SerializeField] private int _numFound;
-
+    [SerializeField] private GameObject _player; 
     private readonly Collider[] _colliders = new Collider[1];
     private bool _isActive;
     private Animator _animator;
