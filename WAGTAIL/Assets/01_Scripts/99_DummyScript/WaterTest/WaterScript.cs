@@ -33,7 +33,7 @@ public class WaterScript : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log(other.gameObject.layer);
+        //Debug.Log(other.gameObject.layer);
         // PlayerMask만 체크하여 이동을 시킴.
         if(other.gameObject.tag == "Player")
         {

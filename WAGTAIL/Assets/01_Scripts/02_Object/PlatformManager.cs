@@ -34,7 +34,9 @@ public class PlatformManager : MonoBehaviour
             TargetNextWayPoint();
         }
 
+
         this.transform.position = Vector3.Lerp(_prevWayPoint.position, _nextWayPoint.position, _currentTime / _time);
+
     }
 
     private void TargetNextWayPoint()
@@ -59,11 +61,13 @@ public class PlatformManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        other.transform.SetParent(transform);
+        if (other.CompareTag("Player"))
+            other.transform.SetParent(transform);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        other.transform.SetParent(null);
+        if (other.CompareTag("Player"))
+            other.transform.SetParent(null);
     }
 }
