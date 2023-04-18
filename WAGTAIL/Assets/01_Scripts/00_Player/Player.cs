@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.IMGUI.Controls;
+//using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -116,12 +116,12 @@ public class Player : MonoBehaviour
         movementSM.currentState.PhysicsUpdate();
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if(hit.gameObject.tag == "Platform" &&
-            !hit.gameObject.GetComponent<IEnviroment>()._hit)
-        {
-            hit.gameObject.GetComponent<IEnviroment>().Interact();
-        }
-    }
+    //private void OnControllerColliderHit(ControllerColliderHit hit)
+    //{
+    //    if(hit.gameObject.tag == "Platform" &&
+    //        !hit.gameObject.GetComponent<IEnviroment>()._hit)
+    //    {
+    //        hit.gameObject.GetComponent<IEnviroment>().Interact();
+    //    }
+    //}
 }
