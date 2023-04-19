@@ -30,17 +30,23 @@ public class WaterScript : MonoBehaviour
     {
 
     }
-
     private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Player")
+            other.GetComponent<Player>().jumpHeight = 0.2f;
+    }
+
+    private void OnTriggerStay(Collider other)
     {
         //Debug.Log(other.gameObject.layer);
         // PlayerMask만 체크하여 이동을 시킴.
         if(other.gameObject.tag == "Player")
         {
             //Debug.Log("ABC");
+            
             other.GetComponent<CharacterController>()?.Move(new Vector3(_ForceX, 0, _ForceZ) * _vals);
             defualtVal = other.GetComponent<Player>().jumpHeight;
-            other.GetComponent<Player>().jumpHeight = 0.2f;
+            
         }
     }
 
