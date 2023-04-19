@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        // GetComponets
+        // GetComponents
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
         playerInput = GetComponent<PlayerInput>();
