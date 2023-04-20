@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Throw : MonoBehaviour, IInteractable
@@ -26,7 +24,7 @@ public class Throw : MonoBehaviour, IInteractable
             interactor.player.movementSM.currentState == interactor.player.idle)
         {
             Pickup();
-            // isCarry¸¦ isThrow·Î ¹Ù²ãÁà¾ßÇÔ
+            // isCarryë¥¼ isThrowë¡œ ë°”ê¿”ì¤˜ì•¼í•¨
             interactor.player.isCarry = true;
             
             return true;
@@ -44,18 +42,18 @@ public class Throw : MonoBehaviour, IInteractable
 
     public void Pickup()
     {
-        // Object°¡ PlayerÀÇ ¸Ó¸® À§¿¡¼­ ¿òÁ÷ÀÌ´Â°É ¹æÁö
+        // Objectê°€ Playerì˜ ë¨¸ë¦¬ ìœ„ì—ì„œ ì›€ì§ì´ëŠ”ê±¸ ë°©ì§€
         GetComponent<Rigidbody>().useGravity = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().freezeRotation = true;
         GetComponent<Rigidbody>().isKinematic = false;
 
-        // Object¸¦ PlayerÀÇ ¸Ó¸® À§·Î ¿Å±è
+        // Objectë¥¼ Playerì˜ ë¨¸ë¦¬ ìœ„ë¡œ ì˜®ê¹€
         transform.SetParent(_playerEquipPoint.transform);
         transform.localPosition = Vector3.zero;
         transform.rotation = new Quaternion(0, 0, 0, 0);
 
-        // interactionPoint¸¦ ¸Ó¸® À§·Î ¿Å±è
+        // interactionPointë¥¼ ë¨¸ë¦¬ ìœ„ë¡œ ì˜®ê¹€
         _nomalInteractionPoint = _playerInteractionPoint.transform.localPosition;
         _playerInteractionPoint.transform.localPosition = _playerEquipPoint.transform.localPosition;
     }
@@ -64,17 +62,17 @@ public class Throw : MonoBehaviour, IInteractable
     public void Throwing(Interactor interactor)
     {
 
-        // interactionPointÀÇ PositionÀ» ÃÊ±â»óÅÂ·Î µÇµ¹¸²
+        // interactionPointì˜ Positionì„ ì´ˆê¸°ìƒíƒœë¡œ ë˜ëŒë¦¼
         _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;
 
-        // Object Á¾¼ÓÀ» Ç®¾îÁÜ
+        // Object ì¢…ì†ì„ í’€ì–´ì¤Œ
         _playerEquipPoint.transform.DetachChildren();
 
-        // ¸Ó¸® À§¿¡¼­ ¿òÁ÷ÀÌ´Â°É ¹æÁöÇÏ±â À§ÇÑ °Íµé ÇØÁ¦
+        // ë¨¸ë¦¬ ìœ„ì—ì„œ ì›€ì§ì´ëŠ”ê±¸ ë°©ì§€í•˜ê¸° ìœ„í•œ ê²ƒë“¤ í•´ì œ
         GetComponent<Rigidbody>().freezeRotation = false;
         GetComponent<Rigidbody>().useGravity = true;
 
-        // Á¤ÇÑ ¹æ½Ä´ë·Î ³¯¶ó°¨
+        // ì •í•œ ë°©ì‹ëŒ€ë¡œ ë‚ ë¼ê°
         _playerForwardTransform = interactor.player.transform.forward;
         _playerForwardTransform.x *= _force;
         _playerForwardTransform.y = _yForce * _yAngle;

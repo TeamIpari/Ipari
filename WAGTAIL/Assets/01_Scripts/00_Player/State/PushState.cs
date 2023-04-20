@@ -16,6 +16,8 @@ public class PushState : State
     Vector3 cVelocity;
 
     Vector3 objectPos;
+    private static readonly int Push1 = Animator.StringToHash("push");
+    private static readonly int Move = Animator.StringToHash("move");
 
     public PushState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -27,7 +29,7 @@ public class PushState : State
     {
         base.Enter();
 
-        player.animator.SetTrigger("push");
+        player.animator.SetTrigger(Push1);
 
         input = Vector2.zero;
         velocity = Vector3.zero;
@@ -36,9 +38,9 @@ public class PushState : State
         push = player.isPush;
 
         // ========================================= //
-        // TODO : ²ô´Â ¹°Ã¼ ¸¸Å­ collider Å©±â Á¶Á¤ ÇØÁà¾ßÇÔ
-        // player.controller.center = new Vector3(0,0,0); << ¼öÄ¡ Á¶Àý ÈÄ Àû¿ë
-        // player.controller.radius = 0; << ¼öÄ¡ Á¶Àý ÈÄ Àû¿ë
+        // TODO : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½Å­ collider Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // player.controller.center = new Vector3(0,0,0); << ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // player.controller.radius = 0; << ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         // ========================================= //
 
         playerSpeed = player.playerSpeed;
@@ -55,8 +57,8 @@ public class PushState : State
         gravityVelocity.y = 0f;
         player.playerVelocity = new Vector3(input.x, 0, input.y);
 
-        // TODO : ¾Ö´Ï¸ÞÀÌ¼Ç ¼¼ÆÃÇÏ±â Push To Idle
-        player.animator.SetTrigger("move");
+        // TODO : ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ Push To Idle
+        player.animator.SetTrigger(Move);
         // ========================================= //
     }
 
@@ -89,7 +91,7 @@ public class PushState : State
     {
         base.LogicUpdate();
 
-        // »ç´Ù¸®¿¡¼­ ³»·Á ¿ÔÀ» ¶§
+        // ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         if (!push)
         {
             stateMachine.ChangeState(player.idle);
@@ -102,14 +104,14 @@ public class PushState : State
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;
 
-        // ¹Ù´Ú°ú ´ê¾Æ ÀÖÀ» ¶§´Â Áß·Â Àû¿ë X
+        // ï¿½Ù´Ú°ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß·ï¿½ ï¿½ï¿½ï¿½ï¿½ X
         if (isGrounded && gravityVelocity.y < 0)
         {
             gravityVelocity.y = 0f;
         }
 
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-        player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
+        player.controller.Move(currentVelocity * (Time.deltaTime * playerSpeed) + gravityVelocity * Time.deltaTime);
 
         //if (velocity.sqrMagnitude > 0)
         //{
