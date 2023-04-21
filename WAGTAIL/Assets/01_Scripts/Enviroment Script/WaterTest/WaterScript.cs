@@ -32,8 +32,11 @@ public class WaterScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
+        {
+            defualtVal = other.GetComponent<Player>().jumpHeight;
             other.GetComponent<Player>().jumpHeight = 0.2f;
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -45,7 +48,7 @@ public class WaterScript : MonoBehaviour
             //Debug.Log("ABC");
             
             other.GetComponent<CharacterController>()?.Move(new Vector3(_ForceX, 0, _ForceZ) * _vals);
-            defualtVal = other.GetComponent<Player>().jumpHeight;
+ 
             
         }
     }
