@@ -77,6 +77,13 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public GameObject currentInteractable;
 
+    public Transform InteractionPoint;
+    public Transform EquipPoint;
+    public Transform ThrowEquipPoint;
+    public Transform LeftHand;
+    public Transform RightHand;
+
+
     private void Awake()
     {
         if (instance == null)

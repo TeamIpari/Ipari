@@ -14,13 +14,24 @@ public class Lift : MonoBehaviour
             {
                 
                 // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
-                Interactor inter = other.GetComponent<Interactor>();
-                inter.player.currentInteractable.GetComponent<SThrow>().endPos = this.transform;
-
-
-
             }
 
+        }
+        catch
+        {
+            Debug.Log("SThrow is notting");
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        try
+        {
+            if(other.gameObject.tag == "Player")
+            {
+                Interactor inter = other.GetComponent<Interactor>();
+                inter.player.currentInteractable.GetComponent<SThrow>().아_높이정해줘(this.transform);
+            }
         }
         catch
         {
@@ -35,8 +46,7 @@ public class Lift : MonoBehaviour
             if (other.gameObject.tag == "Player")
             {
                 Interactor inter = other.GetComponent<Interactor>();
-                inter.player.currentInteractable.GetComponent<SThrow>().endPos = null;
-
+                inter.player.currentInteractable.GetComponent<SThrow>().아_높이정해줘(null);
 
             }
         }

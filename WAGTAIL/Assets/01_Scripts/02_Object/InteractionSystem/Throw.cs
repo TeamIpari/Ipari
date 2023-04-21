@@ -82,4 +82,7 @@ public class Throw : MonoBehaviour, IInteractable
 
         GetComponent<Rigidbody>().AddForce(_playerForwardTransform );
     }
+
+
+
 }
