@@ -16,6 +16,8 @@ public class PushState : State
     Vector3 cVelocity;
 
     Vector3 objectPos;
+    private static readonly int Push1 = Animator.StringToHash("push");
+    private static readonly int Move = Animator.StringToHash("move");
 
     public PushState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -27,8 +29,7 @@ public class PushState : State
     {
         base.Enter();
 
-        AnimManager.Instance.AnimTrigger("push");
-        //player.animator.SetTrigger("push");
+        player.animator.SetTrigger(Push1);
 
         input = Vector2.zero;
         velocity = Vector3.zero;
@@ -37,9 +38,9 @@ public class PushState : State
         push = player.isPush;
 
         // ========================================= //
-        // TODO : ²ô´Â ¹°Ã¼ ¸¸Å­ collider Å©±â Á¶Á¤ ÇØÁà¾ßÇÔ
-        // player.controller.center = new Vector3(0,0,0); << ¼öÄ¡ Á¶Àý ÈÄ Àû¿ë
-        // player.controller.radius = 0; << ¼öÄ¡ Á¶Àý ÈÄ Àû¿ë
+        // TODO : å ì™ì˜™å ì™ì˜™ å ì™ì˜™ì²´ å ì™ì˜™í¼ collider í¬å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™å 
+        // player.controller.center = new Vector3(0,0,0); << å ì™ì˜™ì¹˜ å ì™ì˜™å ì™ì˜™ å ì™ì˜™ å ì™ì˜™å ì™ì˜™
+        // player.controller.radius = 0; << å ì™ì˜™ì¹˜ å ì™ì˜™å ì™ì˜™ å ì™ì˜™ å ì™ì˜™å ì™ì˜™
         // ========================================= //
 
         playerSpeed = player.playerSpeed;
@@ -56,9 +57,8 @@ public class PushState : State
         gravityVelocity.y = 0f;
         player.playerVelocity = new Vector3(input.x, 0, input.y);
 
-        // TODO : ¾Ö´Ï¸ÞÀÌ¼Ç ¼¼ÆÃÇÏ±â Push To Idle
-        AnimManager.Instance.AnimTrigger("move");
-        //player.animator.SetTrigger("move");
+        // TODO : å ìŒë‹ˆëªŒì˜™å ì‹±ì‡½ì˜™ å ì™ì˜™å ì™ì˜™å ì‹¹ê¹ì˜™ Push To Idle
+        player.animator.SetTrigger(Move);
         // ========================================= //
     }
 
@@ -91,7 +91,7 @@ public class PushState : State
     {
         base.LogicUpdate();
 
-        // »ç´Ù¸®¿¡¼­ ³»·Á ¿ÔÀ» ¶§
+        // å ì™ì˜™æ‘¸å ì™ì˜™å ì™ì˜™å  å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™
         if (!push)
         {
             stateMachine.ChangeState(player.idle);
@@ -104,14 +104,14 @@ public class PushState : State
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;
 
-        // ¹Ù´Ú°ú ´ê¾Æ ÀÖÀ» ¶§´Â Áß·Â Àû¿ë X
+        // å ìŒ•ë‹¥ê³¤ì˜™ å ì™ì˜™å  å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ìŒ©ë¤„ì˜™ å ì™ì˜™å ì™ì˜™ X
         if (isGrounded && gravityVelocity.y < 0)
         {
             gravityVelocity.y = 0f;
         }
 
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-        player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
+        player.controller.Move(currentVelocity * (Time.deltaTime * playerSpeed) + gravityVelocity * Time.deltaTime);
 
         //if (velocity.sqrMagnitude > 0)
         //{
