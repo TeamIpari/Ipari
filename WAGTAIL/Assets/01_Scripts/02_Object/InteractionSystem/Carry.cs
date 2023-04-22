@@ -10,6 +10,10 @@ public class Carry : MonoBehaviour, IInteractable
 
 
     public string InteractionPrompt => _promt;
+    private void Start()
+    {
+        _playerEquipPoint = Player.Instance.EquipPoint.gameObject;
+    }
 
     public bool Interact(Interactor interactor)
     {

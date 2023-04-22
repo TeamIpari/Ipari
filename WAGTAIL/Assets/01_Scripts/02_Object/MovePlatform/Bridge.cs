@@ -1,50 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Lift : MonoBehaviour
+public class Bridge : MonoBehaviour
 {
-    [SerializeField] List<Transform> _hitPoint = new List<Transform>();
-    [SerializeField] float gravity;
-    [SerializeField] float addGravity;
-    [SerializeField] private Vector3 targetPos;
-
-    private float speed = 1.0f;
-    private void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        targetPos = transform.position;    
+        
     }
 
-
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        if(transform.childCount > 0)
-            transform.position += Vector3.down * ((gravity * Time.deltaTime) / 2);
-
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        try
-        {
-            if (other.gameObject.tag == "Player")
-            {
-                
-                // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
-            }
-
-        }
-        catch
-        {
-            Debug.Log("SThrow is notting");
-        }
+        
     }
 
     private void OnTriggerStay(Collider other)
     {
         try
         {
-            if(other.gameObject.tag == "Player")
+            if (other.gameObject.tag == "Player")
             {
                 Interactor inter = other.GetComponent<Interactor>();
                 inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(this.transform);
@@ -56,10 +32,28 @@ public class Lift : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        try
+        {
+            if (other.gameObject.tag == "Player")
+            {
+
+                // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
+            }
+
+        }
+        catch
+        {
+            Debug.Log("SThrow is notting");
+        }
+    }
+
+
     private void OnTriggerExit(Collider other)
     {
         try
-        { 
+        {
             if (other.gameObject.tag == "Player")
             {
                 Interactor inter = other.GetComponent<Interactor>();
@@ -82,11 +76,14 @@ public class Lift : MonoBehaviour
             {
                 collision.gameObject.GetComponent<SThrow>().Throwing();
                 collision.gameObject.transform.parent = this.transform;
+
+                StartCoroutine(GravityCall());
                 //targetPos += Vector3.down * addGravity;
-                if(transform.childCount < 3)
-                {
-                    gravity += addGravity;
-                }
+                //if (transform.childCount < 3)
+                //{
+                //    gravity += addGravity;
+                //collision.gameObject.GetComponent<Rigidbody>().velocity;
+                //}
                 //transform.RotateAround();
 
             }
@@ -98,10 +95,12 @@ public class Lift : MonoBehaviour
         }
     }
 
-
-    private Vector3 getPosition()
+    IEnumerator GravityCall()
     {
-        return transform.position;
+        yield return new WaitForSeconds(1f);
+
+        gameObject.GetComponent<Rigidbody>().isKinematic = false;
+
     }
 
 }

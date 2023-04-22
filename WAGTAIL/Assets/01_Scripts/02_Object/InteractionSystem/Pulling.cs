@@ -24,6 +24,11 @@ public class Pulling : MonoBehaviour, IInteractable
 
     public int value = 0;
 
+    private void Start()
+    {
+        _playerEquipPoint = Player.Instance.EquipPoint.gameObject;
+    }
+
     public bool Interact(Interactor interactor)
     {
         if (interactor.player.movementSM.currentState == interactor.player.idle)
