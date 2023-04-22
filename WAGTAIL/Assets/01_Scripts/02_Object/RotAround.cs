@@ -16,9 +16,9 @@ public class RotAround : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.childCount > 0 && transform.rotation.z > 0)
+        if (transform.childCount > 0 && transform.localRotation.z > 0)
         {
-            this.transform.RotateAround(tf.position, Vector3.back, (gravity * Time.deltaTime));
+            this.transform.RotateAround(tf.localPosition, Vector3.back, (gravity * Time.deltaTime));
 
         }
     }

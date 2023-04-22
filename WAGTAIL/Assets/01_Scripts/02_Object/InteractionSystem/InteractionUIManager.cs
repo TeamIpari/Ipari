@@ -8,7 +8,7 @@ public class InteractionUIManager : MonoBehaviour
 {
     private bool _isActive;
     private Animator _animator;
-    [FormerlySerializedAs("_player")] [SerializeField] private Player player;
+    [SerializeField] private Player player;
     private static readonly int Fadein = Animator.StringToHash("fadein");
     private static readonly int Fadeout = Animator.StringToHash("fadeout");
 
