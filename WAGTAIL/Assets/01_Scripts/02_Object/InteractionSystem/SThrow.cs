@@ -18,7 +18,7 @@ public class SThrow : MonoBehaviour, IInteractable
     Transform startPos;
     // 끝 지점. (타겟)
     // A to B 지점으로 미리 지정을 해 놓을 것인가?
-    public Transform endPos;
+    Transform endPos;
     // 꺾이는 지점. 
     GameObject heightPos;
 
@@ -27,6 +27,15 @@ public class SThrow : MonoBehaviour, IInteractable
 
     Vector3 _playerForwardTransform;
     Vector3 _nomalInteractionPoint;
+
+    [Header("정점 위치")]
+    [Range(1f, 5f)]
+    [Tooltip("꺾이는 위치를 지정해줌")]
+    public float _pointHeight = 3.5f;
+    [Range(0.0f,1f )]
+    public float _pointPersent = 0.8f;
+    [Range(5, 10)]
+    public float speed = 1.0f;
 
     private void Start()
     {
@@ -40,8 +49,8 @@ public class SThrow : MonoBehaviour, IInteractable
         if (flying)
         {
             //날아간다();
-            transform.position = 날아간다();
-            _value += 0.005f;
+            transform.position = BezierCurve();
+            _value += speed * 0.001f;
             flying = _value < 1.0f ? true : false;
         }
     }
@@ -56,13 +65,13 @@ public class SThrow : MonoBehaviour, IInteractable
 
             return true;
         }
-        else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
-        {
-            //if(interactor.)
-            Throwing(interactor);
-            //interactor.player.isSmallThrow = false;
-            interactor.player.isCarry = false;
-        }
+        //else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
+        //{
+        //    //if(interactor.)
+        //    Throwing(interactor);
+        //    //interactor.player.isSmallThrow = false;
+        //    interactor.player.isCarry = false;
+        //}
 
 
         return false;
@@ -72,7 +81,7 @@ public class SThrow : MonoBehaviour, IInteractable
     {
         // 
         GetComponent<Rigidbody>().useGravity = false;
-        GetComponent<Rigidbody>().isKinematic = false;
+        GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().freezeRotation = true;
 
@@ -89,8 +98,13 @@ public class SThrow : MonoBehaviour, IInteractable
         // interactionPoint의 Position을 초기상태로 되돌림
         _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;
         _playerRightHand.transform.DetachChildren();
-        //Player.Instance.currentInteractable = null;
-        
+        Player.Instance.currentInteractable = null;
+
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Rigidbody>().isKinematic = false;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().freezeRotation = true;
+
         // 던지기 스타트
         //Debug.Log("나, 던진다!");
         // Object 종속을 풀어줌
@@ -107,7 +121,7 @@ public class SThrow : MonoBehaviour, IInteractable
         
     }
 
-    Vector3 날아간다()
+    Vector3 BezierCurve()
     {
         Vector3 A = Vector3.Lerp(startPos.position, heightPos.transform.position, _value);
 
@@ -118,21 +132,22 @@ public class SThrow : MonoBehaviour, IInteractable
         return C;
     }
 
-    public void 던지고싶다싯펄()
+    public void Throwing()
     {
         flying = flying == true ? false : true;
+
     }
 
-    public void 아_높이정해줘(Transform tf)
+    public void SetPosHeight(Transform tf)
     {
         endPos = tf;
         if(endPos != null && !flying)
         {
-            높이를_구해줄게();
+            GetHieght();
         }
     }
 
-    public Transform 높이를_구해줄게()
+    public Transform GetHieght()
     {
         Vector3 dir = endPos.position - startPos.position;
         //Debug.Log(dir);
@@ -143,7 +158,7 @@ public class SThrow : MonoBehaviour, IInteractable
         
         //Vector3.Distance(endPos.position, startPos.position)
 
-        Vector3 _vec = transform.position + (transform.forward * (Vector3.Distance(endPos.position, startPos.position) * .8f));    // 퍼센티지로 계산.
+        Vector3 _vec = transform.position + (transform.forward * (Vector3.Distance(endPos.position, startPos.position) * _pointPersent));    // 퍼센티지로 계산.
 
         if(heightPos == null)
         {
@@ -151,8 +166,15 @@ public class SThrow : MonoBehaviour, IInteractable
         }
         //heightPos.transform.position = ;
         heightPos.transform.rotation = q;
-        heightPos.transform.position = _vec + heightPos.transform.up * 3.5f;
+        heightPos.transform.position = _vec + Vector3.up * _pointHeight;
 
         return heightPos.transform;
+    }
+
+    public bool AnimEvent()
+    {
+        Throwing();
+        Player.Instance.isCarry = false;
+        return false;
     }
 }

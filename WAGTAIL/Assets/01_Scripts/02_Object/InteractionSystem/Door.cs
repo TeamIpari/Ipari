@@ -9,6 +9,11 @@ public class Door : MonoBehaviour, IInteractable
 
     public string InteractionPrompt => _promt;
 
+    public bool AnimEvent()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public bool Interact(Interactor interactor)
     {
         // 예외 처리 하기

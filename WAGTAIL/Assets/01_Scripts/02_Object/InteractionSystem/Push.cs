@@ -44,4 +44,9 @@ public class Push : MonoBehaviour, IInteractable
 
         return false;
     }
+
+    public bool AnimEvent()
+    {
+        throw new System.NotImplementedException();
+    }
 }
