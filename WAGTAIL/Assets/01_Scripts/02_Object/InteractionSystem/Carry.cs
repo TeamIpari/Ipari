@@ -54,4 +54,9 @@ public class Carry : MonoBehaviour, IInteractable
         _playerEquipPoint.transform.DetachChildren();
     }
 
+    public bool AnimEvent()
+    {
+        return false;
+    }
+
 }
