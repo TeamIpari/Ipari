@@ -1,21 +1,19 @@
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ClimbingState : State
 {
-    float playerSpeed;
-    bool isGrounded;
-    //float gravityValue;
-    Vector3 currentVelocity;
-    Vector3 cVelocity;
-    GameObject ladder;
-    float ladderHeight;
-    float playerHeight;
-
-    // TODO : »ç´Ù¸® ³¡ ¿Ã¶ó°£°Å Ã¼Å©ÇÏ±â
-    public bool isTop;
+    private float _playerSpeed;
+    private bool _isGrounded;
+    private Vector3 _currentVelocity;
+    private Vector3 _cVelocity;
+    private GameObject _ladder;
+    private float _ladderHeight;
+    private float _playerHeight;
+    
+    private bool _isTop;
+    private static readonly int Climbing = Animator.StringToHash("climbing");
+    private static readonly int Move = Animator.StringToHash("move");
 
     public ClimbingState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -23,24 +21,26 @@ public class ClimbingState : State
         stateMachine = _stateMachine;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public override void Enter()
     {
         base.Enter();
 
-        isTop = false;
-        // ¾Ö´Ï¸ŞÀÌ¼Ç ¼¼ÆÃ
-        // player.animator.SetTrigger("climing");
+        _isTop = false;
+        // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+        player.animator.SetTrigger(Climbing);
         gravityVelocity.y = 0;
-        ladder = player.currentInteractable;
-        ladderHeight = CalcHeight(ladder) + 1;
-        playerHeight = 0f;
+        _ladder = player.currentInteractable;
+        _ladderHeight = CalcHeight(_ladder);
+        _playerHeight = 0f;
 
-        // TODO : ¿À¸£´Â ¼Óµµ ³»·Á°¡´Â ¼Óµµ Á¶ÀıÇØ¾ßµÊ
-        playerSpeed = player.playerSpeed;
-        isGrounded = player.controller.isGrounded;
+        // TODO : ì˜¬ë¼ê°€ëŠ” ì†ë„ Inspectorì— ë¹¼ì•¼í•¨
+        _playerSpeed = player.playerSpeed;
+        _isGrounded = player.controller.isGrounded;
         //gravityValue = player.gravityValue;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public override void HandleInput()
     {
         base.HandleInput();
@@ -48,48 +48,43 @@ public class ClimbingState : State
         input = climbingAction.ReadValue<Vector2>();
         velocity = new Vector3(0, input.y, 0);
 
-        if (playerHeight >= ladderHeight)
-        {
-            isTop = true;
-        }
+        if (!(_playerHeight >= _ladderHeight) || _isTop) return;
+        _isTop = true;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public override void LogicUpdate()
     {
         base.LogicUpdate();
 
-        // »ç´Ù¸®¿¡¼­ ³»·Á ¿ÔÀ» ¶§
-        if (isGrounded && input.y < 0) 
+        if (_isGrounded && input.y < 0) 
         {
             player.isClimbing = false;
             stateMachine.ChangeState(player.idle);
         }
 
-        // »ç´Ù¸® ³¡¿¡ ¿Ã¶ó °¬À» ¶§
-        if (isTop && input.y > 0)
-        {
-            player.isClimbing = false;
-            stateMachine.ChangeState(player.idle);
-        }
+        if (!_isTop || !(input.y > 0)) return;
+        
+        player.isClimbing = false;
+        stateMachine.ChangeState(player.idle);
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public override void PhysicsUpdate()
     {
-
         base.PhysicsUpdate();
 
-        isGrounded = player.controller.isGrounded;
+        _isGrounded = player.controller.isGrounded;
 
-        if (isGrounded && gravityVelocity.y < 0)
+        if (_isGrounded && gravityVelocity.y < 0)
         {
             gravityVelocity.y = 0f;
         }
 
-        currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-        player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
-        playerHeight = player.transform.position.y;
+        _currentVelocity = Vector3.SmoothDamp(_currentVelocity, velocity, ref _cVelocity, player.velocityDampTime);
+        player.controller.Move(_currentVelocity * (Time.deltaTime * _playerSpeed) + gravityVelocity * Time.deltaTime);
+        _playerHeight = player.transform.position.y;
 
-        // TODO : »ç´Ù¸® ³»·Á °¥¶§ ¼Óµµ Áõ°¡
     }
 
     public override void Exit()
@@ -98,29 +93,16 @@ public class ClimbingState : State
 
         gravityVelocity.y = 0f;
         player.playerVelocity = new Vector3(input.x, 0, input.y);
-        currentVelocity = new Vector3(0, 0, 0);
-        //player.animator.SetTrigger("move");
+        _currentVelocity = new Vector3(0, 0, 0);
+        player.animator.SetTrigger(Move);
     }
 
-    // ³ôÀÌ °è»ê
-    public float CalcHeight(GameObject _calcTarget)
+    private float CalcHeight(GameObject calcTarget)
     {
-        float _height = 0f;
+        MeshFilter mf = calcTarget.GetComponent<MeshFilter>();
 
-        MeshFilter _mf = _calcTarget.GetComponent<MeshFilter>();
+        Vector3[] vertices = mf.mesh.vertices;
 
-        Vector3[] _vertices = _mf.mesh.vertices;
-
-        foreach (var _vertice in _vertices)
-        {
-            Vector3 _pos = ladder.transform.TransformPoint(_vertice);
-
-            if(_pos.y > _height)
-            {
-                _height = _pos.y;
-            }
-        }
-
-        return _height;
+        return vertices.Select(vertical => _ladder.transform.TransformPoint(vertical)).Select(pos => pos.y).Prepend(0f).Max();
     }
 }
