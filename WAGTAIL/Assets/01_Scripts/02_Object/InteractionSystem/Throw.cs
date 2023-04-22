@@ -19,6 +19,10 @@ public class Throw : MonoBehaviour, IInteractable
     Vector3 _nomalInteractionPoint;
     public string InteractionPrompt => _promt;
 
+    public bool AnimEvent()
+    {
+        throw new System.NotImplementedException();
+    }
 
     public bool Interact(Interactor interactor)
     {

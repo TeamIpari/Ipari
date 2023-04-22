@@ -6,6 +6,23 @@ using UnityEngine;
 public class Lift : MonoBehaviour
 {
     [SerializeField] List<Transform> _hitPoint = new List<Transform>();
+    [SerializeField] float gravity;
+    [SerializeField] float addGravity;
+    [SerializeField] private Vector3 targetPos;
+
+    private float speed = 1.0f;
+    private void Start()
+    {
+        targetPos = transform.position;    
+    }
+
+
+    private void Update()
+    {
+        if(transform.childCount > 0)
+            transform.position += Vector3.down * ((gravity * Time.deltaTime) / 2);
+
+    }
     private void OnTriggerEnter(Collider other)
     {
         try
@@ -30,7 +47,7 @@ public class Lift : MonoBehaviour
             if(other.gameObject.tag == "Player")
             {
                 Interactor inter = other.GetComponent<Interactor>();
-                inter.player.currentInteractable.GetComponent<SThrow>().아_높이정해줘(this.transform);
+                inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(this.transform);
             }
         }
         catch
@@ -46,7 +63,7 @@ public class Lift : MonoBehaviour
             if (other.gameObject.tag == "Player")
             {
                 Interactor inter = other.GetComponent<Interactor>();
-                inter.player.currentInteractable.GetComponent<SThrow>().아_높이정해줘(null);
+                inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(null);
 
             }
         }
@@ -58,9 +75,28 @@ public class Lift : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-       // 탄환이 적중하였을 때... 움직임을 정지하고 tag를 변경, 시킬 예정.
-        
+        try
+        {
+            // 탄환이 적중하였을 때... 움직임을 정지하고 tag를 변경, 시킬 예정.
+            if (collision.gameObject.tag == "interactable")
+            {
+                collision.gameObject.GetComponent<SThrow>().Throwing();
+                collision.gameObject.transform.parent = this.transform;
+                //targetPos += Vector3.down * addGravity;
+                if(transform.childCount < 3)
+                {
+                    gravity += addGravity;
+                }
+
+            }
+
+        }
+        catch
+        {
+            Debug.Log("AA");
+        }
     }
+
 
     private Vector3 getPosition()
     {

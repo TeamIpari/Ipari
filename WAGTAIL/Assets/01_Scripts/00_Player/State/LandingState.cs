@@ -18,7 +18,8 @@ public class LandingState : State
         base.Enter();
 
         timePassed = 0f;
-        player.animator.SetTrigger("land");
+        AnimManager.Instance.AnimTrigger("land");
+        //player.animator.SetTrigger("land");
         landingTime = 0.1f;
     }
 
@@ -29,7 +30,8 @@ public class LandingState : State
         if (timePassed > landingTime)
         {
             // TODO : Animator Setting //
-            player.animator.SetTrigger("move");
+            AnimManager.Instance.AnimTrigger("move");
+            //player.animator.SetTrigger("move");
             stateMachine.ChangeState(player.idle);
         }
         timePassed += Time.deltaTime;
