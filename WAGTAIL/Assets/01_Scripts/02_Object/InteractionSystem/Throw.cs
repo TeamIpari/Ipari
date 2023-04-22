@@ -61,7 +61,6 @@ public class Throw : MonoBehaviour, IInteractable
 
     public void Throwing(Interactor interactor)
     {
-
         // interactionPoint의 Position을 초기상태로 되돌림
         _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;
 
@@ -80,4 +79,6 @@ public class Throw : MonoBehaviour, IInteractable
 
         GetComponent<Rigidbody>().AddForce(_playerForwardTransform );
     }
+    
+    
 }
