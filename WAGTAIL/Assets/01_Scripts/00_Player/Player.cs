@@ -81,6 +81,7 @@ public class Player : MonoBehaviour
     public Transform EquipPoint;
     public Transform ThrowEquipPoint;
     public Transform LeftHand;
+    public Transform RightHandPoint;
     public Transform RightHand;
 
 

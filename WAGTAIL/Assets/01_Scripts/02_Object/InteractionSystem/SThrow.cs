@@ -42,6 +42,9 @@ public class SThrow : MonoBehaviour, IInteractable
         //_playerForwardTransform = Player.Instance
         startPos = Player.Instance.transform;
         flying = false;
+        _playerEquipPoint = Player.Instance.RightHandPoint.gameObject;
+        _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
+        _playerRightHand = Player.Instance.RightHand.gameObject;
     }
 
     private void Update()
@@ -106,7 +109,6 @@ public class SThrow : MonoBehaviour, IInteractable
         GetComponent<Rigidbody>().freezeRotation = true;
 
         // 던지기 스타트
-        //Debug.Log("나, 던진다!");
         // Object 종속을 풀어줌
 
     }
@@ -135,7 +137,7 @@ public class SThrow : MonoBehaviour, IInteractable
     public void Throwing()
     {
         flying = flying == true ? false : true;
-
+        //Destroy(heightPos.gameObject);
     }
 
     public void SetPosHeight(Transform tf)
@@ -150,21 +152,18 @@ public class SThrow : MonoBehaviour, IInteractable
     public Transform GetHieght()
     {
         Vector3 dir = endPos.position - startPos.position;
-        //Debug.Log(dir);
 
         Quaternion q = Quaternion.LookRotation(dir);
 
         transform.rotation = q;
         
-        //Vector3.Distance(endPos.position, startPos.position)
-
         Vector3 _vec = transform.position + (transform.forward * (Vector3.Distance(endPos.position, startPos.position) * _pointPersent));    // 퍼센티지로 계산.
 
         if(heightPos == null)
         {
             heightPos = new GameObject("name");
         }
-        // heightPos.transform.position = ;
+
         heightPos.transform.rotation = q;
         heightPos.transform.position = _vec + Vector3.up * _pointHeight;
 
