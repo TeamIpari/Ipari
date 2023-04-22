@@ -33,16 +33,14 @@ public class PickUpState : State
         //smallThrow = player.isSmallThrow;
         if (!/*smallThrow*/false)
         {
-            AnimManager.Instance.AnimTrigger("pickup");
-            //player.animator.SetTrigger("pickup");
+            player.animator.SetTrigger("pickup");
             animStr = "carry";
             pickUpTime = 1.5f;
         }
         else
         {
             Debug.Log("SmallThrow");
-            AnimManager.Instance.AnimTrigger("pickup");
-            //player.animator.SetTrigger("pickup"); // 작은 오브젝트 줍는 애니메이션
+            player.animator.SetTrigger("pickup"); // 작은 오브젝트 줍는 애니메이션
             animStr = "carry";  // 작은 오브젝트 들고 있는 애니메이션
             pickUpTime = 1.5f;  // 작은 오브젝트 줍는 anim 시간.
         }
@@ -57,10 +55,9 @@ public class PickUpState : State
         if (timePassed > pickUpTime)
         {
             // 추가 스크립트
-            AnimManager.Instance.AnimTrigger(animStr);
-            //player.animator.SetTrigger(animStr);
+            player.animator.SetTrigger(animStr);
             //player.animator.SetTrigger("carry");
-            
+
             stateMachine.ChangeState(player.carry);
         }
         timePassed += Time.deltaTime;
