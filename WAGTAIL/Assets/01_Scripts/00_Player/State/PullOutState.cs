@@ -18,8 +18,8 @@ public class PullOutState : State
         base.Enter();
 
         timePassed = 0f;
-        AnimManager.Instance.AnimTrigger("pullout");
-        //player.animator.SetTrigger("pullout");
+
+        player.animator.SetTrigger("pullout");
         player.currentInteractable.GetComponent<Pulling>().Drop();
         // TODO : 물건 내려놓는 시간 애니메이터와 상의 후 정하기
         // !!! dropTime 반드시 수정해야함 !!! 
@@ -32,8 +32,7 @@ public class PullOutState : State
 
         if (timePassed > dropTime)
         {
-            AnimManager.Instance.AnimTrigger("move");
-            //player.animator.SetTrigger("move");
+            player.animator.SetTrigger("move");
             stateMachine.ChangeState(player.idle);
         }
         timePassed += Time.deltaTime;

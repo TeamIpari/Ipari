@@ -65,13 +65,13 @@ public class SThrow : MonoBehaviour, IInteractable
 
             return true;
         }
-        //else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
-        //{
-        //    //if(interactor.)
-        //    Throwing(interactor);
-        //    //interactor.player.isSmallThrow = false;
-        //    interactor.player.isCarry = false;
-        //}
+        else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
+        {
+            //if(interactor.)
+            Throwing(interactor);
+            //interactor.player.isSmallThrow = false;
+            interactor.player.isCarry = false;
+        }
 
 
         return false;
@@ -164,7 +164,7 @@ public class SThrow : MonoBehaviour, IInteractable
         {
             heightPos = new GameObject("name");
         }
-        //heightPos.transform.position = ;
+        // heightPos.transform.position = ;
         heightPos.transform.rotation = q;
         heightPos.transform.position = _vec + Vector3.up * _pointHeight;
 

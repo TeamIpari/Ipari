@@ -44,8 +44,7 @@ public class PullingState : State
         playerSpeed = player.playerSpeed * 0.5f;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
-        AnimManager.Instance.AnimTrigger("pulling");
-        //player.animator.SetTrigger("pulling");
+        player.animator.SetTrigger("pulling");
     }
 
     public override void HandleInput()

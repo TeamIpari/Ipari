@@ -1,42 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Lift : MonoBehaviour
+public class RotAround : MonoBehaviour
 {
-    [SerializeField] List<Transform> _hitPoint = new List<Transform>();
-    [SerializeField] float gravity;
-    [SerializeField] float addGravity;
-    [SerializeField] private Vector3 targetPos;
-
-    private float speed = 1.0f;
-    private void Start()
+    public Transform tf;
+    public float gravity = 1.0f;
+    public float addGravity = .5f;
+    // Start is called before the first frame update
+    void Start()
     {
-        targetPos = transform.position;    
+        
     }
 
-
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        if(transform.childCount > 0)
-            transform.position += Vector3.down * ((gravity * Time.deltaTime) / 2);
-
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        try
+        if (transform.childCount > 0 && transform.rotation.z > 0)
         {
-            if (other.gameObject.tag == "Player")
-            {
-                
-                // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
-            }
+            this.transform.RotateAround(tf.position, Vector3.back, (gravity * Time.deltaTime));
 
-        }
-        catch
-        {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -44,7 +27,7 @@ public class Lift : MonoBehaviour
     {
         try
         {
-            if(other.gameObject.tag == "Player")
+            if (other.gameObject.tag == "Player")
             {
                 Interactor inter = other.GetComponent<Interactor>();
                 inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(this.transform);
@@ -56,10 +39,28 @@ public class Lift : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        try
+        {
+            if (other.gameObject.tag == "Player")
+            {
+
+                // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
+            }
+
+        }
+        catch
+        {
+            Debug.Log("SThrow is notting");
+        }
+    }
+
+
     private void OnTriggerExit(Collider other)
     {
         try
-        { 
+        {
             if (other.gameObject.tag == "Player")
             {
                 Interactor inter = other.GetComponent<Interactor>();
@@ -83,7 +84,7 @@ public class Lift : MonoBehaviour
                 collision.gameObject.GetComponent<SThrow>().Throwing();
                 collision.gameObject.transform.parent = this.transform;
                 //targetPos += Vector3.down * addGravity;
-                if(transform.childCount < 3)
+                if (transform.childCount < 3)
                 {
                     gravity += addGravity;
                 }
@@ -96,12 +97,6 @@ public class Lift : MonoBehaviour
         {
             Debug.Log("AA");
         }
-    }
-
-
-    private Vector3 getPosition()
-    {
-        return transform.position;
     }
 
 }

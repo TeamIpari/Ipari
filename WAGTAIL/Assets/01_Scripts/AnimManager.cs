@@ -23,25 +23,25 @@ public class AnimManager
     }
 
     #region AnimProperty
-    public void AnimTrigger( string _tName)
-    {
-        anim.SetTrigger(_tName);
-    }
+    //public void AnimTrigger( string _tName)
+    //{
+    //    anim.SetTrigger(_tName);
+    //}
 
-    public void AnimBoolean(string _bName, bool _b = true)
-    {
-        anim.SetBool(_bName, _b);
-    }
+    //public void AnimBoolean(string _bName, bool _b = true)
+    //{
+    //    anim.SetBool(_bName, _b);
+    //}
 
-    public void AnimFloat(string _fName, float _f =1.0f)
-    {
-        anim.SetFloat(_fName, _f);
-    }
+    //public void AnimFloat(string _fName, float _f =1.0f)
+    //{
+    //    anim.SetFloat(_fName, _f);
+    //}
 
-    public void AnimInt(string _iName, int _i = 0)
-    {
-        anim.SetInteger(_iName, _i);
-    }
+    //public void AnimInt(string _iName, int _i = 0)
+    //{
+    //    anim.SetInteger(_iName, _i);
+    //}
     #endregion
 
     // Update is called once per frame
