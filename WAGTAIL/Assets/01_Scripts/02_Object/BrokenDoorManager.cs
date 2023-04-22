@@ -55,4 +55,9 @@ public class BrokenDoorManager : MonoBehaviour, IInteractable
         }
         isBoom = true;
     }
+
+    public bool AnimEvent()
+    {
+        throw new System.NotImplementedException();
+    }
 }

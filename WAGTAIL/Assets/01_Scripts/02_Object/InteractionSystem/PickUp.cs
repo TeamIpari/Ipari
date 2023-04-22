@@ -52,4 +52,9 @@ public class PickUp : MonoBehaviour, IInteractable
         // TODO : 바닥에 붙게끔 내려놓아야함
         _playerEquipPoint.transform.DetachChildren();
     }
+
+    public bool AnimEvent()
+    {
+        throw new System.NotImplementedException();
+    }
 }

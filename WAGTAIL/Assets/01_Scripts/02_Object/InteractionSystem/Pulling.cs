@@ -74,4 +74,9 @@ public class Pulling : MonoBehaviour, IInteractable
 
         _skMesh.SetBlendShapeWeight(0, _val);
     }
+
+    public bool AnimEvent()
+    {
+        throw new System.NotImplementedException();
+    }
 }

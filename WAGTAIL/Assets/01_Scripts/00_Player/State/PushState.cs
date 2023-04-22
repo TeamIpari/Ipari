@@ -38,9 +38,9 @@ public class PushState : State
         push = player.isPush;
 
         // ========================================= //
-        // TODO : ���� ��ü ��ŭ collider ũ�� ���� �������
-        // player.controller.center = new Vector3(0,0,0); << ��ġ ���� �� ����
-        // player.controller.radius = 0; << ��ġ ���� �� ����
+        // TODO : 占쏙옙占쏙옙 占쏙옙체 占쏙옙큼 collider 크占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占
+        // player.controller.center = new Vector3(0,0,0); << 占쏙옙치 占쏙옙占쏙옙 占쏙옙 占쏙옙占쏙옙
+        // player.controller.radius = 0; << 占쏙옙치 占쏙옙占쏙옙 占쏙옙 占쏙옙占쏙옙
         // ========================================= //
 
         playerSpeed = player.playerSpeed;
@@ -57,7 +57,7 @@ public class PushState : State
         gravityVelocity.y = 0f;
         player.playerVelocity = new Vector3(input.x, 0, input.y);
 
-        // TODO : �ִϸ��̼� �����ϱ� Push To Idle
+        // TODO : 占쌍니몌옙占싱쇽옙 占쏙옙占쏙옙占싹깍옙 Push To Idle
         player.animator.SetTrigger(Move);
         // ========================================= //
     }
@@ -91,7 +91,7 @@ public class PushState : State
     {
         base.LogicUpdate();
 
-        // ��ٸ����� ���� ���� ��
+        // 占쏙옙摸占쏙옙占쏙옙占 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙
         if (!push)
         {
             stateMachine.ChangeState(player.idle);
@@ -104,7 +104,7 @@ public class PushState : State
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;
 
-        // �ٴڰ� ��� ���� ���� �߷� ���� X
+        // 占쌕닥곤옙 占쏙옙占 占쏙옙占쏙옙 占쏙옙占쏙옙 占쌩뤄옙 占쏙옙占쏙옙 X
         if (isGrounded && gravityVelocity.y < 0)
         {
             gravityVelocity.y = 0f;
