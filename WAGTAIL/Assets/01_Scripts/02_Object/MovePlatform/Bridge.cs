@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bridge : MonoBehaviour
 {
+    [SerializeField] Vector3 search_range = new Vector3(0, 0, 0);
+    BoxCollider[] col;
     // Start is called before the first frame update
     void Start()
     {
-        
+        col = GetComponents<BoxCollider>();
+        col[0].size = new Vector3(1, 1, 1);
+        col[1].size = search_range;
     }
 
     // Update is called once per frame
@@ -15,7 +20,19 @@ public class Bridge : MonoBehaviour
     {
         
     }
+    private void OnDrawGizmos()
+    {
+        
+        Gizmos.color = Color.green;
+        Gizmos.matrix = this.transform.localToWorldMatrix;
+        Vector3 Dummy = new Vector3(search_range.x,
+            search_range.y,
+            search_range.z );
 
+        //Gizmos.DrawWireCube(this.transform.position, Dummy);
+        Gizmos.DrawWireCube(Vector3.zero, Dummy);
+
+    }
     private void OnTriggerStay(Collider other)
     {
         try
@@ -28,7 +45,7 @@ public class Bridge : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
+
         }
     }
 
@@ -45,7 +62,6 @@ public class Bridge : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -63,7 +79,6 @@ public class Bridge : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -91,7 +106,6 @@ public class Bridge : MonoBehaviour
         }
         catch
         {
-            Debug.Log("AA");
         }
     }
 

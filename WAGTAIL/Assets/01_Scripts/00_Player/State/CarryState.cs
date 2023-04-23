@@ -67,7 +67,6 @@ public class CarryState : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        //Debug.Log(player.transform.forward);
 
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;

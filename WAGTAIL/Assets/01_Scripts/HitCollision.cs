@@ -23,11 +23,8 @@ public class HitCollision : MonoBehaviour
 
     private void Update()
     {
-        //_Distance += Time.deltaTime;
-        //Debug.Log(_Distance);
         if(b_Open && Vector3.Distance(Door_1.position, Door_2.position) <= _Distance)
         {
-            Debug.Log("aa");
             Door_1.Translate(Vector3.left * Time.deltaTime * _openSpeed);
             Door_2.Translate(Vector3.right * Time.deltaTime * _openSpeed);
         }
@@ -35,8 +32,6 @@ public class HitCollision : MonoBehaviour
 
     private void OpenDoor()
     {
-        //Door_1.SetActive(false);
-        //b_Open = true;
         StartCoroutine(DummyCo());
     }
 
@@ -47,7 +42,6 @@ public class HitCollision : MonoBehaviour
         Door_2.position = new Vector3(Door_2.position.x + .15f, Door_2.position.y, Door_2.position.z);
 
         yield return new WaitForSeconds(_DelayTime);
-        Debug.Log(_Distance);
         b_Open = true;
 
         yield return null;

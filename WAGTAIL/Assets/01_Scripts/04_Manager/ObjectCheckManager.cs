@@ -85,10 +85,8 @@ public class ObjectCheckManager : MonoBehaviour
                 for(int z = _z - radius; z < _z + radius; z++)
                 {
                     _vec = new Vector3(x + .5f, _y, z + .5f);
-                    //Debug.Log(x.ToString() + ", " +y.ToString() + ", " + z.ToString());
                     if (Object_Pool.ContainsKey(_vec) && GetBool(_vec))
                     {
-                        Debug.Log("get");
                         Object_Pool[_vec].gameObject.SetActive(true);
                         Object_Pool[_vec].GetComponent<Objects>().GetPing();
                     }
@@ -140,7 +138,6 @@ public class ObjectCheckManager : MonoBehaviour
         {
             Destroy(obj);
             count++;
-            Debug.Log(count.ToString());
         }
     }
 
