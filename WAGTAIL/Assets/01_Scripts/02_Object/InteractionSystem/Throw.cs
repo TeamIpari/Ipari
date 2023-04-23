@@ -17,9 +17,15 @@ public class Throw : MonoBehaviour, IInteractable
     Vector3 _nomalInteractionPoint;
     public string InteractionPrompt => _promt;
 
+    private void Start()
+    {
+        _playerEquipPoint = Player.Instance.EquipPoint.gameObject;
+        _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
+    }
+
     public bool AnimEvent()
     {
-        throw new System.NotImplementedException();
+        return false;
     }
 
     public bool Interact(Interactor interactor)
