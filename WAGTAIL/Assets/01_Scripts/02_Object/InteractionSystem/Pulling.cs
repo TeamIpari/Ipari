@@ -24,6 +24,11 @@ public class Pulling : MonoBehaviour, IInteractable
 
     public int value = 0;
 
+    private void Start()
+    {
+        _playerEquipPoint = Player.Instance.EquipPoint.gameObject;
+    }
+
     public bool Interact(Interactor interactor)
     {
         if (interactor.player.movementSM.currentState == interactor.player.idle)
@@ -73,5 +78,10 @@ public class Pulling : MonoBehaviour, IInteractable
         float _val = _skMesh.GetBlendShapeWeight(0) + val;
 
         _skMesh.SetBlendShapeWeight(0, _val);
+    }
+
+    public bool AnimEvent()
+    {
+        throw new System.NotImplementedException();
     }
 }

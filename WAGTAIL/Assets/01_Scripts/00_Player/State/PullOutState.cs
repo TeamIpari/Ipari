@@ -18,6 +18,7 @@ public class PullOutState : State
         base.Enter();
 
         timePassed = 0f;
+
         player.animator.SetTrigger("pullout");
         player.currentInteractable.GetComponent<Pulling>().Drop();
         // TODO : 물건 내려놓는 시간 애니메이터와 상의 후 정하기

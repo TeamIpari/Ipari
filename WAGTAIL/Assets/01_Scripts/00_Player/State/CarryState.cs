@@ -9,6 +9,7 @@ public class CarryState : State
     Vector3 currentVelocity;
     bool isGrounded;
     bool carry;
+    //bool smallThrow;
     float playerSpeed;
 
     Vector3 cVelocity;
@@ -28,6 +29,7 @@ public class CarryState : State
         currentVelocity = Vector3.zero;
         gravityVelocity.y = 0;
         carry = player.isCarry;
+        //smallThrow = player.isSmallThrow;
 
         playerSpeed = player.playerSpeed;
         isGrounded = player.controller.isGrounded;

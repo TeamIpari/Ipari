@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.IMGUI.Controls;
+//using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    static Player instance;
+    public static Player Instance { get { return instance; } }  
+
     [Header("Controls")]
     public float playerSpeed = 15.0f;
     // 점프 사용할지 말지 몰라서 일단 기입만 해둠
@@ -30,6 +33,9 @@ public class Player : MonoBehaviour
     public bool isClimbing = false;
     public bool isPush = false;
     public bool isCarry = false;
+    // 추가 스크립트
+    //public bool isSmallThrow = false;
+    //
     // 당기는데, 원점으로부터 멀어지면 멀어질 수록 최대 도달점과 비교하여
     // 퍼센테이지로 이동속도를 줄임.
     public bool isPull = false;
@@ -70,11 +76,26 @@ public class Player : MonoBehaviour
     public Vector3 playerVelocity;
     [HideInInspector]
     public GameObject currentInteractable;
-    
+
+    public Transform InteractionPoint;
+    public Transform EquipPoint;
+    public Transform ThrowEquipPoint;
+    public Transform LeftHand;
+    public Transform RightHandPoint;
+    public Transform RightHand;
+
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
 
     private void Start()
     {
-        // GetComponets
+        // GetComponents
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
         playerInput = GetComponent<PlayerInput>();
@@ -116,12 +137,12 @@ public class Player : MonoBehaviour
         movementSM.currentState.PhysicsUpdate();
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if(hit.gameObject.tag == "Platform" &&
-            !hit.gameObject.GetComponent<IEnviroment>()._hit)
-        {
-            hit.gameObject.GetComponent<IEnviroment>().Interact();
-        }
-    }
+    //private void OnControllerColliderHit(ControllerColliderHit hit)
+    //{
+    //    if(hit.gameObject.tag == "Platform" &&
+    //        !hit.gameObject.GetComponent<IEnviroment>()._hit)
+    //    {
+    //        hit.gameObject.GetComponent<IEnviroment>().Interact();
+    //    }
+    //}
 }

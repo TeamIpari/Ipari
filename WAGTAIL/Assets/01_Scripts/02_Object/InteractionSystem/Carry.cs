@@ -4,33 +4,37 @@ using UnityEngine;
 
 public class Carry : MonoBehaviour, IInteractable
 {
-    [SerializeField] private string _promt; // Interact °¡´ÉÇÑ ¹üÀ§¿¡ ÀÖÀ» ¶§ Ãâ·ÂÇØÁÙ ¹®±¸
+    [SerializeField] private string _promt; // Interact ê°€ëŠ¥í•œ ë²”ìœ„ì— ìˆì„ ë•Œ ì¶œë ¥í•´ì¤„ ë¬¸êµ¬
     //======================================================================================
-    [SerializeField] GameObject _playerEquipPoint; // CarryÀ» À§ÇÑ º¯¼ö
+    [SerializeField] GameObject _playerEquipPoint; // Carryì„ ìœ„í•œ ë³€ìˆ˜
 
 
     public string InteractionPrompt => _promt;
+    private void Start()
+    {
+        _playerEquipPoint = Player.Instance.EquipPoint.gameObject;
+    }
 
     public bool Interact(Interactor interactor)
     {
-        // TODO : Player°¡ nomal»óÅÂÀÎÁö È®ÀÎÇØÁÖ´Â°Å ±¸ÇöÇØ¾ßµÊ
-        // EquitPoint¿¡ ÀÚ½ÄÀÌ ÀÖ´Â°É·Î È®ÀÎÇÒÁö Player State·Î °ü¸®ÇÒÁö °í¹ÎÁß
+        // TODO : Playerê°€ nomalìƒíƒœì¸ì§€ í™•ì¸í•´ì£¼ëŠ”ê±° êµ¬í˜„í•´ì•¼ë¨
+        // EquitPointì— ìì‹ì´ ìˆëŠ”ê±¸ë¡œ í™•ì¸í• ì§€ Player Stateë¡œ ê´€ë¦¬í• ì§€ ê³ ë¯¼ì¤‘
 
-        // µé±â
+        // ë“¤ê¸°
         if (_playerEquipPoint.transform.childCount == 0 &&
-            interactor.player.movementSM.currentState == interactor.player.idle) // Player ¼Õ¿¡ ¿ÀºêÁ§Æ®°¡ ÀÖ´ÂÁö È®ÀÎ
+            interactor.player.movementSM.currentState == interactor.player.idle) // Player ì†ì— ì˜¤ë¸Œì íŠ¸ê°€ ìˆëŠ”ì§€ í™•ì¸
         {
-            // TODO : ¾Ö´Ï¸ŞÀÌ¼Ç ³ÖÀ¸¸é ÃßÈÄ ·ÎÁ÷ ¼öÁ¤ÇØ¾ßÇÔ
+            // TODO : ì• ë‹ˆë©”ì´ì…˜ ë„£ìœ¼ë©´ ì¶”í›„ ë¡œì§ ìˆ˜ì •í•´ì•¼í•¨
             Pickup();
             interactor.player.isCarry = true;
             Debug.Log("Pick Up Object!");
             return true;
         }
 
-        // ³»·Á³õ±â
+        // ë‚´ë ¤ë†“ê¸°
         else if (_playerEquipPoint.transform.GetChild(0).name == gameObject.name)
         {
-            // TODO : ¾Ö´Ï¸ŞÀÌ¼Ç ³ÖÀ¸¸é ÃßÈÄ ·ÎÁ÷ ¼öÁ¤ÇØ¾ßÇÔ
+            // TODO : ì• ë‹ˆë©”ì´ì…˜ ë„£ìœ¼ë©´ ì¶”í›„ ë¡œì§ ìˆ˜ì •í•´ì•¼í•¨
             Drop();
             interactor.player.isCarry = false;
             Debug.Log("Drop Object!");
@@ -49,8 +53,14 @@ public class Carry : MonoBehaviour, IInteractable
 
     public void Drop()
     {
-        // TODO : Player State ¹Ù²ãÁà¾ßÇÔ
-        // TODO : ¹Ù´Ú¿¡ ºÙ°Ô²û ³»·Á³õ¾Æ¾ßÇÔ
+        // TODO : Player State ë°”ê¿”ì¤˜ì•¼í•¨
+        // TODO : ë°”ë‹¥ì— ë¶™ê²Œë” ë‚´ë ¤ë†“ì•„ì•¼í•¨
         _playerEquipPoint.transform.DetachChildren();
     }
+
+    public bool AnimEvent()
+    {
+        return false;
+    }
+
 }

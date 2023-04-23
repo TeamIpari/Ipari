@@ -44,7 +44,6 @@ public class PullingState : State
         playerSpeed = player.playerSpeed * 0.5f;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
-
         player.animator.SetTrigger("pulling");
     }
 
@@ -181,12 +180,12 @@ public class PullingState : State
         */
     }
 
-    public int subtract()
-    {
+    //public int subtract()
+    //{
         // 시작점과 끝점을 비교하여 내 위치가 현재 얼마나 떨어졌는지 퍼센테이지로 계산. 
 
-        return RopeHead.GetComponent<Node>().GetParent().Percent();
-    }
+        //return RopeHead.GetComponent<Node>().GetParent().Percent();
+    //}
 
 
     public override void Exit()

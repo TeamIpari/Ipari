@@ -10,6 +10,11 @@ public class PickUp : MonoBehaviour, IInteractable
 
     public string InteractionPrompt => _promt;
 
+    private void Start()
+    {
+        _playerEquipPoint = Player.Instance.EquipPoint.gameObject;  
+    }
+
     public bool Interact(Interactor interactor)
     {
         // TODO : Player가 nomal상태인지 확인해주는거 구현해야됨
@@ -51,5 +56,10 @@ public class PickUp : MonoBehaviour, IInteractable
         // TODO : Player State 바꿔줘야함
         // TODO : 바닥에 붙게끔 내려놓아야함
         _playerEquipPoint.transform.DetachChildren();
+    }
+
+    public bool AnimEvent()
+    {
+        throw new System.NotImplementedException();
     }
 }
