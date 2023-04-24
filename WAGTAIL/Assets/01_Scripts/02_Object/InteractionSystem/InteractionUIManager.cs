@@ -8,12 +8,13 @@ public class InteractionUIManager : MonoBehaviour
 {
     private bool _isActive;
     private Animator _animator;
-    [FormerlySerializedAs("_player")] [SerializeField] private Player player;
+    private Player _player;
     private static readonly int Fadein = Animator.StringToHash("fadein");
     private static readonly int Fadeout = Animator.StringToHash("fadeout");
 
     private void Start()
     {
+        _player = Player.Instance;
         _isActive = false;
         _animator = GetComponentInChildren<Animator>();
         _animator.speed = 0f;
@@ -21,7 +22,7 @@ public class InteractionUIManager : MonoBehaviour
 
     private void Update()
     {
-        if( player.isCarry || player.isPull || player.isClimbing || player.isPush)
+        if( _player.isCarry || _player.isPull || _player.isClimbing || _player.isPush)
         {
             if(_isActive)
             {
@@ -58,5 +59,4 @@ public class InteractionUIManager : MonoBehaviour
             }
         }
     }
-
 }

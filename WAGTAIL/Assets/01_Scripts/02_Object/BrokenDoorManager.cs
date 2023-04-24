@@ -5,9 +5,10 @@ using UnityEngine;
 public class BrokenDoorManager : MonoBehaviour, IInteractable
 {
     [SerializeField] float destroyTime;
-    [SerializeField] GameObject player;
     [SerializeField] float force;
 
+    
+    GameObject player;
     float time;
     Transform[] allChildren;
     bool isBoom;
@@ -19,6 +20,7 @@ public class BrokenDoorManager : MonoBehaviour, IInteractable
 
     void Start()
     {
+        player = Player.Instance.gameObject;
         allChildren = GetComponentsInChildren<Transform>();
         isBoom = false;
     }
