@@ -11,7 +11,7 @@ public class Bridge : MonoBehaviour
     void Start()
     {
         col = GetComponents<BoxCollider>();
-        col[0].size = new Vector3(1, 1, 1);
+        col[0].size = col[0].size;
         col[1].size = search_range;
     }
 
@@ -106,6 +106,7 @@ public class Bridge : MonoBehaviour
         }
         catch
         {
+            Debug.Log("D");
         }
     }
 

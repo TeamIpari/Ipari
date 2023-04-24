@@ -4,8 +4,8 @@ public class Throw : MonoBehaviour, IInteractable
 {
     [Header("Interactable Setting")]
     [SerializeField] private string _promt;
-    [SerializeField] GameObject _playerEquipPoint;
-    [SerializeField] GameObject _playerInteractionPoint;
+    private GameObject _playerEquipPoint;
+    private GameObject _playerInteractionPoint;
 
     [Header("Throw Setting")]
     [SerializeField] float _force = 1.0f;
@@ -19,7 +19,7 @@ public class Throw : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        _playerEquipPoint = Player.Instance.EquipPoint.gameObject;
+        _playerEquipPoint = Player.Instance.ThrowEquipPoint.gameObject;
         _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
     }
 
