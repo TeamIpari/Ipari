@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class MovingPlatform : MonoBehaviour
+public class PlatformManager : MonoBehaviour
 {
     // ¿òÁ÷ÀÌ´Â ÇÃ·§Æû 
     [SerializeField] private Transform _startPoint;
@@ -33,8 +33,10 @@ public class MovingPlatform : MonoBehaviour
             _currentTime = _time;
             TargetNextWayPoint();
         }
-        
-        transform.position = Vector3.Lerp(_prevWayPoint.position, _nextWayPoint.position, _currentTime / _time);
+
+
+        this.transform.position = Vector3.Lerp(_prevWayPoint.position, _nextWayPoint.position, _currentTime / _time);
+
     }
 
     private void TargetNextWayPoint()
@@ -46,6 +48,7 @@ public class MovingPlatform : MonoBehaviour
         _currentTime = 0;
 
         float distanceToWaypoint = Vector3.Distance(_prevWayPoint.position, _nextWayPoint.position);
+
     }
 
     private void OnDrawGizmos()
