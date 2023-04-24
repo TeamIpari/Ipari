@@ -18,7 +18,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     public bool Interact()
     {
-        //Debug.Log("Co");
         ishit = true;
         StartCoroutine(hidePlatform());
 

@@ -10,7 +10,7 @@ public class RotAround : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -35,7 +35,6 @@ public class RotAround : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -52,7 +51,6 @@ public class RotAround : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -70,7 +68,6 @@ public class RotAround : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -95,7 +92,6 @@ public class RotAround : MonoBehaviour
         }
         catch
         {
-            Debug.Log("AA");
         }
     }
 

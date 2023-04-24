@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,11 +10,32 @@ public class Lift : MonoBehaviour
     [SerializeField] float gravity;
     [SerializeField] float addGravity;
     [SerializeField] GameObject door;
+    [Header("Å½»ö ¹üÀ§")]
+    [SerializeField] Vector3 search_range = new Vector3(6, 6, 6);
+
+    BoxCollider[] col;
 
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.matrix = this.transform.localToWorldMatrix;
+        ////Vector3 Dummy = new Vector3(search_range.x * this.transform.lossyScale.x,
+        ////    search_range.y * this.transform.lossyScale.y,
+        ////    search_range.z * this.transform.lossyScale.z);
+        Vector3 Dummy = new Vector3(search_range.x,
+            search_range.y,
+            search_range.z);
+        Gizmos.DrawWireCube(Vector3.zero, Dummy);
+    }
 
     private void Start()
-    {   
+    {
+        col = GetComponents<BoxCollider>();
+        col[0].size = new Vector3(1, 1, 1);
+        col[1].size = search_range;
+        Debug.Log("lossyScale: " + transform.lossyScale);
+        Debug.Log("localScale: " + transform.localScale);
     }
 
 
@@ -39,7 +61,6 @@ public class Lift : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -55,7 +76,6 @@ public class Lift : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -72,7 +92,6 @@ public class Lift : MonoBehaviour
         }
         catch
         {
-            Debug.Log("SThrow is notting");
         }
     }
 
@@ -96,7 +115,6 @@ public class Lift : MonoBehaviour
         }
         catch
         {
-            Debug.Log("AA");
         }
     }
 
@@ -105,24 +123,22 @@ public class Lift : MonoBehaviour
         RaycastHit hit;
         if(Physics.Raycast(transform.position, Vector3.down, out hit))
         {
-            Debug.Log((this.transform.position.y - (transform.localScale.y) - hit.transform.position.y));
+
             if ((this.transform.position.y - (transform.localScale.y * .5f) - hit.transform.position.y ) <= 0)
             {
                 return true;
             }
 
-            Debug.DrawRay(transform.position, (transform.rotation * Vector3.down * (transform.localScale.y )) * hit.distance, Color.red);
+            //Debug.DrawRay(transform.position, (transform.rotation * Vector3.down * (transform.localScale.y )) * hit.distance, Color.red);
         }
         else
         {
-            Debug.DrawRay(transform.position, (transform.rotation * Vector3.down * (transform.localScale.y / 2)) * 1000f, Color.red);
+            //Debug.DrawRay(transform.position, (transform.rotation * Vector3.down * (transform.localScale.y / 2)) * 1000f, Color.red);
         }
         return false;
     }
 }
 
-    //private Vector3 getPosition()
-    //{
-    //    return transform.position;
-    //}
+
+
 

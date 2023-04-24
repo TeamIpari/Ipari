@@ -23,3 +23,5 @@ public class Ladder : MonoBehaviour, IInteractable
         return false;
     }
 }
+
+

@@ -68,9 +68,7 @@ public class Pulling : MonoBehaviour, IInteractable
     public int GetMeshfloat()
     {
         int  a = 100 - (100 - (int)_skMesh.GetBlendShapeWeight(0));
-        //Debug.Log(a);
         return a;
-        // (현재 위치 - 최대 위치) / 100
     }
 
     public void SetMeshfloat(float val)

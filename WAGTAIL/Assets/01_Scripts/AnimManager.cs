@@ -52,13 +52,10 @@ public class AnimManager
 
     private void OnAnimatorIK(int layerIndex)
     {
-        //Debug.Log("AA");
-        //anim.SetIKPosition(AvatarIKGoal.RightHand, onhands.transform.position);
     }
 
     private void AnimFunc()
     {
-        //Debug.Log("AA");
         try
         {
             //Player.Instance.currentInteractable.GetComponent<SThrow>().Throwing();
@@ -66,7 +63,6 @@ public class AnimManager
         }
         catch
         {
-            Debug.Log("Notting");
         }
     }
 }
