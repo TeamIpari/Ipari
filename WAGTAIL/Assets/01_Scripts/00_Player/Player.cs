@@ -139,10 +139,17 @@ public class Player : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.gameObject.tag == "Platform" &&
-            !hit.gameObject.GetComponent<IEnviroment>()._hit)
+        try
         {
-            hit.gameObject.GetComponent<IEnviroment>().Interact();
+            if (hit.gameObject.tag == "Platform" &&
+                !hit.gameObject.GetComponent<IEnviroment>()._hit)
+            {
+                hit.gameObject.GetComponent<IEnviroment>().Interact();
+            }
+        }
+        catch
+        {
+
         }
     }
 }

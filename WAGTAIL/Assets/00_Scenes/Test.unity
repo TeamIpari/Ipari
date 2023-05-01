@@ -665,12 +665,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &516459139 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6141126314304884031, guid: 9ea1b446fa02ec04d9b6f92f2511e3cf,
-    type: 3}
-  m_PrefabInstance: {fileID: 1503520937}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &555046018
 GameObject:
   m_ObjectHideFlags: 0
@@ -1824,12 +1818,12 @@ PrefabInstance:
     - target: {fileID: 5456100892034684546, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000023833893
+      value: 0.000000023833891
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892034684546, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000004905564
+      value: -0.0000000049055635
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892060526553, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
@@ -1849,12 +1843,12 @@ PrefabInstance:
     - target: {fileID: 5456100892060526553, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000016945545
+      value: 0.000000016945544
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892060526553, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000029846443
+      value: -0.000000002984644
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892159807873, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
@@ -1884,12 +1878,12 @@ PrefabInstance:
     - target: {fileID: 5456100892159807873, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000018722357
+      value: 0.00000001872271
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892159807873, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000044197495
+      value: -0.0000000044198325
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892374821701, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
@@ -2592,8 +2586,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _promt: 
-  _playerEquipPoint: {fileID: 516459139}
-  _playerInteractionPoint: {fileID: 1346541335}
   _force: 1
   _yForce: 1
   _yAngle: 0.45
@@ -2611,7 +2603,7 @@ GameObject:
   - component: {fileID: 2033067809}
   m_Layer: 0
   m_Name: Cube (5)
-  m_TagString: Untagged
+  m_TagString: Platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2886,6 +2878,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LandSlide
+      objectReference: {fileID: 0}
+    - target: {fileID: 2325701754560417096, guid: 56379702b9489064bbdf441b21fb9bf4,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 2325701754560417097, guid: 56379702b9489064bbdf441b21fb9bf4,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56379702b9489064bbdf441b21fb9bf4, type: 3}
