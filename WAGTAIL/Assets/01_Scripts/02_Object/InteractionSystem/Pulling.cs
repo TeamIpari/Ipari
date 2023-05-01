@@ -9,6 +9,7 @@ public class Pulling : MonoBehaviour, IInteractable
     [SerializeField] GameObject _playerEquipPoint;
     [SerializeField] private GameObject _root;
     [SerializeField] private GameObject _interactable;
+    [SerializeField] private Transform _movePos;
 
     private float _vAxis;
     private float _hAxis;
@@ -36,13 +37,17 @@ public class Pulling : MonoBehaviour, IInteractable
             interactor.player.isPull = true;
             // player가 object를 미는 방향으로 보게끔 조절
             // TODO : 더 깔끔하게 해보기
-            _playerPos = interactor.gameObject.transform.position;
-            _hAxis = _playerPos.x - gameObject.transform.position.x;
-            _vAxis = _playerPos.z - gameObject.transform.position.z;
-            dir = new Vector3(_hAxis, 0, _vAxis).normalized;
-            dir.x = -Mathf.Round(dir.x);
-            dir.z = -Mathf.Round(dir.z);
-            interactor.transform.LookAt(interactor.transform.position + dir);
+            //_playerPos = interactor.gameObject.transform.position;
+            //_hAxis = _playerPos.x - gameObject.transform.position.x;
+            //_vAxis = _playerPos.z - gameObject.transform.position.z;
+            //dir = new Vector3(_hAxis, 0, _vAxis).normalized;
+            //dir.x = -Mathf.Round(dir.x);
+            //dir.z = -Mathf.Round(dir.z);
+            Player.Instance.GetComponent<CharacterController>().enabled = false;
+            Player.Instance.transform.position = new Vector3(_movePos.position.x, Player.Instance.transform.position.y, _movePos.position.z);
+            //interactor.transform.LookAt(interactor.transform.position + dir);
+            Player.Instance.transform.LookAt(new Vector3(_root.transform.position.x, Player.Instance.transform.position.y, _root.transform.position.z));
+            Player.Instance.GetComponent<CharacterController>().enabled = true;
             transform.SetParent(_playerEquipPoint.transform, true);
             return true;
         }
