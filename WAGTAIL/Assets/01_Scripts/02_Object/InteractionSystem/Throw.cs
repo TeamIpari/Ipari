@@ -54,7 +54,6 @@ public class Throw : MonoBehaviour, IInteractable
     {
         // Object가 Player의 머리 위에서 움직이는걸 방지
         GetComponent<Rigidbody>().useGravity = false;
-        //GetComponent<Rigidbody>
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().freezeRotation = true;
         GetComponent<Rigidbody>().isKinematic = true;
@@ -81,6 +80,7 @@ public class Throw : MonoBehaviour, IInteractable
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
         GetComponent<Rigidbody>().freezeRotation = false;
         GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<Rigidbody>().isKinematic = false;
 
         // 정한 방식대로 날라감
         _playerForwardTransform = interactor.player.transform.forward;
