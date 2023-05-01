@@ -20,6 +20,7 @@ public class AnimManager
         {
             instance = this;
         }
+        anim = GetComponent<Animator>();
     }
 
     #region AnimProperty
