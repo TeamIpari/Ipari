@@ -60,9 +60,12 @@ public class Pulling : MonoBehaviour, IInteractable
     public void Drop()
     {
         _playerEquipPoint.transform.DetachChildren();
-        _interactable.GetComponent<IInteractable>().Interact(null);
-        Destroy(_root);
-        Destroy(this.gameObject);
+        if(GetMeshfloat() >= 90)
+        {
+            _interactable.GetComponent<IInteractable>().Interact(null);
+            Destroy(_root);
+            Destroy(this.gameObject);
+        }
     }
 
     public int GetMeshfloat()

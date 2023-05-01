@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class lendslide : MonoBehaviour, IEnviroment
@@ -18,6 +19,16 @@ public class lendslide : MonoBehaviour, IEnviroment
         ishit = true;
         StartCoroutine(Boom());
         return false;
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Player" && !ishit)
+        {
+            ishit = true;
+            StartCoroutine(Boom());
+        }
     }
 
 
