@@ -28,13 +28,13 @@ public class ShatterObject : MonoBehaviour
 
     private void Explode()
     {
-        if(_originalObject != null)
+        if (_originalObject != null)
         {
             _originalObject.SetActive(false);
 
-            if(_fracturedObject != null ) 
+            if (_fracturedObject != null)
             {
-                _fractObj = Instantiate(_fracturedObject) as GameObject;
+                _fractObj = Instantiate(_fracturedObject);
 
                 foreach (Transform t in _fractObj.transform)
                 {
@@ -52,7 +52,7 @@ public class ShatterObject : MonoBehaviour
 
                     if (_explosionVFX != null )
                     {
-                        GameObject exploVFX = Instantiate(_explosionVFX) as GameObject;
+                        GameObject exploVFX = Instantiate(_explosionVFX);
                         Destroy(exploVFX, 7);
                     }
                 }
