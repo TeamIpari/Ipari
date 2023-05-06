@@ -7,6 +7,7 @@ public class ShatterObject : MonoBehaviour
     [SerializeField] private GameObject _originalObject;
     [SerializeField] private GameObject _fracturedObject;
     [SerializeField] private GameObject _explosionVFX;
+    [SerializeField] private Transform _explosionPoint;
     [SerializeField] private float _explosionMinForce = 5;
     [SerializeField] private float _explosionMaxForce = 100;
     [SerializeField] private float _explosionForceRadius = 10;
@@ -20,6 +21,7 @@ public class ShatterObject : MonoBehaviour
         {
             Explode();
         }
+
         if(Input.GetKeyDown(KeyCode.R))
         {
             Reset();
@@ -34,7 +36,7 @@ public class ShatterObject : MonoBehaviour
 
             if (_fracturedObject != null)
             {
-                _fractObj = Instantiate(_fracturedObject);
+                _fractObj = Instantiate(_fracturedObject, _originalObject.transform.position, transform.rotation);
 
                 foreach (Transform t in _fractObj.transform)
                 {
@@ -52,7 +54,7 @@ public class ShatterObject : MonoBehaviour
 
                     if (_explosionVFX != null )
                     {
-                        GameObject exploVFX = Instantiate(_explosionVFX);
+                        GameObject exploVFX = Instantiate(_explosionVFX, _originalObject.transform.position, transform.rotation);
                         Destroy(exploVFX, 7);
                     }
                 }
