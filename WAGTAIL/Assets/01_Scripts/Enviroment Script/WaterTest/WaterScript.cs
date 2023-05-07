@@ -37,6 +37,10 @@ public class WaterScript : MonoBehaviour
             defualtVal = other.GetComponent<Player>().jumpHeight;
             other.GetComponent<Player>().jumpHeight = 0.2f;
         }
+        if( other.gameObject.tag == "Platform")
+        {
+
+        }
     }
 
     private void OnTriggerStay(Collider other)

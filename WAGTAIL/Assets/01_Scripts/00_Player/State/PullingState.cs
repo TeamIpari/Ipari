@@ -53,15 +53,6 @@ public class PullingState : State
         base.HandleInput();
         isPull = player.isPull;
         float _val =0;
-        //input = moveAction.ReadValue<Vector2>();
-        // 3차원 공간에서는 y축(점프 제외)으로 이동하지 않기 때문에
-        // 2차원에서의 이동 좌표에서 y축을 z축으로 사용함.
-        //velocity = new Vector3(input.x, 0, input.y);
-
-        //velocity = velocity.x * player.cameraTransform.right.normalized + 
-        //    velocity.z * player.cameraTransform.forward.normalized;
-        //velocity.y = 0;
-
 
         if (player.transform.eulerAngles.y == 90)
         {
