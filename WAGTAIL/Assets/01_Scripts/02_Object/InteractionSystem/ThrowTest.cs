@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
-using UnityEngine.UIElements;
 
-public class SThrow : MonoBehaviour, IInteractable
+public class ThrowTest : MonoBehaviour
 {
     public string InteractionPrompt => throw new System.NotImplementedException();
-    GameObject _playerEquipPoint;
-    GameObject _playerInteractionPoint;
+    [SerializeField] GameObject _playerEquipPoint;
+    [SerializeField] GameObject _playerInteractionPoint;
 
-    GameObject _playerLeftHand;
-    GameObject _playerRightHand;
+    [SerializeField] GameObject _playerLeftHand;
+    [SerializeField] GameObject _playerRightHand;
 
     // 시작 지점. (어지간해선 손.)
     Transform startPos;
@@ -32,13 +29,10 @@ public class SThrow : MonoBehaviour, IInteractable
     [Range(1f, 5f)]
     [Tooltip("꺾이는 위치를 지정해줌")]
     public float _pointHeight = 3.5f;
-    [Range(0.0f,1f )]
+    [Range(0.0f, 1f)]
     public float _pointPersent = 0.8f;
     [Range(5, 10)]
     public float speed = 1.0f;
-
-    public float _force;
-    public float _yForce = 1.0f;
 
     private void Start()
     {
@@ -58,13 +52,12 @@ public class SThrow : MonoBehaviour, IInteractable
             transform.position = BezierCurve();
             _value += speed * 0.001f;
             flying = _value < 1.0f ? true : false;
-            //Debug.Log(GetAngle());
         }
     }
 
     public bool Interact(Interactor interactor)
     {
-        if(interactor.player.movementSM.currentState == interactor.player.idle)
+        if (interactor.player.movementSM.currentState == interactor.player.idle)
         {
             //interactor.player.isSmallThrow = true;
             interactor.player.isCarry = true;
@@ -107,22 +100,13 @@ public class SThrow : MonoBehaviour, IInteractable
         _playerRightHand.transform.DetachChildren();
         Player.Instance.currentInteractable = null;
 
-        GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<Rigidbody>().useGravity = false;
         GetComponent<Rigidbody>().isKinematic = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().freezeRotation = true;
 
-
-        Debug.Log(GetAngle());
-        //Debug.Log(interactor.player.transform.forward);
-        _playerForwardTransform = interactor.player.transform.forward;
-        _playerForwardTransform.x *= _force;
-        _playerForwardTransform.y = _yForce * (GetAngle()) ;
-        _playerForwardTransform.z *= _force;
-
-        GetComponent<Rigidbody>().AddForce(_playerForwardTransform);
         // 어쩌다보니 오버로딩 됨.
-        //Throwing();
+        Throwing();
         // 던지기 스타트
         // Object 종속을 풀어줌
 
@@ -135,7 +119,7 @@ public class SThrow : MonoBehaviour, IInteractable
         // interactionPoint를 손으로 옮김.
         _nomalInteractionPoint = _playerInteractionPoint.transform.localPosition;
         _playerInteractionPoint.transform.localPosition = _playerEquipPoint.transform.localPosition;
-        
+
     }
 
     Vector3 BezierCurve()
@@ -149,34 +133,21 @@ public class SThrow : MonoBehaviour, IInteractable
         return C;
     }
 
-    float GetAngle()
-    {
-        try
-        {
-            Vector3 v3 = heightPos.transform.position - startPos.position;
 
-            return 180 / (180 - Mathf.Atan2(v3.y, v3.x) * Mathf.Rad2Deg);
-        }
-        catch
-        {
-            return 0;
-        }
-    }
+
 
     public void Throwing()
     {
-        if(heightPos != null && endPos != null)
-            flying = flying == true ? false : true;
+        flying = flying == true ? false : true;
         //Destroy(heightPos.gameObject);
     }
 
     public void SetPosHeight(Transform tf)
     {
         endPos = tf;
-        if(endPos != null && !flying)
+        if (endPos != null && !flying)
         {
             GetHieght();
-            //Debug.Log(GetAngle());
         }
     }
 
@@ -187,10 +158,10 @@ public class SThrow : MonoBehaviour, IInteractable
         Quaternion q = Quaternion.LookRotation(dir);
 
         transform.rotation = q;
-        
+
         Vector3 _vec = transform.position + (transform.forward * (Vector3.Distance(endPos.position, startPos.position) * _pointPersent));    // 퍼센티지로 계산.
 
-        if(heightPos == null)
+        if (heightPos == null)
         {
             heightPos = new GameObject("name");
         }

@@ -26,6 +26,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     IEnumerator hidePlatform()
     {
+        _mesh.material.color = Color.red;
         yield return new WaitForSeconds(_hideTime);
 
         _col.enabled = false;
@@ -36,6 +37,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     IEnumerator showPlatform()
     {
+        _mesh.material.color = Color.gray;
         yield return new WaitForSeconds(_showTime);
         _col.enabled = true;
         _mesh .enabled = true;

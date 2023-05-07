@@ -34,8 +34,7 @@ public class Lift : MonoBehaviour
         col = GetComponents<BoxCollider>();
         col[0].size = new Vector3(1, 1, 1);
         col[1].size = search_range;
-        Debug.Log("lossyScale: " + transform.lossyScale);
-        Debug.Log("localScale: " + transform.localScale);
+
     }
 
 
