@@ -143,4 +143,9 @@ public class IdleState : State
             player.transform.rotation = Quaternion.LookRotation(velocity);
         }
     }
+
+    public void Jump()
+    {
+        jump = true;
+    }
 }
