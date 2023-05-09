@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BrokenDoorController : MonoBehaviour
 {
+    // 이 클래스 ShatterObject로 대체됨 반드시 삭제해야됨
     private Rigidbody _rb;
     Vector3 _velocity;
 

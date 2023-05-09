@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
     public StateMachine movementSM;
     public IdleState idle;
     public JumpingState jump;
+    public FlightState flight;
     public LandingState landing;
     public PushState push;
     public ClimbingState climbing;
@@ -105,6 +106,7 @@ public class Player : MonoBehaviour
         movementSM = new StateMachine();
         idle = new IdleState(this, movementSM);
         jump = new JumpingState(this, movementSM);
+        flight = new FlightState(this, movementSM);
         landing = new LandingState(this, movementSM);
         climbing = new ClimbingState(this, movementSM);
         push = new PushState(this, movementSM);
