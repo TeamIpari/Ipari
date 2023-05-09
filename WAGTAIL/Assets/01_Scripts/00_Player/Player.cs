@@ -132,6 +132,7 @@ public class Player : MonoBehaviour
         movementSM.currentState.HandleInput();
 
         movementSM.currentState.LogicUpdate();
+        Debug.Log(controller.isGrounded);
     }
 
     private void FixedUpdate()
