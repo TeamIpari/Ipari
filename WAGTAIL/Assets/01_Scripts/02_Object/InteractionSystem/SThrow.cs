@@ -115,6 +115,10 @@ public class SThrow : MonoBehaviour, IInteractable
 
         Debug.Log(GetAngle());
         //Debug.Log(interactor.player.transform.forward);
+        Vector3 nV3 = new Vector3(endPos.position.x, Player.Instance.transform.position.y, endPos.position.z);
+
+        Player.Instance.gameObject.transform.LookAt(nV3);
+
         _playerForwardTransform = interactor.player.transform.forward;
         _playerForwardTransform.x *= _force;
         _playerForwardTransform.y = _yForce * (GetAngle()) ;
