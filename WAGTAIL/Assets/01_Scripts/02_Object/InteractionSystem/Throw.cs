@@ -24,12 +24,6 @@ public class Throw : MonoBehaviour, IInteractable
         _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
     }
 
-    private void Update()
-    {
-        if (this.GetComponent<Rigidbody>().velocity.x > 0)
-            Debug.Log(this.GetComponent<Rigidbody>().velocity);
-    }
-
     public bool AnimEvent()
     {
         return false;
