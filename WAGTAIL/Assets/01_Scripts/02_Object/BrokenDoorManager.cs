@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BrokenDoorManager : MonoBehaviour, IInteractable
 {
+    // 이 클래스 ShatterObject로 대체됨 반드시 삭제해야됨
     [SerializeField] float destroyTime;
     [SerializeField] float force;
 

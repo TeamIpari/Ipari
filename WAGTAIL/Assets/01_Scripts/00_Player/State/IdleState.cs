@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.InputSystem;
 
 public class IdleState : State
@@ -11,6 +12,7 @@ public class IdleState : State
     bool carry;
     bool jump;
     bool pull;
+    bool flight;
     Vector3 currentVelocity;
     bool isGrounded;
     float playerSpeed;
@@ -33,6 +35,7 @@ public class IdleState : State
         push = player.isPush;
         pull = player.isPull;
         carry = player.isCarry;
+        flight = player.isFlight;
 
         input = Vector2.zero;
         velocity = Vector3.zero;
@@ -74,7 +77,6 @@ public class IdleState : State
 
         if (climbing)
         {
-            
             stateMachine.ChangeState(player.climbing);
         }
 
@@ -98,13 +100,18 @@ public class IdleState : State
             stateMachine.ChangeState(player.pull);
         }
 
+        if (flight)
+        {
+            stateMachine.ChangeState(player.flight);
+        }
+
         // TODO : Idle 상태일때 추락 후 땅에 닿았을 때 landingState호출 해주기
     }
 
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-
+        
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;
 
@@ -114,20 +121,21 @@ public class IdleState : State
             gravityVelocity.y = 0f;
         }
 
+        else if (player.controller.velocity.y < -0.5f)
+        {
+            //player.animator.SetTrigger("flight");
+            flight = true;
+        }
+
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-
-
+        
         player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
-
-
-
-
+        
         if (velocity.sqrMagnitude > 0)
         {
             player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity),
                 player.rotationDampTime);
         }
-
     }
 
     public override void Exit()
@@ -142,6 +150,20 @@ public class IdleState : State
         {
             player.transform.rotation = Quaternion.LookRotation(velocity);
         }
+    }
+
+
+    private bool IsCheckGrounded()
+    {
+        if (isGrounded) return true;
+
+        var ray = new Ray(player.transform.position + Vector3.up * 0.1f, Vector3.down);
+
+        var maxDistance = 1.5f;
+        
+        Debug.DrawRay(player.transform.position + Vector3.up * 0.1f, Vector3.down * maxDistance);
+
+        return Physics.Raycast(ray, maxDistance);
     }
 
     public void Jump()
