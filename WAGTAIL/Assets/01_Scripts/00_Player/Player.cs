@@ -3,6 +3,7 @@ using System.Collections.Generic;
 //using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.TextCore.Text;
 
 public class Player : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class Player : MonoBehaviour
     public bool isClimbing = false;
     public bool isPush = false;
     public bool isCarry = false;
+    public bool isFlight = false;
     // 추가 스크립트
     //public bool isSmallThrow = false;
     //
@@ -132,7 +134,6 @@ public class Player : MonoBehaviour
         movementSM.currentState.HandleInput();
 
         movementSM.currentState.LogicUpdate();
-        Debug.Log(controller.isGrounded);
     }
 
     private void FixedUpdate()
