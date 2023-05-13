@@ -152,6 +152,7 @@ public class IdleState : State
         }
     }
 
+
     private bool IsCheckGrounded()
     {
         if (isGrounded) return true;
@@ -163,5 +164,10 @@ public class IdleState : State
         Debug.DrawRay(player.transform.position + Vector3.up * 0.1f, Vector3.down * maxDistance);
 
         return Physics.Raycast(ray, maxDistance);
+    }
+
+    public void Jump()
+    {
+        jump = true;
     }
 }

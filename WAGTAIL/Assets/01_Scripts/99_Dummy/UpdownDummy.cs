@@ -37,7 +37,7 @@ public class UpdownDummy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         curTime += Time.deltaTime;
         if(stop && Stoptimer(ref curTime))

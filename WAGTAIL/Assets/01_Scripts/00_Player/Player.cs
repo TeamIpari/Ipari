@@ -150,6 +150,10 @@ public class Player : MonoBehaviour
             {
                 hit.gameObject.GetComponent<IEnviroment>().Interact();
             }
+            else
+            {
+
+            }
         }
         catch
         {
