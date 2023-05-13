@@ -87,6 +87,11 @@ public class Player : MonoBehaviour
     public Transform RightHandPoint;
     public Transform RightHand;
 
+    //============================================//
+    // Stat??? 체력, 목숨, 코인 등등 들어갈 예정
+    [HideInInspector]
+    public int coin;
+
 
     private void Awake()
     {
@@ -126,6 +131,9 @@ public class Player : MonoBehaviour
         normalColliderCenter = controller.center;
         normalColliderRadius = controller.radius;
         gravityValue *= gravityMultiplier;
+
+        // Stats
+        coin = 0;
     }
 
     // Update is called once per frame
