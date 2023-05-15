@@ -47,7 +47,8 @@ public class JumpingState : State
     {
         base.LogicUpdate();
 
-        if(isGrounded) 
+
+        if (isGrounded) 
         {
             //stateMachine.ChangeState(player.idle);
             stateMachine.ChangeState(player.landing);

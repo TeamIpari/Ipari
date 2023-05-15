@@ -10,7 +10,8 @@ public class ClimbingState : State
     private GameObject _ladder;
     private float _ladderHeight;
     private float _playerHeight;
-    
+    bool jump;
+
     private bool _isTop;
     private static readonly int Climbing = Animator.StringToHash("climbing");
     private static readonly int Move = Animator.StringToHash("move");
@@ -21,11 +22,12 @@ public class ClimbingState : State
         stateMachine = _stateMachine;
     }
 
-    // ReSharper disable Unity.PerformanceAnalysis
+    // ReSharper disable Unity.Performa nceAnalysis
     public override void Enter()
     {
         base.Enter();
 
+        jump = false;
         _isTop = false;
         // �ִϸ��̼� ����
         player.animator.SetTrigger(Climbing);
@@ -45,6 +47,12 @@ public class ClimbingState : State
     {
         base.HandleInput();
 
+        if (jumpAction.triggered)
+        {
+            jump = true;
+        }
+
+
         input = climbingAction.ReadValue<Vector2>();
         velocity = new Vector3(0, input.y, 0);
 
@@ -56,6 +64,13 @@ public class ClimbingState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+
+
+        if (jump)
+        {
+            player.isClimbing = false;
+            stateMachine.ChangeState(player.jump);
+        }
 
         if (_isGrounded && input.y < 0) 
         {
