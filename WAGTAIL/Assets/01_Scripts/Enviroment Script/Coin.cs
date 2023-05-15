@@ -11,7 +11,8 @@ public class Coin : MonoBehaviour
     private void Start()
     {
         _player = Player.Instance;
-        this.GetComponent<MeshRenderer>().enabled = false;
+        // 추후에 밑에 주석 풀어줘야함 안하면 죽음
+        //this.GetComponent<MeshRenderer>().enabled = false;
     }
 
     // Player가 충돌 시 coin +1

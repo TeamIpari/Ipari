@@ -10,6 +10,7 @@ public class Pulling : MonoBehaviour, IInteractable
     [SerializeField] private GameObject _root;
     [SerializeField] private GameObject _interactable;
     [SerializeField] private Transform _movePos;
+    [SerializeField] private GameObject _shatterObject;
 
     private float _vAxis;
     private float _hAxis;
@@ -67,7 +68,8 @@ public class Pulling : MonoBehaviour, IInteractable
         _playerEquipPoint.transform.DetachChildren();
         if(GetMeshfloat() >= 90)
         {
-            _interactable.GetComponent<IInteractable>().Interact(null);
+            //_interactable.GetComponent<IInteractable>().Interact(null);
+            _shatterObject.GetComponent<ShatterObject>().Explode();
             Destroy(_root);
             Destroy(this.gameObject);
         }

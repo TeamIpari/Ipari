@@ -92,6 +92,8 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public int coin;
 
+    public int flower;
+
 
     private void Awake()
     {
@@ -134,6 +136,7 @@ public class Player : MonoBehaviour
 
         // Stats
         coin = 0;
+        flower = 0;
     }
 
     // Update is called once per frame
