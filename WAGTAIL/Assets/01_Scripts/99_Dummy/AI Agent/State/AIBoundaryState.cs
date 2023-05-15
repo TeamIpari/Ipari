@@ -16,9 +16,14 @@ public class AIBoundaryState : AIState
     public float changeTime;
     public float currentTime;
 
-    public AIBoundaryState(AIStateMachine _stateMachine) : base(_stateMachine)
+    public float comeDistance;
+    public float runDistance;
+
+    public AIBoundaryState(AIStateMachine _stateMachine, float comeDistance, float runDistance) : base(_stateMachine)
     {
         stateMachine = _stateMachine;
+        this.comeDistance = comeDistance;
+        this.runDistance = runDistance;
     }
 
     public override void SetChildren(AIState _state)
@@ -68,7 +73,7 @@ public class AIBoundaryState : AIState
         float distance = Mathf.Abs(
             Vector3.Distance(stateMachine.transform.position,
             stateMachine.target.transform.position));
-        if (distance > 7)
+        if (distance > comeDistance)
         {
             // Player가 범위를 벗어남.
             stateMachine.SetTarget(null);
@@ -76,7 +81,7 @@ public class AIBoundaryState : AIState
             //stateMachine.pause = true;
             stateMachine.ChangeState(parent);
         }
-        else if(distance < 3)
+        else if(distance < runDistance)
         {
             stateMachine.ChangeState(children[current]);
         }

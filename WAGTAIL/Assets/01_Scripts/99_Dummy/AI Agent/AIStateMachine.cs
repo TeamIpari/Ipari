@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Rendering.LookDev;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.AI;
 
+[Serializable]
 public class AIStateMachine
 {
     public GameObject gameObject;
@@ -16,10 +19,6 @@ public class AIStateMachine
     public CapsuleCollider capsuleCollider;
     public CharacterController characterController;
     public GameObject target;
-
-    public bool pause;
-    public float currentTime;
-    public float pauseTimer;
 
 
     public AIState currentState;
@@ -43,8 +42,8 @@ public class AIStateMachine
     public void Initialize(AIState startState)
     {
         currentState = startState;
-        pauseTimer = 1f;
-        currentTime = 0f;
+        //pauseTimer = 1f;
+        //currentTime = 0f;
         currentState.Enter();
     }
 

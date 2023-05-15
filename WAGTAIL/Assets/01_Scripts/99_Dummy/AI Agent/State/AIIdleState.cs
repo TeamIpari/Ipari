@@ -17,17 +17,21 @@ public class AIIdleState : AIState
     // 랜덤 대기 시간
     float movingTime = 0;
     float currentTime = 0;
+
+    float searchDistance = 0;
     
 
 
-    public AIIdleState(AIStateMachine _stateMachine) : base(_stateMachine)
+    public AIIdleState(AIStateMachine _stateMachine, float _moveTime,float SearchDistance) : base(_stateMachine)
     {
         stateMachine = _stateMachine;
+        movingTime = _moveTime;
+        this.searchDistance = SearchDistance;
     }
 
     public override void Enter()
     {
-        movingTime = Random.Range(2, 5);
+        //movingTime = Random.Range(2, 5);
         //movingTime = 1;
         currentTime = 0;
         Debug.Log("Start AI Idle State");
@@ -99,7 +103,7 @@ public class AIIdleState : AIState
     void SearchTarget()
     {
         Collider[] cols =
-            Physics.OverlapSphere(stateMachine.transform.position, 5f, LayerMask.GetMask("Player"));
+            Physics.OverlapSphere(stateMachine.transform.position, searchDistance, LayerMask.GetMask("Player"));
         // Player가 체크 되었는가?
         foreach (var c in cols)
         {
