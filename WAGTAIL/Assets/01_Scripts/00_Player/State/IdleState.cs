@@ -121,7 +121,7 @@ public class IdleState : State
             gravityVelocity.y = 0f;
         }
 
-        else if (player.controller.velocity.y < -0.5f)
+        else if (player.controller.velocity.y < -0.5f && !IsCheckGrounded())
         {
             //player.animator.SetTrigger("flight");
             flight = true;
@@ -155,7 +155,7 @@ public class IdleState : State
 
     private bool IsCheckGrounded()
     {
-        if (isGrounded) return true;
+        //if (isGrounded) return true;
 
         var ray = new Ray(player.transform.position + Vector3.up * 0.1f, Vector3.down);
 
