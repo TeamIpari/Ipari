@@ -5,15 +5,26 @@ using UnityEngine;
 public class Citizen : MonoBehaviour
 {
     // State Init
-    public AIStateMachine aiStateMachine;
-    public AIIdleState idle;
-    public AIPatrolState patrol;
-    public AIBoundaryState boundary;
-    public AIRunState run;
+    AIStateMachine aiStateMachine;
+    AIIdleState idle;
+    AIPatrolState patrol;
+    AIBoundaryState boundary;
+    AIRunState run;
 
+    [Header("Idle Data")]
+    public float moveTimer;
+    public float searchDistance;
+
+    [Header("Patrol Data")]
+    public float changeTimer;
+
+    [Header("boundary")]
+    public float comeDistance;
+    public float runDistance;
 
     //[Header("Standard")]
-    public bool Search = false;
+    //public bool Search = false;
+
 
 
     // Start is called before the first frame update
@@ -21,9 +32,9 @@ public class Citizen : MonoBehaviour
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
 
-        idle = new AIIdleState(aiStateMachine);
-        patrol = new AIPatrolState(aiStateMachine);
-        boundary = new AIBoundaryState(aiStateMachine);
+        idle = new AIIdleState(aiStateMachine, moveTimer, searchDistance);
+        patrol = new AIPatrolState(aiStateMachine, searchDistance);
+        boundary = new AIBoundaryState(aiStateMachine, comeDistance, runDistance);
         run = new AIRunState(aiStateMachine);
 
         // count == 0;

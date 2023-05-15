@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AIRunState : AIState
 {
+    Vector3 destination;
     public AIRunState(AIStateMachine _stateMachine) : base(_stateMachine)
     {
         stateMachine = _stateMachine;
@@ -12,6 +13,9 @@ public class AIRunState : AIState
     public override void Enter()
     {
         Debug.Log("Start AI Run State");
+        destination = new Vector3(stateMachine.transform.position.x - stateMachine.target.transform.position.x, 0f,
+            stateMachine.transform.position.z - stateMachine.target.transform.position.z).normalized;
+
     }
 
     public override void Exit()
@@ -27,15 +31,21 @@ public class AIRunState : AIState
     public override void Update()
     {
         Run();
-
         Search();
     }
 
     void Run()
     {
         // µµ¸ÁÃÄ!
-        //stateMachine.agent.Move();
+        Debug.Log("µ¼È²Ã­!");
+        stateMachine.agent.SetDestination(stateMachine.transform.position + destination * 5f);
 
+        //destination = new Vector3(transform.position.x - _targetPos.x, 0f, transform.position.z - _targetPos.z).normalized;
+
+        //currentTime = runTime;
+        //isWalking = false;
+        //isRunning = true;
+        //nav.speed = runSpeed;
     }
 
     void Search()
@@ -45,10 +55,6 @@ public class AIRunState : AIState
             stateMachine.target.transform.position));
         if (distance > 4)
         {
-            // Player°¡ ¹üÀ§¸¦ ¹ş¾î³².
-            //stateMachine.SetTarget(null);
-            //parent.current--;
-            //stateMachine.pause = true;
             stateMachine.ChangeState(parent);
         }
     }

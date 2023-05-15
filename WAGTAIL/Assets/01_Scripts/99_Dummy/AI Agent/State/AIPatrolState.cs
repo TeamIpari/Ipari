@@ -14,9 +14,11 @@ public class AIPatrolState : AIState
     float changeTime = 0;
     float currentTime = 0;
 
-    public AIPatrolState(AIStateMachine _stateMachine) : base(_stateMachine)
+    float searchDistance = 0;
+    public AIPatrolState(AIStateMachine _stateMachine, float searchDistance) : base(_stateMachine)
     {
         stateMachine = _stateMachine;
+        this.searchDistance = searchDistance;
     }
     public override void SetChildren(AIState _state)
     {
@@ -83,7 +85,7 @@ public class AIPatrolState : AIState
     void Search()
     {
         Collider[] cols =
-            Physics.OverlapSphere(stateMachine.transform.position, 5f, LayerMask.GetMask("Player"));
+            Physics.OverlapSphere(stateMachine.transform.position, searchDistance, LayerMask.GetMask("Player"));
         // Player가 체크 되었는가?
         foreach(var c in cols)
         {
