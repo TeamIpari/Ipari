@@ -27,7 +27,7 @@ public class ShatterObject : MonoBehaviour
         }
     }
 
-    private void Explode()
+    public void Explode()
     {
         if (_originalObject != null)
         {
@@ -60,7 +60,8 @@ public class ShatterObject : MonoBehaviour
             }
         }
     }
-
+    
+    // Debug¿ë ÇÔ¼ö
     private void Reset()
     {
         Destroy(_fractObj);
