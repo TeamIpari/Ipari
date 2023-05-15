@@ -18,10 +18,12 @@ public class Citizen : MonoBehaviour
     [Header("Patrol Data")]
     public float changeTimer;
 
-    [Header("boundary")]
+    [Header("Boundary")]
     public float comeDistance;
     public float runDistance;
 
+    //[Header("Run")]
+    //public float runCancelDistance;
     //[Header("Standard")]
     //public bool Search = false;
 
@@ -35,7 +37,7 @@ public class Citizen : MonoBehaviour
         idle = new AIIdleState(aiStateMachine, moveTimer, searchDistance);
         patrol = new AIPatrolState(aiStateMachine, searchDistance);
         boundary = new AIBoundaryState(aiStateMachine, comeDistance, runDistance);
-        run = new AIRunState(aiStateMachine);
+        run = new AIRunState(aiStateMachine, runDistance);
 
         // count == 0;
         idle.SetChildren(patrol);
@@ -45,8 +47,6 @@ public class Citizen : MonoBehaviour
         boundary.SetChildren(run);
 
         aiStateMachine.Initialize(idle);
-
-        
 
     }
 

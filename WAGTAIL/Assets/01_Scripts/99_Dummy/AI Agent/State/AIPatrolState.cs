@@ -28,7 +28,7 @@ public class AIPatrolState : AIState
 
     public override void Enter()
     {
-        Debug.Log("Start AI Patrol State" );
+        //Debug.Log("Start AI Patrol State" );
         changeTime = Random.Range(1, 5);
         //changeTime = 1;
         currentTime = 0;
@@ -36,7 +36,7 @@ public class AIPatrolState : AIState
 
     public override void Exit()
     {
-        Debug.Log("End AI Patrol State");
+        //Debug.Log("End AI Patrol State");
     }
 
     public override void OntriggerEnter(Collider other)
