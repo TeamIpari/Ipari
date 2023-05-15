@@ -34,12 +34,12 @@ public class AIIdleState : AIState
         //movingTime = Random.Range(2, 5);
         //movingTime = 1;
         currentTime = 0;
-        Debug.Log("Start AI Idle State");
+        //Debug.Log("Start AI Idle State");
     }
 
     public override void Exit()
     {
-        Debug.Log("End AI Idle State");
+        //Debug.Log("End AI Idle State");
     }
 
     public override void OntriggerEnter(Collider other)

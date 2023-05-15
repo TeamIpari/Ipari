@@ -34,7 +34,7 @@ public class AIBoundaryState : AIState
 
     public override void Enter()
     {
-        Debug.Log("Start AI Boundary State");
+        //Debug.Log("Start AI Boundary State");
         
         changeTime = Random.Range(2, 5);
         currentTime = 0;
@@ -42,7 +42,7 @@ public class AIBoundaryState : AIState
 
     public override void Exit()
     {
-        Debug.Log("End AI Boundary State");
+        //Debug.Log("End AI Boundary State");
     }
 
     public override void OntriggerEnter(Collider other)
@@ -54,7 +54,8 @@ public class AIBoundaryState : AIState
     {
         Search();
         // 경계의 태세
-        if(stateMachine.target != null) 
+        Debug.Log(!stateMachine.agent.isPathStale);
+        if(stateMachine.target != null && !stateMachine.agent.isOnOffMeshLink) 
         {
             Boundary();
         }
@@ -64,6 +65,7 @@ public class AIBoundaryState : AIState
 
     void Boundary()
     {
+        
         stateMachine.transform.LookAt(stateMachine.target.transform);
 
     }
