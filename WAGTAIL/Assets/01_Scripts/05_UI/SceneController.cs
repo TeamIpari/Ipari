@@ -6,6 +6,6 @@ public class SceneController : MonoBehaviour
 {
     public void SceneChange()
     {
-        SceneManager.LoadScene("Eunhye");
+        SceneManager.LoadScene("Eunhye_Village");
     }
 }
