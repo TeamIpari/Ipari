@@ -51,8 +51,8 @@ public class ShatterObject : MonoBehaviour
 
                     Destroy(_fractObj, 5);
 
-                    if (_explosionVFX != null )
-                    {
+                    if (_explosionVFX != null )         
+                    {           
                         GameObject exploVFX = Instantiate(_explosionVFX, _originalObject.transform.position, transform.rotation);
                         Destroy(exploVFX, 7);
                     }
