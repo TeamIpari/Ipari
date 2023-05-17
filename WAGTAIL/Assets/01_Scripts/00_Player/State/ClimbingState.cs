@@ -37,7 +37,7 @@ public class ClimbingState : State
         _playerHeight = 0f;
 
         // TODO : 올라가는 속도 Inspector에 빼야함
-        _playerSpeed = player.playerSpeed;
+        _playerSpeed = player.climbingSpeed;
         _isGrounded = player.controller.isGrounded;
         //gravityValue = player.gravityValue;
     }

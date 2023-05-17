@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     public float gravityMultiplier = 2;
     // =======================================
     public float rotationSpeed = 5f;
+    public float climbingSpeed = 0;
 
     [Header("Animation Smoothing")]
     [Range(0, 1)]
