@@ -116,7 +116,7 @@ public class Throw : MonoBehaviour, IInteractable
 
     IEnumerator Pickup()
     {
-        transform.position = new Vector3(_playerInteractionPoint.transform.position.x, 0f, _playerInteractionPoint.transform.position.z) ;
+        transform.position = new Vector3(_playerInteractionPoint.transform.position.x, transform.position.y, _playerInteractionPoint.transform.position.z) ;
         startPos = transform.position;
         _value = 0;
 
