@@ -7,11 +7,11 @@ public class basket : MonoBehaviour
     // 지붕
     public GameObject _lid;
 
-    [SerializeField] Vector3 _loopPoint1;
-    [SerializeField] Vector3 _loopPoint2;
+    //[SerializeField] Vector3 _loopPoint1;
+    //[SerializeField] Vector3 _loopPoint2;
 
-    [SerializeField] Vector3 _localPoint1;
-    [SerializeField] Vector3 _localPoint2;
+    [SerializeField] GameObject _localPoint1;
+    [SerializeField] GameObject _localPoint2;
     public Vector3 _loopTarget;
 
     [Range(1, 5)]
@@ -19,11 +19,17 @@ public class basket : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-        _localPoint1 = transform.position + _loopPoint1;
-        _localPoint2 = transform.position + _loopPoint2;
-        Gizmos.DrawWireCube(_localPoint1 + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
-        Gizmos.DrawWireCube(_localPoint2 + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+        if (_localPoint1 != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(_localPoint1.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+        }
+
+        if(_localPoint2 != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(_localPoint2.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+        }
 
     }
 
@@ -31,7 +37,7 @@ public class basket : MonoBehaviour
     void Start()
     {
         _lid.SetActive(false);
-        _loopTarget = _localPoint1;
+        _loopTarget = _localPoint1.transform.position;
     }
 
     // Update is called once per frame
@@ -39,7 +45,7 @@ public class basket : MonoBehaviour
     {
         if( Vector3.Distance(transform.position, _loopTarget) <= 1)
             // 초당 n의 속도로 목표를 향해 움직임.
-            _loopTarget = _loopTarget == _localPoint1 ? _localPoint2 : _localPoint1;
+            _loopTarget = _loopTarget == _localPoint1.transform.position ? _localPoint2.transform.position : _localPoint1.transform.position;
         else
             transform.position = Vector3.MoveTowards(transform.position, _loopTarget, 5f * Time.deltaTime);
     }
