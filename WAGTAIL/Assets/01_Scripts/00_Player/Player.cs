@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
     // Stat??? 체력, 목숨, 코인 등등 들어갈 예정
     [HideInInspector]
     public int coin;
-
+    [HideInInspector]
     public int flower;
 
 
