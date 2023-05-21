@@ -164,7 +164,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-
+                transform.SetParent(null);
             }
         }
         catch

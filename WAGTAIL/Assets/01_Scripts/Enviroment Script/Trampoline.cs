@@ -20,8 +20,6 @@ public class Trampoline : MonoBehaviour, IEnviroment
 
     public bool Interact()
     {
-        //cot++;
-        //ishit = true;
         // 밟았을 때 Player를 점프하게 함.
         Player.Instance.jumpHeight = jumpHeight;
         //Player.Instance.movementSM.ChangeState(Player.Instance.jump);
