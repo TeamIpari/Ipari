@@ -11,7 +11,6 @@ public class TutorialUIController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Test");
         if(other.CompareTag("Player"))
         {
             _interactable.SetActive(true);
