@@ -6,6 +6,7 @@ public class JumpingState : State
 {
     bool isGrounded;
 
+    bool jump;
     float gravityValue;
     float jumpHeight;
     float playerSpeed;
@@ -23,6 +24,7 @@ public class JumpingState : State
         base.Enter();
 
         isGrounded = false;
+        jump = false;
         gravityValue = player.gravityValue;
         jumpHeight = player.jumpHeight;
         playerSpeed = player.playerSpeed;
@@ -47,8 +49,11 @@ public class JumpingState : State
     {
         base.LogicUpdate();
 
-
-        if (isGrounded) 
+        if(jump)
+        {
+            stateMachine.ChangeState(player.jump);
+        }
+        else if (isGrounded) 
         {
             //stateMachine.ChangeState(player.idle);
             stateMachine.ChangeState(player.landing);
@@ -94,6 +99,11 @@ public class JumpingState : State
     void Jump()
     {
         gravityVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+    }
+
+    public void Jumping()
+    {
+        jump = true;
     }
 
 }

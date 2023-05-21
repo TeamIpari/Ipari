@@ -24,15 +24,19 @@ public class Trampoline : MonoBehaviour, IEnviroment
         //ishit = true;
         // 밟았을 때 Player를 점프하게 함.
         Player.Instance.jumpHeight = jumpHeight;
-        Player.Instance.movementSM.ChangeState(Player.Instance.jump);
-        //if(Player.Instance.movementSM.currentState == Player.Instance.idle)
-        //{
-        //    Player.Instance.idle.Jump();
-        //}
-        //else if(Player.Instance.movementSM.currentState == Player.Instance.flight)
-        //{
-        //    Player.Instance.flight.Jump();
-        //}
+        //Player.Instance.movementSM.ChangeState(Player.Instance.jump);
+        if (Player.Instance.movementSM.currentState == Player.Instance.idle)
+        {
+            Player.Instance.idle.Jumping();
+        }
+        else if (Player.Instance.movementSM.currentState == Player.Instance.flight)
+        {
+            Player.Instance.flight.Jumping();
+        }
+        else if (Player.Instance.movementSM.currentState == Player.Instance.jump)
+        {
+            Player.Instance.jump.Jumping();
+        }
         if (!move)
             move = true;
         StartCoroutine(rbJump());
