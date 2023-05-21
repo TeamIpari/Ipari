@@ -102,7 +102,7 @@ public class FlightState : State
         base.Exit();
     }
     
-    public void Jump()
+    public void Jumping()
     {
         jump = true;
     }
