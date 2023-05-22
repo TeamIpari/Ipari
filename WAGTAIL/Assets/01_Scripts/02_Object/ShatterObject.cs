@@ -49,7 +49,7 @@ public class ShatterObject : MonoBehaviour
                         StartCoroutine(Shrink(t, 2));
                     }
 
-                    Destroy(_fractObj, 5);
+                    Destroy(_fractObj, 3);
 
                     if (_explosionVFX != null )         
                     {           
