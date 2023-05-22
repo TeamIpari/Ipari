@@ -31,7 +31,7 @@ public class DropState : State
 
         if (timePassed > dropTime)
         {
-            player.animator.SetTrigger("move");
+            //player.animator.SetTrigger("move");
             stateMachine.ChangeState(player.idle);
         }
         timePassed += Time.deltaTime;
