@@ -59,7 +59,7 @@ public class FlightState : State
             stateMachine.ChangeState(player.jump);
         }
         
-        if (isGrounded)
+        else if (isGrounded)
         {
             stateMachine.ChangeState(player.landing);
         }
@@ -102,5 +102,8 @@ public class FlightState : State
         base.Exit();
     }
     
-    
+    public void Jumping()
+    {
+        jump = true;
+    }
 }

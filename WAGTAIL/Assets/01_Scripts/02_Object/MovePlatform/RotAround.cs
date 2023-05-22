@@ -1,25 +1,46 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class RotAround : MonoBehaviour
+public class RotAround : MonoBehaviour, IEnviroment
 {
     public Transform tf;
     public float gravity = 1.0f;
     public float addGravity = .5f;
+
+    public string EnviromentPrompt => throw new System.NotImplementedException();
+
+    bool _ishit = false;
+
+    public bool _hit { get {return _ishit; } set { _ishit = value; } }
+    public bool a = false;
+    public bool Interact()
+    {
+        a = true;
+        return false;
+    }
     // Start is called before the first frame update
     void Start()
     {
-
+        _hit = _ishit;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (transform.childCount > 0 && transform.rotation.z > 0)
+        this.transform.RotateAround(tf.position, Vector3.up , (gravity * Time.deltaTime));
+        if(a)
         {
-            this.transform.RotateAround(tf.position, Vector3.back, (gravity * Time.deltaTime));
-
+            Player.Instance.controller.enabled = false;
+            Player.Instance.transform.RotateAround(tf.position, Vector3.up,(gravity * Time.deltaTime));
+            Player.Instance.controller.enabled = true;
+            if (!Player.Instance.controller.isGrounded)
+            {
+                a = false;
+                //Player.Instance.transform.SetParent(null);
+            }
         }
     }
 

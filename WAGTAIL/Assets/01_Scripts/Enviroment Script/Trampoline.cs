@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class Trampoline : MonoBehaviour, IEnviroment
@@ -19,11 +20,21 @@ public class Trampoline : MonoBehaviour, IEnviroment
 
     public bool Interact()
     {
-        //ishit = true;
         // 밟았을 때 Player를 점프하게 함.
-        saveHeight = Player.Instance.jumpHeight;
         Player.Instance.jumpHeight = jumpHeight;
-        Player.Instance.idle.Jump();
+        //Player.Instance.movementSM.ChangeState(Player.Instance.jump);
+        if (Player.Instance.movementSM.currentState == Player.Instance.idle)
+        {
+            Player.Instance.idle.Jumping();
+        }
+        else if (Player.Instance.movementSM.currentState == Player.Instance.flight)
+        {
+            Player.Instance.flight.Jumping();
+        }
+        else if (Player.Instance.movementSM.currentState == Player.Instance.jump)
+        {
+            Player.Instance.jump.Jumping();
+        }
         if (!move)
             move = true;
         StartCoroutine(rbJump());
@@ -33,7 +44,7 @@ public class Trampoline : MonoBehaviour, IEnviroment
 
     IEnumerator rbJump()
     {
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(0.05f);
         Player.Instance.jumpHeight = saveHeight;
 
     }
@@ -42,17 +53,20 @@ public class Trampoline : MonoBehaviour, IEnviroment
     // Start is called before the first frame update
     void Start()
     {
-        _targetPos = _localHeight;
+
+        saveHeight = Player.Instance.jumpHeight;
+        _targetPos = _heightPos.transform.position;
     }
 
     public float _curtime = 0;
-    [SerializeField] Vector3 _lowPos;
-    [SerializeField] Vector3 _heightPos;
-    Vector3 _localLow;
-    Vector3 _localHeight;
+    [SerializeField] Transform _lowPos;
+    [SerializeField] Transform _heightPos;
+    //Vector3 _localLow;
+    //Vector3 _localHeight;
     [SerializeField] Vector3 _targetPos;
     public float _moveTime = 0;
     public float _rbTime = 0;
+
 
     private void FixedUpdate()
     {
@@ -74,7 +88,7 @@ public class Trampoline : MonoBehaviour, IEnviroment
         // 초당 n의 속도로 목표를 향해 움직임.
         if (Vector3.Distance(transform.position, _targetPos) <= 1)
         {
-            _targetPos = _targetPos == _localHeight ? _localLow : _localHeight;
+            _targetPos = _targetPos == _heightPos.position ? _lowPos.position : _heightPos.position;
             move = false;
         }
         else
@@ -83,12 +97,17 @@ public class Trampoline : MonoBehaviour, IEnviroment
     
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-        _localHeight = transform.position + _heightPos;
-        _localLow = transform.position + _lowPos;
-        Gizmos.DrawWireCube(_localHeight + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
-        Gizmos.DrawWireCube(_localLow + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+        if (_lowPos != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(_lowPos.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+        }
 
+        if (_heightPos != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(_heightPos.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+        }
     }
 
     // Update is called once per frame

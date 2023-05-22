@@ -16,11 +16,13 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     public float _show_n_UpTime = 1.0f;
 
     // 위 아래 최종 이동 위치
-    public float downPos = 0.0f;
-    public float upPos = 0.0f;
+    //public float downPos = 0.0f;
+    //public float upPos = 0.0f;
     public float moveSpeed = 0.0f;
 
-    
+    [SerializeField] private Transform _startPoint;
+    [SerializeField] private Transform _endPoint;
+
 
     Vector3 _localPoint1;
     Vector3 _localPoint2;
@@ -44,11 +46,17 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     {
         if (isUpdownMode)
         {
-            Gizmos.color = Color.green;
-            _localPoint1 = transform.position + new Vector3(0f, downPos, 0f);
-            _localPoint2 = transform.position + new Vector3(0f, upPos, 0f);
-            Gizmos.DrawWireCube(_localPoint1 + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
-            Gizmos.DrawWireCube(_localPoint2 + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+            if (_startPoint != null)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireCube(_startPoint.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+            }
+
+            if (_endPoint != null)
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireCube(_endPoint.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+            }
         }
     }
 
@@ -57,9 +65,9 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         _mesh.material.color = Color.red;
         yield return new WaitForSeconds(_hide_n_DownTime);
 
-        while(Mathf.Abs(Vector3.Distance(transform.position, _localPoint1)) > 0.1f )
+        while(Mathf.Abs(Vector3.Distance(transform.position, _endPoint.transform.position)) > 0.1f )
         {
-            transform.position = Vector3.MoveTowards(transform.position, _localPoint1, moveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _endPoint.transform.position, moveSpeed * Time.deltaTime);
             yield return new WaitForSeconds(0.001f);
         }
         StartCoroutine(UpPlatform());
@@ -70,9 +78,9 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         _mesh.material.color = Color.gray;
         yield return new WaitForSeconds(_show_n_UpTime);
 
-        while (Mathf.Abs(Vector3.Distance(transform.position, _localPoint2)) > 0.1f)
+        while (Mathf.Abs(Vector3.Distance(transform.position, _startPoint.transform.position)) > 0.1f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _localPoint2, moveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _startPoint.transform.position, moveSpeed * Time.deltaTime);
             yield return new WaitForSeconds(0.001f);
         }
         ishit = false;

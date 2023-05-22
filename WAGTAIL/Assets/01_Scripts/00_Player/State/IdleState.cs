@@ -166,7 +166,7 @@ public class IdleState : State
         return Physics.Raycast(ray, maxDistance);
     }
 
-    public void Jump()
+    public void Jumping()
     {
         jump = true;
     }
