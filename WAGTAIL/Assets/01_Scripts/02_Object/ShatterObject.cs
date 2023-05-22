@@ -10,7 +10,7 @@ public class ShatterObject : MonoBehaviour
     [SerializeField] private float _explosionMinForce = 5;
     [SerializeField] private float _explosionMaxForce = 100;
     [SerializeField] private float _explosionForceRadius = 10;
-    [SerializeField] private float _fragScaleFactor = 1;
+    [SerializeField] private float _fragScaleFactor = 0.01f;
 
     private GameObject _fractObj;
 
