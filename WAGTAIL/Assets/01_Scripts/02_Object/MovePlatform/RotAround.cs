@@ -7,7 +7,8 @@ using UnityEngine.UIElements;
 public class RotAround : MonoBehaviour, IEnviroment
 {
     public Transform tf;
-    public float gravity = 1.0f;
+    public bool reverse = false;
+    public float speed = 1.0f;
     public float addGravity = .5f;
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
@@ -15,10 +16,10 @@ public class RotAround : MonoBehaviour, IEnviroment
     bool _ishit = false;
 
     public bool _hit { get {return _ishit; } set { _ishit = value; } }
-    public bool a = false;
+    public bool rot = false;
     public bool Interact()
     {
-        a = true;
+        rot = true;
         return false;
     }
     // Start is called before the first frame update
@@ -30,18 +31,41 @@ public class RotAround : MonoBehaviour, IEnviroment
     // Update is called once per frame
     void Update()
     {
-        this.transform.RotateAround(tf.position, Vector3.up , (gravity * Time.deltaTime));
-        if(a)
+        RotatePlatform();
+        if (rot)
         {
             Player.Instance.controller.enabled = false;
-            Player.Instance.transform.RotateAround(tf.position, Vector3.up,(gravity * Time.deltaTime));
+            RotatePlayer();
             Player.Instance.controller.enabled = true;
             if (!Player.Instance.controller.isGrounded)
             {
-                a = false;
-                //Player.Instance.transform.SetParent(null);
+                rot = false;
             }
         }
+    }
+
+    public void RotatePlatform()
+    {
+        float temp = speed;
+        if (reverse)
+            temp *= -1 ;
+        else
+            temp *= 1;
+        this.transform.RotateAround(tf.position, Vector3.up, (temp * Time.deltaTime));
+
+    }
+
+    public void RotatePlayer()
+    {
+        float temp = speed;
+        if (reverse)
+            temp *= -1;
+        else
+            temp *= 1;
+        
+        //Player.Instance.transform.RotateAround(tf.position, Vector3.up, (-speed * Time.deltaTime));
+        Player.Instance.transform.RotateAround(tf.position, Vector3.up, (temp * Time.deltaTime));
+
     }
 
     private void OnTriggerStay(Collider other)
@@ -68,7 +92,6 @@ public class RotAround : MonoBehaviour, IEnviroment
 
                 // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
             }
-
         }
         catch
         {
@@ -101,15 +124,11 @@ public class RotAround : MonoBehaviour, IEnviroment
             {
                 collision.gameObject.GetComponent<SThrow>().Throwing();
                 collision.gameObject.transform.parent = this.transform;
-                //targetPos += Vector3.down * addGravity;
                 if (transform.childCount < 3)
                 {
-                    gravity += addGravity;
+                    speed += addGravity;
                 }
-                //transform.RotateAround();
-
             }
-
         }
         catch
         {
