@@ -19,6 +19,8 @@ public class IdleState : State
 
     Vector3 cVelocity;
 
+    private GameObject _FXMove;
+
     public IdleState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
         player = _player;
@@ -45,6 +47,10 @@ public class IdleState : State
         playerSpeed = player.playerSpeed;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
+
+        // FX
+        // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
+        _FXMove = player.MoveFX;
     }
 
     public override void HandleInput()
@@ -62,6 +68,20 @@ public class IdleState : State
         pull = player.isPull;
 
         input = moveAction.ReadValue<Vector2>();
+
+        // FX
+        // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
+        // ========================================================
+        if(input.x != 0 || input.y != 0)
+        {
+            _FXMove.SetActive(true);
+        }
+
+        if(input.x == 0 && input.y == 0)
+        {
+            _FXMove.SetActive(false);
+        }
+        // ========================================================
         velocity = new Vector3(input.x, 0, input.y);
 
         velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
@@ -145,6 +165,11 @@ public class IdleState : State
         player.isIdle = false;
         gravityVelocity.y = 0f;
         player.playerVelocity = new Vector3(input.x, 0, input.y);
+        // FX
+        // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
+        // ========================================================
+        _FXMove.SetActive(false);
+        // ========================================================
 
         if (velocity.sqrMagnitude > 0)
         {
