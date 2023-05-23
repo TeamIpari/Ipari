@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using UnityEngine;
 
+
+public enum STATES
+{
+    IDLE,
+    MOVE,
+    ATTCK1,
+    ATTCK2,
+    ATTCK3,
+}
 public class DummyBoss : MonoBehaviour
 {
     AIStateMachine aiStateMachine;
     AIIdleState idle;
     AILineMove move;
 
+    public List<STATES> Pattern;
 
     public bool Die = false;
     [Header("Idle")]
@@ -29,7 +39,7 @@ public class DummyBoss : MonoBehaviour
         
 
         //aiStateMachine.
-        idle.SetChildren(move);
+        //idle.SetChildren(move);
 
         aiStateMachine.Initialize(idle);
     }

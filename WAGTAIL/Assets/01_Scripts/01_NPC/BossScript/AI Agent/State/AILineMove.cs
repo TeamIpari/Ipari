@@ -56,7 +56,13 @@ public class AILineMove : AIState
         Move();
         if (currentTimer > changeTimer)
         {
-            stateMachine.ChangeState(parent);
+            if (children.Count > 0)
+                stateMachine.ChangeState(children[current]);
+            else if (parent != null)
+                stateMachine.ChangeState(parent);
+            else
+                Debug.Log("연결되어있지 않음.");
+
             currentTimer = 0;
         }
     }

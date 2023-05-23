@@ -84,12 +84,15 @@ public class AIIdleState : AIState
         {
             if (currentTime > movingTime)
             {
-                if (children.Count > 0 )
+                if (children.Count > 0)
                 {
                     stateMachine.ChangeState(children[current]);
                 }
-                else
+                else if (parent != null)
                     stateMachine.ChangeState(parent);
+                else
+                    Debug.Log("연결되어있지 않음.") ;
+                currentTime = 0;
             }
         }
         catch
