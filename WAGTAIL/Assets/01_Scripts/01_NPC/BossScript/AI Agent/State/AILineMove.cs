@@ -29,8 +29,8 @@ public class AILineMove : AIState
 
     public override void Enter()
     {
-        
-        //Debug.Log("Start Ai Line Move State");
+
+        Debug.Log("Start Ai Line Move State");
         int num;
         do
         { 
@@ -42,7 +42,7 @@ public class AILineMove : AIState
 
     public override void Exit()
     {
-        //Debug.Log("End Ai Line Move State");s
+        Debug.Log("End Ai Line Move State"); 
     }
 
     public override void OntriggerEnter(Collider other)
@@ -60,6 +60,8 @@ public class AILineMove : AIState
                 stateMachine.ChangeState(children[current]);
             else if (parent != null)
                 stateMachine.ChangeState(parent);
+            else if (stateMachine.pattern.Count > 0)
+                stateMachine.NextPattern();
             else
                 Debug.Log("연결되어있지 않음.");
 

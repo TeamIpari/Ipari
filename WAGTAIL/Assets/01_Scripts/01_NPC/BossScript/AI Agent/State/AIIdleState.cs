@@ -90,6 +90,8 @@ public class AIIdleState : AIState
                 }
                 else if (parent != null)
                     stateMachine.ChangeState(parent);
+                else if (stateMachine.pattern.Count > 0)
+                    stateMachine.NextPattern();
                 else
                     Debug.Log("연결되어있지 않음.") ;
                 currentTime = 0;
