@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using Unity.VisualScripting;
 //using UnityEditor.Rendering.LookDev;
 //using UnityEditor.Search;
 using UnityEngine;
@@ -20,8 +22,12 @@ public class AIStateMachine
     public CharacterController characterController;
     public GameObject target;
 
+    public List<AIState> pattern = new List<AIState>();
+
 
     public AIState currentState;
+
+    private int cur = 0;
 
     public static AIStateMachine CreateFormGameObject(GameObject gameObject)
     {
@@ -35,7 +41,7 @@ public class AIStateMachine
         ai.boxCollider = gameObject.GetComponent<BoxCollider>();
         ai.capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
         ai.characterController = gameObject.GetComponent<CharacterController>();
-
+        
         return ai;
     }
 
@@ -44,6 +50,9 @@ public class AIStateMachine
         currentState = startState;
         //pauseTimer = 1f;
         //currentTime = 0f;
+        pattern.Clear();
+        cur = 0;
+
         currentState.Enter();
     }
 
@@ -64,5 +73,20 @@ public class AIStateMachine
     public void SetTarget(GameObject obj)
     {
         target = obj;
+    }
+
+    public void NextPattern()
+    {
+        if (cur == pattern.Count)
+        {
+            cur = 0;
+        }
+        ChangeState(pattern[cur]);
+        cur++;
+    }
+
+    public void AddPatern(AIState _state)
+    {
+        pattern.Add(_state);
     }
 }
