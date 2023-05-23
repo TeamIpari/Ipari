@@ -31,10 +31,7 @@ public class AIIdleState : AIState
 
     public override void Enter()
     {
-        //movingTime = Random.Range(2, 5);
-        //movingTime = 1;
         currentTime = 0;
-        //Debug.Log("Start AI Idle State");
     }
 
     public override void Exit()
@@ -60,8 +57,9 @@ public class AIIdleState : AIState
         {
             // 이동 시간 결정
             CheckMoveTime();
-            // 실시간 서치
-            SearchTarget();
+            // 0이 아닐 경우 실시간 서치 0이면 서치 기능이 없는거.
+            if (searchDistance > 0)
+                SearchTarget();
         }
         else
         {
@@ -86,12 +84,15 @@ public class AIIdleState : AIState
         {
             if (currentTime > movingTime)
             {
-                if (children.Count > 0 )
+                if (children.Count > 0)
                 {
                     stateMachine.ChangeState(children[current]);
                 }
-                else
+                else if (parent != null)
                     stateMachine.ChangeState(parent);
+                else
+                    Debug.Log("연결되어있지 않음.") ;
+                currentTime = 0;
             }
         }
         catch
