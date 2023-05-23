@@ -31,10 +31,7 @@ public class AIIdleState : AIState
 
     public override void Enter()
     {
-        //movingTime = Random.Range(2, 5);
-        //movingTime = 1;
         currentTime = 0;
-        //Debug.Log("Start AI Idle State");
     }
 
     public override void Exit()
@@ -60,8 +57,9 @@ public class AIIdleState : AIState
         {
             // 이동 시간 결정
             CheckMoveTime();
-            // 실시간 서치
-            SearchTarget();
+            // 0이 아닐 경우 실시간 서치 0이면 서치 기능이 없는거.
+            if (searchDistance > 0)
+                SearchTarget();
         }
         else
         {
