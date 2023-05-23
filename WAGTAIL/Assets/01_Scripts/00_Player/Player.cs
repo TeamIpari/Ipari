@@ -91,6 +91,12 @@ public class Player : MonoBehaviour
     public Transform RightHandPoint;
     public Transform RightHand;
 
+    // ============================================//
+    // FX
+    // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
+    [Header("FX")]
+    public GameObject MoveFX;
+
     //============================================//
     // Stat??? 체력, 목숨, 코인 등등 들어갈 예정
     [HideInInspector]

@@ -13,7 +13,7 @@ public class Coin : MonoBehaviour
         _player = Player.Instance;
         // 추후에 밑에 주석 풀어줘야함 안하면 죽음
         // 배치를 위한 Dummy Mesh이므로 Coin 모델링 또는 FX완성 되면 반드시 주석을 풀어줘야함
-        //this.GetComponent<MeshRenderer>().enabled = false;
+        this.GetComponent<MeshRenderer>().enabled = false;
     }
 
     // Player가 충돌 시 coin +1
