@@ -13,12 +13,15 @@ public class IdleState : State
     bool jump;
     bool pull;
     bool flight;
+    bool slide;
     Vector3 currentVelocity;
     bool isGrounded;
     float playerSpeed;
+    float slopeSpeed;
 
     Vector3 cVelocity;
 
+    private Vector3 hitPointNormal;
     public IdleState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
         player = _player;
@@ -36,6 +39,7 @@ public class IdleState : State
         pull = player.isPull;
         carry = player.isCarry;
         flight = player.isFlight;
+        slide = player.isSlide;
 
         input = Vector2.zero;
         velocity = Vector3.zero;
@@ -45,6 +49,7 @@ public class IdleState : State
         playerSpeed = player.playerSpeed;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
+        slopeSpeed = player.slopeSpeed;
     }
 
     public override void HandleInput()
@@ -128,7 +133,14 @@ public class IdleState : State
         }
 
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-        
+
+        if (slide && IsSliding)
+        {
+            currentVelocity = new Vector3(hitPointNormal.x, -hitPointNormal.y, hitPointNormal.z) * slopeSpeed;
+
+            Debug.Log(hitPointNormal);
+        }
+
         player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
         
         if (velocity.sqrMagnitude > 0)
@@ -170,4 +182,25 @@ public class IdleState : State
     {
         jump = true;
     }
+
+    private bool IsSliding
+    {
+        get
+        {
+            Debug.DrawRay(player.transform.position, Vector3.down, Color.red);
+            if (player.controller.isGrounded && Physics.Raycast(player.transform.position, Vector3.down, out RaycastHit slopeHit, 2f))
+            {
+                //Debug.Log("AA");
+                hitPointNormal = slopeHit.normal;
+                //Debug.Log(hitPointNormal);
+                Debug.Log(Vector3.Angle(hitPointNormal, Vector3.up) > player.controller.slopeLimit);
+                return Vector3.Angle(hitPointNormal, Vector3.up) > player.controller.slopeLimit;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
 }

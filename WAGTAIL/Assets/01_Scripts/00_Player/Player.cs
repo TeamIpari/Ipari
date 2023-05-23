@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     // =======================================
     public float rotationSpeed = 5f;
     public float climbingSpeed = 0;
+    // =======================================
+    public float slopeSpeed = 0f;
 
     [Header("Animation Smoothing")]
     [Range(0, 1)]
@@ -42,6 +44,7 @@ public class Player : MonoBehaviour
     // 당기는데, 원점으로부터 멀어지면 멀어질 수록 최대 도달점과 비교하여
     // 퍼센테이지로 이동속도를 줄임.
     public bool isPull = false;
+    public bool isSlide = true;
     
     //============================================//
     // State
