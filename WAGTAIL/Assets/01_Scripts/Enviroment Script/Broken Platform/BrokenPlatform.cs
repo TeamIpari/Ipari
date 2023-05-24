@@ -35,7 +35,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     {
         ishit = true;
         if (!isUpdownMode)
-            StartCoroutine(hidePlatform());
+            StartCoroutine(HidePlatform());
         else
             StartCoroutine(DownPlatform());
 
@@ -60,7 +60,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         }
     }
 
-    IEnumerator DownPlatform()
+    IEnumerator DownPlatform(bool callBack = false)
     {
         _mesh.material.color = Color.red;
         yield return new WaitForSeconds(_hide_n_DownTime);
@@ -70,7 +70,8 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             transform.position = Vector3.MoveTowards(transform.position, _endPoint.transform.position, moveSpeed * Time.deltaTime);
             yield return new WaitForSeconds(0.001f);
         }
-        StartCoroutine(UpPlatform());
+        if(!callBack)
+            StartCoroutine(UpPlatform());
     }
 
     IEnumerator UpPlatform()
@@ -87,7 +88,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     }
 
-    IEnumerator hidePlatform()
+    IEnumerator HidePlatform(bool callBack = false)
     {
         _mesh.material.color = Color.red;
         yield return new WaitForSeconds(_hide_n_DownTime);
@@ -95,16 +96,34 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         _col.enabled = false;
         _mesh.enabled = false;
 
-        StartCoroutine(showPlatform());
+        if (!callBack)
+            StartCoroutine(ShowPlatform());
     }
 
-    IEnumerator showPlatform()
+    IEnumerator ShowPlatform()
     {
         _mesh.material.color = Color.gray;
         yield return new WaitForSeconds(_show_n_UpTime);
         _col.enabled = true;
         _mesh .enabled = true;
         ishit = false;
+    }
+
+    public void HideOnly(bool _isUpdown)
+    {
+        _mesh = GetComponent<MeshRenderer>();
+        _col = GetComponent<Collider>();
+        if (!isUpdownMode)
+            StartCoroutine(HidePlatform(_isUpdown));
+        else 
+        { 
+            if(_startPoint == null)
+            {
+                _startPoint = transform.parent.GetChild(1);
+                _endPoint = transform.parent.GetChild(2);
+            }
+            StartCoroutine(DownPlatform(_isUpdown));
+        }
     }
 
 
