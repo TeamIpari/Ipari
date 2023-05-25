@@ -22,6 +22,8 @@ public class DummyBoss : MonoBehaviour
     DummyAttack3 attack3;
 
     public List<STATES> Pattern;
+    public GameObject effect;
+    // Effect를 어떻게 표시할까?
 
     public bool Die = false;
     [Header("Idle")]
@@ -30,15 +32,14 @@ public class DummyBoss : MonoBehaviour
 
     [Header("Move")]
     public Transform[] points;
-    //public Transform curPoint;
-        
+
     // Start is called before the first frame update
     void Start()
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
         idle = new AIIdleState(aiStateMachine, moveTimer, SearchDistance);
         move = new AILineMove(aiStateMachine, points);
-        attack1 = new DummyAttack1(aiStateMachine);
+        attack1 = new DummyAttack1(aiStateMachine, effect);
         attack2 = new DummyAttack2(aiStateMachine);
         attack3 = new DummyAttack3(aiStateMachine);
 
