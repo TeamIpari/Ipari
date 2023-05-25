@@ -22,7 +22,8 @@ public class DummyBoss : MonoBehaviour
     DummyAttack3 attack3;
 
     public List<STATES> Pattern;
-    public GameObject effect;
+
+    
     // Effect를 어떻게 표시할까?
 
     public bool Die = false;
@@ -33,14 +34,27 @@ public class DummyBoss : MonoBehaviour
     [Header("Move")]
     public Transform[] points;
 
+    [Header("Attack1")]
+    public GameObject effect;
+    public GameObject tentacle;
+
+    [Header("Attack2")]
+    public Transform shootPoint;
+    public int count;
+    public float searchRadius;
+    public GameObject Bullet;
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
         idle = new AIIdleState(aiStateMachine, moveTimer, SearchDistance);
         move = new AILineMove(aiStateMachine, points);
-        attack1 = new DummyAttack1(aiStateMachine, effect);
-        attack2 = new DummyAttack2(aiStateMachine);
+        attack1 = new DummyAttack1(aiStateMachine,tentacle, effect);
+        attack2 = new DummyAttack2(aiStateMachine, Bullet, shootPoint, effect, count, searchRadius);
         attack3 = new DummyAttack3(aiStateMachine);
 
         //aiStateMachine.
@@ -50,7 +64,7 @@ public class DummyBoss : MonoBehaviour
         aiStateMachine.Initialize(idle);
         if (Pattern.Count > 0)
         {
-            for(int i = 1; i < Pattern.Count; i++)
+            for(int i = 0; i < Pattern.Count; i++)
             { 
                 switch (Pattern[i])
                 {

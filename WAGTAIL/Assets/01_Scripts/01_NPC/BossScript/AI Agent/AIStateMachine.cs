@@ -66,7 +66,7 @@ public class AIStateMachine
         }
         else
         {
-            Debug.Log("같은 State를 호출함.");
+            //Debug.Log("같은 State를 호출함.");
         }
     }
 
@@ -77,12 +77,15 @@ public class AIStateMachine
 
     public void NextPattern()
     {
-        if (cur == pattern.Count)
+        cur++;
+        if (cur >= pattern.Count)
         {
             cur = 0;
         }
+        //cur++;
+        //Debug.Log("cur = " + cur.ToString() + " / patton = " + pattern.Count.ToString());
         ChangeState(pattern[cur]);
-        cur++;
+
     }
 
     public void AddPatern(AIState _state)
