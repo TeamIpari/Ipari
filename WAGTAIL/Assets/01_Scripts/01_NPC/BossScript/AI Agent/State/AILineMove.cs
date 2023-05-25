@@ -52,9 +52,7 @@ public class AILineMove : AIState
 
     public override void Update()
     {
-        currentTimer += Time.deltaTime;
-        Move();
-        if (currentTimer > changeTimer)
+        if (Move())
         {
             if (children.Count > 0)
                 stateMachine.ChangeState(children[current]);
@@ -65,15 +63,21 @@ public class AILineMove : AIState
             else
                 Debug.Log("연결되어있지 않음.");
 
-            currentTimer = 0;
+            //currentTimer = 0;
         }
     }
 
     // 목표 지점으로 이동하는 스크립트.
-    void Move()
+    bool Move()
     {
-        Vector3 v = movingPoint[cur].position - stateMachine.transform.position;
-        stateMachine.transform.Translate(v.normalized * 1.5f * Time.deltaTime);
+        if (Vector3.Distance(stateMachine.transform.position, movingPoint[cur].position) <= 0.1)
+        {
+            stateMachine.transform.position = movingPoint[cur].position;
+            return true;
+        }
+        stateMachine.transform.position
+            = Vector3.MoveTowards(stateMachine.transform.position, movingPoint[cur].position, 5f * Time.deltaTime);
+        return false;
         //Debug.Log(movingPoint[cur].name);
         //Debug.Log(movingPoint[cur].position);
     }
