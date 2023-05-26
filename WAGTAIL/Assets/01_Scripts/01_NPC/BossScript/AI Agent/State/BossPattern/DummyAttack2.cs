@@ -5,46 +5,43 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.SceneTemplate;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class DummyAttack2 : AIState
 {
-    int targetCount = 0;
     float curTimer = 0;
-    float changeTimer = 2;
-    float rad;
-    float time = 2f;
-    Transform shootPoint;
-    GameObject blackBullet;
-    GameObject obj;
-    
-    List<Vector3> targets = new List<Vector3>();
-    List<GameObject> marker = new List<GameObject>();
+    float changeTimer = 3;
 
-    public DummyAttack2(AIStateMachine _stateMachine, GameObject bullet,Transform _sp,GameObject _obj, int _count , float _rad) : base(_stateMachine)
+    Transform shootPoint;
+    GameObject bullet;
+    GameObject circleObj;
+    Vector3 target;
+    GameObject marker;
+
+    float time;
+
+
+    public DummyAttack2(AIStateMachine _stateMachine, GameObject _bullet, Transform _sp, GameObject _obj, float _time) : base(_stateMachine)
     {
         stateMachine = _stateMachine;
+        circleObj = _obj;
         shootPoint = _sp;
-        targetCount = _count;
-        blackBullet = bullet;
-        rad = _rad;
-        obj = _obj;
+        bullet = _bullet;
+        time = _time;
     }
 
     public override void Enter()
     {
+        // 타겟 설정.
         CreateMarker();
         PositionLuncher();
         Debug.Log("Start Attack2");
     }
 
-
     public override void Exit()
     {
-        foreach(var m in marker)
-        {
-            GameObject.Destroy(m);
-        }
-        Debug.Log("End Attack2");
+        GameObject.Destroy(marker);
+        Debug.Log("End Attack1");
     }
 
     public override void OntriggerEnter(Collider other)
@@ -54,8 +51,8 @@ public class DummyAttack2 : AIState
 
     public override void Update()
     {
-        // Bullet이 충돌할 경우 다음 스테이트로 이동.
         curTimer += Time.deltaTime;
+        //base.Update();
         if (curTimer > changeTimer)
         {
             if (children.Count > 0)
@@ -72,36 +69,27 @@ public class DummyAttack2 : AIState
     }
     void CreateMarker()
     {
-        targets.Clear();
-        // Player 기준 원 범위 서치
-        for (int i = 0; i < targetCount; i++)
-            targets.Add(Search());
+        target = new Vector3(Player.Instance.transform.position.x,
+            Player.Instance.transform.position.y + 0.1f,
+            Player.Instance.transform.position.z);
 
-        foreach (var t in targets)
-        {
-            GameObject _obj = GameObject.Instantiate(obj);
-
-            _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
-            _obj.transform.position = t;
-            //Debug.Log(t);
-            marker.Add(_obj);
-        }
+        GameObject _obj = GameObject.Instantiate(circleObj);
+        _obj.transform.localScale = Vector3.one * 3f;
+        _obj.transform.position = target;
+        _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
+        marker = _obj;
     }
     private void PositionLuncher()
     {
-        Debug.Log("AA");
-        foreach(var t in targets)
-        {
-            Debug.Log("BB");
-            Vector3 pos = CaculateVelocity(t, shootPoint.position, time);
+        Vector3 pos = CaculateVelocity(target, shootPoint.position, time);
 
-            GameObject obj = GameObject.Instantiate(blackBullet, shootPoint.position, Quaternion.identity);
-            obj.GetComponent<Rigidbody>().velocity = pos;
-
-        }
+        GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
+        obj.transform.localScale = Vector3.one * 3f;
+        obj.GetComponent<Rigidbody>().velocity = pos;
+        
     }
 
-    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time )
+    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
     {
         // define the distance x and y first;
         Vector3 distance = target - origin;
@@ -121,19 +109,6 @@ public class DummyAttack2 : AIState
         result *= Vxz;
         result.y = Vy;
         return result;
-    }
-
-    Vector3 Search()
-    {
-        // Random.onUnitSphere : 반경 1을 갖는 구의 표면상에서 임의의 지점을 반환함
-        Vector3 getPoint = Random.onUnitSphere;
-        getPoint.y = 0.1f;
-
-        // 0.0f 부터 지정한 반지름의 길이 사이의 랜덤 값을 산출함.
-        float r = Random.Range(0.0f, rad);
-        Vector3 vec = (getPoint * r) + Player.Instance.transform.position;
-
-        return new Vector3(vec.x , 0.1f, vec.z);
     }
 
 }

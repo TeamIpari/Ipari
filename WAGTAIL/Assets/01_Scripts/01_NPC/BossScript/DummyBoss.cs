@@ -38,13 +38,12 @@ public class DummyBoss : MonoBehaviour
     public GameObject effect;
     public GameObject tentacle;
 
-    [Header("Attack2")]
+    [Header("Attack3")]
     public Transform shootPoint;
     public int count;
     public float searchRadius;
     public GameObject Bullet;
-
-
+    public float flight_time;
 
 
     // Start is called before the first frame update
@@ -54,8 +53,8 @@ public class DummyBoss : MonoBehaviour
         idle = new AIIdleState(aiStateMachine, moveTimer, SearchDistance);
         move = new AILineMove(aiStateMachine, points);
         attack1 = new DummyAttack1(aiStateMachine,tentacle, effect);
-        attack2 = new DummyAttack2(aiStateMachine, Bullet, shootPoint, effect, count, searchRadius);
-        attack3 = new DummyAttack3(aiStateMachine);
+        attack3 = new DummyAttack3(aiStateMachine, Bullet, shootPoint, effect, flight_time,  count, searchRadius);
+        attack2 = new DummyAttack2(aiStateMachine, Bullet, shootPoint, effect, flight_time);
 
         //aiStateMachine.
         //idle.SetChildren(move);
