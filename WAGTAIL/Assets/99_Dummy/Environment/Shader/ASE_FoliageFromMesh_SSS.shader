@@ -1,5 +1,3 @@
-// Made with Amplify Shader Editor
-// Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 {
 	Properties
@@ -15,6 +13,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 		_WindScroll("Wind Scroll", Range( 0 , 1)) = 0
 		[ASEEnd]_WindJitter("Wind Jitter", Range( 0 , 1)) = 0
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
+		_BumpTex("Normal Texture", 2D) = "bump" {}
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
@@ -34,11 +33,12 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 	SubShader
 	{
 		LOD 0
+		
 
 		
 
 		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
-		Cull Back
+		Cull Off
 		AlphaToMask Off
 		HLSLINCLUDE
 		#pragma target 3.0
