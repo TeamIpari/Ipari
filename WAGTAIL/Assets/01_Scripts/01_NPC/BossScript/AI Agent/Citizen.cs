@@ -16,15 +16,15 @@ public class Citizen : MonoBehaviour
     private AIRunState run;
 
     [Header("Idle Data")]
-    public float moveTimer;
-    public float searchDistance;
+    public float MoveTimer;
+    public float SearchDistance;
 
     [Header("Patrol Data")]
-    public float changeTimer;
+    public float ChangeTimer;
 
     [Header("Boundary")]
-    public float comeDistance;
-    public float runDistance;
+    public float ComeDistance;
+    public float RunDistance;
 
 
     // Start is called before the first frame update
@@ -32,10 +32,10 @@ public class Citizen : MonoBehaviour
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
 
-        idle = new AIIdleState(aiStateMachine, moveTimer, searchDistance);
-        patrol = new AIPatrolState(aiStateMachine, searchDistance);
-        boundary = new AIBoundaryState(aiStateMachine, comeDistance, runDistance);
-        run = new AIRunState(aiStateMachine, runDistance);
+        idle = new AIIdleState(aiStateMachine, MoveTimer, SearchDistance);
+        patrol = new AIPatrolState(aiStateMachine, SearchDistance);
+        boundary = new AIBoundaryState(aiStateMachine, ComeDistance, RunDistance);
+        run = new AIRunState(aiStateMachine, RunDistance);
 
         // count == 0;
         idle.SetChildren(patrol);

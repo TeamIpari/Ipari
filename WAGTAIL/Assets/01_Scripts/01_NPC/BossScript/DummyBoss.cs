@@ -93,11 +93,11 @@ public class DummyBoss : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        //aiStateMachine.currentState.Update();
-    }
+    //// Update is called once per frame
+    //private void Update()
+    //{
+    //    //aiStateMachine.currentState.Update();
+    //}
 
     private void FixedUpdate()
     {

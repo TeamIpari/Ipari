@@ -29,11 +29,6 @@ public class WaterScript : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-
-    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag( "Player"))

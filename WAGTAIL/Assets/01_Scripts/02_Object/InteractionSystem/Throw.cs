@@ -65,11 +65,11 @@ public class Throw : MonoBehaviour, IInteractable
         return false;
     }
 
-    private void Update()
-    {
-        //if (can)
-            //transform.position = BeziurCurve(_value);
-    }
+    //private void Update()
+    //{
+    //    //if (can)
+    //        //transform.position = BeziurCurve(_value);
+    //}
 
     /*
     public void Pickup()

@@ -54,9 +54,8 @@ public class UpdownDummy : MonoBehaviour
             PlatformMove();
             CurTime = 0;
         }
-        
-
     }
+
 
     public void PlatformMove()
     {
@@ -104,10 +103,8 @@ public class UpdownDummy : MonoBehaviour
 
     }
 
-
     private IEnumerator StageDown()
     {
-
         while (this.transform.position.y > down_yPos)
         {
             transform.position -= Vector3.up * Speed;
@@ -117,7 +114,6 @@ public class UpdownDummy : MonoBehaviour
 
         yield return new WaitForSeconds(2.0f);
         StartCoroutine(StageUp());
-
     }
 
 

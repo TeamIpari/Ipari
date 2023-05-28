@@ -45,13 +45,18 @@ public class Lift : MonoBehaviour
 
     private void Update()
     {
+        LifePlayer();
+    }
+
+    private void LifePlayer()
+    {
         if (transform.childCount > 0 && !isGround())
         {
             transform.position += Vector3.down * ((gravity * Time.deltaTime) / 2);
             door.transform.position += Vector3.up * ((gravity * Time.deltaTime) / 2);
         }
-        
     }
+
     private void OnTriggerEnter(Collider other)
     {
         try

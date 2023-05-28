@@ -28,11 +28,11 @@ public class AnimManager
     }
 
 
-    // Update is called once per frame
-    private void Update()
-    {
+    //// Update is called once per frame
+    //private void Update()
+    //{
 
-    }
+    //}
 
     private void OnAnimatorIK(int layerIndex)
     {
