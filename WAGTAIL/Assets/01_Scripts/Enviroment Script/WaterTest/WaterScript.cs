@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
 public class WaterScript : MonoBehaviour
 {
-    public LayerMask _playerMask;
+    public LayerMask PlayerLayer;
     [Header("수치값들")]
     [Tooltip("가해지는 힘")]
-    public float _ForceX;
-    public float _ForceZ;
+    public float ForceX;
+    public float ForceZ;
     [Range(00.0f, 1f)]
     [Tooltip("")]
-    public float _vals;
-    float defualtVal = 0.0f;
+    public float WaterForce;
+    private float defualtVal = 0.0f;
     
 
     [Tooltip("")]
@@ -20,24 +24,24 @@ public class WaterScript : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag( "Player"))
         {
             defualtVal = other.GetComponent<Player>().jumpHeight;
             other.GetComponent<Player>().jumpHeight = 0.2f;
         }
-        if( other.gameObject.tag == "Platform")
+        if( other.gameObject.CompareTag("Platform") )
         {
 
         }
@@ -47,11 +51,11 @@ public class WaterScript : MonoBehaviour
     {
         //Debug.Log(other.gameObject.layer);
         // PlayerMask만 체크하여 이동을 시킴.
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.CompareTag( "Player"))
         {
             //Debug.Log("ABC");
             
-            other.GetComponent<CharacterController>()?.Move(new Vector3(_ForceX, 0, _ForceZ) * _vals);
+            other.GetComponent<CharacterController>()?.Move(new Vector3(ForceX, 0, ForceZ) * WaterForce);
  
             
         }
@@ -59,7 +63,7 @@ public class WaterScript : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.CompareTag("Player"))
         {
             other.GetComponent<Player>().jumpHeight = defualtVal;
         }

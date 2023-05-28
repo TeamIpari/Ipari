@@ -3,66 +3,67 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using Unity.VisualScripting;
-//using UnityEditor.Rendering.LookDev;
-//using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.AI;
 
-[Serializable]
+/// <summary>
+/// 작성자 : 성지훈
+/// 추가 작성
+/// </summary>
 public class AIStateMachine
 {
-    public GameObject gameObject;
-    public Transform transform;
-    public Animator animator;
-    public Rigidbody physics;
-    public NavMeshAgent agent;
-    public SphereCollider sphereCollider;
-    public BoxCollider boxCollider;
-    public CapsuleCollider capsuleCollider;
-    public CharacterController characterController;
-    public GameObject target;
+    public GameObject GameObject;
+    public Transform Transform;
+    public Animator Animator;
+    public Rigidbody Physics;
+    public NavMeshAgent Agent;
+    public SphereCollider SphereCollider;
+    public BoxCollider BoxCollider;
+    public CapsuleCollider CapsuleCollider;
+    public CharacterController CharacterController;
+    public GameObject Target;
 
-    public List<AIState> pattern = new List<AIState>();
+    public List<AIState> Pattern = new List<AIState>();
 
 
-    public AIState currentState;
+    public AIState CurrentState;
 
     private int cur = 0;
 
     public static AIStateMachine CreateFormGameObject(GameObject gameObject)
     {
         AIStateMachine ai = new AIStateMachine();
-        ai.gameObject = gameObject;
-        ai.transform = gameObject.transform;
-        ai.animator = gameObject.GetComponent<Animator>();
-        ai.physics = gameObject.GetComponent<Rigidbody>();
-        ai.agent = gameObject.GetComponent<NavMeshAgent>();
-        ai.sphereCollider = gameObject.GetComponent<SphereCollider>();
-        ai.boxCollider = gameObject.GetComponent<BoxCollider>();
-        ai.capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
-        ai.characterController = gameObject.GetComponent<CharacterController>();
+        ai.GameObject = gameObject;
+        ai.Transform = gameObject.transform;
+        ai.Animator = gameObject.GetComponent<Animator>();
+        ai.Physics = gameObject.GetComponent<Rigidbody>();
+        ai.Agent = gameObject.GetComponent<NavMeshAgent>();
+        ai.SphereCollider = gameObject.GetComponent<SphereCollider>();
+        ai.BoxCollider = gameObject.GetComponent<BoxCollider>();
+        ai.CapsuleCollider = gameObject.GetComponent<CapsuleCollider>();
+        ai.CharacterController = gameObject.GetComponent<CharacterController>();
         
         return ai;
     }
 
     public void Initialize(AIState startState)
     {
-        currentState = startState;
+        CurrentState = startState;
         //pauseTimer = 1f;
         //currentTime = 0f;
-        pattern.Clear();
+        Pattern.Clear();
         cur = 0;
 
-        currentState.Enter();
+        CurrentState.Enter();
     }
 
     public void ChangeState(AIState newState)
     {
-        currentState.Exit();
-        if (currentState != newState)
+        CurrentState.Exit();
+        if (CurrentState != newState)
         {
-            currentState = newState;
-            currentState.Enter();
+            CurrentState = newState;
+            CurrentState.Enter();
         }
         else
         {
@@ -72,24 +73,24 @@ public class AIStateMachine
 
     public void SetTarget(GameObject obj)
     {
-        target = obj;
+        Target = obj;
     }
 
     public void NextPattern()
     {
         cur++;
-        if (cur >= pattern.Count)
+        if (cur >= Pattern.Count)
         {
             cur = 0;
         }
         //cur++;
         //Debug.Log("cur = " + cur.ToString() + " / patton = " + pattern.Count.ToString());
-        ChangeState(pattern[cur]);
+        ChangeState(Pattern[cur]);
 
     }
 
-    public void AddPatern(AIState _state)
+    public void AddPatern(AIState state)
     {
-        pattern.Add(_state);
+        Pattern.Add(state);
     }
 }

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
 public class AIBoundaryState : AIState
 {
     /// <summary>
@@ -13,15 +17,15 @@ public class AIBoundaryState : AIState
     /// Player가 내각 범위로 들어갈 경우 child State를 불러옴.
     /// </summary>
 
-    public float changeTime;
-    public float currentTime;
+    private float changeTime;
+    private float currentTime;
 
-    public float comeDistance;
-    public float runDistance;
+    private float comeDistance;
+    private float runDistance;
 
-    public AIBoundaryState(AIStateMachine _stateMachine, float comeDistance, float runDistance) : base(_stateMachine)
+    public AIBoundaryState(AIStateMachine stateMachine, float comeDistance, float runDistance) : base(stateMachine)
     {
-        stateMachine = _stateMachine;
+        this.stateMachine = stateMachine;
         this.comeDistance = comeDistance;
         this.runDistance = runDistance;
     }
@@ -54,8 +58,8 @@ public class AIBoundaryState : AIState
     {
         Search();
         // 경계의 태세
-        Debug.Log(!stateMachine.agent.isPathStale);
-        if(stateMachine.target != null && !stateMachine.agent.isOnOffMeshLink) 
+        Debug.Log(!stateMachine.Agent.isPathStale);
+        if(stateMachine.Target != null && !stateMachine.Agent.isOnOffMeshLink) 
         {
             Boundary();
         }
@@ -63,18 +67,18 @@ public class AIBoundaryState : AIState
 
     }
 
-    void Boundary()
+    private void Boundary()
     {
         
-        stateMachine.transform.LookAt(stateMachine.target.transform);
+        stateMachine.Transform.LookAt(stateMachine.Target.transform);
 
     }
 
-    void Search()
+    private void Search()
     {
         float distance = Mathf.Abs(
-            Vector3.Distance(stateMachine.transform.position,
-            stateMachine.target.transform.position));
+            Vector3.Distance(stateMachine.Transform.position,
+            stateMachine.Target.transform.position));
         if (distance > comeDistance)
         {
             // Player가 범위를 벗어남.
@@ -89,7 +93,7 @@ public class AIBoundaryState : AIState
         }
     }
 
-    void Change()
+    private void Change()
     {
         currentTime += Time.deltaTime;
         try

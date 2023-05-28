@@ -107,6 +107,14 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        // FindObjectOfType<Player>() 사용 비권장
+
+        // 유니티 최신 버전에서 추가된 API
+        // FindAnyObjectByType<Player>(); 
+        // FindFirstObjectByType<Player>();
+        
+
+        // player singleton 고민.
         if (instance == null)
         {
             instance = this;
@@ -166,8 +174,8 @@ public class Player : MonoBehaviour
     {
         try
         {
-            if (hit.gameObject.tag == "Platform" &&
-                !hit.gameObject.GetComponent<IEnviroment>()._hit)
+            if (hit.gameObject.CompareTag( "Platform" )&&
+                !hit.gameObject.GetComponent<IEnviroment>().IsHit)
             {
                 hit.gameObject.GetComponent<IEnviroment>().Interact();
             }

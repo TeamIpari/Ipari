@@ -4,6 +4,10 @@ using System.Runtime.ExceptionServices;
 using UnityEngine;
 
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
 public enum STATES
 {
     IDLE,
@@ -14,12 +18,12 @@ public enum STATES
 }
 public class DummyBoss : MonoBehaviour
 {
-    AIStateMachine aiStateMachine;
-    AIIdleState idle;
-    AILineMove move;
-    DummyAttack1 attack1;
-    DummyAttack2 attack2;
-    DummyAttack3 attack3;
+    private AIStateMachine aiStateMachine;
+    private AIIdleState idle;
+    private AILineMove move;
+    private DummyAttack1 attack1;
+    private DummyAttack2 attack2;
+    private DummyAttack3 attack3;
 
     public List<STATES> Pattern;
 
@@ -28,34 +32,33 @@ public class DummyBoss : MonoBehaviour
 
     public bool Die = false;
     [Header("Idle")]
-    public float moveTimer;
+    public float MoveTimer;
     public float SearchDistance;
 
     [Header("Move")]
-    public Transform[] points;
+    public Transform[] Points;
 
     [Header("Attack1")]
-    public GameObject effect;
-    public GameObject tentacle;
+    public GameObject Effect;
+    public GameObject Tentacle;
 
-    [Header("Attack2")]
-    public Transform shootPoint;
-    public int count;
-    public float searchRadius;
+    [Header("Attack3")]
+    public Transform ShootPoint;
+    public int Count;
+    public float SearchRadius;
     public GameObject Bullet;
-
-
+    public float FlightTime;
 
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
-        idle = new AIIdleState(aiStateMachine, moveTimer, SearchDistance);
-        move = new AILineMove(aiStateMachine, points);
-        attack1 = new DummyAttack1(aiStateMachine,tentacle, effect);
-        attack2 = new DummyAttack2(aiStateMachine, Bullet, shootPoint, effect, count, searchRadius);
-        attack3 = new DummyAttack3(aiStateMachine);
+        idle = new AIIdleState(aiStateMachine, MoveTimer, SearchDistance);
+        move = new AILineMove(aiStateMachine, Points);
+        attack1 = new DummyAttack1(aiStateMachine, Tentacle, Effect);
+        attack3 = new DummyAttack3(aiStateMachine, Bullet, ShootPoint, Effect, FlightTime,  Count, SearchRadius);
+        attack2 = new DummyAttack2(aiStateMachine, Bullet, ShootPoint, Effect, FlightTime);
 
         //aiStateMachine.
         //idle.SetChildren(move);
@@ -91,13 +94,13 @@ public class DummyBoss : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         //aiStateMachine.currentState.Update();
     }
 
-    public void FixedUpdate()
+    private void FixedUpdate()
     {
-        aiStateMachine.currentState.Update();
+        aiStateMachine.CurrentState.Update();
     }
 }

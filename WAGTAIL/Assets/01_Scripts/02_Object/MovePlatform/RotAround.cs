@@ -4,67 +4,70 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
 public class RotAround : MonoBehaviour, IEnviroment
 {
-    public Transform tf;
-    public bool reverse = false;
-    public float speed = 1.0f;
-    public float addGravity = .5f;
+    public Transform Tf;
+    public bool Reverse = false;
+    public float Speed = 1.0f;
+    public float AddGravity = .5f;
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
-    bool _ishit = false;
 
-    public bool _hit { get {return _ishit; } set { _ishit = value; } }
-    public bool rot = false;
+    public bool IsHit { get; set; }
+    public bool Rot = false;
     public bool Interact()
     {
-        rot = true;
+        Rot = true;
         return false;
     }
     // Start is called before the first frame update
-    void Start()
-    {
-        _hit = _ishit;
+    private void Start() 
+    { 
+
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         RotatePlatform();
-        if (rot)
+        if (Rot)
         {
             Player.Instance.controller.enabled = false;
             RotatePlayer();
             Player.Instance.controller.enabled = true;
             if (!Player.Instance.controller.isGrounded)
             {
-                rot = false;
+                Rot = false;
             }
         }
     }
 
     public void RotatePlatform()
     {
-        float temp = speed;
-        if (reverse)
+        float temp = Speed;
+        if (Reverse)
             temp *= -1 ;
         else
             temp *= 1;
-        this.transform.RotateAround(tf.position, Vector3.up, (temp * Time.deltaTime));
+        this.transform.RotateAround(Tf.position, Vector3.up, (temp * Time.deltaTime));
 
     }
 
     public void RotatePlayer()
     {
-        float temp = speed;
-        if (reverse)
+        float temp = Speed;
+        if (Reverse)
             temp *= -1;
         else
             temp *= 1;
         
         //Player.Instance.transform.RotateAround(tf.position, Vector3.up, (-speed * Time.deltaTime));
-        Player.Instance.transform.RotateAround(tf.position, Vector3.up, (temp * Time.deltaTime));
+        Player.Instance.transform.RotateAround(Tf.position, Vector3.up, (temp * Time.deltaTime));
 
     }
 
@@ -72,7 +75,7 @@ public class RotAround : MonoBehaviour, IEnviroment
     {
         try
         {
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.CompareTag("Player"))
             {
                 Interactor inter = other.GetComponent<Interactor>();
                 inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(this.transform);
@@ -87,7 +90,7 @@ public class RotAround : MonoBehaviour, IEnviroment
     {
         try
         {
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.CompareTag("Player"))
             {
 
                 // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
@@ -103,7 +106,7 @@ public class RotAround : MonoBehaviour, IEnviroment
     {
         try
         {
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.CompareTag("Player"))
             {
                 Interactor inter = other.GetComponent<Interactor>();
                 inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(null);
@@ -120,13 +123,13 @@ public class RotAround : MonoBehaviour, IEnviroment
         try
         {
             // 탄환이 적중하였을 때... 움직임을 정지하고 tag를 변경, 시킬 예정.
-            if (collision.gameObject.tag == "interactable")
+            if (collision.gameObject.CompareTag("interactable"))
             {
                 collision.gameObject.GetComponent<SThrow>().Throwing();
                 collision.gameObject.transform.parent = this.transform;
                 if (transform.childCount < 3)
                 {
-                    speed += addGravity;
+                    Speed += AddGravity;
                 }
             }
         }
