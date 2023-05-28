@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
 public class basket : MonoBehaviour
 {
     // 지붕
@@ -10,8 +14,8 @@ public class basket : MonoBehaviour
     //[SerializeField] Vector3 _loopPoint1;
     //[SerializeField] Vector3 _loopPoint2;
 
-    [SerializeField] GameObject _localPoint1;
-    [SerializeField] GameObject _localPoint2;
+    [SerializeField] private GameObject _localPoint1;
+    [SerializeField] private GameObject _localPoint2;
     public Vector3 _loopTarget;
 
     [Range(1, 5)]
@@ -34,14 +38,14 @@ public class basket : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _lid.SetActive(false);
         _loopTarget = _localPoint1.transform.position;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if( Vector3.Distance(transform.position, _loopTarget) <= 1)
             // 초당 n의 속도로 목표를 향해 움직임.
@@ -50,7 +54,7 @@ public class basket : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, _loopTarget, 5f * Time.deltaTime);
     }
 
-    IEnumerator ShowLid()
+    private IEnumerator ShowLid()
     {
         yield return new WaitForSeconds(1.0f);
         _lid.SetActive(true);
@@ -60,7 +64,7 @@ public class basket : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "interactable")
+        if (other.CompareTag( "interactable"))
         {
             StartCoroutine(ShowLid());  
         }

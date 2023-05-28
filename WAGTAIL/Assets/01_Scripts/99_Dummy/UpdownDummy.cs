@@ -1,54 +1,58 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
 public class UpdownDummy : MonoBehaviour
 {
     // 주기적으로 오브젝트를 올려주는 오브젝트
     // 최저점
-    [SerializeField] float down_yPos;
+    [SerializeField] private float down_yPos;
     // 최고점 
-    [SerializeField] float up_yPos;
+    [SerializeField] private float up_yPos;
 
     [Range(0, 1)]
-    public float speed = 0f;
+    public float Speed = 0f;
 
-    public float moveTimer;
-    public float curTime;
-    public float stopTimer;
-    public bool up = false;
-    public bool stop = false;
+    public float MoveTimer;
+    public float CurTime;
+    public float StopTimer;
+    public bool IsUp = false;
+    public bool IsStop = false;
 
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         //StartCoroutine(StageUp());
     }
 
-    bool Stoptimer(ref float _t)
+    private bool Stoptimer(ref float t)
     {
-        if(_t > stopTimer)
+        if(t > StopTimer)
         {
-            _t = 0;
-            return stop = false;
+            t = 0;
+            return IsStop = false;
         }
         //stop = false;
         return true;
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        curTime += Time.deltaTime;
-        if(stop && Stoptimer(ref curTime))
+        CurTime += Time.deltaTime;
+        if(IsStop && Stoptimer(ref CurTime))
         {
             return;
         }
 
-        if (curTime > moveTimer)
+        if (CurTime > MoveTimer)
         {
             PlatformMove();
-            curTime = 0;
+            CurTime = 0;
         }
         
 
@@ -56,7 +60,7 @@ public class UpdownDummy : MonoBehaviour
 
     public void PlatformMove()
     {
-        if(up)
+        if(IsUp)
         {
             Up();
         }
@@ -68,29 +72,29 @@ public class UpdownDummy : MonoBehaviour
     
     public void Up()
     {
-        transform.position = transform.position + Vector3.up * speed;
+        transform.position = transform.position + Vector3.up * Speed;
         if (transform.position.y >= up_yPos)
         {
-            up = false;
-            stop = true;
+            IsUp = false;
+            IsStop = true;
         }
     }
 
     public void Down()
     {
-        transform.position -= Vector3.up * speed;
+        transform.position -= Vector3.up * Speed;
         if(transform.position.y <= down_yPos)
         {
-            up = true;
-            stop = true;
+            IsUp = true;
+            IsStop = true;
         }
     }
-    
-    IEnumerator StageUp()
+
+    private IEnumerator StageUp()
     {
         while(this.transform.position.y < up_yPos)
         {
-            transform.position = transform.position + Vector3.up * speed;
+            transform.position = transform.position + Vector3.up * Speed;
             Debug.Log(transform.position);
             yield return new WaitForSeconds(0.1f);
         }
@@ -101,12 +105,12 @@ public class UpdownDummy : MonoBehaviour
     }
 
 
-    IEnumerator StageDown()
+    private IEnumerator StageDown()
     {
 
         while (this.transform.position.y > down_yPos)
         {
-            transform.position -= Vector3.up * speed;
+            transform.position -= Vector3.up * Speed;
             Debug.Log(transform.position);
             yield return new WaitForSeconds(0.1f);
         }

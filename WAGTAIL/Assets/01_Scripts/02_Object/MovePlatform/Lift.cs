@@ -4,16 +4,21 @@ using System.Runtime.ExceptionServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
+
 public class Lift : MonoBehaviour
 {
 
-    [SerializeField] float gravity;
-    [SerializeField] float addGravity;
-    [SerializeField] GameObject door;
+    [SerializeField] private float gravity;
+    [SerializeField] private float addGravity;
+    [SerializeField] private GameObject door;
     [Header("탐색 범위")]
-    [SerializeField] Vector3 search_range = new Vector3(6, 6, 6);
+    [SerializeField] private Vector3 search_range = new Vector3(6, 6, 6);
 
-    BoxCollider[] col;
+    private BoxCollider[] cols;
 
 
     private void OnDrawGizmos()
@@ -31,9 +36,9 @@ public class Lift : MonoBehaviour
 
     private void Start()
     {
-        col = GetComponents<BoxCollider>();
-        col[0].size = new Vector3(1, 1, 1);
-        col[1].size = search_range;
+        cols = GetComponents<BoxCollider>();
+        cols[0].size = new Vector3(1, 1, 1);
+        cols[1].size = search_range;
 
     }
 
@@ -51,7 +56,7 @@ public class Lift : MonoBehaviour
     {
         try
         {
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.CompareTag( "Player"))
             {
                 
                 // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
@@ -67,7 +72,7 @@ public class Lift : MonoBehaviour
     {
         try
         {
-            if(other.gameObject.tag == "Player")
+            if(other.gameObject.CompareTag("Player"))
             {
                 Interactor inter = other.GetComponent<Interactor>();
                 inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(this.transform);
@@ -82,7 +87,7 @@ public class Lift : MonoBehaviour
     {
         try
         { 
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.CompareTag("Player"))
             {
                 Interactor inter = other.GetComponent<Interactor>();
                 inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(null);
@@ -99,7 +104,7 @@ public class Lift : MonoBehaviour
         try
         {
             // 탄환이 적중하였을 때... 움직임을 정지하고 tag를 변경, 시킬 예정.
-            if (collision.gameObject.tag == "interactable")
+            if (collision.gameObject.CompareTag( "interactable"))
             {
                 collision.gameObject.GetComponent<SThrow>().Throwing();
                 collision.gameObject.transform.parent = this.transform;
@@ -117,7 +122,7 @@ public class Lift : MonoBehaviour
         }
     }
 
-    bool isGround()
+    private bool isGround()
     {
         RaycastHit hit;
         if(Physics.Raycast(transform.position, Vector3.down, out hit))

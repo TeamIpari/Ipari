@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// 작성자 : 성지훈
+/// 추가 작성
+/// </summary>
 public class Bridge : MonoBehaviour
 {
-    [SerializeField] Vector3 search_range = new Vector3(0, 0, 0);
-    BoxCollider[] col;
+    [SerializeField] 
+    private Vector3 search_range = new Vector3(0, 0, 0);
+    private BoxCollider[] col;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +42,7 @@ public class Bridge : MonoBehaviour
     {
         try
         {
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.CompareTag( "Player"))
             {
                 Interactor inter = other.GetComponent<Interactor>();
                 inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(this.transform);
@@ -53,7 +58,7 @@ public class Bridge : MonoBehaviour
     {
         try
         {
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.CompareTag( "Player"))
             {
 
                 // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
@@ -70,7 +75,7 @@ public class Bridge : MonoBehaviour
     {
         try
         {
-            if (other.gameObject.tag == "Player")
+            if (other.gameObject.CompareTag("Player"))
             {
                 Interactor inter = other.GetComponent<Interactor>();
                 inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(null);
@@ -87,7 +92,7 @@ public class Bridge : MonoBehaviour
         try
         {
             // 탄환이 적중하였을 때... 움직임을 정지하고 tag를 변경, 시킬 예정.
-            if (collision.gameObject.tag == "interactable")
+            if (collision.gameObject.CompareTag("interactable"))
             {
                 collision.gameObject.GetComponent<SThrow>().Throwing();
                 collision.gameObject.transform.parent = this.transform;
@@ -110,7 +115,7 @@ public class Bridge : MonoBehaviour
         }
     }
 
-    IEnumerator GravityCall()
+    private IEnumerator GravityCall()
     {
         yield return new WaitForSeconds(1f);
 

@@ -5,28 +5,32 @@ using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 사용하지 않을 예정 or 추후 다른 방식으로 사용 예정.
+/// </summary>
 public class SThrow : MonoBehaviour, IInteractable
 {
     public string InteractionPrompt => throw new System.NotImplementedException();
-    GameObject _playerEquipPoint;
-    GameObject _playerInteractionPoint;
+    private GameObject _playerEquipPoint;
+    private GameObject _playerInteractionPoint;
 
-    GameObject _playerLeftHand;
-    GameObject _playerRightHand;
+    private GameObject _playerLeftHand;
+    private GameObject _playerRightHand;
 
     // 시작 지점. (어지간해선 손.)
-    Transform startPos;
+    private Transform startPos;
     // 끝 지점. (타겟)
     // A to B 지점으로 미리 지정을 해 놓을 것인가?
-    Transform endPos;
+    private Transform endPos;
     // 꺾이는 지점. 
-    GameObject heightPos;
+    private GameObject heightPos;
 
     public bool flying = false;
-    float _value = 0.0f;
+    private float _value = 0.0f;
 
-    Vector3 _playerForwardTransform;
-    Vector3 _nomalInteractionPoint;
+    private Vector3 _playerForwardTransform;
+    private Vector3 _nomalInteractionPoint;
 
     [Header("정점 위치")]
     [Range(1f, 5f)]
@@ -132,7 +136,7 @@ public class SThrow : MonoBehaviour, IInteractable
 
     }
 
-    IEnumerator SetPoint()
+    private IEnumerator SetPoint()
     {
         yield return new WaitForSeconds(1.5f);
 
@@ -142,7 +146,7 @@ public class SThrow : MonoBehaviour, IInteractable
         
     }
 
-    Vector3 BezierCurve()
+    private Vector3 BezierCurve()
     {
         Vector3 A = Vector3.Lerp(startPos.position, heightPos.transform.position, _value);
 
@@ -153,7 +157,7 @@ public class SThrow : MonoBehaviour, IInteractable
         return C;
     }
 
-    float GetAngle()
+    private float GetAngle()
     {
         try
         {

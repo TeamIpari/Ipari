@@ -2,27 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 작성자 : 성지훈
+/// 추가 작성
+/// </summary>
 public abstract class AIState
 {
     public AIStateMachine stateMachine;
     public AIState parent;
     public List<AIState> children = new List<AIState>();
     public int current;
-    public AIState(AIStateMachine _stateMachine)
+    public AIState(AIStateMachine stateMachine)
     {
-        stateMachine = _stateMachine;
+        this.stateMachine = stateMachine;
         current = 0;
     }
 
-    public virtual void SetParent(AIState _parent, AIState _child )
+    public virtual void SetParent(AIState parent, AIState child )
     {
-        _child.parent = _parent;
+        child.parent = parent;
         
     }
 
-    public virtual void SetChildren(AIState _state)
+    public virtual void SetChildren(AIState state)
     {
-        children.Add(_state);
+        children.Add(state);
     }
 
     public abstract void Enter();

@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
 public class Citizen : MonoBehaviour
 {
     // State Init
-    AIStateMachine aiStateMachine;
-    AIIdleState idle;
-    AIPatrolState patrol;
-    AIBoundaryState boundary;
-    AIRunState run;
+    private AIStateMachine aiStateMachine;
+    private AIIdleState idle;
+    private AIPatrolState patrol;
+    private AIBoundaryState boundary;
+    private AIRunState run;
 
     [Header("Idle Data")]
     public float moveTimer;
@@ -22,15 +26,9 @@ public class Citizen : MonoBehaviour
     public float comeDistance;
     public float runDistance;
 
-    //[Header("Run")]
-    //public float runCancelDistance;
-    //[Header("Standard")]
-    //public bool Search = false;
-
-
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
 
@@ -51,8 +49,8 @@ public class Citizen : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        aiStateMachine.currentState.Update();
+        aiStateMachine.CurrentState.Update();
     }
 }

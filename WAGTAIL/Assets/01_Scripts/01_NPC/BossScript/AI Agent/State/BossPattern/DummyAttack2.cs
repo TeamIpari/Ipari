@@ -7,27 +7,31 @@ using UnityEditor.SceneTemplate;
 using UnityEngine;
 using UnityEngine.Timeline;
 
+/// <summary>
+/// 작성자 : 성지훈
+/// 추가 작성
+/// </summary>
 public class DummyAttack2 : AIState
 {
-    float curTimer = 0;
-    float changeTimer = 3;
+    private float curTimer = 0;
+    private float changeTimer = 3;
 
-    Transform shootPoint;
-    GameObject bullet;
-    GameObject circleObj;
-    Vector3 target;
-    GameObject marker;
+    private Transform shootPoint;
+    private GameObject bullet;
+    private GameObject circleObj;
+    private Vector3 target;
+    private GameObject marker;
 
-    float time;
+    private float time;
 
 
-    public DummyAttack2(AIStateMachine _stateMachine, GameObject _bullet, Transform _sp, GameObject _obj, float _time) : base(_stateMachine)
+    public DummyAttack2(AIStateMachine stateMachine, GameObject bullet, Transform sp, GameObject obj, float time) : base(stateMachine)
     {
-        stateMachine = _stateMachine;
-        circleObj = _obj;
-        shootPoint = _sp;
-        bullet = _bullet;
-        time = _time;
+        this.stateMachine = stateMachine;
+        this.circleObj = obj;
+        this.shootPoint = sp;
+        this.bullet = bullet;
+        this.time = time;
     }
 
     public override void Enter()
@@ -59,7 +63,7 @@ public class DummyAttack2 : AIState
                 stateMachine.ChangeState(children[current]);
             else if (parent != null)
                 stateMachine.ChangeState(parent);
-            else if (stateMachine.pattern.Count > 0)
+            else if (stateMachine.Pattern.Count > 0)
                 stateMachine.NextPattern();
             else
                 Debug.Log("연결된 State가 없음.");
@@ -67,7 +71,7 @@ public class DummyAttack2 : AIState
             curTimer = 0;
         }
     }
-    void CreateMarker()
+    private void CreateMarker()
     {
         target = new Vector3(Player.Instance.transform.position.x,
             Player.Instance.transform.position.y + 0.1f,

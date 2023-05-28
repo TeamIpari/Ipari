@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
 public class AIPatrolState : AIState
 {
     /// <summary>
@@ -11,13 +15,13 @@ public class AIPatrolState : AIState
     /// </summary>
 
     // 랜덤 대기 시간
-    float changeTime = 0;
-    float currentTime = 0;
+    private float changeTime = 0;
+    private float currentTime = 0;
 
-    float searchDistance = 0;
-    public AIPatrolState(AIStateMachine _stateMachine, float searchDistance) : base(_stateMachine)
+    private float searchDistance = 0;
+    public AIPatrolState(AIStateMachine stateMachine, float searchDistance) : base(stateMachine)
     {
-        stateMachine = _stateMachine;
+        this.stateMachine = stateMachine;
         this.searchDistance = searchDistance;
     }
     public override void SetChildren(AIState _state)
@@ -50,12 +54,12 @@ public class AIPatrolState : AIState
         Search();
     }
 
-    void Move()
+    private void Move()
     {
         // 이동과 관련한 기능을 삽입.
     }
 
-    void Change()
+    private void Change()
     {
         currentTime += Time.deltaTime;
         try
@@ -82,10 +86,10 @@ public class AIPatrolState : AIState
     }
 
     // 주변 n의 방향으로 찾아줌.
-    void Search()
+    private void Search()
     {
         Collider[] cols =
-            Physics.OverlapSphere(stateMachine.transform.position, searchDistance, LayerMask.GetMask("Player"));
+            Physics.OverlapSphere(stateMachine.Transform.position, searchDistance, LayerMask.GetMask("Player"));
         // Player가 체크 되었는가?
         foreach(var c in cols)
         {

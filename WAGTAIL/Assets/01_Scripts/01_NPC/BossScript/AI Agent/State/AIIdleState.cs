@@ -2,10 +2,13 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-//using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+/// <summary>
+/// 작성자 : 성지훈
+/// 추가 작성
+/// </summary>
 public class AIIdleState : AIState
 {
     /// <summary>
@@ -15,17 +18,17 @@ public class AIIdleState : AIState
     /// </summary>
 
     // 랜덤 대기 시간
-    float movingTime = 0;
-    float currentTime = 0;
+    private float movingTime = 0;
+    private float currentTime = 0;
 
-    float searchDistance = 0;
+    private float searchDistance = 0;
     
 
 
-    public AIIdleState(AIStateMachine _stateMachine, float _moveTime,float SearchDistance) : base(_stateMachine)
+    public AIIdleState (AIStateMachine stateMachine, float moveTime,float SearchDistance) : base(stateMachine)
     {
-        stateMachine = _stateMachine;
-        movingTime = _moveTime;
+        this.stateMachine = stateMachine;
+        this.movingTime = moveTime;
         this.searchDistance = SearchDistance;
     }
 
@@ -67,7 +70,7 @@ public class AIIdleState : AIState
         }
     }
 
-    void ChangeState()
+    private void ChangeState()
     {
         if (children.Count > 0)
         {
@@ -77,7 +80,7 @@ public class AIIdleState : AIState
             stateMachine.ChangeState(parent);
     }
 
-    void CheckMoveTime()
+    private void CheckMoveTime()
     {
         currentTime += Time.deltaTime;
         try
@@ -90,7 +93,7 @@ public class AIIdleState : AIState
                 }
                 else if (parent != null)
                     stateMachine.ChangeState(parent);
-                else if (stateMachine.pattern.Count > 0)
+                else if (stateMachine.Pattern.Count > 0)
                     stateMachine.NextPattern();
                 else
                     Debug.Log("연결되어있지 않음.") ;
@@ -103,10 +106,10 @@ public class AIIdleState : AIState
         }
     }
 
-    void SearchTarget()
+    private void SearchTarget()
     {
         Collider[] cols =
-            Physics.OverlapSphere(stateMachine.transform.position, searchDistance, LayerMask.GetMask("Player"));
+            Physics.OverlapSphere(stateMachine.Transform.position, searchDistance, LayerMask.GetMask("Player"));
         // Player가 체크 되었는가?
         foreach (var c in cols)
         {

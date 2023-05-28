@@ -2,29 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
+
 public class DummyAttack3 : AIState
 {
-    int targetCount = 0;
-    float curTimer = 0;
-    float changeTimer = 2;
-    float rad;
-    float time = 2f;
-    Transform shootPoint;
-    GameObject blackBullet;
-    GameObject circleObj;
+    private int targetCount = 0;
+    private float curTimer = 0;
+    private float changeTimer = 2;
+    private float rad;
+    private float time = 2f;
+    private Transform shootPoint;
+    private GameObject blackBullet;
+    private GameObject circleObj;
 
-    List<Vector3> targets = new List<Vector3>();
-    List<GameObject> marker = new List<GameObject>();
+    private List<Vector3> targets = new List<Vector3>();
+    private List<GameObject> marker = new List<GameObject>();
 
-    public DummyAttack3(AIStateMachine _stateMachine, GameObject bullet, Transform _sp, GameObject _obj, float flight_time, int _count, float _rad) : base(_stateMachine)
+    public DummyAttack3(AIStateMachine stateMachine, GameObject bullet, Transform sp, GameObject obj, float flightTime, int count, float rad) : base(stateMachine)
     {
-        stateMachine = _stateMachine;
-        shootPoint = _sp;
-        targetCount = _count;
+        this.stateMachine = stateMachine;
+        shootPoint = sp;
+        targetCount = count;
         blackBullet = bullet;
-        time = flight_time;
-        rad = _rad;
-        circleObj = _obj;
+        time = flightTime;
+        this.rad = rad;
+        circleObj = obj;
     }
 
     public override void Enter()
@@ -58,7 +63,7 @@ public class DummyAttack3 : AIState
                 stateMachine.ChangeState(children[current]);
             else if (parent != null)
                 stateMachine.ChangeState(parent);
-            else if (stateMachine.pattern.Count > 0)
+            else if (stateMachine.Pattern.Count > 0)
                 stateMachine.NextPattern();
             else
                 Debug.Log("연결된 State가 없음.");

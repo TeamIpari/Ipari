@@ -5,20 +5,24 @@ using System.Drawing;
 using UnityEditor.Rendering;
 using UnityEngine;
 
+/// <summary>
+/// 작성자 : 성지훈
+/// 추가 작성
+/// </summary>
 public class AILineMove : AIState
 {
     // 일정 방향으로 직선으로 움직이는 기능을 가지고 있음. 
     // 다수의 포인트를 가지고 있으며 랜덤으로 포인트를 지정 후
     // 목표 지점을 향해 움직이는 기능을 가짐.
 
-    Transform[] movingPoint;
-    float currentTimer = 0;
-    float changeTimer = 5;
+    private Transform[] movingPoint;
+    private float currentTimer = 0;
+    private float changeTimer = 5;
     // Start Point는 무조건 0
-    int cur = 0;
-    public AILineMove(AIStateMachine _stateMachine, Transform[] points) : base(_stateMachine)
+    private int cur = 0;
+    public AILineMove(AIStateMachine stateMachine, Transform[] points) : base(stateMachine)
     {
-        stateMachine = _stateMachine;
+        this.stateMachine = stateMachine;
         movingPoint = points;
         if(movingPoint.Length < 1)
         {
@@ -58,7 +62,7 @@ public class AILineMove : AIState
                 stateMachine.ChangeState(children[current]);
             else if (parent != null)
                 stateMachine.ChangeState(parent);
-            else if (stateMachine.pattern.Count > 0)
+            else if (stateMachine.Pattern.Count > 0)
                 stateMachine.NextPattern();
             else
                 Debug.Log("연결되어있지 않음.");
@@ -68,15 +72,15 @@ public class AILineMove : AIState
     }
 
     // 목표 지점으로 이동하는 스크립트.
-    bool Move()
+    private bool Move()
     {
-        if (Vector3.Distance(stateMachine.transform.position, movingPoint[cur].position) <= 0.1)
+        if (Vector3.Distance(stateMachine.Transform.position, movingPoint[cur].position) <= 0.1)
         {
-            stateMachine.transform.position = movingPoint[cur].position;
+            stateMachine.Transform.position = movingPoint[cur].position;
             return true;
         }
-        stateMachine.transform.position
-            = Vector3.MoveTowards(stateMachine.transform.position, movingPoint[cur].position, 5f * Time.deltaTime);
+        stateMachine.Transform.position
+            = Vector3.MoveTowards(stateMachine.Transform.position, movingPoint[cur].position, 5f * Time.deltaTime);
         return false;
         //Debug.Log(movingPoint[cur].name);
         //Debug.Log(movingPoint[cur].position);

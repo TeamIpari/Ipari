@@ -4,19 +4,22 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// 작성자: 성지훈
+/// 추가 작성
+/// </summary>
+
 public class lendslide : MonoBehaviour, IEnviroment
 {
-    bool ishit = false;
-
     public BrokenDoorManager Door;
-    public float _brokenTime = 2.0f;
+    public float BrokenTime = 2.0f;
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
-    public bool _hit { get { return ishit; } set { ishit = value; } }
+    public bool IsHit { get; set; }
 
     public bool Interact()
     {
-        ishit = true;
+        IsHit = true;
         StartCoroutine(Boom());
         return false;
     }
@@ -24,17 +27,17 @@ public class lendslide : MonoBehaviour, IEnviroment
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Player" && !ishit)
+        if(other.gameObject.CompareTag("Player") && !IsHit)
         {
-            ishit = true;
+            IsHit = true;
             StartCoroutine(Boom());
         }
     }
 
 
-    IEnumerator Boom ()
+    private IEnumerator Boom ()
     {
-        yield return new WaitForSeconds(_brokenTime);
+        yield return new WaitForSeconds(BrokenTime);
         Door.Boom();
 
     }
