@@ -13,7 +13,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 		_WindScroll("Wind Scroll", Range( 0 , 1)) = 0
 		[ASEEnd]_WindJitter("Wind Jitter", Range( 0 , 1)) = 0
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
-		_BumpTex("Normal Texture", 2D) = "bump" {}
+		_NormalTex("Normal Texture", 2D) = "Normal" {}
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
@@ -28,6 +28,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 		//_TessMax( "Tess Max Distance", Float ) = 25
 		//_TessEdgeLength ( "Tess Edge length", Range( 2, 50 ) ) = 16
 		//_TessMaxDisp( "Tess Max Displacement", Float ) = 25
+		
 	}
 
 	SubShader
@@ -42,7 +43,6 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 		AlphaToMask Off
 		HLSLINCLUDE
 		#pragma target 3.0
-
 		#ifndef ASE_TESS_FUNCS
 		#define ASE_TESS_FUNCS
 		float4 FixedTess( float tessValue )
@@ -273,6 +273,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 			CBUFFER_END
 			sampler2D _WindNoiseTex;
 			sampler2D _FoliageTex;
+			sampler2D _BumpMap;
 
 
 			
@@ -752,7 +753,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 			CBUFFER_END
 			sampler2D _WindNoiseTex;
 			sampler2D _FoliageTex;
-
+			sampler2D _BumpMap;
 
 			
 			float3 _LightDirection;
@@ -1053,6 +1054,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 			CBUFFER_END
 			sampler2D _WindNoiseTex;
 			sampler2D _FoliageTex;
+			sampler2D _BumpMap;
 
 
 			
@@ -1343,6 +1345,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 			CBUFFER_END
 			sampler2D _WindNoiseTex;
 			sampler2D _FoliageTex;
+			sampler2D _BumpMap;
 
 
 			
@@ -1639,6 +1642,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 			CBUFFER_END
 			sampler2D _WindNoiseTex;
 			sampler2D _FoliageTex;
+			sampler2D _BumpMap;
 
 
 			
@@ -1917,6 +1921,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 			CBUFFER_END
 			sampler2D _WindNoiseTex;
 			sampler2D _FoliageTex;
+			sampler2D _BumpMap;
 
 
 			
@@ -2241,6 +2246,7 @@ Shader "PolyToots/ASE_FoliageFromMesh_SSS"
 			CBUFFER_END
 			sampler2D _WindNoiseTex;
 			sampler2D _FoliageTex;
+			sampler2D _BumpMap;
 
 
 			
