@@ -137,11 +137,11 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         col = GetComponent<Collider>();
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
+    //// Update is called once per frame
+    //private void Update()
+    //{
         
-    }
+    //}
 
 
 }

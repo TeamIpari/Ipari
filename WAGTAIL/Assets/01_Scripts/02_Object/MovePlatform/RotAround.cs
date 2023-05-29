@@ -35,16 +35,7 @@ public class RotAround : MonoBehaviour, IEnviroment
     private void Update()
     {
         RotatePlatform();
-        if (Rot)
-        {
-            Player.Instance.controller.enabled = false;
-            RotatePlayer();
-            Player.Instance.controller.enabled = true;
-            if (!Player.Instance.controller.isGrounded)
-            {
-                Rot = false;
-            }
-        }
+        RotatePlayer();
     }
 
     public void RotatePlatform()
@@ -60,15 +51,26 @@ public class RotAround : MonoBehaviour, IEnviroment
 
     public void RotatePlayer()
     {
+        if (Rot)
+        {
+            Player.Instance.controller.enabled = false;
+            UpdatePlayerRotate();
+            Player.Instance.controller.enabled = true;
+            if (!Player.Instance.controller.isGrounded)
+            {
+                Rot = false;
+            }
+        }
+    }
+
+    private void UpdatePlayerRotate()
+    {
         float temp = Speed;
         if (Reverse)
             temp *= -1;
         else
             temp *= 1;
-        
-        //Player.Instance.transform.RotateAround(tf.position, Vector3.up, (-speed * Time.deltaTime));
         Player.Instance.transform.RotateAround(Tf.position, Vector3.up, (temp * Time.deltaTime));
-
     }
 
     private void OnTriggerStay(Collider other)

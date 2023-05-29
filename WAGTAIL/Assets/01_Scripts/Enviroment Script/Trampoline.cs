@@ -42,12 +42,16 @@ public class Trampoline : MonoBehaviour, IEnviroment
         }
         if (!move)
             move = true;
-        StartCoroutine(rbJump());
+        StartCoroutine(BackJumpValue());
 
         return false;
     }
 
-    private IEnumerator rbJump()
+    /// <summary>
+    /// n초 후 기존의 점프 높이 돌려주는 기능.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator BackJumpValue()
     {
         yield return new WaitForSeconds(0.05f);
         Player.Instance.jumpHeight = saveHeight;
@@ -58,48 +62,55 @@ public class Trampoline : MonoBehaviour, IEnviroment
     // Start is called before the first frame update
     private void Start()
     {
-
         saveHeight = Player.Instance.jumpHeight;
         targetPos = heightPos.transform.position;
     }
 
-    public float _curtime = 0;
+    public float Curtime = 0;
     [SerializeField] private Transform lowPos;
     [SerializeField] private Transform heightPos;
     //Vector3 _localLow;
     //Vector3 _localHeight;
     [SerializeField] private Vector3 targetPos;
     public float MoveTime = 0;
-    public float RbTime = 0;
 
 
     private void FixedUpdate()
     {
-        if(move)
+        Moving();
+        if (move)
         {
-            _curtime += Time.deltaTime;
+            Curtime += Time.deltaTime;
             // 올라오게 만들기.
-            if (_curtime > MoveTime)
+            if (Curtime > MoveTime)
             {
                 Moving();
-                _curtime = 0;
+                Curtime = 0;
             }
         }
-
     }
 
     private void Moving()
     {
-        // 초당 n의 속도로 목표를 향해 움직임.
-        if (Vector3.Distance(transform.position, targetPos) <= 1)
+        if (move)
         {
-            targetPos = targetPos == heightPos.position ? lowPos.position : heightPos.position;
-            move = false;
+            Curtime += Time.deltaTime;
+            // 올라오게 만들기.
+            if (Curtime > MoveTime)
+            {     
+                // 초당 n의 속도로 목표를 향해 움직임.
+                if (Vector3.Distance(transform.position, targetPos) <= 1)
+                {
+                    targetPos = targetPos == heightPos.position ? lowPos.position : heightPos.position;
+                    move = false;
+                }
+                else
+                    transform.position = Vector3.MoveTowards(transform.position, targetPos, 5f * Time.deltaTime);
+                Curtime = 0;
+            }
         }
-        else
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, 5f * Time.deltaTime);
     }
-    
+
     private void OnDrawGizmos()
     {
         if (lowPos != null)
@@ -115,9 +126,4 @@ public class Trampoline : MonoBehaviour, IEnviroment
         }
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        
-    }
 }

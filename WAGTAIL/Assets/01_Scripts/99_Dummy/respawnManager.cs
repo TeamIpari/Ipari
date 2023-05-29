@@ -15,11 +15,11 @@ public class respawnManager : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
+    //// Update is called once per frame
+    //private void Update()
+    //{
         
-    }
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
