@@ -20,6 +20,18 @@ public class Ladder : MonoBehaviour, IInteractable
             return true;
         }
 
+        if (interactor.player.movementSM.currentState == interactor.player.jump)
+        {
+            interactor.player.isClimbing = true;
+            return true;
+        }
+
+        if (interactor.player.movementSM.currentState == interactor.player.flight)
+        {
+            interactor.player.isClimbing = true;
+            return true;
+        }
+        
         return false;
     }
 }

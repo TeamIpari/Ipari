@@ -49,10 +49,11 @@ public class JumpingState : State
     {
         base.LogicUpdate();
 
-        if(jump)
+        if (jump)
         {
             stateMachine.ChangeState(player.jump);
         }
+        
         else if (isGrounded) 
         {
             //stateMachine.ChangeState(player.idle);
