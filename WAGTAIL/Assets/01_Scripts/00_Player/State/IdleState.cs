@@ -41,9 +41,9 @@ public class IdleState : State
         pull = player.isPull;
         carry = player.isCarry;
         flight = player.isFlight;
-        /////
-        slide = player.isSlide;
-        /////
+        
+        //slide = player.isSlide;
+        
         input = Vector2.zero;
         velocity = Vector3.zero;
         currentVelocity = Vector3.zero;
