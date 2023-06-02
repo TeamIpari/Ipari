@@ -1,6 +1,8 @@
  using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
+
 
 public class NPCBase : MonoBehaviour
 {
@@ -11,7 +13,8 @@ public class NPCBase : MonoBehaviour
     //public int 
 
     public bool IsDead = false;     // 생존 여부.
-    
+
+    public string stateName = "None";
 
 
     /// <summary>

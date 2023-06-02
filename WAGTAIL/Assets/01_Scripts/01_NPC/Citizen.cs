@@ -32,7 +32,7 @@ public class Citizen : NPCBase
         idle = new AIIdleState(aiStateMachine, NextStateTimer, SearchDistance);
         patrol = new AIPatrolState(aiStateMachine, SearchDistance);
         boundary = new AIBoundaryState(aiStateMachine, ComeDistance, RunDistance);
-        run = new AIRunState(aiStateMachine, RunDistance);
+        run = new AIRunState(aiStateMachine, RunDistance, MoveSpeed);
 
         // count == 0;
         idle.SetChildren(patrol);

@@ -85,7 +85,7 @@ public class DummyAttack3 : AIState
 
             _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
             _obj.transform.position = t;
-            //Debug.Log(t);
+
             marker.Add(_obj);
         }
     }
