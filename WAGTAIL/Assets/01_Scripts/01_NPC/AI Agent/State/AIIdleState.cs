@@ -34,11 +34,13 @@ public class AIIdleState : AIState
 
     public override void Enter()
     {
+        stateMachine.NPCBase.stateName = "Idle";
         currentTime = 0;
     }
 
     public override void Exit()
     {
+        //stateMachine.NPCBase.stateName = "None";
         //Debug.Log("End AI Idle State");
     }
 

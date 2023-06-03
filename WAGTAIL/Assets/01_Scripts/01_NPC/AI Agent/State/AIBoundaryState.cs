@@ -38,14 +38,15 @@ public class AIBoundaryState : AIState
 
     public override void Enter()
     {
-        //Debug.Log("Start AI Boundary State");
-        
+        stateMachine.NPCBase.stateName = "Boundary";
+
         changeTime = Random.Range(2, 5);
         currentTime = 0;
     }
 
     public override void Exit()
     {
+        //stateMachine.NPCBase.stateName = "None";
 
     }
 
@@ -66,9 +67,13 @@ public class AIBoundaryState : AIState
 
     private void Boundary()
     {
-        if (stateMachine.Target != null && !stateMachine.Agent.isOnOffMeshLink)
+        //if (stateMachine.Target != null && !stateMachine.Agent.isOnOffMeshLink)
+        //{
+        //    stateMachine.Transform.LookAt(stateMachine.Target.transform);
+        //}
+        if(stateMachine.Target)
         {
-            stateMachine.Transform.LookAt(stateMachine.Target.transform);
+            //stateMachine.Transform.LookAt(stateMachine.Target.transform);
         }
 
 

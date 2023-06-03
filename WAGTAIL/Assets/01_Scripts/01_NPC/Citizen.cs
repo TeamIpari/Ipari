@@ -6,7 +6,7 @@ using UnityEngine;
 /// 작성자: 성지훈
 /// 추가 작성
 /// </summary>
-public class Citizen : MonoBehaviour
+public class Citizen : NPCBase
 {
     // State Init
     private AIStateMachine aiStateMachine;
@@ -15,9 +15,6 @@ public class Citizen : MonoBehaviour
     private AIBoundaryState boundary;
     private AIRunState run;
 
-    [Header("Idle Data")]
-    public float MoveTimer;
-    public float SearchDistance;
 
     [Header("Patrol Data")]
     public float ChangeTimer;
@@ -32,10 +29,10 @@ public class Citizen : MonoBehaviour
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
 
-        idle = new AIIdleState(aiStateMachine, MoveTimer, SearchDistance);
+        idle = new AIIdleState(aiStateMachine, NextStateTimer, SearchDistance);
         patrol = new AIPatrolState(aiStateMachine, SearchDistance);
         boundary = new AIBoundaryState(aiStateMachine, ComeDistance, RunDistance);
-        run = new AIRunState(aiStateMachine, RunDistance);
+        run = new AIRunState(aiStateMachine, RunDistance, MoveSpeed);
 
         // count == 0;
         idle.SetChildren(patrol);

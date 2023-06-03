@@ -12,7 +12,7 @@ using UnityEngine.AI;
 /// </summary>
 public class AIStateMachine
 {
-    public GameObject GameObject;
+    public NPCBase NPCBase;
     public Transform Transform;
     public Animator Animator;
     public Rigidbody Physics;
@@ -33,7 +33,7 @@ public class AIStateMachine
     public static AIStateMachine CreateFormGameObject(GameObject gameObject)
     {
         AIStateMachine ai = new AIStateMachine();
-        ai.GameObject = gameObject;
+        ai.NPCBase = gameObject.GetComponent<NPCBase>() ;
         ai.Transform = gameObject.transform;
         ai.Animator = gameObject.GetComponent<Animator>();
         ai.Physics = gameObject.GetComponent<Rigidbody>();

@@ -16,7 +16,7 @@ public enum STATES
     ATTCK2,
     ATTCK3,
 }
-public class DummyBoss : MonoBehaviour
+public class DummyBoss : EnemyBase
 {
     private AIStateMachine aiStateMachine;
     private AIIdleState idle;
@@ -25,15 +25,11 @@ public class DummyBoss : MonoBehaviour
     private DummyAttack2 attack2;
     private DummyAttack3 attack3;
 
+    [Header("Patterns")]
     public List<STATES> Pattern;
 
     
     // Effect를 어떻게 표시할까?
-
-    public bool Die = false;
-    [Header("Idle")]
-    public float MoveTimer;
-    public float SearchDistance;
 
     [Header("Move")]
     public Transform[] Points;
@@ -54,7 +50,7 @@ public class DummyBoss : MonoBehaviour
     private void Start()
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
-        idle = new AIIdleState(aiStateMachine, MoveTimer, SearchDistance);
+        idle = new AIIdleState(aiStateMachine, NextStateTimer, SearchDistance);
         move = new AILineMove(aiStateMachine, Points);
         attack1 = new DummyAttack1(aiStateMachine, Tentacle, Effect);
         attack3 = new DummyAttack3(aiStateMachine, Bullet, ShootPoint, Effect, FlightTime,  Count, SearchRadius);
