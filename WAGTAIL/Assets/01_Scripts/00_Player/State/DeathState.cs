@@ -52,9 +52,9 @@ public class DeathState : State
     private void RemoveCheckPoint()
     {
         //체크 포인트로 이동 구현 해야함
-        
-        // UI 패이드인 패이드 아웃
         player.transform.position = _checkPoint.position;
+        // UI 패이드인 패이드 아웃
+        
     }
     
     // 챕터로 보낼 시
