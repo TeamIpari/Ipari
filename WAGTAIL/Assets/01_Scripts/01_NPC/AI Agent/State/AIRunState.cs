@@ -75,9 +75,6 @@ public class AIRunState : AIState
         }
         RayFloorCheck();
 
-
-
-
         Search();
     }
 
@@ -172,7 +169,6 @@ public class AIRunState : AIState
 
     private void RayFloorCheck()
     {
-        
         if (Physics.Raycast(stateMachine.Transform.position + (stateMachine.Transform.forward * .5f), -stateMachine.Transform.up, out hit, 1.1f))
         {
             Debug.DrawRay(stateMachine.Transform.position + (stateMachine.Transform.forward * 1f), -stateMachine.Transform.up * 1f, Color.red);
@@ -263,7 +259,6 @@ public class AIRunState : AIState
             stateMachine.Target.transform.position));
         if (distance > runDistance)
         {
-            
             stateMachine.ChangeState(parent);
         }
     }

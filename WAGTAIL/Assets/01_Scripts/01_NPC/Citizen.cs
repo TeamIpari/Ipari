@@ -15,7 +15,6 @@ public class Citizen : NPCBase
     private AIBoundaryState boundary;
     private AIRunState run;
 
-
     [Header("Patrol Data")]
     public float ChangeTimer;
 
