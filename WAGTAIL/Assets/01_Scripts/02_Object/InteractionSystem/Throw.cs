@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Net;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class Throw : MonoBehaviour, IInteractable
@@ -25,16 +26,21 @@ public class Throw : MonoBehaviour, IInteractable
     Vector3 height;
     Vector3 endPos;
 
-    bool can = false;
+    bool physicsCheck = false;
     public string InteractionPrompt => _promt;
     private Animator _animator;
 
     private void Start()
     {
-        //_animator = GetComponent<Animator>();
+
         _playerEquipPoint = Player.Instance.ThrowEquipPoint.gameObject;
         _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
          startPos = this.transform.position;
+        _animator = GetComponent<Animator>();
+        //if(_animator == null)
+            //Debug.Log
+        
+
     }
 
     public bool AnimEvent()
@@ -65,11 +71,23 @@ public class Throw : MonoBehaviour, IInteractable
         return false;
     }
 
-    //private void Update()
-    //{
-    //    //if (can)
-    //        //transform.position = BeziurCurve(_value);
-    //}
+    private void Update()
+    {
+        if(physicsCheck)
+        {
+            RaycastHit hit;
+            Debug.DrawRay(transform.position, -transform.up, Color.red);
+
+            if (Physics.Raycast(transform.position, -transform.up, out hit, .1f) && !hit.transform.gameObject.CompareTag("Player"))
+            {
+                Debug.Log("IsGround");
+                GetComponent<Rigidbody>().velocity = Vector3.zero;
+                _animator.SetTrigger("Grounded");
+                physicsCheck = false;
+
+            }
+        }
+    }
 
     /*
     public void Pickup()
@@ -120,13 +138,10 @@ public class Throw : MonoBehaviour, IInteractable
         startPos = transform.position;
         _value = 0;
 
-
         // 방향벡터를 구함.
         Vector3 lookvec = Player.Instance.transform.position - transform.position;
         lookvec = lookvec.normalized;
         
-
-
         // 꺾이는 지점.
         height = new Vector3(startPos.x, _playerEquipPoint.transform.position.y -.5f, startPos.z) + lookvec * 0.5f;
         // 머리 위
@@ -141,6 +156,9 @@ public class Throw : MonoBehaviour, IInteractable
         GetComponent<Rigidbody>().freezeRotation = true;
         GetComponent<Rigidbody>().isKinematic = false;
         yield return new WaitForSeconds(0.75f);
+
+        if (_animator != null)
+            _animator.SetTrigger("Caught");
 
         while (_value <= 1)
         {
@@ -177,6 +195,8 @@ public class Throw : MonoBehaviour, IInteractable
     {
         //_animator.enabled = false;
         yield return new WaitForSeconds(0.2f);
+        if (_animator != null)
+            _animator.SetTrigger("Flight");
         // interactionPoint의 Position을 초기상태로 되돌림
         _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;
 
@@ -194,7 +214,11 @@ public class Throw : MonoBehaviour, IInteractable
         _playerForwardTransform.y = _yForce * _yAngle;
         _playerForwardTransform.z *= _force;
 
-        GetComponent<Rigidbody>().AddForce(_playerForwardTransform );
+        GetComponent<Rigidbody>().AddForce(_playerForwardTransform);
+
+        
+        if (_animator != null)
+            physicsCheck = true;
     }
 
 }
