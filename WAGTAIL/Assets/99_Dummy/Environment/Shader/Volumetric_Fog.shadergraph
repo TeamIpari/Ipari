@@ -119,6 +119,9 @@
         },
         {
             "m_Id": "e6511e75b26d4614ad2b25de1191cf23"
+        },
+        {
+            "m_Id": "31d482c8e2334d20985b9295cf974a9e"
         }
     ],
     "m_GroupDatas": [],
@@ -495,6 +498,9 @@
             },
             {
                 "m_Id": "d3f547de989344ac9eeeffad7efe5d48"
+            },
+            {
+                "m_Id": "31d482c8e2334d20985b9295cf974a9e"
             }
         ]
     },
@@ -1319,12 +1325,45 @@
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
     "m_AlphaMode": 0,
-    "m_RenderFace": 2,
+    "m_RenderFace": 0,
     "m_AlphaClip": false,
     "m_CastShadows": true,
     "m_ReceiveShadows": true,
     "m_CustomEditorGUI": "",
     "m_SupportVFX": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.BlockNode",
+    "m_ObjectId": "31d482c8e2334d20985b9295cf974a9e",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "SurfaceDescription.Occlusion",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 0.0,
+            "height": 0.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "cbfb392866094cd3a4c187eb8b6c29b8"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_SerializedDescriptor": "SurfaceDescription.Occlusion"
 }
 
 {
@@ -3225,6 +3264,21 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "cbfb392866094cd3a4c187eb8b6c29b8",
+    "m_Id": 0,
+    "m_DisplayName": "Ambient Occlusion",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Occlusion",
+    "m_StageCapability": 2,
+    "m_Value": 0.0,
+    "m_DefaultValue": 1.0,
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
     "m_ObjectId": "cdbe31870bd4448fa6812ab981585500",
     "m_Id": 2,
@@ -3513,8 +3567,8 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 1904.0001220703125,
-            "y": 489.0,
+            "x": 1845.0001220703125,
+            "y": 502.0,
             "width": 123.0,
             "height": 34.0
         }
