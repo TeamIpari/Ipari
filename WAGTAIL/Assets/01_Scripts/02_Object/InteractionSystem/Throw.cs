@@ -19,6 +19,8 @@ public class Throw : MonoBehaviour, IInteractable
     [SerializeField] float _yAngle = 0.45f;
     [Range(0, 1)]
     [SerializeField] float _value = 0.0f;
+    [Range(0,0.15f)]
+    [SerializeField] float _overheadSpeed = 0.0f;
 
     Vector3 _playerForwardTransform;
     Vector3 _nomalInteractionPoint;
@@ -162,7 +164,7 @@ public class Throw : MonoBehaviour, IInteractable
 
         while (_value <= 1)
         {
-            yield return new WaitForSeconds(0.015f);
+            yield return new WaitForSeconds(_overheadSpeed / 1000f);
             transform.transform.position = (BeziurCurve(_value));
             _value += 0.02f;
         }
