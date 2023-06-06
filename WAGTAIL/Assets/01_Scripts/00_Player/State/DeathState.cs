@@ -10,7 +10,7 @@ public class DeathState : State
     /// 체크 포인트로 이동 시 해줘야 할 것들
     /// ===============================
     private Transform _checkPoint;
-    
+    private GameObject _deathUI;
     
     /// ===============================
     /// 챕터의 시작으로 이동 시 해줘야 할 것들
@@ -27,6 +27,8 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
+
+        
 
         if (player.coin > 0)
         {

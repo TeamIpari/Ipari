@@ -21,7 +21,7 @@ public class UIManager : Singleton<UIManager>
         base.Awake();
         _uiControllerList = GetComponentsInChildren<UIController>().ToList();
         _uiControllerList.ForEach(x => x.gameObject.SetActive(false));
-        SwitchCanvas(CanvasType.MainMenu);
+        SwitchCanvas(CanvasType.GameUI);
     }
 
     public void SwitchCanvas(CanvasType type) 
@@ -38,6 +38,19 @@ public class UIManager : Singleton<UIManager>
             desiredCanvas.gameObject.SetActive(true);
             _lastActiveUI = desiredCanvas;
         }
+
         else {Debug.LogWarning("The desired canvas was not found!");}
+    }
+
+    public UIController GetActiveCanvas()
+    {
+        return _lastActiveUI;
+    }
+
+    public UIController GetCanvas(CanvasType type)
+    {
+        UIController desiredCanvas = _uiControllerList.Find(x => x.canvasType == type);
+
+        return desiredCanvas;
     }
 }
