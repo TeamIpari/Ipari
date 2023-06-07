@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// 추가 해야 할 것
@@ -35,24 +33,29 @@ public class GameManager : Singleton<GameManager>
     //================================================
     // Score
     private List<ScoreObject> _scoreObjectList;
-    
+    private int _coin = 0;
+    private int _flower = 0;
     //================================================
-    
     private Player _player;
-    public int coin = 0;
-    public int flower = 0;
 
     protected override void Awake()
     {
         base.Awake();
         _player = Player.Instance;
+        
+        // CheckPoints
+        // ===========================================================================
         _checkPointList = GetComponentsInChildren<CheckPoint>().ToList();
-        _scoreObjectList = GetComponentsInChildren<ScoreObject>().ToList();
         _checkPointList.ForEach(x=>x.gameObject.SetActive(true));
         _startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
         _currentCheckPoint = _startPoint;
-        coin = 0;
-        flower = 0;
+        
+        // Score
+        // ===========================================================================
+        _scoreObjectList = GetComponentsInChildren<ScoreObject>().ToList();
+        _scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
+        Coin = 93;
+        Flower = 0;
     }
 
     private void Start()
@@ -65,6 +68,7 @@ public class GameManager : Singleton<GameManager>
         WrapPlayerPosition(_currentCheckPoint);
     }
     
+    // 이 Func는 추후 작업해야함
     public void RestartChapter()
     {
         _checkPointList.ForEach(x=>x.gameObject.SetActive(true));
@@ -85,15 +89,15 @@ public class GameManager : Singleton<GameManager>
     }
     
     #region Property
-/*
+
     public int Coin
     {
-        get => coin;
+        get => _coin;
         set
-        {
-            if (coin < 999)
+        { 
+            if (_coin < 999)
             {
-                coin = value;
+                _coin = value;
             }
         }
     }
@@ -109,6 +113,7 @@ public class GameManager : Singleton<GameManager>
             }
         }
     }
-    */
+    
     #endregion
+    
 }

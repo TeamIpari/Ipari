@@ -25,10 +25,10 @@ public class ScoreObject : MonoBehaviour
         switch (scoreType)
         {
             case ScoreType.Coin:
-                _gameManager.coin += 1;
+                _gameManager.Coin += 1;
                 break;
             case ScoreType.Flower:
-                _gameManager.flower += 1;
+                _gameManager.Flower += 1;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

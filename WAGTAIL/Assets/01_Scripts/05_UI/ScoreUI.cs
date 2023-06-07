@@ -9,18 +9,20 @@ public class ScoreUI : MonoBehaviour
     [SerializeField] private Sprite[] _numberSprite;
     [SerializeField] private Image _tens;
     [SerializeField] private Image _units;
-    Player _player;
+    private GameManager _gameManager;
 
-    void Start()
+    private void Start()
     {
-        _player = Player.Instance;
+        _gameManager = GameManager.GetInstance();
         _tens.sprite = _numberSprite[0];
         _units.sprite = _numberSprite[0];
     }
 
-    void Update()
+    private void Update()
     {
-        _units.sprite = _numberSprite[_player.coin % 10];
-        _tens.sprite = _numberSprite[(_player.coin % 100) / 10];
+        _units.sprite = _numberSprite[_gameManager.Coin % 10];
+        _tens.sprite = _numberSprite[(_gameManager.Coin % 100) / 10];
     }
+    
+    
 }

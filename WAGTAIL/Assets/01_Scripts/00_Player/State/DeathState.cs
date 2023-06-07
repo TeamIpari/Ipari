@@ -27,9 +27,8 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
-
         
-
+        /*
         if (player.coin > 0)
         {
             RemoveCheckPoint();
@@ -38,8 +37,11 @@ public class DeathState : State
         else if(player.coin == 0)
         {
             RemoveChapter();
-        }
-        
+        }*/
+        RemoveCheckPoint();
+        player.animator.enabled = false;
+        player.animator.enabled = true;
+        player.GameManager.Coin -= 5;
         // changeState의 player.idle은 AliveState로 바꿔줘야함 or Alive Animation 출력.
         stateMachine.ChangeState(player.idle);
     }
@@ -54,10 +56,9 @@ public class DeathState : State
     private void RemoveCheckPoint()
     {
         //체크 포인트로 이동 구현 해야함
-        player.transform.position = _checkPoint.position;
+        player.GameManager.Respawn();
         // UI 패이드인 패이드 아웃
-        player.GameUIManager.ActiveUI(GameUIType.Death, true);
-
+        player.UIManager.ActiveGameUI(GameUIType.Death, true);
     }
     
     // 챕터로 보낼 시

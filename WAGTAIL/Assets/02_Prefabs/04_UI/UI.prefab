@@ -228,6 +228,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 794617857044533791}
+  - component: {fileID: 1008659102}
   m_Layer: 5
   m_Name: Chapter
   m_TagString: Untagged
@@ -256,6 +257,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1008659102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794617857044533790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac7733b9ae9c424bbf09c243ef0b01a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameUIType: 2
 --- !u!1 &794617857385474071
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,6 +415,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 794617857543925054}
+  - component: {fileID: 261461404}
   m_Layer: 5
   m_Name: Tutorial
   m_TagString: Untagged
@@ -431,6 +446,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &261461404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794617857543925025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac7733b9ae9c424bbf09c243ef0b01a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameUIType: 0
 --- !u!1 &794617857609149854
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,6 +703,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 794617857850637580}
+  - component: {fileID: 218103761}
   m_Layer: 5
   m_Name: Score
   m_TagString: Untagged
@@ -704,6 +733,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &218103761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794617857850637583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac7733b9ae9c424bbf09c243ef0b01a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameUIType: 1
 --- !u!1 &794617857986428346
 GameObject:
   m_ObjectHideFlags: 0
@@ -989,7 +1031,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &794617858674322532
 Transform:
   m_ObjectHideFlags: 0
@@ -1071,6 +1113,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4465113999466868128}
   - component: {fileID: 640476796532875685}
+  - component: {fileID: 4465113999466868129}
   m_Layer: 5
   m_Name: Death
   m_TagString: Untagged
@@ -1117,6 +1160,19 @@ MonoBehaviour:
   _endScale: 0
   _time: 1.2
   _coolDown: 1.2
+--- !u!114 &4465113999466868129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2422218193601183282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac7733b9ae9c424bbf09c243ef0b01a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameUIType: 3
 --- !u!1 &2485495140702479613
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,6 +1283,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2749186469329746912}
   - component: {fileID: 605097347}
+  - component: {fileID: 605097348}
   m_Layer: 5
   m_Name: GameUI
   m_TagString: Untagged
@@ -1271,6 +1328,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasType: 1
+--- !u!114 &605097348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7839755389498486711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff625c57d1d831542979fba2fe30dae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8996233778462305579
 GameObject:
   m_ObjectHideFlags: 0

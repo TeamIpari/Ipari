@@ -6,6 +6,7 @@ public class FlightState : State
 {
     private float gravityValue;
     private bool jump;
+    private bool dead;
     private bool isGrounded;
     private float playerSpeed;
     private Vector3 airVelocity;
@@ -42,6 +43,7 @@ public class FlightState : State
             jump = true;
         }
 
+        dead = player.isDead;
         input = moveAction.ReadValue<Vector2>();
         velocity = new Vector3(input.x, 0, input.y);
 
@@ -53,6 +55,11 @@ public class FlightState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+
+        if (dead)
+        {
+            stateMachine.ChangeState(player.death);
+        }
 
         if (jump)
         {

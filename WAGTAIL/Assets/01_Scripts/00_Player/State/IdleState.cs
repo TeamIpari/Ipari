@@ -6,18 +6,19 @@ using UnityEngine.InputSystem;
 
 public class IdleState : State
 {
-    float gravityValue;
-    bool climbing;
-    bool push;
-    bool carry;
-    bool jump;
-    bool pull;
-    bool flight;
-    bool slide;
-    Vector3 currentVelocity;
-    bool isGrounded;
-    float playerSpeed;
-    float slopeSpeed;
+    private float gravityValue;
+    private bool climbing;
+    private bool push;
+    private bool carry;
+    private bool jump;
+    private bool pull;
+    private bool flight;
+    private bool slide;
+    private bool dead;
+    private Vector3 currentVelocity;
+    private bool isGrounded;
+    private float playerSpeed;
+    private float slopeSpeed;
 
     Vector3 cVelocity;
 
@@ -41,6 +42,7 @@ public class IdleState : State
         pull = player.isPull;
         carry = player.isCarry;
         flight = player.isFlight;
+        dead = player.isDead;
         
         //slide = player.isSlide;
         
@@ -72,6 +74,7 @@ public class IdleState : State
         push = player.isPush;
         carry = player.isCarry;
         pull = player.isPull;
+        dead = player.isDead;
 
         input = moveAction.ReadValue<Vector2>();
 
@@ -129,6 +132,11 @@ public class IdleState : State
         if (flight)
         {
             stateMachine.ChangeState(player.flight);
+        }
+
+        if (dead)
+        {
+            stateMachine.ChangeState(player.death);
         }
 
         // TODO : Idle 상태일때 추락 후 땅에 닿았을 때 landingState호출 해주기
