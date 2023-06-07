@@ -72,10 +72,23 @@ public class Throw : MonoBehaviour, IInteractable
 
         return false;
     }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position , Vector3.one * .5f);
+        
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(Player.Instance.transform.position + Player.Instance.transform.forward * 5f , Vector3.one * .5f);
+
+
+    }
 
     private void Update()
     {
-        if(physicsCheck)
+
+
+        Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
+        if (physicsCheck)
         {
             RaycastHit hit;
             Debug.DrawRay(transform.position, -transform.up, Color.red);
@@ -212,15 +225,40 @@ public class Throw : MonoBehaviour, IInteractable
 
         // 정한 방식대로 날라감
         _playerForwardTransform = interactor.player.transform.forward;
-        _playerForwardTransform.x *= _force;
-        _playerForwardTransform.y = _yForce * _yAngle;
-        _playerForwardTransform.z *= _force;
+        //_playerForwardTransform.x *= _force;
+        //_playerForwardTransform.y = _yForce * _yAngle;
+        //_playerForwardTransform.z *= _force;
 
-        GetComponent<Rigidbody>().AddForce(_playerForwardTransform);
 
-        
+        //GetComponent<Rigidbody>().AddForce(_playerForwardTransform);
+        GetComponent<Rigidbody>().velocity = CaculateVelocity(Player.Instance.transform.position + Player.Instance.transform.forward * 5f, this.transform.position, 1f);
+
+
+
         if (_animator != null)
             physicsCheck = true;
+    }
+
+    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
+    {
+        // define the distance x and y first;
+        Vector3 distance = target - origin;
+        Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
+        distanceXZ.y = 0f; // y는 0으로 설정.
+
+        // Create a float the represent our distance
+        float Sy = distance.y;      // 세로 높이의 거리를 지정.
+        float Sxz = distanceXZ.magnitude;
+
+        // 속도 추가
+        float Vxz = Sxz / time;
+        float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
+
+        // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
+        Vector3 result = distanceXZ.normalized;
+        result *= Vxz;
+        result.y = Vy;
+        return result;
     }
 
 }
