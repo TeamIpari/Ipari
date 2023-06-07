@@ -56,7 +56,8 @@ public class DeathState : State
         //체크 포인트로 이동 구현 해야함
         player.transform.position = _checkPoint.position;
         // UI 패이드인 패이드 아웃
-        
+        player.GameUIManager.ActiveUI(GameUIType.Death, true);
+
     }
     
     // 챕터로 보낼 시
@@ -64,10 +65,4 @@ public class DeathState : State
     {
         // 챕터 재시작 구현해야함
     }
-
-    private void OnRespawnUI()
-    {
-        
-    }
-
 }

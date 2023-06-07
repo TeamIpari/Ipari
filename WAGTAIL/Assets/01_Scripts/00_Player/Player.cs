@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 //using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -106,14 +107,12 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public int flower;
 
-    private Transform _checkPoint;
-
     //============================================//
     // Manager
     [HideInInspector]
-    public UIManager UIManager;
-    [HideInInspector]
     public GameUIManager GameUIManager;
+    [HideInInspector] 
+    public GameManager GameManager;
 
 
     private void Awake()
@@ -134,6 +133,10 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        // Manager
+        GameManager = GameManager.GetInstance();
+        GameUIManager = GameUIManager.GetInstance();
+        
         // GetComponents
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
@@ -166,10 +169,7 @@ public class Player : MonoBehaviour
         // Stats
         coin = 0;
         flower = 0;
-
-        // Manager
-        UIManager = UIManager.GetInstance();
-        GameUIManager = GameUIManager.GetInstance();
+        
     }
 
     // Update is called once per frame

@@ -21,6 +21,7 @@ public class UIManager : Singleton<UIManager>
         base.Awake();
         _uiControllerList = GetComponentsInChildren<UIController>().ToList();
         _uiControllerList.ForEach(x => x.gameObject.SetActive(false));
+        // 테스트 끝나면 CanvasType.MainMenu로 바꿔야함
         SwitchCanvas(CanvasType.GameUI);
     }
 
