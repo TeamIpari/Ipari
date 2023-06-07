@@ -74,12 +74,6 @@ public class Throw : MonoBehaviour, IInteractable
     }
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position , Vector3.one * .5f);
-        
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(Player.Instance.transform.position + Player.Instance.transform.forward * 5f , Vector3.one * .5f);
-
 
     }
 
@@ -229,11 +223,8 @@ public class Throw : MonoBehaviour, IInteractable
         //_playerForwardTransform.y = _yForce * _yAngle;
         //_playerForwardTransform.z *= _force;
 
-
         //GetComponent<Rigidbody>().AddForce(_playerForwardTransform);
-        GetComponent<Rigidbody>().velocity = CaculateVelocity(Player.Instance.transform.position + Player.Instance.transform.forward * 5f, this.transform.position, 1f);
-
-
+        GetComponent<Rigidbody>().velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * 5f, this.transform.position, 1f);
 
         if (_animator != null)
             physicsCheck = true;
