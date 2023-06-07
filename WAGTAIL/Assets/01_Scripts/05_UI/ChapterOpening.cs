@@ -27,6 +27,6 @@ public class ChapterOpening : MonoBehaviour
 
     public void DestroyUI()
     {
-        this.gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

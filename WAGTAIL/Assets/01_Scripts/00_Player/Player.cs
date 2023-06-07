@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 //using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -38,13 +39,14 @@ public class Player : MonoBehaviour
     public bool isPush = false;
     public bool isCarry = false;
     public bool isFlight = false;
+    public bool isDead = false;
     // 추가 스크립트
     //public bool isSmallThrow = false;
     //
     // 당기는데, 원점으로부터 멀어지면 멀어질 수록 최대 도달점과 비교하여
     // 퍼센테이지로 이동속도를 줄임.
     public bool isPull = false;
-    public bool isSlide = true;
+    //public bool isSlide = true;
     
     //============================================//
     // State
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour
     public DropState drop;
     public PullingState pull;
     public PullOutState pullOut;
+    public DeathState death;
 
     //============================================//
     // Move
@@ -104,6 +107,13 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public int flower;
 
+    //============================================//
+    // Manager
+    [HideInInspector]
+    public GameUIManager GameUIManager;
+    [HideInInspector] 
+    public GameManager GameManager;
+
 
     private void Awake()
     {
@@ -123,6 +133,10 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        // Manager
+        GameManager = GameManager.GetInstance();
+        GameUIManager = GameUIManager.GetInstance();
+        
         // GetComponents
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
@@ -155,6 +169,7 @@ public class Player : MonoBehaviour
         // Stats
         coin = 0;
         flower = 0;
+        
     }
 
     // Update is called once per frame
