@@ -50,6 +50,11 @@ public class LoadManager : Singleton<LoadManager>
     {
         base.Awake();
         IO_GetSayer();
+        Scriptable sc;
+        dic_Say.TryGetValue(0, out sc);
+        dialogsSave = sc.contents;
+        GetInputUp();
+        isTypingEnd = true;
     }
 
     public void IO_GetSayer()
@@ -86,12 +91,13 @@ public class LoadManager : Singleton<LoadManager>
 
     private void Update()
     {
-        //if(Input.GetMouseButtonDown(0))
-        //{
-        //    Scriptable sc;
-        //    dic_Say.TryGetValue(0, out sc);
-        //    Typing(sc.contents, tmps);
-        //}
+        if (Input.GetMouseButtonDown(0))
+        {
+            //isTypingEnd = true;
+            tmps.text = ""; 
+            tmpSave = tmps;
+            GetInputDown();
+        }
     }
 
     public float timeForCharacter;
@@ -100,12 +106,12 @@ public class LoadManager : Singleton<LoadManager>
 
     float characterTime;
 
-    string[] dialogsSave;
+    [SerializeField] string dialogsSave;
     TextMeshProUGUI tmpSave;
 
     public static bool isDialogEnd;
 
-    bool isTypingEnd = false;
+    [SerializeField] bool isTypingEnd = false;
     int dialogNumber = 0;
 
     float timer;
@@ -119,14 +125,14 @@ public class LoadManager : Singleton<LoadManager>
         
     }
 
-    public void Typing(string[] dialogs, TextMeshProUGUI textObj)
+    public void Typing(string dialogs, TextMeshProUGUI textObj)
     {
         isDialogEnd = false;
         dialogsSave = dialogs;
         tmpSave = textObj;
         if(dialogNumber < dialogs.Length)
         {
-            char[] chars = dialogs[dialogNumber].ToCharArray(); // 받아온 다이얼 로그를 char로 변환
+            char[] chars = dialogs.ToCharArray(); // 받아온 다이얼 로그를 char로 변환
             StartCoroutine(ITyper(chars , textObj));
         }
         else
@@ -178,6 +184,7 @@ public class LoadManager : Singleton<LoadManager>
             else
             {
                 characterTime = timeForCharacter_Fast; // 빠른 문장으로 넘김.
+                Debug.Log(characterTime);
             }
         }
     }
