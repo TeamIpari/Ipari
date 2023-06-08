@@ -21,6 +21,7 @@ public class LoadManager : Singleton<LoadManager>
         public int chapter;
         public string sayTarget;
         public string contents;
+        public float wait;
 
         public void Init(string[] str)
         {
@@ -131,10 +132,15 @@ public class LoadManager : Singleton<LoadManager>
     {
         if (isTypingEnd)        
         {
-            //if(TmpNum == 0)
-            //{
-                
-            //}
+            if (TmpNum == 0)
+            {
+                Tmps[Tmps.Length - 1].enabled = false;
+            }
+            else
+            {
+                Tmps[TmpNum - 1].enabled = false;
+            }
+            Tmps[TmpNum].enabled = true;
             Tmps[TmpNum].text = "";
 
             StartCoroutine(TypingCo(ChapterSay[dialogNum]));
