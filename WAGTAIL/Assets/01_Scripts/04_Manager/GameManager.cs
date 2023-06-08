@@ -4,14 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-/// <summary>
-/// 추가 해야 할 것
-/// 1. Respawn
-/// 2. CheckPoint 재시작
-/// 3. Chapter 재시작
-/// 4. Chapter 클리어 시 다음 씬으로
-/// </summary>
-
 public enum CheckPointType
 {
     StartPoint,
@@ -54,7 +46,7 @@ public class GameManager : Singleton<GameManager>
         // ===========================================================================
         _scoreObjectList = GetComponentsInChildren<ScoreObject>().ToList();
         _scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
-        Coin = 93;
+        Coin = 70;
         Flower = 0;
     }
 

@@ -5,13 +5,9 @@ using UnityEngine;
 public class DeathState : State
 {
     /// <summary>
-    /// 사망 시 용기의 구슬 -10 및 체크 포인트로 이동
-    /// 구슬의 보유량이 10 보다 작을 시 챕터의 시작으로 이동.
-    /// 체크 포인트로 이동 시 해줘야 할 것들
-    /// ===============================
-    private Transform _checkPoint;
-    private GameObject _deathUI;
-    
+    /// 사망 시 용기의 구슬 -5 및 체크 포인트로 이동
+    /// 구슬의 보유량이 0 보다 작을 시 챕터의 시작으로 이동.
+
     /// ===============================
     /// 챕터의 시작으로 이동 시 해줘야 할 것들
         
@@ -39,8 +35,7 @@ public class DeathState : State
             RemoveChapter();
         }*/
         RemoveCheckPoint();
-        player.animator.enabled = false;
-        player.animator.enabled = true;
+        player.animator.Rebind();
         player.GameManager.Coin -= 5;
         // changeState의 player.idle은 AliveState로 바꿔줘야함 or Alive Animation 출력.
         stateMachine.ChangeState(player.idle);

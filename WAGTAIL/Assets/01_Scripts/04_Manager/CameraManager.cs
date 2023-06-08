@@ -1,11 +1,53 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using Cinemachine;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+public enum CameraType
 {
+    Main,
+    Side,
+    Top,
+    Back,
+    Death
+}
+
+public class CameraManager : Singleton<CameraManager>
+{
+    private List<CameraController> _cameraControllerList;
+
+    private CameraController _lastActiveCamera;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _cameraControllerList = GetComponentsInChildren<CameraController>().ToList();
+        _cameraControllerList.ForEach(x => x.gameObject.SetActive(false));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
     // Debug용 변수들
     [SerializeField] public bool isChange;
     [SerializeField] public bool isBack;
@@ -61,5 +103,5 @@ public class CameraManager : MonoBehaviour
         list.AddFirst(_currentList.First.Value);
         _currentList.RemoveFirst();
         isBack = false;
-    }
+    }*/
 }
