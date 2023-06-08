@@ -34,15 +34,10 @@ public class Throw : MonoBehaviour, IInteractable
 
     private void Start()
     {
-
         _playerEquipPoint = Player.Instance.ThrowEquipPoint.gameObject;
         _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
          startPos = this.transform.position;
         _animator = GetComponent<Animator>();
-        //if(_animator == null)
-            //Debug.Log
-        
-
     }
 
     public bool AnimEvent()
@@ -79,67 +74,21 @@ public class Throw : MonoBehaviour, IInteractable
 
     private void Update()
     {
-
-
         Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
         if (physicsCheck)
         {
             RaycastHit hit;
             Debug.DrawRay(transform.position, -transform.up, Color.red);
 
-            if (Physics.Raycast(transform.position, -transform.up, out hit, .1f) && !hit.transform.gameObject.CompareTag("Player"))
+            if (Physics.Raycast(transform.position, -transform.up, out hit, .3f) && !hit.transform.gameObject.CompareTag("Player"))
             {
                 Debug.Log("IsGround");
                 GetComponent<Rigidbody>().velocity = Vector3.zero;
                 _animator.SetTrigger("Grounded");
                 physicsCheck = false;
-
             }
         }
     }
-
-    /*
-    public void Pickup()
-    {
-        // Object가 Player의 머리 위에서 움직이는걸 방지
-        GetComponent<Rigidbody>().useGravity = false;
-        GetComponent<Rigidbody>().velocity = Vector3.zero;
-        GetComponent<Rigidbody>().freezeRotation = true;
-        GetComponent<Rigidbody>().isKinematic = true;
-
-        // Object를 Player의 머리 위로 옮김
-        transform.SetParent(_playerEquipPoint.transform);
-        transform.localPosition = Vector3.zero;
-        transform.rotation = new Quaternion(0, 0, 0, 0);
-
-        // interactionPoint를 머리 위로 옮김
-        _nomalInteractionPoint = _playerInteractionPoint.transform.localPosition;
-        _playerInteractionPoint.transform.localPosition = _playerEquipPoint.transform.localPosition;
-    }
-    */
-
-    /*
-    public void Throwing(Interactor interactor)
-    {
-        // interactionPoint의 Position을 초기상태로 되돌림
-        _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;
-
-        // Object 종속을 풀어줌
-        _playerEquipPoint.transform.DetachChildren();
-
-        // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
-        GetComponent<Rigidbody>().freezeRotation = false;
-        GetComponent<Rigidbody>().useGravity = true;
-        GetComponent<Rigidbody>().isKinematic = false;
-
-        // 정한 방식대로 날라감
-        _playerForwardTransform = interactor.player.transform.forward;
-        _playerForwardTransform.x *= _force;
-        _playerForwardTransform.y = _yForce * _yAngle;
-        _playerForwardTransform.z *= _force;
-
-        GetComponent<Rigidbody>().AddForce(_playerForwardTransform );
-    }*/
 
     IEnumerator Pickup()
     {
@@ -188,9 +137,6 @@ public class Throw : MonoBehaviour, IInteractable
 
     Vector3 BeziurCurve( float _value)
     {
-        //Vector3 height = new Vector3(_playerInteractionPoint.transform.position.x, _playerEquipPoint.transform.position.y  , _playerInteractionPoint.transform.position.z  - 0.5f);
-
-        //float _value = 0.5f;
         Vector3 A = Vector3.Lerp(startPos, height, _value);
 
         Vector3 B = Vector3.Lerp(height, endPos, _value);
@@ -218,12 +164,11 @@ public class Throw : MonoBehaviour, IInteractable
         GetComponent<Rigidbody>().isKinematic = false;
 
         // 정한 방식대로 날라감
-        _playerForwardTransform = interactor.player.transform.forward;
+        //_playerForwardTransform = interactor.player.transform.forward;
         //_playerForwardTransform.x *= _force;
         //_playerForwardTransform.y = _yForce * _yAngle;
         //_playerForwardTransform.z *= _force;
 
-        //GetComponent<Rigidbody>().AddForce(_playerForwardTransform);
         GetComponent<Rigidbody>().velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * 5f, this.transform.position, 1f);
 
         if (_animator != null)
