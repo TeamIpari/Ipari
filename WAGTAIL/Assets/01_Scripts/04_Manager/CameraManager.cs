@@ -25,7 +25,22 @@ public class CameraManager : Singleton<CameraManager>
     {
         base.Awake();
         _cameraControllerList = GetComponentsInChildren<CameraController>().ToList();
-        _cameraControllerList.ForEach(x => x.gameObject.SetActive(false));
+        _cameraControllerList.ForEach(x => x.VirtualCamera.Priority = 10);
+
+        //_cameraControllerList.ForEach(x => x.gameObject.SetActive(false));
+    }
+
+    public void SwitchCamera(CameraType type)
+    {
+        CameraController desiredCamera = _cameraControllerList.Find(x => x.CameraType == type);
+
+        if (desiredCamera != null)
+        {
+            desiredCamera.VirtualCamera.MoveToTopOfPrioritySubqueue();
+            _lastActiveCamera = desiredCamera;
+        }
+
+        else { Debug.LogWarning("The desired camera was not found!, SwithchCamera() was failed!"); }
     }
 
 
