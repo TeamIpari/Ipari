@@ -40,7 +40,7 @@ public class CameraManager : Singleton<CameraManager>
             _lastActiveCamera = desiredCamera;
         }
 
-        else { Debug.LogWarning("The desired camera was not found!, SwithchCamera() was failed!"); }
+        else { Debug.LogWarning("The desired camera was not found!, SwitchCamera() was failed!"); }
     }
 
 

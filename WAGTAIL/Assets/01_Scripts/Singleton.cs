@@ -32,14 +32,15 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
             instance = this as T;
             DontDestroyOnLoad(gameObject);
         }
+        /*
         else if (instance != this as T)
         {
             Destroy(gameObject);
-        }
+        }*/
         else {DontDestroyOnLoad(gameObject);}
     }
 
-    private void OnApplicationQuit()
+    private static void OnApplicationQuit()
     {
         m_applicationIsQuitting = true;
     }
