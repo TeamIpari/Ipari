@@ -3,14 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum GameUIType
-{
-    Tutorial,
-    Score,
-    Chapter,
-    Death
-}
-
 public class GameUIManager : Singleton<GameUIManager>
 {
     private List<GameUIController> _controllerList;

@@ -7,6 +7,7 @@ public class JumpingState : State
     bool isGrounded;
 
     bool jump;
+    private bool dead;
     float gravityValue;
     float jumpHeight;
     float playerSpeed;
@@ -41,7 +42,7 @@ public class JumpingState : State
     {
         base.HandleInput();
 
-
+        dead = player.isDead;
         input = moveAction.ReadValue<Vector2>();
     }
 
@@ -49,6 +50,11 @@ public class JumpingState : State
     {
         base.LogicUpdate();
 
+        if (dead)
+        {
+            stateMachine.ChangeState(player.death);
+        }
+        
         if (jump)
         {
             stateMachine.ChangeState(player.jump);

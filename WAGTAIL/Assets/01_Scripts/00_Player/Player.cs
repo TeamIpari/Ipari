@@ -102,6 +102,7 @@ public class Player : MonoBehaviour
 
     //============================================//
     // Stat??? 체력, 목숨, 코인 등등 들어갈 예정
+    // GameManager가 관리할거임 Stat 지워야함
     [HideInInspector]
     public int coin;
     [HideInInspector]
@@ -109,8 +110,8 @@ public class Player : MonoBehaviour
 
     //============================================//
     // Manager
-    [HideInInspector]
-    public GameUIManager GameUIManager;
+    [HideInInspector] 
+    public UIManager UIManager;
     [HideInInspector] 
     public GameManager GameManager;
 
@@ -135,7 +136,7 @@ public class Player : MonoBehaviour
     {
         // Manager
         GameManager = GameManager.GetInstance();
-        GameUIManager = GameUIManager.GetInstance();
+        UIManager = UIManager.GetInstance();
         
         // GetComponents
         controller = GetComponent<CharacterController>();
@@ -156,6 +157,7 @@ public class Player : MonoBehaviour
         drop = new DropState(this, movementSM);
         pull = new PullingState(this, movementSM);
         pullOut = new PullOutState(this, movementSM);
+        death = new DeathState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);
