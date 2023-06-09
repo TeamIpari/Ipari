@@ -18,7 +18,8 @@ public class Trampoline : MonoBehaviour, IEnviroment
 
     public float JumpHeight;
     private float saveHeight;
-    
+
+    public Mushroom mushroom;
 
     public bool IsHit { get; set; }
     private bool move = false;
@@ -43,7 +44,7 @@ public class Trampoline : MonoBehaviour, IEnviroment
         if (!move)
             move = true;
         StartCoroutine(BackJumpValue());
-
+        
         return false;
     }
 
@@ -56,6 +57,12 @@ public class Trampoline : MonoBehaviour, IEnviroment
         yield return new WaitForSeconds(0.05f);
         Player.Instance.jumpHeight = saveHeight;
 
+        if (mushroom != null)
+        {
+            mushroom.ChangeMushroom();
+            mushroom.isMush = true;
+        }
+
     }
 
 
@@ -63,7 +70,7 @@ public class Trampoline : MonoBehaviour, IEnviroment
     private void Start()
     {
         saveHeight = Player.Instance.jumpHeight;
-        targetPos = heightPos.transform.position;
+        //targetPos = heightPos.transform.position;
     }
 
     public float Curtime = 0;
@@ -77,17 +84,17 @@ public class Trampoline : MonoBehaviour, IEnviroment
 
     private void FixedUpdate()
     {
-        Moving();
-        if (move)
-        {
-            Curtime += Time.deltaTime;
-            // 올라오게 만들기.
-            if (Curtime > MoveTime)
-            {
-                Moving();
-                Curtime = 0;
-            }
-        }
+        //Moving();
+        //if (move)
+        //{
+        //    Curtime += Time.deltaTime;
+        //    // 올라오게 만들기.
+        //    if (Curtime > MoveTime)
+        //    {
+        //        Moving();
+        //        Curtime = 0;
+        //    }
+        //}
     }
 
     private void Moving()

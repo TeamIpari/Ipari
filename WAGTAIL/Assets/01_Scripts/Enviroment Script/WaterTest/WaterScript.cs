@@ -26,14 +26,13 @@ public class WaterScript : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        
+        defualtVal = Player.Instance.jumpHeight;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag( "Player"))
         {
-            defualtVal = other.GetComponent<Player>().jumpHeight;
             other.GetComponent<Player>().jumpHeight = 0.2f;
         }
         if( other.gameObject.CompareTag("Platform") )
