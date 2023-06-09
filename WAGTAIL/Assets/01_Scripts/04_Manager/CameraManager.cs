@@ -26,8 +26,12 @@ public class CameraManager : Singleton<CameraManager>
         base.Awake();
         _cameraControllerList = GetComponentsInChildren<CameraController>().ToList();
         _cameraControllerList.ForEach(x => x.VirtualCamera.Priority = 10);
-
         //_cameraControllerList.ForEach(x => x.gameObject.SetActive(false));
+    }
+
+    private void Start()
+    {
+        SwitchCamera(CameraType.Main);
     }
 
     public void SwitchCamera(CameraType type)
