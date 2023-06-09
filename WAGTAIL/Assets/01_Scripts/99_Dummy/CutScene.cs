@@ -33,7 +33,7 @@ public class CutScene : MonoBehaviour
     {
         if((IsCutScene
             && Player.Instance.playerInput.actions["jump"].triggered) 
-            || cutScenes[sceneCount - 1].GetComponent<PlayableDirector>().state == PlayState.Paused)
+            || (sceneCount > 0 && cutScenes[sceneCount - 1].state == PlayState.Paused))
         {
             if(sceneCount >= cutScenes.Length)
                 HideCutScenes();
