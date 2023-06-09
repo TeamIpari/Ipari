@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     public float climbingSpeed = 0;
     // =======================================
     public float slopeSpeed = 0f;
+    public float respawnTime;
 
     [Header("Animation Smoothing")]
     [Range(0, 1)]
@@ -101,19 +102,10 @@ public class Player : MonoBehaviour
     public GameObject MoveFX;
 
     //============================================//
-    // Stat??? 체력, 목숨, 코인 등등 들어갈 예정
-    // GameManager가 관리할거임 Stat 지워야함
-    [HideInInspector]
-    public int coin;
-    [HideInInspector]
-    public int flower;
-
-    //============================================//
     // Manager
-    [HideInInspector] 
-    public UIManager UIManager;
-    [HideInInspector] 
-    public GameManager GameManager;
+    [HideInInspector] public UIManager UIManager;
+    [HideInInspector] public GameManager GameManager;
+    [HideInInspector] public CameraManager CameraManager;
 
 
     private void Awake()
@@ -137,6 +129,7 @@ public class Player : MonoBehaviour
         // Manager
         GameManager = GameManager.GetInstance();
         UIManager = UIManager.GetInstance();
+        CameraManager = CameraManager.GetInstance();
         
         // GetComponents
         controller = GetComponent<CharacterController>();
@@ -167,11 +160,6 @@ public class Player : MonoBehaviour
         normalColliderCenter = controller.center;
         normalColliderRadius = controller.radius;
         gravityValue *= gravityMultiplier;
-
-        // Stats
-        coin = 0;
-        flower = 0;
-        
     }
 
     // Update is called once per frame

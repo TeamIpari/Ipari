@@ -7,16 +7,16 @@ public class FlowerUI : MonoBehaviour
 {
     [SerializeField] private Sprite[] _numberSprite;
     [SerializeField] private Image _units;
-    Player _player;
+    private GameManager _gameManager;
 
     void Start()
     {
-        _player = Player.Instance;
+        _gameManager = GameManager.GetInstance();
         _units.sprite = _numberSprite[0];
     }
 
     void Update()
     {
-        _units.sprite = _numberSprite[_player.flower % 10];
+        _units.sprite = _numberSprite[_gameManager.Flower % 10];
     }
 }

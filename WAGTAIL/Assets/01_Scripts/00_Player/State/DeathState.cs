@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class DeathState : State
 {
-    /// <summary>
-    /// 사망 시 용기의 구슬 -5 및 체크 포인트로 이동
-    /// 구슬의 보유량이 0 보다 작을 시 챕터의 시작으로 이동.
-
-    /// ===============================
-    /// 챕터의 시작으로 이동 시 해줘야 할 것들
-        
-    /// ===============================
-    /// </summary>
+    private float _respawnTime;
+    private float _currentTime;
+    
     public DeathState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
         player = _player;
@@ -23,22 +17,35 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
+        player.UIManager.ActiveGameUI(GameUIType.Death, true);
+        player.CameraManager.SwitchCamera(CameraType.Death);
+        _respawnTime = player.respawnTime;
+        _currentTime = 0;
+
+        // ChapterRestart 만든 후 적용 해야함.
+        //RemoveCheckPoint();
+        // changeState의 player.idle은 AliveState로 바꿔줘야함 or Alive Animation 출력.
+        // stateMachine.ChangeState(player.idle);
+    }
+
+    public override void HandleInput()
+    {
+        base.HandleInput();
         
-        /*
-        if (player.coin > 0)
+        _currentTime += Time.deltaTime;
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    public override void LogicUpdate()
+    {
+        base.LogicUpdate();
+
+        if (_currentTime >= _respawnTime)
         {
             RemoveCheckPoint();
+            _currentTime = 0;
+            stateMachine.ChangeState(player.idle);
         }
-
-        else if(player.coin == 0)
-        {
-            RemoveChapter();
-        }*/
-        RemoveCheckPoint();
-        player.animator.Rebind();
-        player.GameManager.Coin -= 5;
-        // changeState의 player.idle은 AliveState로 바꿔줘야함 or Alive Animation 출력.
-        stateMachine.ChangeState(player.idle);
     }
 
     public override void Exit()
@@ -50,10 +57,11 @@ public class DeathState : State
     // 체크포인트로 보낼 시
     private void RemoveCheckPoint()
     {
+        //player.UIManager.ActiveGameUI(GameUIType.Death, true);
+        player.animator.Rebind();
+        player.GameManager.Coin -= 5;
         //체크 포인트로 이동 구현 해야함
         player.GameManager.Respawn();
-        // UI 패이드인 패이드 아웃
-        player.UIManager.ActiveGameUI(GameUIType.Death, true);
     }
     
     // 챕터로 보낼 시
