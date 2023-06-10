@@ -15,7 +15,6 @@ public class RotatePlatform : MonoBehaviour, IEnviroment
     public bool Interact()
     {
 
-        //Debug.Log("AA");
 
         return false;
     }

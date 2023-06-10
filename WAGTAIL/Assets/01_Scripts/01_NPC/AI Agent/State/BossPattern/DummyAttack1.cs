@@ -74,7 +74,7 @@ public class DummyAttack1 : AIState
                 ShowTentacle();
                 break;
             case 2:
-                Debug.Log("AA");
+                //Debug.Log("AA");
                 break;
             default:
                 break;

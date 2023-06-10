@@ -63,8 +63,9 @@ public class Pulling : MonoBehaviour, IInteractable
 
     public void Drop()
     {
+        Debug.Log("AA");
         _playerEquipPoint.transform.DetachChildren();
-        if(GetMeshfloat() >= 90)
+        if(IsTarget())
         {
             _shatterObject.GetComponent<ShatterObject>()?.Explode();
             Destroy(_root);
@@ -87,7 +88,7 @@ public class Pulling : MonoBehaviour, IInteractable
         if (animator != null)
             //animator.SetTrigger("End");
             _shatterObject.GetComponent<FlowerObject>()?.CreatePoint();
-
+ 
         return true;
     }
 

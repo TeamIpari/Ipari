@@ -101,7 +101,7 @@ public class PullingState : State
     {
         base.LogicUpdate();
         player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
-        Debug.Log("AA");
+
         if (!isPull)
         {
             stateMachine.ChangeState(player.pullOut);
@@ -128,7 +128,6 @@ public class PullingState : State
 
         if (player.currentInteractable.GetComponent<Pulling>().IsTarget())
         {
-            //Debug.Log("AA");
             player.isPull = false;
         }
     }
