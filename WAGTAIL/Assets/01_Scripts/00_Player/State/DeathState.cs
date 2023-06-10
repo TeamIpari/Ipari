@@ -6,6 +6,11 @@ public class DeathState : State
 {
     private float _respawnTime;
     private float _currentTime;
+    private bool _isAlive;
+
+    private float gravityValue;
+    private bool isGrounded;
+    private float playerSpeed;
     
     public DeathState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -17,6 +22,11 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
+        _isAlive = false;
+        isGrounded = player.controller.isGrounded;
+        gravityValue = player.gravityValue;
+        playerSpeed = player.playerSpeed;
+
         player.UIManager.ActiveGameUI(GameUIType.Death, true);
         player.CameraManager.SwitchCamera(CameraType.Death);
         _respawnTime = player.respawnTime;
@@ -39,12 +49,43 @@ public class DeathState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
-        if (_currentTime >= _respawnTime)
+        if (_currentTime >= _respawnTime && !_isAlive)
         {
             RemoveCheckPoint();
             _currentTime = 0;
+            player.CameraManager.SwitchCamera(CameraType.Main);
+            _isAlive = true;
+            //stateMachine.ChangeState(player.idle);
+        }
+
+        else if( _currentTime >= _respawnTime ) 
+        {
             stateMachine.ChangeState(player.idle);
+        }
+    }
+
+    public override void PhysicsUpdate()
+    {
+        base.PhysicsUpdate();
+
+        gravityVelocity.y += gravityValue * Time.deltaTime;
+        isGrounded = player.controller.isGrounded;
+
+        // 바닥과 닿아 있을 때는 중력 적용 X
+        if (isGrounded && gravityVelocity.y < 0)
+        {
+            gravityVelocity.y = 0f;
+        }
+
+        if (_isAlive)
+        {
+            player.controller.Move(1.5f * gravityVelocity * Time.deltaTime);
+        }
+
+        if (velocity.sqrMagnitude > 0)
+        {
+            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity),
+                player.rotationDampTime);
         }
     }
 
@@ -52,6 +93,8 @@ public class DeathState : State
     {
         base.Exit();
         player.isDead = false;
+        _isAlive = false;
+        _currentTime = 0;
     }
 
     // 체크포인트로 보낼 시
