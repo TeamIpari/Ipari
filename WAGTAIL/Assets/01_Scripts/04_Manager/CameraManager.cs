@@ -18,9 +18,7 @@ public enum CameraType
 public class CameraManager : Singleton<CameraManager>
 {
     private List<CameraController> _cameraControllerList;
-
     private CameraController _currentCamera;
-
     private CameraController _prevCamera;
 
     protected override void Awake()
@@ -28,7 +26,6 @@ public class CameraManager : Singleton<CameraManager>
         base.Awake();
         _cameraControllerList = GetComponentsInChildren<CameraController>().ToList();
         _cameraControllerList.ForEach(x => x.VirtualCamera.Priority = 10);
-        //_cameraControllerList.ForEach(x => x.gameObject.SetActive(false));
     }
 
     private void Start()
