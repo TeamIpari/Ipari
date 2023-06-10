@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,12 +12,13 @@ public class Pulling : MonoBehaviour, IInteractable
     [SerializeField] private GameObject _interactable;
     [SerializeField] private Transform _movePos;
     [SerializeField] private GameObject _shatterObject;
+    [SerializeField] private Animator animator;
 
     private float _vAxis;
     private float _hAxis;
 
     Vector3 _playerPos;
-    public Vector3 dir;
+    public int targetPercent = 70;
 
     Vector3 curPos;
 
@@ -36,18 +38,12 @@ public class Pulling : MonoBehaviour, IInteractable
         if (interactor.player.movementSM.currentState == interactor.player.idle)
         {
             interactor.player.isPull = true;
-            // player가 object를 미는 방향으로 보게끔 조절
-            // TODO : 더 깔끔하게 해보기
-            //_playerPos = interactor.gameObject.transform.position;
-            //_hAxis = _playerPos.x - gameObject.transform.position.x;
-            //_vAxis = _playerPos.z - gameObject.transform.position.z;
-            //dir = new Vector3(_hAxis, 0, _vAxis).normalized;
-            //dir.x = -Mathf.Round(dir.x);
-            //dir.z = -Mathf.Round(dir.z);
+            if (animator != null)
+                animator.SetTrigger("Start");
             Player.Instance.GetComponent<CharacterController>().enabled = false;
             Player.Instance.transform.position = new Vector3(_movePos.position.x, Player.Instance.transform.position.y, _movePos.position.z);
             //interactor.transform.LookAt(interactor.transform.position + dir);
-            Player.Instance.transform.LookAt(new Vector3(_root.transform.position.x, Player.Instance.transform.position.y, _root.transform.position.z));
+            Player.Instance.transform.LookAt(new Vector3(transform.position.x, Player.Instance.transform.position.y, transform.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
             transform.SetParent(_playerEquipPoint.transform, true);
             return true;
@@ -56,6 +52,8 @@ public class Pulling : MonoBehaviour, IInteractable
         else if (interactor.player.movementSM.currentState == interactor.player.pull)
         {
             interactor.player.isPull = false;
+            if (animator != null)
+                animator.SetTrigger("Cancel");
             _playerEquipPoint.transform.DetachChildren();
             return true;
         }
@@ -68,8 +66,7 @@ public class Pulling : MonoBehaviour, IInteractable
         _playerEquipPoint.transform.DetachChildren();
         if(GetMeshfloat() >= 90)
         {
-            //_interactable.GetComponent<IInteractable>().Interact(null);
-            _shatterObject.GetComponent<ShatterObject>().Explode();
+            _shatterObject.GetComponent<ShatterObject>()?.Explode();
             Destroy(_root);
             Destroy(this.gameObject);
         }
@@ -77,15 +74,36 @@ public class Pulling : MonoBehaviour, IInteractable
 
     public int GetMeshfloat()
     {
-        int  a = 100 - (100 - (int)_skMesh.GetBlendShapeWeight(0));
+        int a = 0;
+        if (_skMesh != null)
+            a = 100 - (100 - (int)_skMesh.GetBlendShapeWeight(0));
         return a;
+    }
+
+    public bool IsTarget()
+    {
+        if (GetMeshfloat() <= targetPercent)
+            return false;
+        if (animator != null)
+            //animator.SetTrigger("End");
+            _shatterObject.GetComponent<FlowerObject>()?.CreatePoint();
+
+        return true;
     }
 
     public void SetMeshfloat(float val)
     {
-        float _val = _skMesh.GetBlendShapeWeight(0) + val;
+        if (animator != null && _skMesh != null )
+        {
+            animator.SetFloat("Blend", animator.GetFloat("Blend") + val);
 
-        _skMesh.SetBlendShapeWeight(0, _val);
+        }
+        else if( _skMesh != null)
+        {
+            float _val = _skMesh.GetBlendShapeWeight(0) + val;
+
+            _skMesh.SetBlendShapeWeight(0, _val);
+        }
     }
 
     public bool AnimEvent()
