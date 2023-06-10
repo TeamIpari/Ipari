@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,22 +57,18 @@ public class PullingState : State
 
         if (player.transform.eulerAngles.y == 90)
         {
-            //if((player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() > 0))
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(input.y, 0, 0);
             _val = -input.y;
-            //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
 
         else if (player.transform.eulerAngles.y == 270)
         {
-            //if((player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() > 0))
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(-input.y, 0, 0);
             _val = -input.y;
 
-            //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
 
@@ -81,7 +78,6 @@ public class PullingState : State
             velocity = new Vector3(0, 0, -input.y);
             _val = -input.y;
 
-            //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
         }
 
@@ -91,13 +87,13 @@ public class PullingState : State
             velocity = new Vector3(0, 0, input.y);
             _val = -input.y;
 
-            //velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
-        }
 
-        if(player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() < 90)
+        }
+        Debug.Log(velocity);
+
+        if (player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() < 90)
             player.currentInteractable.GetComponent<Pulling>().SetMeshfloat(_val);
-        //isPull = player.isPull;
 
     }
 
@@ -105,7 +101,7 @@ public class PullingState : State
     {
         base.LogicUpdate();
         player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
-
+        Debug.Log("AA");
         if (!isPull)
         {
             stateMachine.ChangeState(player.pullOut);
@@ -124,63 +120,22 @@ public class PullingState : State
         {
             gravityVelocity.y = 0f;
         }
-        
-        float curSpeed = playerSpeed - (playerSpeed * player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() / 100 );     // 여기에 (n - 100 ) /   ; 퍼센트 계산
+
+        float curSpeed = playerSpeed - (playerSpeed * player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() / 100);     // 여기에 (n - 100 ) /   ; 퍼센트 계산
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
+        //Debug.Log(curSpeed);
         player.controller.Move(currentVelocity * Time.deltaTime * curSpeed + gravityVelocity * Time.deltaTime);
 
-        if (player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() >= 90)
+        if (player.currentInteractable.GetComponent<Pulling>().IsTarget())
         {
+            //Debug.Log("AA");
             player.isPull = false;
         }
-
-        /*
-        //player.currentInteractable.GetComponent<Pulling>().;
-        //Debug.Log(curSpeed);
-
-        //if (RopeHead != null)
-        //{
-        //    float curSpeed = (playerSpeed - (playerSpeed * subtract()) / 100);
-        //    currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-        //    player.controller.Move(currentVelocity * Time.deltaTime * curSpeed + gravityVelocity * Time.deltaTime);  // 속도 조절
-        //    player.transform.LookAt(RopeHead.GetComponent<Node>().GetParent()._TailRope.transform.position);
-        //    if (subtract() >= 90)        // 10% 미만일 경우 로프 파괴
-        //    {
-        //        RopeHead.GetComponent<Node>().GetParent().BrokenRope(); ;
-        //        player.isPull = false ;
-        //    }
-        //}
-
-        //subtract();
-
-        //if (velocity.sqrMagnitude > 0)
-        //{
-        //    //player.transform.rotation =
-        //    //    Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation());
-
-
-        //    //player.transform.rotation =
-        //    //    Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity), player.rotationDampTime);
-        //}
-        */
     }
-
-    //public int subtract()
-    //{
-        // 시작점과 끝점을 비교하여 내 위치가 현재 얼마나 떨어졌는지 퍼센테이지로 계산. 
-
-        //return RopeHead.GetComponent<Node>().GetParent().Percent();
-    //}
-
 
     public override void Exit()
     {
         base.Exit();
-        //player.controller.height = player.normalColliderHeight;
-        //player.controller.center = player.normalColliderCenter;
-        //player.controller.radius = player.normalColliderRadius;
-        //gravityVelocity.y = 0f;
-        //player.playerVelocity = new Vector3(input.x, 0, input.y);
 
     }
 }

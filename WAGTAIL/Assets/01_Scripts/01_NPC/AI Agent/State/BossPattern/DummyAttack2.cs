@@ -90,7 +90,6 @@ public class DummyAttack2 : AIState
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
         obj.transform.localScale = Vector3.one * 3f;
         obj.GetComponent<Rigidbody>().velocity = pos;
-        
     }
 
     private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
