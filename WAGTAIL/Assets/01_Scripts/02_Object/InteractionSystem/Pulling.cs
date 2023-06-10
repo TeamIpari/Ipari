@@ -83,9 +83,20 @@ public class Pulling : MonoBehaviour, IInteractable
 
     public void SetMeshfloat(float val)
     {
-        float _val = _skMesh.GetBlendShapeWeight(0) + val;
+        try
+        {
+            float _val = _skMesh.GetBlendShapeWeight(0) + val;
 
-        _skMesh.SetBlendShapeWeight(0, _val);
+            _skMesh.SetBlendShapeWeight(0, _val);
+
+            _val = _skMesh.GetBlendShapeWeight(1) + val;
+
+            _skMesh.SetBlendShapeWeight(1, _val);
+
+        }
+        catch
+        { }
+        
     }
 
     public bool AnimEvent()
