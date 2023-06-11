@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18082315, g: 0.2263573, b: 0.30720004, a: 1}
+  m_IndirectSpecularColor: {r: 0.18082333, g: 0.22635761, b: 0.3072008, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2194,6 +2194,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 687683419}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &710321001 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4748708041622483739, guid: f2ccf15696f25e44688246b085852f01,
+    type: 3}
+  m_PrefabInstance: {fileID: 4748708040977834342}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &744314877
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3215,6 +3221,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1040052106}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1043116195 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4748708041938824150, guid: f2ccf15696f25e44688246b085852f01,
+    type: 3}
+  m_PrefabInstance: {fileID: 4748708040977834342}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1075123617
 GameObject:
   m_ObjectHideFlags: 0
@@ -6582,6 +6600,32 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4748708040977834342}
   m_PrefabAsset: {fileID: 0}
+--- !u!225 &1853133439
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710321001}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1853133440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710321001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8338a73f360f48419bd496453e09f14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvasGruop: {fileID: 1853133439}
+  _loadingBar: {fileID: 1043116195}
 --- !u!1001 &1897101946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6692,6 +6736,50 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 6017142259889890086, guid: 8925329a04e824643838e084d543095c, type: 3}
+--- !u!1 &1897389622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1897389624}
+  - component: {fileID: 1897389623}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1897389623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897389622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20311a1deb53460448e1d9e5bd10c3a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1897389624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897389622}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 435.92352, y: 27.019257, z: 227.69434}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1903663955
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7452,6 +7540,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UI_Loading
+      objectReference: {fileID: 0}
+    - target: {fileID: 4748708041622483739, guid: f2ccf15696f25e44688246b085852f01,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2ccf15696f25e44688246b085852f01, type: 3}

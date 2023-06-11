@@ -32,11 +32,16 @@ public class UIManager : Singleton<UIManager>
         _uiControllerList = GetComponentsInChildren<UIController>().ToList();
         _uiControllerList.ForEach(x => x.gameObject.SetActive(false));
 
-        _gameUIControllerList = GetCanvas(CanvasType.GameUI).GetComponentsInChildren<GameUIController>().ToList();
-        ActiveGameUI(GameUIType.Death, false);
+        //_gameUIControllerList = GetCanvas(CanvasType.GameUI).GetComponentsInChildren<GameUIController>().ToList();
+        //ActiveGameUI(GameUIType.Death, false);
 
         // 테스트 끝나면 CanvasType.MainMenu로 바꿔야함
-        SwitchCanvas(CanvasType.GameUI);
+        SwitchCanvas(CanvasType.MainMenu);
+    }
+
+    private void Start()
+    {
+        //SwitchCanvas(CanvasType.MainMenu);
     }
 
     public void ActiveGameUI(GameUIType type, bool isActive)
