@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 /// </summary>
 public class RotAround : MonoBehaviour, IEnviroment
 {
-    public Transform Tf;
+    public Transform Center;
     public bool Reverse = false;
     public float Speed = 1.0f;
     public float AddGravity = .5f;
@@ -45,7 +45,7 @@ public class RotAround : MonoBehaviour, IEnviroment
             temp *= -1 ;
         else
             temp *= 1;
-        this.transform.RotateAround(Tf.position, Vector3.up, (temp * Time.deltaTime));
+        this.transform.RotateAround(Center.position, Vector3.up, (temp * Time.deltaTime));
 
     }
 
@@ -70,7 +70,7 @@ public class RotAround : MonoBehaviour, IEnviroment
             temp *= -1;
         else
             temp *= 1;
-        Player.Instance.transform.RotateAround(Tf.position, Vector3.up, (temp * Time.deltaTime));
+        Player.Instance.transform.RotateAround(Center.position, Vector3.up, (temp * Time.deltaTime));
     }
 
     private void OnTriggerStay(Collider other)
