@@ -85,9 +85,10 @@ public class SceneLoader : Singleton<SceneLoader>
 
         if(!isFadeIn)
         {
-            if (_loadSceneName == "Chapter_01")
+            if (_loadSceneName == "Chapter01")
             {
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+                GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
             }
             gameObject.SetActive(false);
         }

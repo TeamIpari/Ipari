@@ -16,6 +16,12 @@ public enum ScoreType
     Flower
 }
 
+public enum ChapterType
+{
+    Chapter01,
+    Chapter02
+}
+
 public class GameManager : Singleton<GameManager>
 {
     // CheckPoint
@@ -28,13 +34,14 @@ public class GameManager : Singleton<GameManager>
     private int _coin = 0;
     private int _flower = 0;
     //================================================
-    private Player _player;
-
+    // Chapter
+    private List<Chapter> _chapterList;
+    private Chapter _lastActiveChapter;
+    
     protected override void Awake()
     {
         base.Awake();
-        _player = Player.Instance;
-        
+
         // CheckPoints
         // ===========================================================================
         _checkPointList = GetComponentsInChildren<CheckPoint>().ToList();
@@ -46,18 +53,26 @@ public class GameManager : Singleton<GameManager>
         // ===========================================================================
         _scoreObjectList = GetComponentsInChildren<ScoreObject>().ToList();
         _scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
-        Coin = 70;
+        Coin = 99;
         Flower = 0;
-    }
-
-    private void Start()
-    {
-        RestartChapter();
+        
+        // Chapter
+        _chapterList = GetComponentsInChildren<Chapter>().ToList();
+        _chapterList.ForEach(x => x.gameObject.SetActive(false));
     }
 
     public void Respawn()
     {
         WrapPlayerPosition(_currentCheckPoint);
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    public void StartChapter(ChapterType type)
+    {
+        Chapter desiredChapter = _chapterList.Find(x => x.ChapterType == type);
+        desiredChapter.gameObject.SetActive(true);
+        WrapPlayerPosition(_startPoint);
+        _lastActiveChapter = desiredChapter;
     }
     
     // 이 Func는 추후 작업해야함
@@ -75,9 +90,19 @@ public class GameManager : Singleton<GameManager>
 
     public void WrapPlayerPosition(Vector3 pos)
     {
-        _player.controller.enabled = false;
-        _player.transform.position = pos;
-        _player.controller.enabled = true;
+        Player player = Player.Instance;
+        
+        if (player != null)
+        {
+            player.controller.enabled = false;
+            player.transform.position = pos;
+            player.controller.enabled = true;
+        }
+        
+        else
+        {
+            Debug.Log("Player is not found!!");
+        }
     }
     
     #region Property
@@ -107,5 +132,4 @@ public class GameManager : Singleton<GameManager>
     }
     
     #endregion
-    
 }

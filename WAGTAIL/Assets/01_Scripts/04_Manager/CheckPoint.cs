@@ -9,7 +9,7 @@ public class CheckPoint : MonoBehaviour
         _gameManager = GameManager.GetInstance();
         if (checkPointType == CheckPointType.StartPoint)
         {
-            gameObject.GetComponent<BoxCollider>().enabled = false;
+            //gameObject.GetComponent<BoxCollider>().enabled = false;
         }
     }
 
