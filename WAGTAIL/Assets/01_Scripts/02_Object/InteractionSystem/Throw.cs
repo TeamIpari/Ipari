@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Net;
 using Unity.VisualScripting;
-using UnityEditorInternal;
+//using UnityEditorInternal;
 using UnityEngine;
 
 public class Throw : MonoBehaviour, IInteractable

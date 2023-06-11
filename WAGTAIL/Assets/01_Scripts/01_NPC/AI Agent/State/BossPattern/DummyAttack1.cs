@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using Unity;
 using UnityEngine;
-using UnityEditorInternal;
+//using UnityEditorInternal;
 
 /// <summary>
 /// 작성자 : 성지훈

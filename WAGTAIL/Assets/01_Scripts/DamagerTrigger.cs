@@ -2,7 +2,7 @@ using MagicaCloth2;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.iOS;
+//using UnityEngine.iOS;
 
 /// <summary>
 /// 작성자 : 성지훈
