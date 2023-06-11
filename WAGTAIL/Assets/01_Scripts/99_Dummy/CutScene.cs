@@ -10,13 +10,15 @@ public class CutScene : MonoBehaviour
 {
     public GameObject CutSceneBackGround;
     public PlayableDirector[] cutScenes;
+    public Transform[] cuts;
 
     public bool IsCutScene;
 
-    private int sceneCount;
+    public int sceneCount;
 
     private void Awake()
     {
+        Debug.Log(CutSceneBackGround.GetComponentsInChildren<PlayableDirector>().Length);
         cutScenes = CutSceneBackGround.GetComponentsInChildren<PlayableDirector>();
         HideCutScenes();
         IsCutScene = true;
@@ -31,14 +33,20 @@ public class CutScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKey(KeyCode.F) && (sceneCount > 0 && sceneCount < cutScenes.Length) && cutScenes[sceneCount - 1].state == PlayState.Playing)
+        {
+            cutScenes[sceneCount - 1].playableGraph.GetRootPlayable(0).SetSpeed(1f);
+        }
         if((IsCutScene
             && Player.Instance.playerInput.actions["jump"].triggered) 
             || (sceneCount > 0 && cutScenes[sceneCount - 1].state == PlayState.Paused))
         {
-            if(sceneCount >= cutScenes.Length)
+            if (sceneCount >= cutScenes.Length && cutScenes[sceneCount - 1].state == PlayState.Paused)
                 HideCutScenes();
-            else
+            else if (sceneCount < cutScenes.Length)
                 cutScenes[sceneCount++].gameObject.SetActive(true);
+            else
+                ;
         }
 
     }
