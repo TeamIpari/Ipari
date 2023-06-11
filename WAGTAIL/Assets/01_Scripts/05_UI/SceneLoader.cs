@@ -85,7 +85,7 @@ public class SceneLoader : Singleton<SceneLoader>
 
         if(!isFadeIn)
         {
-            if (_loadSceneName == "SceneLoadTest")
+            if (_loadSceneName == "Chapter_01")
             {
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
             }
