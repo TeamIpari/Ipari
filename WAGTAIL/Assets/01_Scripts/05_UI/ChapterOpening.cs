@@ -21,6 +21,7 @@ public class ChapterOpening : MonoBehaviour
 
         if( _currentTime >= _fadeoutTime )
         {
+            _currentTime = 0;
             _animator.SetTrigger("fadeout");
         }
     }

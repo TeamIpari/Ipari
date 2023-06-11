@@ -1,28 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SceneLoader : Singleton<SceneLoader>
 {
-    [SerializeField] private CanvasGroup _canvasGruop;
-    [SerializeField] private Image _loadingBar;
-    private string _loadSceneName;
-
     protected override void Awake()
     {
         base.Awake();
         gameObject.SetActive(false);
     }
 
-
+    [SerializeField] private CanvasGroup _canvasGruop;
+    [SerializeField] private Image _loadingBar;
+    private string _loadSceneName;
+    
     public void LoadScene(string sceneName)
     {
         gameObject.SetActive(true);
         SceneManager.sceneLoaded += LoadSceneEnd;
         _loadSceneName = sceneName;
+        UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
         StartCoroutine(Load(sceneName));
     }
 
@@ -83,6 +85,10 @@ public class SceneLoader : Singleton<SceneLoader>
 
         if(!isFadeIn)
         {
+            if (_loadSceneName == "SceneLoadTest")
+            {
+                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+            }
             gameObject.SetActive(false);
         }
     }
