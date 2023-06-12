@@ -28,7 +28,7 @@ public class SoundHandler : MonoBehaviour
     // Variable
     float globalVolume { get => SoundManager.GetInstance().volume; }
 
-    void Start()
+    void Awake()
     {
         // 1. Register on Manager (매니저에 자신을 등록하기)
         SoundManager.GetInstance().RegisterHandler(this);

@@ -62,11 +62,11 @@ public class SoundTest : Singleton<SoundTest>
         // trigger 같은 경우는 forceStop 적용 안됨
         setting.forceStop = true;
 
-        sndHdr.Bind("isShake", shakeClip);
-        sndHdr.Bind("isShoot", shootClip);
+        //sndHdr.Bind("isShake", shakeClip);
+        //sndHdr.Bind("isShoot", shootClip);
 
         // 설정이 있는 경우 뒤에 추가하면 됨
-        sndHdr.Bind("isShake2", shakeClip, setting);
+        //sndHdr.Bind("isShake2", shakeClip, setting);
 
         // 같은 조건에 다른 clip 을 등록하는 것 가능
         // sndHdr.Bind("isShoot", shakeClip);
