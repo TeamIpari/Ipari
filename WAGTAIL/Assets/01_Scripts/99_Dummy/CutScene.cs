@@ -63,7 +63,6 @@ public class CutScene : MonoBehaviour
                 HideCutScenes();
                 SoundTest.GetInstance().PlayBGM("isTitle",false);
                 SoundTest.GetInstance().PlayBGM("isInGame",true);
-                CutSceneBackGround.gameObject.SetActive(false);
             }
             else if (sceneCount < cutScenes.Length)
             {
@@ -82,6 +81,8 @@ public class CutScene : MonoBehaviour
         CutSceneBackGround.gameObject.SetActive(true);
         cutScenes[sceneCount++].gameObject.SetActive(true);
         Player.Instance.playerInput.enabled = false;
+        if (TextViewer != null)
+            TextViewer.gameObject.SetActive(true);
     }
 
     private void HideCutScenes()
@@ -94,5 +95,8 @@ public class CutScene : MonoBehaviour
         IsCutScene = false;
         sceneCount = 0;
         UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+        CutSceneBackGround.gameObject.SetActive(false);
+        if (TextViewer != null)
+            TextViewer.gameObject.SetActive(false);
     }
 }
