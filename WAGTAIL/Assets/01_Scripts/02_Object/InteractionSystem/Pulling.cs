@@ -18,6 +18,7 @@ public class Pulling : MonoBehaviour, IInteractable
     private float _hAxis;
 
     Vector3 _playerPos;
+    public int blendTarget = 0;
     public int targetPercent = 70;
 
     Vector3 curPos;
@@ -69,13 +70,19 @@ public class Pulling : MonoBehaviour, IInteractable
         
     }
 
+    private void LateUpdate()
+    {
+
+    }
+
     void AngleCheck(Player player)
     {
-        if (player.transform.rotation.eulerAngles.y < 45f
-                && player.transform.rotation.eulerAngles.y > -45f)
-        {
-            player.transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
+        player.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+        //if (player.transform.rotation.eulerAngles.y < 45f
+        //        && player.transform.rotation.eulerAngles.y > -45f)
+        //{
+        //}
         //else if (player.transform.rotation.eulerAngles.y > 45f
         //    && player.transform.rotation.eulerAngles.y < 135f)
         //{
@@ -92,7 +99,15 @@ public class Pulling : MonoBehaviour, IInteractable
         _playerEquipPoint.transform.DetachChildren();
         if(IsTarget())
         {
-            _shatterObject.GetComponent<ShatterObject>()?.Explode();
+            try
+            {
+                _shatterObject.GetComponent<ShatterObject>()?.Explode();
+
+            }
+            catch
+            {
+                Debug.Log("AA");
+            }
             Destroy(_root);
             Destroy(this.gameObject);
         }
@@ -101,8 +116,20 @@ public class Pulling : MonoBehaviour, IInteractable
     public int GetMeshfloat()
     {
         int a = 0;
-        if (_skMesh != null)
-            a = 100 - (100 - (int)_skMesh.GetBlendShapeWeight(0));
+        try
+        {
+            Mesh m = _skMesh.sharedMesh;
+
+            for (int i = 0; i < blendTarget; i++)
+            {
+                a = 100 - (100 - (int)_skMesh.GetBlendShapeWeight(i));
+            }
+
+        }
+        catch
+        {
+
+        }
         return a;
     }
 
@@ -110,10 +137,18 @@ public class Pulling : MonoBehaviour, IInteractable
     {
         if (GetMeshfloat() <= targetPercent)
             return false;
-        if (animator != null)
-            //animator.SetTrigger("End");
-            _shatterObject.GetComponent<FlowerObject>()?.CreatePoint();
- 
+        try
+        {
+            if (animator != null)
+                _shatterObject.GetComponent<FlowerObject>()?.CreatePoint();
+        }
+        catch
+        {
+            
+        }
+
+
+
         return true;
     }
 
@@ -126,9 +161,11 @@ public class Pulling : MonoBehaviour, IInteractable
         }
         else if( _skMesh != null)
         {
-            float _val = _skMesh.GetBlendShapeWeight(0) + val;
+            Mesh m = _skMesh.sharedMesh;
 
+            float _val = _skMesh.GetBlendShapeWeight(0) + val;
             _skMesh.SetBlendShapeWeight(0, _val);
+
         }
     }
 
