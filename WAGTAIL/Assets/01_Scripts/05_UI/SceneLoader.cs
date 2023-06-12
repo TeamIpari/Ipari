@@ -81,7 +81,7 @@ public class SceneLoader : Singleton<SceneLoader>
             timer += Time.unscaledDeltaTime * 2f;
             _canvasGruop.alpha = Mathf.Lerp(isFadeIn ? 0 : 1, isFadeIn ? 1 : 0, timer);
         }
-        UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
+        //UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
 
         if(!isFadeIn)
         {
@@ -90,6 +90,15 @@ public class SceneLoader : Singleton<SceneLoader>
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
                 CameraManager.GetInstance().CameraSetting();
             }
+
+            if (_loadSceneName == "BossRoom")
+            {
+                GameManager.GetInstance().Test();
+                UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
+                CameraManager.GetInstance().Test();
+                SoundTest.GetInstance().PlayBGM("isInGame",false);
+            }
+            
             gameObject.SetActive(false);
         }
     }

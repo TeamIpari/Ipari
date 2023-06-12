@@ -26,11 +26,6 @@ public class TitleUI : MonoBehaviour
         {
             OptionUI.GetComponent<Animator>().SetTrigger(FadeOut);
         }
-        
-        else if (Input.GetKeyDown("escape"))
-        {
-            GameEnd();
-        }
     }
 
     public void GameStart()

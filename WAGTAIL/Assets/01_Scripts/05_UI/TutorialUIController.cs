@@ -4,16 +4,12 @@ using UnityEngine;
 
 public class TutorialUIController : MonoBehaviour
 {
-    [SerializeField] private GameObject _jump;
-    [SerializeField] private GameObject _move;
-    [SerializeField] private GameObject _interactable;
-
-
+    public GameUIType Type;
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Player"))
         {
-            _interactable.SetActive(true);
+            UIManager.GetInstance().ActiveGameUI(Type, true);
         }
 
     }
