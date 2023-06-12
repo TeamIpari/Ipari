@@ -77,18 +77,20 @@ public class IdleState : State
         dead = player.isDead;
 
         input = moveAction.ReadValue<Vector2>();
-
+        
         // FX
         // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
         // ========================================================
         if(input.x != 0 || input.y != 0)
         {
             _FXMove.SetActive(true);
+            //player.SoundHandler.SetBool("isWalk",true);
         }
 
         if(input.x == 0 && input.y == 0)
         {
             _FXMove.SetActive(false);
+            //player.SoundHandler.SetBool("isWalk",false);
         }
         // ========================================================
         velocity = new Vector3(input.x, 0, input.y);
@@ -191,6 +193,7 @@ public class IdleState : State
         // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
         // ========================================================
         _FXMove.SetActive(false);
+        player.SoundHandler.SetBool("isWalk",false);
         // ========================================================
 
         if (velocity.sqrMagnitude > 0)

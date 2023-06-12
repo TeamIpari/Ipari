@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
+[RequireComponent(typeof(SoundHandler))]
 public class Player : MonoBehaviour
 {
     static Player instance;

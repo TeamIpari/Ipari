@@ -18,7 +18,6 @@ public class CutScene : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log(CutSceneBackGround.GetComponentsInChildren<PlayableDirector>().Length);
         cutScenes = CutSceneBackGround.GetComponentsInChildren<PlayableDirector>();
         HideCutScenes();
         IsCutScene = true;
