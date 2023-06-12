@@ -31,7 +31,6 @@ public class Pulling : MonoBehaviour, IInteractable
     private void Start()
     {
         _playerEquipPoint = Player.Instance.EquipPoint.gameObject;
-        //GetComponent<Animator>().SetBool("IsDance", IsDance);
     }
 
     public bool Interact(Interactor interactor)
@@ -63,6 +62,11 @@ public class Pulling : MonoBehaviour, IInteractable
         }
 
         return false;
+    }
+
+    private void Update()
+    {
+        
     }
 
     void AngleCheck(Player player)

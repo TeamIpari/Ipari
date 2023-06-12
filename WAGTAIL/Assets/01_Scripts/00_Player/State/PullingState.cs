@@ -91,7 +91,7 @@ public class PullingState : State
             velocity.y = 0f;
 
         }
-        Debug.Log(velocity);
+        //Debug.Log(velocity);
 
         if (player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() < 90)
             player.currentInteractable.GetComponent<Pulling>().SetMeshfloat(_val);
