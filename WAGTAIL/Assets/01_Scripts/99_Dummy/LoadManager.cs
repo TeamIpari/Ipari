@@ -44,7 +44,7 @@ public class LoadManager : Singleton<LoadManager>
 
     //public GameObject
     public int ChapterNum = 0;
-    public TextMeshProUGUI[] Tmps;
+    public List<TextMeshProUGUI> Tmps;
     public int TmpNum = 0;
     public ChapterScript Dic_Say;
     public List<Scriptable> ChapterSay = new List<Scriptable>();
@@ -77,6 +77,7 @@ public class LoadManager : Singleton<LoadManager>
         bool endOfFile = false;
         var data_values = testFile.Split('\n');
         int count1 = 0;
+
         while (!endOfFile)
         {
             Scriptable scriptable = new Scriptable();
@@ -102,18 +103,21 @@ public class LoadManager : Singleton<LoadManager>
         }
     }
     
-    public void IO_GetScriptable()
+    public void IO_GetScriptable(int num = 0)
     {
+        if (num == 0)
+            num = ChapterNum;
         Scriptable sc;
+        ChapterSay.Clear();
         //dic_Say.TryGetValue(chapterNum, out sc);
         for (int i = 0; i < Dic_Say.Count; i++)
         {
             Dic_Say.TryGetValue(i, out sc);
-            if(sc.chapter == ChapterNum)
+            if(sc.chapter == num)
             {
                 ChapterSay.Add(sc);
             }
-            else if (sc.chapter > ChapterNum)
+            else if (sc.chapter > num)
             {
                 break;
             }
@@ -122,24 +126,49 @@ public class LoadManager : Singleton<LoadManager>
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && dialogNum < ChapterSay.Count)
-        {
-            PlayTyping();
-        }
-        else
-        {
-            //Tmps[TmpNum]
-        }
+        //if (Input.GetMouseButtonDown(0) && dialogNum < ChapterSay.Count)
+        //{
+        //    PlayTyping();
+        //}
+        //else
+        //{
+        //    //Tmps[TmpNum]
+        //}
 
     }
 
-    private void PlayTyping()
+    public bool IsSayEnding()
     {
+        Debug.Log(dialogNum.ToString() +", "+ ChapterSay.Count.ToString());
+        if (dialogNum < ChapterSay.Count)
+            return false;
+        return true;
+    }
+    public void SearchTypePoint(int num = 0)
+    {
+        IO_GetScriptable(num);
+    }
+
+    public void TmpSet(TextMeshProUGUI tmp)
+    {
+        Tmps.Clear();
+        Tmps.Add(tmp);
+    }
+    
+    public void AddTmp(TextMeshProUGUI tmp)
+    {
+        Tmps.Add(tmp);
+    }
+
+    public void PlayTyping()
+    {
+        //if(tmp == null)
+
         if (isTypingEnd)        
         {
             if (TmpNum == 0)
             {
-                Tmps[Tmps.Length - 1].enabled = false;
+                Tmps[Tmps.Count - 1].enabled = false;
             }
             else
             {
@@ -156,11 +185,11 @@ public class LoadManager : Singleton<LoadManager>
             Tmps[TmpNum].text = ChapterSay[dialogNum].contents;
             dialogNum++;
             isTypingEnd = true;
-            if (Tmps.Length > 0 && Tmps.Length > TmpNum)
+            if (Tmps.Count > 0 && Tmps.Count > TmpNum)
             {
                 TmpNum++;
             }
-            if (TmpNum >= Tmps.Length)
+            if (TmpNum >= Tmps.Count)
             {
                 TmpNum = 0;
             }
@@ -193,11 +222,11 @@ public class LoadManager : Singleton<LoadManager>
         }
         if(dialogNum >= dialogMax)
         {
-            if(Tmps.Length > 0 && Tmps.Length > TmpNum)
+            if(Tmps.Count > 0 && Tmps.Count > TmpNum)
             {
                 TmpNum++;
             }
-            if(TmpNum >= Tmps.Length)
+            if(TmpNum >= Tmps.Count)
             {
                 TmpNum = 0;
             }
