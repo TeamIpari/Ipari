@@ -163,15 +163,14 @@ public class IdleState : State
 
         currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
 
-        ////
+        /*
         if (slide && IsSliding)
         {
             currentVelocity = new Vector3(hitPointNormal.x, -hitPointNormal.y, hitPointNormal.z) * slopeSpeed;
 
             //Debug.Log(hitPointNormal);
-        }
-        ////
-        ///
+        }*/
+
         player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
         
         if (velocity.sqrMagnitude > 0)

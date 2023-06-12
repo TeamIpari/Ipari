@@ -49,6 +49,12 @@ public class Player : MonoBehaviour
     public bool isPull = false;
     //public bool isSlide = true;
     
+    [Header("Sound")]
+    [SerializeField] private AudioClip walkClip;
+    [SerializeField] private AudioClip jumpClip;
+    [SerializeField] private AudioClip landingClip;
+    [SerializeField] private AudioClip deathClip;
+    
     //============================================//
     // State
     public StateMachine movementSM;
@@ -87,7 +93,8 @@ public class Player : MonoBehaviour
     public Vector3 playerVelocity;
     [HideInInspector]
     public GameObject currentInteractable;
-
+    
+    [Header("Points")]
     public Transform InteractionPoint;
     public Transform EquipPoint;
     public Transform ThrowEquipPoint;
@@ -106,7 +113,8 @@ public class Player : MonoBehaviour
     [HideInInspector] public UIManager UIManager;
     [HideInInspector] public GameManager GameManager;
     [HideInInspector] public CameraManager CameraManager;
-
+    [HideInInspector] public SoundHandler SoundHandler;
+    
 
     private void Awake()
     {
@@ -130,6 +138,7 @@ public class Player : MonoBehaviour
         GameManager = GameManager.GetInstance();
         UIManager = UIManager.GetInstance();
         CameraManager = CameraManager.GetInstance();
+        SoundHandler = GetComponent<SoundHandler>();
         
         // GetComponents
         controller = GetComponent<CharacterController>();
@@ -160,6 +169,16 @@ public class Player : MonoBehaviour
         normalColliderCenter = controller.center;
         normalColliderRadius = controller.radius;
         gravityValue *= gravityMultiplier;
+        
+        // SoundBind
+        SoundHandler.RegisterBool("isWalk");
+        SoundHandler.RegisterTrigger("isJump");
+        SoundHandler.RegisterTrigger("isLanding");
+        SoundHandler.RegisterTrigger("isDeath");
+        SoundHandler.Bind("isWalk", walkClip);
+        SoundHandler.Bind("isJump", jumpClip);
+        SoundHandler.Bind("isLanding", landingClip);
+        SoundHandler.Bind("isDeath", deathClip);
     }
 
     // Update is called once per frame

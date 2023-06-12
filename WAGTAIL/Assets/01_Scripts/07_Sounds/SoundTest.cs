@@ -17,9 +17,22 @@ public class SoundTest : MonoBehaviour
      * M - ¸ðµç È¿°úÀ½ º¼·ý 0.1 ´Ã¸®±â
      * 
      */
-
-    [SerializeField] AudioClip shootClip;
-    [SerializeField] AudioClip shakeClip;
+    [SerializeField] private AudioClip shakeClip;
+    [SerializeField] private AudioClip shootClip;
+    [SerializeField] private AudioClip walkClip;
+    [SerializeField] private AudioClip jumpClip;
+    [SerializeField] private AudioClip landingClip;
+    [SerializeField] private AudioClip vineClip;
+    [SerializeField] private AudioClip brokenWallClip;
+    [SerializeField] private AudioClip throwLandClip;
+    [SerializeField] private AudioClip throwWaterClip;
+    [SerializeField] private AudioClip basketInteractClip;
+    [SerializeField] private AudioClip flowerInteractClip;
+    [SerializeField] private AudioClip coinInteractClip;
+    [SerializeField] private AudioClip coinFlowerExplosionClip;
+    [SerializeField] private AudioClip deathClip;
+    [SerializeField] private AudioClip deathUIClip;
+    [SerializeField] private AudioClip waterFlowingClip;
 
     SoundHandler sndHdr;
     void Start()
