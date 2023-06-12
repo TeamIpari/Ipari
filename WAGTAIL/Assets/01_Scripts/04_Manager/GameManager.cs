@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum CheckPointType
 {
@@ -28,7 +29,6 @@ public class GameManager : Singleton<GameManager>
     private float _masterVolume;
     private float _musicVolume;
     private float _soundEffectsVolume;
-    
     
     // CheckPoint
     private List<CheckPoint> _checkPointList;
@@ -66,7 +66,7 @@ public class GameManager : Singleton<GameManager>
         _chapterList = GetComponentsInChildren<Chapter>().ToList();
         _chapterList.ForEach(x => x.gameObject.SetActive(false));
     }
-
+    
     public void Respawn()
     {
         WrapPlayerPosition(_currentCheckPoint);
@@ -84,6 +84,9 @@ public class GameManager : Singleton<GameManager>
     // 이 Func는 추후 작업해야함
     public void RestartChapter()
     {
+        Coin = 0;
+        Flower = 0;
+        _scoreObjectList.ForEach(x=>x.gameObject.SetActive(true));
         _checkPointList.ForEach(x=>x.gameObject.SetActive(true));
         _currentCheckPoint = _startPoint;
         WrapPlayerPosition(_startPoint);
@@ -117,11 +120,10 @@ public class GameManager : Singleton<GameManager>
     {
         get => _coin;
         set
-        { 
-            if (_coin < 999)
-            {
-                _coin = value;
-            }
+        {
+            if (_coin is < 0 or >= 999) return;
+            if (value < 0) return;
+            _coin = value;
         }
     }
 
