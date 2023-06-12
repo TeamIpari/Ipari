@@ -42,7 +42,8 @@ public class Pulling : MonoBehaviour, IInteractable
             if (animator != null)
                 animator.SetTrigger("Start");
             Player.Instance.GetComponent<CharacterController>().enabled = false;
-            Player.Instance.transform.position = _movePos.position;
+            //Player.Instance.transform.position = _movePos.position;
+            Player.Instance.transform.position = new Vector3(_movePos.position.x, interactor.player.transform.position.y, _movePos.position.z);
             //interactor.transform.LookAt(interactor.transform.position + dir);
             Player.Instance.transform.LookAt(new Vector3(transform.position.x, Player.Instance.transform.position.y, transform.position.z));
 
