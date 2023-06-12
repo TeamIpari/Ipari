@@ -57,6 +57,7 @@ public class PullingState : State
 
         if (player.transform.eulerAngles.y == 90)
         {
+            //player.transform.rotation = Quaternion.EulerAngles(0, 90, 0);
             input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(input.y, 0, 0);
             _val = -input.y;

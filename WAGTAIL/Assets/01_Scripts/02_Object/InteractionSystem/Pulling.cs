@@ -42,9 +42,11 @@ public class Pulling : MonoBehaviour, IInteractable
             if (animator != null)
                 animator.SetTrigger("Start");
             Player.Instance.GetComponent<CharacterController>().enabled = false;
-            Player.Instance.transform.position = new Vector3(_movePos.position.x, Player.Instance.transform.position.y, _movePos.position.z);
+            Player.Instance.transform.position = _movePos.position;
             //interactor.transform.LookAt(interactor.transform.position + dir);
             Player.Instance.transform.LookAt(new Vector3(transform.position.x, Player.Instance.transform.position.y, transform.position.z));
+
+            AngleCheck(interactor.player);
             Player.Instance.GetComponent<CharacterController>().enabled = true;
             transform.SetParent(_playerEquipPoint.transform, true);
             return true;
@@ -62,9 +64,26 @@ public class Pulling : MonoBehaviour, IInteractable
         return false;
     }
 
+    void AngleCheck(Player player)
+    {
+        if (player.transform.rotation.eulerAngles.y < 45f
+                && player.transform.rotation.eulerAngles.y > -45f)
+        {
+            player.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        //else if (player.transform.rotation.eulerAngles.y > 45f
+        //    && player.transform.rotation.eulerAngles.y < 135f)
+        //{
+        //    player.transform.rotation = Quaternion.Euler(0, 90, 0);
+        //}
+        //else if (player.transform.rotation.eulerAngles.y > 135
+        //    && player.transform.rotation.eulerAngles.y )
+
+
+    }
+
     public void Drop()
     {
-        Debug.Log("AA");
         _playerEquipPoint.transform.DetachChildren();
         if(IsTarget())
         {
