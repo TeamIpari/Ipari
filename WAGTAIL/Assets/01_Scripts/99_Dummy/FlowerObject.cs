@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Timeline;
 
 /// <summary>
 /// 터지고 Object를 생성하여 포물선 궤적으로 던져줘야함.
 /// </summary>
+
 public class FlowerObject : MonoBehaviour
 {
     public GameObject CoinPrefab;
@@ -16,16 +18,12 @@ public class FlowerObject : MonoBehaviour
     public int InitCount = 5;
     public float FlightTIme = 2;
     public bool IsDance = false;
-
+    [SerializeField] private GameObject _explosionVFX;
+    
     // Start is called before the first frame update
     void Start()
     {
         GetComponent<Animator>().SetBool("Dance", IsDance);
-    }
-
-    private void OnDestroy()
-    {
-
     }
 
     public void CreatePoint()
@@ -42,6 +40,12 @@ public class FlowerObject : MonoBehaviour
             _obj.AddComponent<Rigidbody>().velocity = CaculateVelocity(t, FlowerTransform.position, FlightTIme);
             _obj.GetComponent<ScoreObject>().SetTime(FlightTIme);
             //marker.Add(_obj);
+        }
+        SoundTest.GetInstance().PlaySound("isCoinFlowerExplo");
+        if (_explosionVFX != null )         
+        {           
+            GameObject exploVFX = Instantiate(_explosionVFX, transform.position, transform.rotation);
+            Destroy(exploVFX, 7);
         }
         Destroy(this.gameObject);
     }

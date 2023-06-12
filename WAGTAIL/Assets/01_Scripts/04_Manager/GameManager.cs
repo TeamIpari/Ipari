@@ -66,7 +66,12 @@ public class GameManager : Singleton<GameManager>
         _chapterList = GetComponentsInChildren<Chapter>().ToList();
         _chapterList.ForEach(x => x.gameObject.SetActive(false));
     }
-    
+
+    public void Start()
+    {
+        SoundTest.GetInstance().PlayBGM("isTitle",true);
+    }
+
     public void Respawn()
     {
         WrapPlayerPosition(_currentCheckPoint);

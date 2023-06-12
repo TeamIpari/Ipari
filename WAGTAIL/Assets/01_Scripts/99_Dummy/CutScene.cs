@@ -51,6 +51,8 @@ public class CutScene : MonoBehaviour
             {
                 Player.Instance.playerInput.enabled = true;
                 HideCutScenes();
+                SoundTest.GetInstance().PlayBGM("isTitle",false);
+                SoundTest.GetInstance().PlayBGM("isInGame",true);
                 CutSceneBackGround.gameObject.SetActive(false);
             }
             else if (sceneCount < cutScenes.Length)
@@ -75,7 +77,6 @@ public class CutScene : MonoBehaviour
         {
             cutScenes[i].gameObject.SetActive(false);
         }
-        
         Time.timeScale = 1f;
         IsCutScene = false;
         sceneCount = 0;
