@@ -23,7 +23,7 @@ public class JumpingState : State
     public override void Enter()
     {
         base.Enter();
-
+        player.SoundHandler.SetTrigger("isJump");
         isGrounded = false;
         jump = false;
         gravityValue = player.gravityValue;

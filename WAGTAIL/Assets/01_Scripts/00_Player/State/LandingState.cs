@@ -16,7 +16,7 @@ public class LandingState : State
     public override void Enter()
     {
         base.Enter();
-
+        player.SoundHandler.SetTrigger("isLanding");
         timePassed = 0f;
         player.animator.SetTrigger("land");
         landingTime = 0.1f;
