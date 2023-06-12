@@ -28,18 +28,25 @@ public class CutScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PlayCutScene();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.F) && (sceneCount > 0 && sceneCount < cutScenes.Length) && cutScenes[sceneCount - 1].state == PlayState.Playing)
+        if (IsCutScene && Input.GetKeyDown("space"))
         {
-            cutScenes[sceneCount - 1].playableGraph.GetRootPlayable(0).SetSpeed(1f);
+            Time.timeScale = 10f;
         }
-        if((IsCutScene
-            && Input.GetKeyDown(KeyCode.F))
-            || (sceneCount > 0 && cutScenes[sceneCount - 1].state == PlayState.Paused))
+
+        if (IsCutScene && Input.GetKeyUp("space"))
+        {
+            Time.timeScale = 1f;
+        }
+        
+        if(IsCutScene
+           && Input.GetKeyDown(KeyCode.F)
+           || (sceneCount > 0 && cutScenes[sceneCount - 1].state == PlayState.Paused))
         {
             if (sceneCount >= cutScenes.Length && cutScenes[sceneCount - 1].state == PlayState.Paused)
             {
@@ -57,6 +64,8 @@ public class CutScene : MonoBehaviour
 
     public void PlayCutScene()
     {
+        IsCutScene = true;
+        CutSceneBackGround.gameObject.SetActive(true);
         cutScenes[sceneCount++].gameObject.SetActive(true);
         Player.Instance.playerInput.enabled = false;
     }
@@ -67,7 +76,10 @@ public class CutScene : MonoBehaviour
         {
             cutScenes[i].gameObject.SetActive(false);
         }
-
+        
+        Time.timeScale = 1f;
         IsCutScene = false;
+        sceneCount = 0;
+        UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
     }
 }
