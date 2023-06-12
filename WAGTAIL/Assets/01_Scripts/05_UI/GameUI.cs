@@ -44,10 +44,14 @@ public class GameUI : MonoBehaviour
     public void ReStart()
     {
         Continue();
+        GameManager.GetInstance().Coin = 0;
+        GameManager.GetInstance().Flower = 0;
+        SceneLoader.GetInstance().LoadScene("Chapter01");
+        /*
         GameManager.GetInstance().RestartChapter();
         // 임시 땜빵임 추후에 수정안하면 안됨
         RestartChapterUI.SetActive(true);
-        RestartTutorialUI.SetActive(true);
+        RestartTutorialUI.SetActive(true);*/
     }
 
     public void GoMain()

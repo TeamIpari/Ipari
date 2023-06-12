@@ -118,6 +118,11 @@ public class GameManager : Singleton<GameManager>
             Debug.Log("Player is not found!!");
         }
     }
+
+    public void Test()
+    {
+        _chapterList.Find(x => x.ChapterType == ChapterType.Chapter01).gameObject.SetActive(false);
+    }
     
     #region Property
 

@@ -13,6 +13,8 @@ public enum CanvasType
 
 public enum GameUIType
 {
+    Jump,
+    Interactable,
     Tutorial,
     Score,
     Chapter,
@@ -23,7 +25,6 @@ public class UIManager : Singleton<UIManager>
 {
     private List<UIController> _uiControllerList;
     private List<GameUIController> _gameUIControllerList;
-    
     private UIController _lastActiveUI;
 
     protected override void Awake()
@@ -34,6 +35,8 @@ public class UIManager : Singleton<UIManager>
 
         _gameUIControllerList = GetCanvas(CanvasType.GameUI).GetComponentsInChildren<GameUIController>().ToList();
         ActiveGameUI(GameUIType.Death, false);
+        ActiveGameUI(GameUIType.Interactable, false);
+        ActiveGameUI(GameUIType.Jump, false);
 
         // 테스트 끝나면 CanvasType.MainMenu로 바꿔야함
         SwitchCanvas(CanvasType.MainMenu);
