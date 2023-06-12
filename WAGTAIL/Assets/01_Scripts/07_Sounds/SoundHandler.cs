@@ -4,7 +4,6 @@ using UnityEngine;
 
 public enum SoundKeyType
 {
-
     Boolean = 1,
     Trigger
 }
