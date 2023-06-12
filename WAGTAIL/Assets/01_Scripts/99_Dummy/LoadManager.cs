@@ -126,6 +126,11 @@ public class LoadManager : Singleton<LoadManager>
         {
             PlayTyping();
         }
+        else
+        {
+            //Tmps[TmpNum]
+        }
+
     }
 
     private void PlayTyping()

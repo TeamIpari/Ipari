@@ -17,9 +17,11 @@ public class Throw : MonoBehaviour, IInteractable
     [SerializeField] float _yForce = 1.0f;
     [Range(0, 1)]
     [SerializeField] float _yAngle = 0.45f;
-    [Range(0, 1)]
+    [Range(0, 5)]
     [SerializeField] float _value = 0.0f;
-    [Range(0,0.15f)]
+    [SerializeField] float _hight = 0.0f;
+    [SerializeField] float _range = 0.0f;
+    [Range(0,0.25f)]
     [SerializeField] float _overheadSpeed = 0.0f;
 
     Vector3 _playerForwardTransform;
@@ -80,8 +82,8 @@ public class Throw : MonoBehaviour, IInteractable
             RaycastHit hit;
             Debug.DrawRay(transform.position, -transform.up, Color.red);
 
-            if (Physics.Raycast(transform.position, -transform.up, out hit, .3f) 
-                && (!hit.transform.gameObject.CompareTag("Player") 
+            if (Physics.Raycast(transform.position, -transform.up, out hit, .3f)
+                && (!hit.transform.gameObject.CompareTag("Player")
                     && !hit.transform.gameObject.CompareTag("PassCollision")))
             {
                 Debug.Log("IsGround");
@@ -89,6 +91,18 @@ public class Throw : MonoBehaviour, IInteractable
                 _animator.SetTrigger("Grounded");
                 physicsCheck = false;
             }
+        }
+        else
+        { 
+            //try
+            //{
+            //    GetComponent<Rigidbody>().velocity = Vector3.zero;
+
+            //}
+            //catch
+            //{
+
+            //}
         }
     }
 
@@ -162,6 +176,8 @@ public class Throw : MonoBehaviour, IInteractable
 
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
         GetComponent<Rigidbody>().freezeRotation = false;
+        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        //GetComponent<Rigidbody>().constraints = ;
         GetComponent<Rigidbody>().useGravity = true;
         GetComponent<Rigidbody>().isKinematic = false;
 
@@ -171,7 +187,7 @@ public class Throw : MonoBehaviour, IInteractable
         //_playerForwardTransform.y = _yForce * _yAngle;
         //_playerForwardTransform.z *= _force;
 
-        GetComponent<Rigidbody>().velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * 5f, this.transform.position, 1f);
+        GetComponent<Rigidbody>().velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
 
         if (_animator != null)
             physicsCheck = true;
