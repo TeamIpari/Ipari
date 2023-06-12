@@ -127,6 +127,7 @@ public class LoadManager : Singleton<LoadManager>
                 break;
             }
         }
+        dialogNum = 0;
     }
 
     private void Update()
@@ -209,7 +210,7 @@ public class LoadManager : Singleton<LoadManager>
     private IEnumerator TypingCo(Scriptable sc)
     {
         int dialogNum = 0;          // 몇 번째 문장 실행 중.
-        int dialogMax = sc.contents.Length;
+        int dialogMax = sc.contents.Length - 1;
         isTypingEnd = false;
         while (dialogNum < dialogMax)
         {
@@ -220,7 +221,12 @@ public class LoadManager : Singleton<LoadManager>
             }
             else
             {
+                if (dialogNum > 0 
+                    && sc.contents[dialogNum - 1].ToString() == ".")
+                    Tmps[TmpNum].text += "\n";
                 Tmps[TmpNum].text += sc.contents[dialogNum].ToString();
+
+
                 dialogNum++;
                 time = StandardTime;
             }

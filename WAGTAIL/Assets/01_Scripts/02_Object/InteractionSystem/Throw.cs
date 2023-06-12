@@ -21,6 +21,7 @@ public class Throw : MonoBehaviour, IInteractable
     [SerializeField] float _value = 0.0f;
     [SerializeField] float _hight = 0.0f;
     [SerializeField] float _range = 0.0f;
+    [SerializeField] private Transform autoTarget;
     [Range(0,0.25f)]
     [SerializeField] float _overheadSpeed = 0.0f;
 
@@ -165,6 +166,15 @@ public class Throw : MonoBehaviour, IInteractable
     IEnumerator Throwing(Interactor interactor)
     {
         //_animator.enabled = false;
+        if(autoTarget != null)
+        {
+
+            Player.Instance.GetComponent<CharacterController>().enabled = false;
+
+            Player.Instance.transform.LookAt(autoTarget);
+            Player.Instance.GetComponent<CharacterController>().enabled = true;
+
+        }
         yield return new WaitForSeconds(0.2f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
@@ -186,11 +196,18 @@ public class Throw : MonoBehaviour, IInteractable
         //_playerForwardTransform.x *= _force;
         //_playerForwardTransform.y = _yForce * _yAngle;
         //_playerForwardTransform.z *= _force;
-
-        GetComponent<Rigidbody>().velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
+        if (autoTarget == null)
+            GetComponent<Rigidbody>().velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
+        else if (autoTarget != null)
+            GetComponent<Rigidbody>().velocity = CaculateVelocity(autoTarget.position, this.transform.position, _hight);
 
         if (_animator != null)
             physicsCheck = true;
+    }
+
+    public void SetAutoTarget(Transform _transform = null)
+    {
+        autoTarget = _transform;
     }
 
     private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
