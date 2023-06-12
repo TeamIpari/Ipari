@@ -23,7 +23,7 @@ public class ScoreObject : MonoBehaviour
         isMagnet = false;
         // 추후에 밑에 주석 풀어줘야함 안하면 죽음
         // 배치를 위한 Dummy Mesh이므로 Coin 모델링 또는 FX완성 되면 반드시 주석을 풀어줘야함
-        GetComponent<MeshRenderer>().enabled = false;
+        //GetComponent<MeshRenderer>().enabled = false;
     }
 
     private void Update()
@@ -53,7 +53,7 @@ public class ScoreObject : MonoBehaviour
     private Vector3 TargetVector(Vector3 target, Vector3 origin)
     {
         Vector3 distance = target - origin;
-        Speed += distance.normalized * 0.1f * Time.deltaTime;
+        Speed += distance.normalized * 0.5f * Time.deltaTime;
 
 
 
