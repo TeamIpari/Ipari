@@ -87,7 +87,6 @@ public class SceneLoader : Singleton<SceneLoader>
         {
             if (_loadSceneName == "Chapter01")
             {
-                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
                 CameraManager.GetInstance().CameraSetting();
             }
