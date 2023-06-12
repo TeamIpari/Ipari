@@ -34,11 +34,10 @@ public class basket : MonoBehaviour
             if (TargetCount > 0)
             {
                 TargetCount--;
-                ShowText();
             }
             else
                 target.SetActive(true);
-
+            ShowText();
         }
     }
 }

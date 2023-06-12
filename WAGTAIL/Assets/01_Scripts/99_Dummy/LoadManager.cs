@@ -21,7 +21,7 @@ public class LoadManager : Singleton<LoadManager>
         public int chapter;
         public string sayTarget;
         public string contents;
-        public float wait;
+        public bool wait;
 
         public void Init(string[] str)
         {
@@ -33,7 +33,9 @@ public class LoadManager : Singleton<LoadManager>
             if (str[2] != "")
                 sayTarget = str[2];
             if (str[3] != "")
-                contents = str[3];
+                wait = int.Parse(str[3]) == 0 ? false : true;
+            if (str[4] != "")
+                contents = str[4];
         }
     }
     [System.Serializable]
@@ -72,29 +74,32 @@ public class LoadManager : Singleton<LoadManager>
 
     public void IO_GetSayer()
     {
-        TextAsset _text = (TextAsset)Resources.Load("1");
+        TextAsset _text = (TextAsset)Resources.Load("subtitleExcelFileCSV");
         string testFile = _text.text;
         bool endOfFile = false;
         var data_values = testFile.Split('\n');
         int count1 = 0;
-
         while (!endOfFile)
         {
             Scriptable scriptable = new Scriptable();
+
             if (count1 == 0)
             {
                 count1++;
                 continue;
             }
             var data_value = data_values[count1].Split(',');
+            Debug.Log(data_value);
             if (data_value == null)
             {
                 endOfFile = true;
+                Debug.Log("AA");
                 break;
             }
             if (data_value[0] == "")
             {
                 endOfFile = true;
+                Debug.Log("BB");
                 break;
             }
             scriptable.Init(data_value);
