@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2767617733008480632}
   - component: {fileID: 1281087449405445853}
   - component: {fileID: 3901139232660726295}
-  - component: {fileID: 8263719686694255257}
   - component: {fileID: 7598426891492726098}
+  - component: {fileID: 6470011908297465078}
   m_Layer: 0
   m_Name: FlowerDummy
   m_TagString: Untagged
@@ -86,20 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8263719686694255257
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3252545639207830466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b89d3f61b7bd8bc48b8df51058ccb277, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interactionVFX: {fileID: 5886839673618709422, guid: 642a73e5bab53c9488d1e52c9fe7ff9f,
-    type: 3}
 --- !u!135 &7598426891492726098
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -113,6 +99,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.65
   m_Center: {x: -0.009400368, y: 0.45279917, z: 0.021723673}
+--- !u!114 &6470011908297465078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3252545639207830466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6840f7fa79877f4b8ea75d3b4b53f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactionVFX: {fileID: 5886839673618709422, guid: 642a73e5bab53c9488d1e52c9fe7ff9f,
+    type: 3}
+  Speed: {x: 0, y: 0, z: 0}
+  scoreType: 1
 --- !u!1001 &2288305221327364319
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -24,7 +24,6 @@ public class SceneLoader : Singleton<SceneLoader>
         gameObject.SetActive(true);
         SceneManager.sceneLoaded += LoadSceneEnd;
         _loadSceneName = sceneName;
-        UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
         StartCoroutine(Load(sceneName));
     }
 
@@ -82,6 +81,7 @@ public class SceneLoader : Singleton<SceneLoader>
             timer += Time.unscaledDeltaTime * 2f;
             _canvasGruop.alpha = Mathf.Lerp(isFadeIn ? 0 : 1, isFadeIn ? 1 : 0, timer);
         }
+        UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
 
         if(!isFadeIn)
         {
@@ -89,6 +89,7 @@ public class SceneLoader : Singleton<SceneLoader>
             {
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
+                CameraManager.GetInstance().CameraSetting();
             }
             gameObject.SetActive(false);
         }

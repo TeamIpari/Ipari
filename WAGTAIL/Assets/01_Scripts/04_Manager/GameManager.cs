@@ -24,6 +24,12 @@ public enum ChapterType
 
 public class GameManager : Singleton<GameManager>
 {
+    // Option
+    private float _masterVolume;
+    private float _musicVolume;
+    private float _soundEffectsVolume;
+    
+    
     // CheckPoint
     private List<CheckPoint> _checkPointList;
     private Vector3 _startPoint = Vector3.zero;
@@ -53,7 +59,7 @@ public class GameManager : Singleton<GameManager>
         // ===========================================================================
         _scoreObjectList = GetComponentsInChildren<ScoreObject>().ToList();
         _scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
-        Coin = 99;
+        Coin = 0;
         Flower = 0;
         
         // Chapter

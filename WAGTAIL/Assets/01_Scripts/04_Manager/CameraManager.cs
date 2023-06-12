@@ -65,6 +65,20 @@ public class CameraManager : Singleton<CameraManager>
         }
     }
 
+    public void CameraSetting()
+    {
+        if (Player.Instance != null)
+        {
+            _cameraControllerList.ForEach(x => x.VirtualCamera.LookAt = Player.Instance.transform);
+            _cameraControllerList.ForEach(x => x.VirtualCamera.Follow = Player.Instance.transform);
+        }
+        
+        else
+        {
+            Debug.LogWarning("Player Instance was not found!!");
+        }
+    }
+
     public CameraController GetCurrentCamera()
     {
         return _currentCamera;

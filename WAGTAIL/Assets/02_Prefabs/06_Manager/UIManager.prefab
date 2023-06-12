@@ -1601,7 +1601,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8110014537072042943}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 892257359}
+        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
+        m_MethodName: GameEnd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8110014537140652700
 GameObject:
   m_ObjectHideFlags: 0
@@ -2348,6 +2360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc9dc6486fd905144838621a0e2d9391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OptionUI: {fileID: 6969973673468068188}
 --- !u!1 &9061797573985751751
 GameObject:
   m_ObjectHideFlags: 0
@@ -3141,12 +3154,12 @@ PrefabInstance:
     - target: {fileID: 1168364557934114648, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1168364557934114648, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1168364558109564507, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
@@ -3266,67 +3279,72 @@ PrefabInstance:
     - target: {fileID: 1168364558172934843, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1168364558172934843, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1168364558172934843, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168364558206576844, guid: 0133bf1164c51184386c116c4f0fd360,
+        type: 3}
+      propertyPath: m_IsOn
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1168364558891160004, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1168364558891160004, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1168364559089359514, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1168364559089359514, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1168364559089359514, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1168364559097113874, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1168364559097113874, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1168364559558702990, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1168364559558702990, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1168364559558702990, guid: 0133bf1164c51184386c116c4f0fd360,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0133bf1164c51184386c116c4f0fd360, type: 3}
@@ -3363,6 +3381,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1638286297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969973673468068188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e787922ca3fac74cb3f9228567c2df5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8306627012961525917
 PrefabInstance:
   m_ObjectHideFlags: 0
