@@ -38,17 +38,27 @@ public class CutScene : MonoBehaviour
             cutScenes[sceneCount - 1].playableGraph.GetRootPlayable(0).SetSpeed(1f);
         }
         if((IsCutScene
-            && Player.Instance.playerInput.actions["jump"].triggered) 
+            && Input.GetKeyDown(KeyCode.F))
             || (sceneCount > 0 && cutScenes[sceneCount - 1].state == PlayState.Paused))
         {
             if (sceneCount >= cutScenes.Length && cutScenes[sceneCount - 1].state == PlayState.Paused)
+            {
+                Player.Instance.playerInput.enabled = true;
                 HideCutScenes();
+                CutSceneBackGround.gameObject.SetActive(false);
+            }
             else if (sceneCount < cutScenes.Length)
+            {
+                Player.Instance.playerInput.enabled = false;
                 cutScenes[sceneCount++].gameObject.SetActive(true);
-            else
-                ;
+            }
         }
+    }
 
+    public void PlayCutScene()
+    {
+        cutScenes[sceneCount++].gameObject.SetActive(true);
+        Player.Instance.playerInput.enabled = false;
     }
 
     private void HideCutScenes()
@@ -57,6 +67,7 @@ public class CutScene : MonoBehaviour
         {
             cutScenes[i].gameObject.SetActive(false);
         }
+
         IsCutScene = false;
     }
 }
