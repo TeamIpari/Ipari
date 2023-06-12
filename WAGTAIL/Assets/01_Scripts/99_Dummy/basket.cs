@@ -31,11 +31,11 @@ public class basket : MonoBehaviour
     {
         if (other.CompareTag( "interactable"))
         {
-            if (TargetCount > 0)
+            if (TargetCount >= 0)
             {
                 TargetCount--;
             }
-            else
+            if(TargetCount == -1)
                 target.SetActive(true);
             ShowText();
         }
