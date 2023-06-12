@@ -23,15 +23,9 @@ public class FlowerObject : MonoBehaviour
         GetComponent<Animator>().SetBool("Dance", IsDance);
     }
 
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //}
-
     private void OnDestroy()
     {
-        //CreatePoint();
+
     }
 
     public void CreatePoint()

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// 작성자: 성지훈
@@ -8,19 +10,32 @@ using UnityEngine;
 /// </summary>
 public class basket : MonoBehaviour
 {
-    public int Countmax;
-    private int CurCount;
-
+    public int TargetCount;
+    //[SerializeField] private int CurCount;
+    public TextMeshProUGUI CountBase;
     public GameObject target;
 
 
+    private void Start()
+    {
+        target.SetActive(false); 
+        ShowText();
+    }
+
+    void ShowText()
+    {
+        CountBase.text = (TargetCount + 1).ToString();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag( "interactable"))
         {
-            if (CurCount < Countmax)
-                CurCount++;
+            if (TargetCount > 0)
+            {
+                TargetCount--;
+                ShowText();
+            }
             else
                 target.SetActive(true);
 
