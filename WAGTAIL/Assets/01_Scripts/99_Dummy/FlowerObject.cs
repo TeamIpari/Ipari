@@ -15,10 +15,12 @@ public class FlowerObject : MonoBehaviour
     public float pointRadian = 3f;        // ÃÊ±â °ª 3;
     public int InitCount = 5;
     public float FlightTIme = 2;
+    public bool IsDance = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        GetComponent<Animator>().SetBool("Dance", IsDance);
     }
 
     //// Update is called once per frame
