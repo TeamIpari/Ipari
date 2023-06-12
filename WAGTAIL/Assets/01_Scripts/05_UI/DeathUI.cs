@@ -12,6 +12,7 @@ public class DeathUI : MonoBehaviour
     [SerializeField] private float _coolDown;
 
     private bool _isChange;
+    private bool _isPlay;
     private Vector3 _start;
     private Vector3 _end;
 
@@ -24,6 +25,7 @@ public class DeathUI : MonoBehaviour
         _start = new Vector3(_startScale, _startScale, _startScale);
         _end = new Vector3(_endScale, _endScale, _endScale);
         _isChange = false;
+        _isPlay = false;
         _currentTime = 0;
         _coolDownTime = 0;
     }
@@ -37,6 +39,11 @@ public class DeathUI : MonoBehaviour
 
             if(_coolDownTime >= _coolDown)
             {
+                if (!_isPlay)
+                {
+                    SoundTest.GetInstance().PlaySound("isDeathUI");
+                    _isPlay = true;
+                }
                 ChangePoint();
             }
         }

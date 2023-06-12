@@ -15,6 +15,11 @@ public class TitleUI : MonoBehaviour
         
     }
 
+    public void ButtonSound()
+    {
+        SoundTest.GetInstance().PlaySound("isButton");
+    }
+
     private void Update()
     {
         if (OptionUI.activeSelf && Input.GetKeyDown("escape"))
@@ -41,4 +46,6 @@ public class TitleUI : MonoBehaviour
         Application.Quit();
 #endif
     }
+    
+    
 }

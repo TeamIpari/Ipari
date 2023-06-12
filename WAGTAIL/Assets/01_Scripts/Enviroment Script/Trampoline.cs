@@ -27,6 +27,7 @@ public class Trampoline : MonoBehaviour, IEnviroment
     public bool Interact()
     {
         // 밟았을 때 Player를 점프하게 함.
+        SoundTest.GetInstance().PlaySound("isMushroom");
         Player.Instance.jumpHeight = JumpHeight;
         //Player.Instance.movementSM.ChangeState(Player.Instance.jump);
         if (Player.Instance.movementSM.currentState == Player.Instance.idle)

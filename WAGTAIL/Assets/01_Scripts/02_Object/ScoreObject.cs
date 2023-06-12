@@ -16,7 +16,6 @@ public class ScoreObject : MonoBehaviour
     [SerializeField] private Vector3 Speed;
 
     public ScoreType scoreType;
-
     private void Start()
     {
         _gameManager = GameManager.GetInstance();
@@ -76,14 +75,15 @@ public class ScoreObject : MonoBehaviour
         {
             case ScoreType.Coin:
                 _gameManager.Coin += 1;
+                SoundTest.GetInstance().PlaySound("isCoinInteract");
                 break;
             case ScoreType.Flower:
                 _gameManager.Flower += 1;
+                SoundTest.GetInstance().PlaySound("isFlowerInteract");
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
         SpawnVFX();
         gameObject.SetActive(false);
     }

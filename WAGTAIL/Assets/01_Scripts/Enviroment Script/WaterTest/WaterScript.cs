@@ -34,10 +34,11 @@ public class WaterScript : MonoBehaviour
         if (other.gameObject.CompareTag( "Player"))
         {
             other.GetComponent<Player>().jumpHeight = 0.2f;
+            SoundTest.GetInstance().PlaySound("isThrowWater");
         }
         if( other.gameObject.CompareTag("Platform") )
         {
-
+            SoundTest.GetInstance().PlaySound("isThrowWater");
         }
     }
 
