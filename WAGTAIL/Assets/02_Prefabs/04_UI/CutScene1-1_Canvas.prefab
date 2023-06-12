@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8102379643521351833}
   - component: {fileID: 8102379643521351834}
   - component: {fileID: 8102379643521351835}
+  - component: {fileID: 576970232}
   m_Layer: 5
   m_Name: CutScene1-1_Canvas
   m_TagString: Untagged
@@ -101,6 +102,27 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &576970232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8102379643521351828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58cc5a8b682dfec46b330f01d6801ae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CutSceneBackGround: {fileID: 3005571571926754533}
+  cutScenes:
+  - {fileID: 3005571572730402416}
+  - {fileID: 3005571573454577641}
+  - {fileID: 3005571572732991239}
+  - {fileID: 3005571572151158717}
+  cuts: []
+  IsCutScene: 1
+  sceneCount: 4
 --- !u!1001 &8102379644882949728
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -228,6 +250,36 @@ PrefabInstance:
 --- !u!224 &3005571571926754532 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6468435910524301956, guid: ec1efc0778cbbf544b9548bafdcb2776,
+    type: 3}
+  m_PrefabInstance: {fileID: 8102379644882949728}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3005571571926754533 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6468435910524301957, guid: ec1efc0778cbbf544b9548bafdcb2776,
+    type: 3}
+  m_PrefabInstance: {fileID: 8102379644882949728}
+  m_PrefabAsset: {fileID: 0}
+--- !u!320 &3005571572151158717 stripped
+PlayableDirector:
+  m_CorrespondingSourceObject: {fileID: 6468435910228677085, guid: ec1efc0778cbbf544b9548bafdcb2776,
+    type: 3}
+  m_PrefabInstance: {fileID: 8102379644882949728}
+  m_PrefabAsset: {fileID: 0}
+--- !u!320 &3005571572730402416 stripped
+PlayableDirector:
+  m_CorrespondingSourceObject: {fileID: 6468435908642275344, guid: ec1efc0778cbbf544b9548bafdcb2776,
+    type: 3}
+  m_PrefabInstance: {fileID: 8102379644882949728}
+  m_PrefabAsset: {fileID: 0}
+--- !u!320 &3005571572732991239 stripped
+PlayableDirector:
+  m_CorrespondingSourceObject: {fileID: 6468435908648075623, guid: ec1efc0778cbbf544b9548bafdcb2776,
+    type: 3}
+  m_PrefabInstance: {fileID: 8102379644882949728}
+  m_PrefabAsset: {fileID: 0}
+--- !u!320 &3005571573454577641 stripped
+PlayableDirector:
+  m_CorrespondingSourceObject: {fileID: 6468435909101422985, guid: ec1efc0778cbbf544b9548bafdcb2776,
     type: 3}
   m_PrefabInstance: {fileID: 8102379644882949728}
   m_PrefabAsset: {fileID: 0}
