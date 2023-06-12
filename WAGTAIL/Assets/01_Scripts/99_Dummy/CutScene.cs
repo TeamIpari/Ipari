@@ -5,14 +5,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.UI;
+using TMPro;
 
 public class CutScene : MonoBehaviour
 {
     public GameObject CutSceneBackGround;
     public PlayableDirector[] cutScenes;
+    public TextMeshProUGUI TextViewer;
     public Transform[] cuts;
 
-    public bool IsCutScene;
+    private bool IsCutScene;
+    public bool IsIntro;
+    public bool ISText;     
 
     public int sceneCount;
 
@@ -28,7 +33,12 @@ public class CutScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayCutScene();
+        if (IsIntro)
+        {
+            PlayCutScene();
+            LoadManager.GetInstance().TmpSet(TextViewer);
+            LoadManager.GetInstance().PlayTyping();
+        }
     }
 
     // Update is called once per frame
@@ -58,6 +68,9 @@ public class CutScene : MonoBehaviour
             {
                 Player.Instance.playerInput.enabled = false;
                 cutScenes[sceneCount++].gameObject.SetActive(true);
+                if (TextViewer != null)
+                    LoadManager.GetInstance().PlayTyping();
+                
             }
         }
     }
