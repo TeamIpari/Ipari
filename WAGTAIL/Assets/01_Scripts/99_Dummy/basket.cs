@@ -29,10 +29,11 @@ public class basket : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag( "interactable"))
+        if (other.CompareTag("interactable"))
         {
             if (TargetCount >= 0)
             {
+                other.GetComponent<Throw>().enabled = false;
                 TargetCount--;
             }
             if(TargetCount == -1)
