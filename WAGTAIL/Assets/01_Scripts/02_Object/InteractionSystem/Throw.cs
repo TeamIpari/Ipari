@@ -85,7 +85,8 @@ public class Throw : MonoBehaviour, IInteractable
 
             if (Physics.Raycast(transform.position, -transform.up, out hit, .3f)
                 && (!hit.transform.gameObject.CompareTag("Player")
-                    && !hit.transform.gameObject.CompareTag("PassCollision")))
+                    && !hit.transform.gameObject.CompareTag("PassCollision")
+                    && hit.transform.gameObject.layer != 5))
             {
                 Debug.Log("IsGround");
                 GetComponent<Rigidbody>().velocity = Vector3.zero;
