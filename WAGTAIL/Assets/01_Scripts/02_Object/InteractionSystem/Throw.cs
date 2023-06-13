@@ -89,9 +89,16 @@ public class Throw : MonoBehaviour, IInteractable
                     && hit.transform.gameObject.layer != 5))
             {
                 Debug.Log("IsGround");
+                Debug.Log(hit.transform.name);
+                Debug.Log(hit.transform.gameObject.tag);
+                Debug.Log(hit.transform.gameObject.layer);
                 GetComponent<Rigidbody>().velocity = Vector3.zero;
                 _animator.SetTrigger("Grounded");
                 physicsCheck = false;
+            }
+            else if(!hit.transform.gameObject.CompareTag("Player"))
+            {
+
             }
         }
         else
@@ -187,7 +194,7 @@ public class Throw : MonoBehaviour, IInteractable
 
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
         GetComponent<Rigidbody>().freezeRotation = false;
-        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         //GetComponent<Rigidbody>().constraints = ;
         GetComponent<Rigidbody>().useGravity = true;
         GetComponent<Rigidbody>().isKinematic = false;
