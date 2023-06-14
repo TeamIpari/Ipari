@@ -54,44 +54,35 @@ public class PullingState : State
         base.HandleInput();
         isPull = player.isPull;
         float _val =0;
-
+        input = pushZAxisAction.ReadValue<Vector2>();
+        if(input.y == 1)
+        {
+            return;
+        }
         if (player.transform.eulerAngles.y == 90)
         {
-            //player.transform.rotation = Quaternion.EulerAngles(0, 90, 0);
-            input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(input.y, 0, 0);
-            _val = -input.y;
-            velocity.y = 0f;
         }
 
         else if (player.transform.eulerAngles.y == 270)
         {
-            input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(-input.y, 0, 0);
-            _val = -input.y;
-
-            velocity.y = 0f;
         }
 
         else if (player.transform.eulerAngles.y == 180)
         {
-            input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(0, 0, -input.y);
-            _val = -input.y;
-
-            velocity.y = 0f;
         }
 
         else if (player.transform.eulerAngles.y == 0)
         {
-            input = pushZAxisAction.ReadValue<Vector2>();
             velocity = new Vector3(0, 0, input.y);
-            _val = -input.y;
-
-            velocity.y = 0f;
-
         }
-        //Debug.Log(velocity);
+        else
+            velocity = Vector3.zero;
+        _val = -input.y;
+        velocity.y = 0f;
+        Debug.Log("input Y : " + input.y + " //// " + "Input -Y : " + -input.y);
 
         if (player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() < 90)
             player.currentInteractable.GetComponent<Pulling>().SetMeshfloat(_val);

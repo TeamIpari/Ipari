@@ -31,12 +31,19 @@ public class WaterScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag( "Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
             other.GetComponent<Player>().jumpHeight = 0.2f;
             SoundTest.GetInstance().PlaySound("isThrowWater");
         }
-        if( other.gameObject.CompareTag("Platform") )
+        //else if(/*other.gameObject.layer == LayerMask.GetMask("Interactable"*/))
+        else if (LayerMask.NameToLayer("Interactable") == other.gameObject.layer)
+        {
+            //Debug.Log(other.gameObject.layer);
+            other.gameObject.layer = LayerMask.NameToLayer("Default");
+            //other.GetComponent<IInteractable>() = false;
+        }
+        else if (other.gameObject.CompareTag("Platform"))
         {
             SoundTest.GetInstance().PlaySound("isThrowWater");
         }

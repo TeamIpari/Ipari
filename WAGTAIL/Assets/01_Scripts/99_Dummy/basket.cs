@@ -31,14 +31,25 @@ public class basket : MonoBehaviour
     {
         if (other.CompareTag("interactable"))
         {
-            if (TargetCount >= 0)
+            try
             {
-                other.GetComponent<Throw>().enabled = false;
-                TargetCount--;
+                Throw _throw = other.GetComponent<Throw>();
+                if(_throw.PhysicsCheck)
+                {
+                    if (TargetCount >= 0)
+                    {
+                        _throw.enabled = false;
+                        TargetCount--;
+                    }
+                    if (TargetCount == -1)
+                        target.SetActive(true);
+                    ShowText();
+                }
             }
-            if(TargetCount == -1)
-                target.SetActive(true);
-            ShowText();
+            catch
+            {
+                Debug.Log("Not Throw Object");
+            }
         }
     }
 }

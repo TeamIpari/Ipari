@@ -99,7 +99,6 @@ public class LoadManager : Singleton<LoadManager>
             if (data_value[0] == "")
             {
                 endOfFile = true;
-                Debug.Log("BB");
                 break;
             }
             scriptable.Init(data_value);
