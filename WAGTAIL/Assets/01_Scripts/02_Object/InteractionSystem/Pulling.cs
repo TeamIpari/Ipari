@@ -12,7 +12,9 @@ public class Pulling : MonoBehaviour, IInteractable
     [SerializeField] private GameObject _interactable;
     [SerializeField] private Transform _movePos;
     [SerializeField] private GameObject _shatterObject;
+    [SerializeField] private Vector3 InitPoint;
     [SerializeField] private Animator animator;
+    [SerializeField] private float minDistance;
 
     private float _vAxis;
     private float _hAxis;
@@ -32,6 +34,7 @@ public class Pulling : MonoBehaviour, IInteractable
     private void Start()
     {
         _playerEquipPoint = Player.Instance.EquipPoint.gameObject;
+        InitPoint = this.transform.position;    // 자신의 처음 위치 기억.
     }
 
     public bool Interact(Interactor interactor)
@@ -65,15 +68,26 @@ public class Pulling : MonoBehaviour, IInteractable
         return false;
     }
 
-    private void Update()
+    public bool GetDistance()
     {
+        Debug.Log(Vector3.Distance(Player.Instance.transform.position, _shatterObject.transform.position)/* > minDistance*/);
+        if (Vector3.Distance(Player.Instance.transform.position, _shatterObject.transform.position) > minDistance)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    //private void Update()
+    //{
         
-    }
+    //}
 
-    private void LateUpdate()
-    {
+    //private void LateUpdate()
+    //{
 
-    }
+    //}
 
     void AngleCheck(Player player)
     {
@@ -111,6 +125,8 @@ public class Pulling : MonoBehaviour, IInteractable
             Destroy(_root);
             Destroy(this.gameObject);
         }
+        // 원래 위치로 초기화
+        transform.position = InitPoint;
     }
 
     public int GetMeshfloat()

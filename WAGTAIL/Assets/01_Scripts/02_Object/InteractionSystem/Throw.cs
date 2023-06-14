@@ -13,10 +13,10 @@ public class Throw : MonoBehaviour, IInteractable
     private GameObject _playerInteractionPoint;
 
     [Header("Throw Setting")]
-    [SerializeField] float _force = 1.0f;
-    [SerializeField] float _yForce = 1.0f;
-    [Range(0, 1)]
-    [SerializeField] float _yAngle = 0.45f;
+    //[SerializeField] float _force = 1.0f;
+    //[SerializeField] float _yForce = 1.0f;
+    //[Range(0, 1)]
+    //[SerializeField] float _yAngle = 0.45f;
     [Range(0, 5)]
     [SerializeField] float _value = 0.0f;
     [SerializeField] float _hight = 0.0f;
@@ -30,8 +30,9 @@ public class Throw : MonoBehaviour, IInteractable
     Vector3 startPos;
     Vector3 height;
     Vector3 endPos;
+    Vector3 spawnPoint;
 
-    bool physicsCheck = false;
+    public bool PhysicsCheck = false;
     public string InteractionPrompt => _promt;
     private Animator _animator;
 
@@ -78,7 +79,7 @@ public class Throw : MonoBehaviour, IInteractable
     private void Update()
     {
         Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
-        if (physicsCheck)
+        if (PhysicsCheck)
         {
             RaycastHit hit;
             Debug.DrawRay(transform.position, -transform.up, Color.red);
@@ -94,29 +95,21 @@ public class Throw : MonoBehaviour, IInteractable
                 Debug.Log(hit.transform.gameObject.layer);
                 GetComponent<Rigidbody>().velocity = Vector3.zero;
                 _animator.SetTrigger("Grounded");
-                physicsCheck = false;
+                PhysicsCheck = false;
             }
-            else if(!hit.transform.gameObject.CompareTag("Player"))
-            {
+            //else if(!hit.transform.gameObject.CompareTag("Player"))
+            //{
 
-            }
+            //}
         }
         else
         { 
-            //try
-            //{
-            //    GetComponent<Rigidbody>().velocity = Vector3.zero;
-
-            //}
-            //catch
-            //{
-
-            //}
         }
     }
 
     IEnumerator Pickup()
     {
+        transform.SetParent(_playerEquipPoint.transform);
         transform.position = new Vector3(_playerInteractionPoint.transform.position.x, transform.position.y, _playerInteractionPoint.transform.position.z) ;
         startPos = transform.position;
         _value = 0;
@@ -151,7 +144,7 @@ public class Throw : MonoBehaviour, IInteractable
         }
 
         // Object를 Player의 머리 위로 옮김
-        transform.SetParent(_playerEquipPoint.transform);
+        //transform.SetParent(_playerEquipPoint.transform);
         GetComponent<Rigidbody>().isKinematic = true;
 
         // interactionPoint를 머리 위로 옮김
@@ -210,9 +203,14 @@ public class Throw : MonoBehaviour, IInteractable
             GetComponent<Rigidbody>().velocity = CaculateVelocity(autoTarget.position, this.transform.position, _hight);
 
         if (_animator != null)
-            physicsCheck = true;
+            PhysicsCheck = true;
     }
 
+    public void ResetPoint()
+    {
+        // 위치 초기화
+        transform.position = spawnPoint;
+    }
     public void SetAutoTarget(Transform _transform = null)
     {
         autoTarget = _transform;
