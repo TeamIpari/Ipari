@@ -98,7 +98,7 @@ public class AIIdleState : AIState
                 else if (stateMachine.Pattern.Count > 0)
                     stateMachine.NextPattern();
                 else
-                    Debug.Log("연결되어있지 않음.") ;
+                     ;
                 currentTime = 0;
             }
         }

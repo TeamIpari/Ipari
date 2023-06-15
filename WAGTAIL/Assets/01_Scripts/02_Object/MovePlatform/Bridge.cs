@@ -111,7 +111,7 @@ public class Bridge : MonoBehaviour
         }
         catch
         {
-            Debug.Log("D");
+            ;
         }
     }
 

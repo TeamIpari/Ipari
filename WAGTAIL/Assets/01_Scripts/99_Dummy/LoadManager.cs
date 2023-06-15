@@ -25,7 +25,6 @@ public class LoadManager : Singleton<LoadManager>
 
         public void Init(string[] str)
         {
-            Debug.Log(str[0]);
             if (str[0] != "")
                 number = int.Parse(str[0]);
             if (str[1] != "")
@@ -89,11 +88,9 @@ public class LoadManager : Singleton<LoadManager>
                 continue;
             }
             var data_value = data_values[count1].Split(',');
-            Debug.Log(data_value);
             if (data_value == null)
             {
                 endOfFile = true;
-                Debug.Log("AA");
                 break;
             }
             if (data_value[0] == "")
@@ -144,7 +141,6 @@ public class LoadManager : Singleton<LoadManager>
 
     public bool IsSayEnding()
     {
-        Debug.Log(dialogNum.ToString() +", "+ ChapterSay.Count.ToString());
         if (dialogNum < ChapterSay.Count)
             return false;
         return true;
@@ -224,7 +220,8 @@ public class LoadManager : Singleton<LoadManager>
                     && sc.contents[dialogNum - 1].ToString() == ".")
                     Tmps[TmpNum].text += "\n";
                 Tmps[TmpNum].text += sc.contents[dialogNum].ToString();
-
+                if (Tmps[TmpNum].text.Length % 26 == 0 )
+                    Tmps[TmpNum].text += "\n";
 
                 dialogNum++;
                 time = StandardTime;

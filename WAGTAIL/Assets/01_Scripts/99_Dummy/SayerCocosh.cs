@@ -24,13 +24,11 @@ public class SayerCocosh : MonoBehaviour, IInteractable
     {
         if(IsSay && !IsSaying)
         {
-            Debug.Log("이미 한 번 실행함");
             return false;
         }
         else if(!IsSaying)
         {
             Player.Instance.playerInput.enabled = false;
-            Debug.Log("Add Dic");
             LoadManager.GetInstance().SearchTypePoint(SayType);
             IsSay = true;
             IsSaying = true;

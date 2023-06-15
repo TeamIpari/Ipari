@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     {
         _input = moveAction.ReadValue<Vector2>();
         _velocity = new Vector3(_input.x, 0, _input.y);
-        Debug.Log(_velocity.normalized);
+        //Debug.Log(_velocity.normalized);
     }
 
     // Update is called once per frame

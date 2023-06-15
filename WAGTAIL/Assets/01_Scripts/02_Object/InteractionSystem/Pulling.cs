@@ -70,7 +70,7 @@ public class Pulling : MonoBehaviour, IInteractable
 
     public bool GetDistance()
     {
-        Debug.Log(Vector3.Distance(Player.Instance.transform.position, _shatterObject.transform.position)/* > minDistance*/);
+       // Debug.Log(Vector3.Distance(Player.Instance.transform.position, _shatterObject.transform.position)/* > minDistance*/);
         if (Vector3.Distance(Player.Instance.transform.position, _shatterObject.transform.position) > minDistance)
         {
             return false;
@@ -120,7 +120,7 @@ public class Pulling : MonoBehaviour, IInteractable
             }
             catch
             {
-                Debug.Log("AA");
+                ;
             }
             Destroy(_root);
             Destroy(this.gameObject);
@@ -153,15 +153,14 @@ public class Pulling : MonoBehaviour, IInteractable
     public bool IsTarget()
     {
         float floats = GetMeshfloat();
-        //Debug.Log(floats);
         if (floats <= targetPercent)
         {
-            Debug.Log("fail");
+            ;
             return false;
         }
         try
         {
-            Debug.Log("Success");
+            ;
             if (animator != null)
                 _shatterObject.GetComponent<FlowerObject>()?.CreatePoint();
         }
@@ -169,7 +168,6 @@ public class Pulling : MonoBehaviour, IInteractable
         {
 
         }
-        Debug.Log("End");
 
 
         return true;
