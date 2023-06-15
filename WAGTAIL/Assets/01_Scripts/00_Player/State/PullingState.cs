@@ -82,7 +82,7 @@ public class PullingState : State
             velocity = Vector3.zero;
         _val = -input.y;
         velocity.y = 0f;
-        Debug.Log("input Y : " + input.y + " //// " + "Input -Y : " + -input.y);
+        //Debug.Log("input Y : " + input.y + " //// " + "Input -Y : " + -input.y);
 
         if (player.currentInteractable.GetComponent<Pulling>().GetMeshfloat() < 90)
             player.currentInteractable.GetComponent<Pulling>().SetMeshfloat(_val);

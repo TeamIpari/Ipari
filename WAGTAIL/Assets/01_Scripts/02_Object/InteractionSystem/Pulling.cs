@@ -21,7 +21,7 @@ public class Pulling : MonoBehaviour, IInteractable
 
     Vector3 _playerPos;
     public int blendTarget = 0;
-    public int targetPercent = 70;
+    public float targetPercent = 70;
 
     Vector3 curPos;
 
@@ -139,6 +139,7 @@ public class Pulling : MonoBehaviour, IInteractable
             for (int i = 0; i < blendTarget; i++)
             {
                 a = 100 - (100 - (int)_skMesh.GetBlendShapeWeight(i));
+
             }
 
         }
@@ -151,18 +152,24 @@ public class Pulling : MonoBehaviour, IInteractable
 
     public bool IsTarget()
     {
-        if (GetMeshfloat() <= targetPercent)
+        float floats = GetMeshfloat();
+        //Debug.Log(floats);
+        if (floats <= targetPercent)
+        {
+            Debug.Log("fail");
             return false;
+        }
         try
         {
+            Debug.Log("Success");
             if (animator != null)
                 _shatterObject.GetComponent<FlowerObject>()?.CreatePoint();
         }
         catch
         {
-            
-        }
 
+        }
+        Debug.Log("End");
 
 
         return true;
