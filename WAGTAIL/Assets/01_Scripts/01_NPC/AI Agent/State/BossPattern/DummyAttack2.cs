@@ -39,13 +39,13 @@ public class DummyAttack2 : AIState
         // Å¸°Ù ¼³Á¤.
         CreateMarker();
         PositionLuncher();
-        Debug.Log("Start Attack2");
+      //  Debug.Log("Start Attack2");
     }
 
     public override void Exit()
     {
         GameObject.Destroy(marker);
-        Debug.Log("End Attack1");
+//Debug.Log("End Attack1");
     }
 
     public override void OntriggerEnter(Collider other)

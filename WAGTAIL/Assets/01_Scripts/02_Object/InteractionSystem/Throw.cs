@@ -91,10 +91,10 @@ public class Throw : MonoBehaviour, IInteractable
                     && !hit.transform.gameObject.CompareTag("PassCollision")
                     && hit.transform.gameObject.layer != 5))
             {
-                Debug.Log("IsGround");
-                Debug.Log(hit.transform.name);
-                Debug.Log(hit.transform.gameObject.tag);
-                Debug.Log(hit.transform.gameObject.layer);
+           //     Debug.Log("IsGround");
+            //    Debug.Log(hit.transform.name);
+            //    Debug.Log(hit.transform.gameObject.tag);
+            //   Debug.Log(hit.transform.gameObject.layer);
                 GetComponent<Rigidbody>().velocity = Vector3.zero;
                 _animator.SetTrigger("Grounded");
                 PhysicsCheck = false;
@@ -124,7 +124,7 @@ public class Throw : MonoBehaviour, IInteractable
         height = new Vector3(startPos.x, _playerEquipPoint.transform.position.y -.5f, startPos.z) + lookvec * 0.5f;
         // 머리 위
         endPos = new Vector3(_playerEquipPoint.transform.position.x, _playerEquipPoint.transform.position.y - 0.5f, _playerEquipPoint.transform.position.z);
-        Debug.Log(lookvec);
+
         //GameObject obj = new GameObject("방향벡터");
         //obj.transform.position = height;
 

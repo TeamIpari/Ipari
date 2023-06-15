@@ -15,7 +15,7 @@ public class DamagerTrigger : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            Debug.Log("나, 충돌 선언. - CHiCO with HoneyWorks");
+            ;
         }
     }
 }
