@@ -81,14 +81,23 @@ public class SceneLoader : Singleton<SceneLoader>
             timer += Time.unscaledDeltaTime * 2f;
             _canvasGruop.alpha = Mathf.Lerp(isFadeIn ? 0 : 1, isFadeIn ? 1 : 0, timer);
         }
-        //UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
+
+        if (isFadeIn)
+        {
+            UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
+        }
 
         if(!isFadeIn)
         {
+            if(_loadSceneName == "Title")
+            {
+                
+            }
+            
             if (_loadSceneName == "Chapter01")
             {
-                GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
-                CameraManager.GetInstance().CameraSetting();
+                //GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
+                //CameraManager.GetInstance().CameraSetting();
             }
 
             if (_loadSceneName == "BossRoom")

@@ -19,6 +19,7 @@ public enum ScoreType
 
 public enum ChapterType
 {
+    Title,
     Chapter01,
     Chapter02
 }
