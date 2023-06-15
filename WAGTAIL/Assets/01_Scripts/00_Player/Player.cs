@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     // =======================================
     public float rotationSpeed = 5f;
     public float climbingSpeed = 0;
+    public float pullingSpeed = 5.0f;
     // =======================================
     public float slopeSpeed = 0f;
     public float respawnTime;
