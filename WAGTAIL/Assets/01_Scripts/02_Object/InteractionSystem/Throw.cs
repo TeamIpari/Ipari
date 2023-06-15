@@ -42,6 +42,8 @@ public class Throw : MonoBehaviour, IInteractable
         _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
          startPos = this.transform.position;
         _animator = GetComponent<Animator>();
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Rigidbody>().useGravity = true;
     }
 
     public bool AnimEvent()
@@ -84,7 +86,7 @@ public class Throw : MonoBehaviour, IInteractable
             RaycastHit hit;
             Debug.DrawRay(transform.position, -transform.up, Color.red);
 
-            if (Physics.Raycast(transform.position, -transform.up, out hit, .3f)
+            if (Physics.Raycast(transform.position, -transform.up, out hit, .2f)
                 && (!hit.transform.gameObject.CompareTag("Player")
                     && !hit.transform.gameObject.CompareTag("PassCollision")
                     && hit.transform.gameObject.layer != 5))
