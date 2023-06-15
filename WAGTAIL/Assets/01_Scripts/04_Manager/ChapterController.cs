@@ -11,7 +11,6 @@ public class ChapterController : MonoBehaviour
     {
         if (Type == ChapterType.Title)
         {
-            Debug.Log("Start");
             SoundTest.GetInstance().PlayBGM("isInGame",false);
             SoundTest.GetInstance().PlayBGM("isTitle", true);
             UIManager.GetInstance().SwitchCanvas(CanvasType.MainMenu);
