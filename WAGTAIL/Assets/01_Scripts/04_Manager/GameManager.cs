@@ -69,7 +69,7 @@ public class GameManager : Singleton<GameManager>
 
     public void Start()
     {
-        SoundTest.GetInstance().PlayBGM("isTitle",true);
+        //SoundTest.GetInstance().PlayBGM("isTitle",true);
     }
 
     public void Respawn()
