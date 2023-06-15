@@ -36,7 +36,7 @@ public class ShatterObject : MonoBehaviour
             if (_fracturedObject != null)
             {
                 _fractObj = Instantiate(_fracturedObject, _originalObject.transform.position, transform.rotation);
-                _fractObj.transform.localScale = _originalObject.transform.lossyScale;
+                //_fractObj.transform.localScale = _originalObject.transform.lossyScale;
                 foreach (Transform t in _fractObj.transform)
                 {
                     var rb = t.GetComponent<Rigidbody>();

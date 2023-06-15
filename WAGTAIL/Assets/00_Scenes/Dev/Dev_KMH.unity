@@ -446,14 +446,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _promt: 
-  _force: 300
-  _yForce: 300
-  _yAngle: 0.45
   _value: 0
   _hight: 0
   _range: 0
   autoTarget: {fileID: 0}
   _overheadSpeed: 0
+  PhysicsCheck: 0
 --- !u!54 &191294310
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -798,14 +796,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _promt: 
-  _force: 300
-  _yForce: 300
-  _yAngle: 0.45
   _value: 0
   _hight: 0
   _range: 0
   autoTarget: {fileID: 0}
   _overheadSpeed: 0
+  PhysicsCheck: 0
 --- !u!65 &353085674
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -845,7 +841,7 @@ PrefabInstance:
     - target: {fileID: 2767617733008480632, guid: 80f17ecce142eab479c1f99e45d1c79a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2767617733008480632, guid: 80f17ecce142eab479c1f99e45d1c79a,
         type: 3}
@@ -970,6 +966,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259764396587708555, guid: 7b53358512e7b044ca70f6352c2bdad3,
+        type: 3}
+      propertyPath: field of view
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b53358512e7b044ca70f6352c2bdad3, type: 3}
@@ -2067,7 +2068,7 @@ PrefabInstance:
     - target: {fileID: 6194149063077610299, guid: 41c10a69ad133f149a74d2e42d8a6074,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6194149063077610299, guid: 41c10a69ad133f149a74d2e42d8a6074,
         type: 3}
@@ -3132,6 +3133,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2086230156573918665, guid: 0a2a7f087e843e3468eafc4bc4ab7eba,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8386052175791972678, guid: 0a2a7f087e843e3468eafc4bc4ab7eba,
         type: 3}
       propertyPath: _fragScaleFactor
