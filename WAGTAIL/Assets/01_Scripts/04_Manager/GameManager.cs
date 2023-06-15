@@ -19,6 +19,7 @@ public enum ScoreType
 
 public enum ChapterType
 {
+    Title,
     Chapter01,
     Chapter02
 }
@@ -69,7 +70,7 @@ public class GameManager : Singleton<GameManager>
 
     public void Start()
     {
-        SoundTest.GetInstance().PlayBGM("isTitle",true);
+        //SoundTest.GetInstance().PlayBGM("isTitle",true);
     }
 
     public void Respawn()

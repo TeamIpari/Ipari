@@ -39,7 +39,7 @@ public class UIManager : Singleton<UIManager>
         ActiveGameUI(GameUIType.Jump, false);
 
         // 테스트 끝나면 CanvasType.MainMenu로 바꿔야함
-        SwitchCanvas(CanvasType.MainMenu);
+        //SwitchCanvas(CanvasType.MainMenu);
     }
 
     public void ActiveGameUI(GameUIType type, bool isActive)
