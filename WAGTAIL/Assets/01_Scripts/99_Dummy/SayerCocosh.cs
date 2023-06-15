@@ -42,7 +42,7 @@ public class SayerCocosh : MonoBehaviour, IInteractable
         {
             Player.Instance.playerInput.enabled = true;
             IsSaying = false;
-            TextVeiwer.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject.SetActive(false); ;
+            //TextVeiwer.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject.SetActive(false); ;
             //TextVeiwer.gameObject.SetActive(false);
             if (CutScenePlayer != null)
             {
