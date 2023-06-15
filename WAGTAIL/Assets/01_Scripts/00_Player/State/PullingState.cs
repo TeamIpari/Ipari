@@ -42,7 +42,7 @@ public class PullingState : State
         isPull = player.isPull;
         RopeHead = player.currentInteractable;
 
-        playerSpeed = player.playerSpeed * 0.5f;
+        playerSpeed = player.pullingSpeed;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
         player.animator.SetTrigger("pulling");

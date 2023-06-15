@@ -41,6 +41,7 @@ public class FlowerObject : MonoBehaviour
             _obj.GetComponent<ScoreObject>().SetTime(FlightTIme);
             //marker.Add(_obj);
         }
+        
         SoundTest.GetInstance().PlaySound("isCoinFlowerExplo");
         if (_explosionVFX != null )         
         {           
@@ -69,8 +70,8 @@ public class FlowerObject : MonoBehaviour
         result *= Vxz;
         result.y = Vy;
         return result;
-    }
-    Vector3 Search()
+    } 
+    private Vector3 Search()
     {
         // Random.onUnitSphere : 반경 1을 갖는 구의 표면상에서 임의의 지점을 반환함
         Vector3 getPoint = Random.onUnitSphere;
