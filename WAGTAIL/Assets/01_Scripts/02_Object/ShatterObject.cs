@@ -14,19 +14,6 @@ public class ShatterObject : MonoBehaviour
 
     private GameObject _fractObj;
 
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.G))
-        {
-            Explode();
-        }
-
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            Reset();
-        }
-    }
-
     public void Explode()
     {
         if (_originalObject != null)
