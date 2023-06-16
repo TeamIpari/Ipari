@@ -65,10 +65,6 @@ public class LoadManager : Singleton<LoadManager>
         IO_GetScriptable();
 
         isTypingEnd = true;
-        //dialogsSave = sc.contents;
-        //GetInputUp();
-        //tmpSave = tmps;
-        //isTypingEnd = true;
     }
 
     public void IO_GetSayer()
@@ -126,18 +122,18 @@ public class LoadManager : Singleton<LoadManager>
         dialogNum = 0;
     }
 
-    private void Update()
-    {
-        //if (Input.GetMouseButtonDown(0) && dialogNum < ChapterSay.Count)
-        //{
-        //    PlayTyping();
-        //}
-        //else
-        //{
-        //    //Tmps[TmpNum]
-        //}
+    //private void Update()
+    //{
+    //    //if (Input.GetMouseButtonDown(0) && dialogNum < ChapterSay.Count)
+    //    //{
+    //    //    PlayTyping();
+    //    //}
+    //    //else
+    //    //{
+    //    //    //Tmps[TmpNum]
+    //    //}
 
-    }
+    //}
 
     public bool IsSayEnding()
     {
@@ -148,6 +144,12 @@ public class LoadManager : Singleton<LoadManager>
     public void SearchTypePoint(int num = 0)
     {
         IO_GetScriptable(num);
+    }
+
+    public void ResetValue()
+    {
+        TmpNum = 0;
+        dialogNum = 0;
     }
 
     public void TmpSet(TextMeshProUGUI tmp)
@@ -177,7 +179,7 @@ public class LoadManager : Singleton<LoadManager>
             }
             Tmps[TmpNum].enabled = true;
             Tmps[TmpNum].text = "";
-
+            Debug.Log("TmpNum = " + TmpNum + "// Dialong = " + dialogNum);
             StartCoroutine(TypingCo(ChapterSay[dialogNum]));
         }
         else

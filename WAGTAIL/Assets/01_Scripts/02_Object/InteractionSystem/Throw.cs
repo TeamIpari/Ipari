@@ -99,10 +99,6 @@ public class Throw : MonoBehaviour, IInteractable
                 _animator.SetTrigger("Grounded");
                 PhysicsCheck = false;
             }
-            //else if(!hit.transform.gameObject.CompareTag("Player"))
-            //{
-
-            //}
         }
         else
         { 
