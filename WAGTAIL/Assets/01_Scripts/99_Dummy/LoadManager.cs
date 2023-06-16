@@ -222,8 +222,8 @@ public class LoadManager : Singleton<LoadManager>
                     && sc.contents[dialogNum - 1].ToString() == ".")
                     Tmps[TmpNum].text += "\n";
                 Tmps[TmpNum].text += sc.contents[dialogNum].ToString();
-                if (Tmps[TmpNum].text.Length % 26 == 0 )
-                    Tmps[TmpNum].text += "\n";
+                //if (Tmps[TmpNum].text.Length % 26 == 0 )
+                //    Tmps[TmpNum].text += "\n";
 
                 dialogNum++;
                 time = StandardTime;
