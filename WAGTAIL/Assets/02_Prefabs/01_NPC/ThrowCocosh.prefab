@@ -1183,14 +1183,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _promt: 
-  _force: 5
-  _yForce: 5
-  _yAngle: 0.45
   _value: 0
   _hight: 2
   _range: 8
   autoTarget: {fileID: 0}
   _overheadSpeed: 0.25
+  PhysicsCheck: 0
 --- !u!1 &4643775020726420721
 GameObject:
   m_ObjectHideFlags: 0
@@ -2024,6 +2022,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3509578939232668639}
     m_Modifications:
+    - target: {fileID: 267707807, guid: 22e90733b5596ca43aa82d8e21034f6e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5484167771064285362, guid: 22e90733b5596ca43aa82d8e21034f6e,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2133,6 +2135,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InteractableUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 5484167771064285365, guid: 22e90733b5596ca43aa82d8e21034f6e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22e90733b5596ca43aa82d8e21034f6e, type: 3}
