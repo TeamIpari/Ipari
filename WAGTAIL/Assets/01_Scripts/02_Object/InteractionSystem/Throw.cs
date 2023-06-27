@@ -35,6 +35,9 @@ public class Throw : MonoBehaviour, IInteractable
     public bool PhysicsCheck = false;
     public string InteractionPrompt => _promt;
     private Animator _animator;
+    // 일단 테스트 용 변수
+    private float curTime;
+    private bool flight = false;
 
     private void Start()
     {
@@ -86,17 +89,37 @@ public class Throw : MonoBehaviour, IInteractable
                     && !hit.transform.gameObject.CompareTag("PassCollision")
                     && hit.transform.gameObject.layer != 5))
             {
-           //     Debug.Log("IsGround");
-            //    Debug.Log(hit.transform.name);
-            //    Debug.Log(hit.transform.gameObject.tag);
-            //   Debug.Log(hit.transform.gameObject.layer);
                 GetComponent<Rigidbody>().velocity = Vector3.zero;
                 _animator.SetTrigger("Grounded");
                 PhysicsCheck = false;
             }
         }
-        else
-        { 
+        if(flight)
+        {
+            if (curTime < _hight / 2)
+            {
+                curTime += Time.deltaTime;
+            }
+            else
+            {                // 방향 벡터 구하기
+                //Vector3 directionToMagnet = targetPos - transform.position;
+
+                //float distance = Vector3.Distance(targetPos, transform.position);
+                //if (distance > 1)
+                //{
+                //    float distanceForce = (10 / distance) * 1.25f;
+                //    GetComponent<Rigidbody>().velocity = directionToMagnet * distanceForce + (Vector3.down * distanceForce);
+                //}
+                //else
+                //{
+                //    //GetComponent<Rigidbody>().velocity = Vector3.down * 1.2f;
+                //    flight = false;
+
+                //}
+                GetComponent<Rigidbody>().useGravity = false;
+                GetComponent<Rigidbody>().velocity += Physics.gravity * .05f;
+            }
+
         }
     }
 
@@ -115,9 +138,6 @@ public class Throw : MonoBehaviour, IInteractable
         height = new Vector3(startPos.x, _playerEquipPoint.transform.position.y -.5f, startPos.z) + lookvec * 0.5f;
         // 머리 위
         endPos = new Vector3(_playerEquipPoint.transform.position.x, _playerEquipPoint.transform.position.y - 0.5f, _playerEquipPoint.transform.position.z);
-
-        //GameObject obj = new GameObject("방향벡터");
-        //obj.transform.position = height;
 
         // Object가 Player의 머리 위에서 움직이는걸 방지
         GetComponent<Rigidbody>().useGravity = false;
@@ -197,6 +217,7 @@ public class Throw : MonoBehaviour, IInteractable
 
         if (_animator != null)
             PhysicsCheck = true;
+        flight = true;
     }
 
     public void ResetPoint()
