@@ -73,11 +73,6 @@ public class Throw : MonoBehaviour, IInteractable
 
         return false;
     }
-    private void OnDrawGizmos()
-    {
-
-    }
-
     private void Update()
     {
         Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
