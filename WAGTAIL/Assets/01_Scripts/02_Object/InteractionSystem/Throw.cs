@@ -37,7 +37,7 @@ public class Throw : MonoBehaviour, IInteractable
     private Animator _animator;
     // 일단 테스트 용 변수
     private float curTime;
-    private bool flight = false;
+    [SerializeField] private bool flight = false;
 
     private void Start()
     {
@@ -96,11 +96,11 @@ public class Throw : MonoBehaviour, IInteractable
         }
         if(flight)
         {
-            if (curTime < _hight / 2)
-            {
-                curTime += Time.deltaTime;
-            }
-            else
+            //if (curTime < _hight / 2)
+            //{
+            //    curTime += Time.deltaTime;
+            //}
+            //else
             {                // 방향 벡터 구하기
                 //Vector3 directionToMagnet = targetPos - transform.position;
 
@@ -116,7 +116,7 @@ public class Throw : MonoBehaviour, IInteractable
                 //    flight = false;
 
                 //}
-                GetComponent<Rigidbody>().useGravity = false;
+                //GetComponent<Rigidbody>().useGravity = false;
                 GetComponent<Rigidbody>().velocity += Physics.gravity * .05f;
             }
 
@@ -151,9 +151,10 @@ public class Throw : MonoBehaviour, IInteractable
 
         while (_value <= 1)
         {
-            yield return new WaitForSeconds(_overheadSpeed / 1000f);
+            //yield return new WaitForSeconds(_overheadSpeed / 1000f);
+            yield return new WaitForSeconds(0.0025f);
             transform.transform.position = (BeziurCurve(_value));
-            _value += 0.02f;
+            _value += 0.05f;
         }
 
         // Object를 Player의 머리 위로 옮김
@@ -202,7 +203,7 @@ public class Throw : MonoBehaviour, IInteractable
         GetComponent<Rigidbody>().freezeRotation = false;
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         //GetComponent<Rigidbody>().constraints = ;
-        GetComponent<Rigidbody>().useGravity = true;
+        //GetComponent<Rigidbody>().useGravity = true;
         GetComponent<Rigidbody>().isKinematic = false;
 
         // 정한 방식대로 날라감
