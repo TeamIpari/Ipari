@@ -37,6 +37,7 @@ public class FlowerObject : MonoBehaviour
 
             _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
             _obj.transform.position = FlowerTransform.position;
+            _obj.transform.position += Vector3.up * 1.5f;
             _obj.AddComponent<Rigidbody>().velocity = CaculateVelocity(t, FlowerTransform.position, FlightTIme);
             _obj.GetComponent<ScoreObject>().SetTime(FlightTIme);
             //marker.Add(_obj);

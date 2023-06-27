@@ -28,7 +28,7 @@ public class ScoreObject : MonoBehaviour
 
     private void Update()
     {
-        if(_rigidbody != null)
+        if(_rigidbody != null && !isMagnet )
         {
             if (curtime < delayTime)
             {
@@ -36,16 +36,23 @@ public class ScoreObject : MonoBehaviour
             }
             else
             {
-                Destroy(_rigidbody);
+                // Destroy(_rigidbody);
                 // 자석
+                _rigidbody.velocity = Vector3.zero;
+                _rigidbody.useGravity = false;  
                 isMagnet = true;
                 curtime = 0;
-                //delayTime =f;
             }    
         }
         if(isMagnet)
         {
-            transform.position += TargetVector(Player.Instance.transform.position, transform.position);
+            // 방향 벡터 구하기
+            Vector3 directionToMagnet = Player.Instance.transform.position - transform.position;
+
+            float distance = Vector3.Distance(Player.Instance.transform.position, transform.position);
+            float magentDistance = (10 / distance) * 1.25f;
+            _rigidbody.velocity = directionToMagnet * magentDistance;
+            //transform.position += TargetVector(Player.Instance.transform.position, transform.position);
         }
     }
     
