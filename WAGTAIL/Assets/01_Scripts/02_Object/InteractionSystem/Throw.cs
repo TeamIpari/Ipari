@@ -76,7 +76,11 @@ public class Throw : MonoBehaviour, IInteractable
 
         return false;
     }
-    private void Update()
+    //private void FixedUpdate()
+    //{
+        
+    //}
+    private void FixedUpdate()
     {
         Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
         if (PhysicsCheck)
@@ -94,7 +98,7 @@ public class Throw : MonoBehaviour, IInteractable
                 PhysicsCheck = false;
             }
         }
-        if(flight)
+        //if(flight)
         {
             //if (curTime < _hight / 2)
             //{
