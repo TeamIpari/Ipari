@@ -49,7 +49,7 @@ public class RotAround : MonoBehaviour, IEnviroment
     }
 
     // Update is called once per frame
-    private void Update()
+    private void FixedUpdate()
     {
         if (objs.Count == 0) return;
         RotatePlatform();
