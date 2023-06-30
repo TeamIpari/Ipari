@@ -116,7 +116,14 @@ public class Player : MonoBehaviour
     [HideInInspector] public GameManager GameManager;
     [HideInInspector] public CameraManager CameraManager;
     [HideInInspector] public SoundHandler SoundHandler;
-    
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward);
+        //Gizmos.DrawWireCube(transform.position + Vector3.forward * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+
+    }
 
     private void Awake()
     {

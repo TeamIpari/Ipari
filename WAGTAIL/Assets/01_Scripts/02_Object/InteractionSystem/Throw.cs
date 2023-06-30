@@ -38,6 +38,8 @@ public class Throw : MonoBehaviour, IInteractable
     // 일단 테스트 용 변수
     private float curTime;
     [SerializeField] private bool flight = false;
+    [SerializeField] private Vector3 Forward;
+    [SerializeField] private float speed = 1.0f;
 
     private void Start()
     {
@@ -76,17 +78,14 @@ public class Throw : MonoBehaviour, IInteractable
 
         return false;
     }
-    //private void FixedUpdate()
-    //{
-        
-    //}
+
     private void FixedUpdate()
     {
         Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
         if (PhysicsCheck)
         {
             RaycastHit hit;
-            Debug.DrawRay(transform.position, -transform.up, Color.red);
+            Debug.DrawRay(transform.position, -transform.up * 2f, Color.red);
 
             if (Physics.Raycast(transform.position, -transform.up, out hit, .2f)
                 && (!hit.transform.gameObject.CompareTag("Player")
@@ -94,36 +93,16 @@ public class Throw : MonoBehaviour, IInteractable
                     && hit.transform.gameObject.layer != 5))
             {
                 GetComponent<Rigidbody>().velocity = Vector3.zero;
-                _animator.SetTrigger("Grounded");
+                if(_animator != null)
+                    _animator.SetTrigger("Grounded");
+                flight = false;
                 PhysicsCheck = false;
             }
         }
-        //if(flight)
+        GetComponent<Rigidbody>().velocity += Physics.gravity * .05f;
+        if(flight)
         {
-            //if (curTime < _hight / 2)
-            //{
-            //    curTime += Time.deltaTime;
-            //}
-            //else
-            {                // 방향 벡터 구하기
-                //Vector3 directionToMagnet = targetPos - transform.position;
-
-                //float distance = Vector3.Distance(targetPos, transform.position);
-                //if (distance > 1)
-                //{
-                //    float distanceForce = (10 / distance) * 1.25f;
-                //    GetComponent<Rigidbody>().velocity = directionToMagnet * distanceForce + (Vector3.down * distanceForce);
-                //}
-                //else
-                //{
-                //    //GetComponent<Rigidbody>().velocity = Vector3.down * 1.2f;
-                //    flight = false;
-
-                //}
-                //GetComponent<Rigidbody>().useGravity = false;
-                GetComponent<Rigidbody>().velocity += Physics.gravity * .05f;
-            }
-
+            this.transform.RotateAround(this.transform.position, -Forward, (speed * Time.deltaTime));
         }
     }
 
@@ -164,6 +143,7 @@ public class Throw : MonoBehaviour, IInteractable
         // Object를 Player의 머리 위로 옮김
         //transform.SetParent(_playerEquipPoint.transform);
         GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Rigidbody>().useGravity = false;
 
         // interactionPoint를 머리 위로 옮김
         _nomalInteractionPoint = _playerInteractionPoint.transform.localPosition;
@@ -220,9 +200,12 @@ public class Throw : MonoBehaviour, IInteractable
         else if (autoTarget != null)
             GetComponent<Rigidbody>().velocity = CaculateVelocity(autoTarget.position, this.transform.position, _hight);
 
-        if (_animator != null)
-            PhysicsCheck = true;
-        flight = true;
+        Forward = _playerInteractionPoint.transform.right;
+
+        //if (_animator != null)
+        PhysicsCheck = true;
+        if(_animator == null)
+            flight = true;
     }
 
     public void ResetPoint()
@@ -241,7 +224,7 @@ public class Throw : MonoBehaviour, IInteractable
         Vector3 distance = target - origin;
         Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
         distanceXZ.y = 0f; // y는 0으로 설정.
-
+        Forward = origin;
         // Create a float the represent our distance
         float Sy = distance.y;      // 세로 높이의 거리를 지정.
         float Sxz = distanceXZ.magnitude;
@@ -255,6 +238,19 @@ public class Throw : MonoBehaviour, IInteractable
         result *= Vxz;
         result.y = Vy;
         return result;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        //if(collision.gameObject.CompareTag())
+        if (!collision.gameObject.CompareTag("PassCollision")&&
+            !collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log(collision.gameObject.name);
+            flight = false;
+            GetComponent<Rigidbody>().useGravity = true;
+            GetComponent<Rigidbody>().freezeRotation = false ;
+        }   
     }
 
 }
