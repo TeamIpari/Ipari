@@ -1090,7 +1090,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3509578939232668639}
   - component: {fileID: 3980687351006014510}
-  - component: {fileID: 3980687351006014511}
   - component: {fileID: 3980687351006014514}
   - component: {fileID: 3980687351006014512}
   m_Layer: 6
@@ -1135,20 +1134,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!136 &3980687351006014511
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4323270786792526181}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 0
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!95 &3980687351006014514
 Animator:
   serializedVersion: 5
@@ -1189,6 +1174,9 @@ MonoBehaviour:
   autoTarget: {fileID: 0}
   _overheadSpeed: 0.15
   PhysicsCheck: 0
+  flight: 0
+  Forward: {x: 0, y: 0, z: 0}
+  speed: 1
 --- !u!1 &4643775020726420721
 GameObject:
   m_ObjectHideFlags: 0

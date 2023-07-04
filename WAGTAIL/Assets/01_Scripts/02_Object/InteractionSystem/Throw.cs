@@ -4,6 +4,7 @@ using System.Net;
 using Unity.VisualScripting;
 //using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class Throw : MonoBehaviour, IInteractable
 {
@@ -40,7 +41,8 @@ public class Throw : MonoBehaviour, IInteractable
     [SerializeField] private bool flight = false;
     [SerializeField] private Vector3 Forward;
     [SerializeField] private float speed = 1.0f;
-
+    private float rayRange = 0.2f;
+    public GameObject cube;
     private void Start()
     {
         _playerEquipPoint = Player.Instance.ThrowEquipPoint.gameObject;
@@ -49,6 +51,9 @@ public class Throw : MonoBehaviour, IInteractable
         _animator = GetComponent<Animator>();
         GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().useGravity = true;
+        if (_animator != null)
+            rayRange = 1f;
+
     }
 
     public bool AnimEvent()
@@ -78,38 +83,57 @@ public class Throw : MonoBehaviour, IInteractable
 
         return false;
     }
+    
+    private void CheckRay()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.up, out hit, 0.2f)
+            && (!hit.transform.gameObject.CompareTag("Player")
+                && !hit.transform.gameObject.CompareTag("PassCollision")
+                && hit.transform.gameObject.layer != 5))
+        {
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            if (_animator != null)
+                _animator.SetTrigger("Grounded");
+            //flight = false;
+            PhysicsCheck = false;
+            //GetComponent<Rigidbody>().freezeRotation = false ;
+        }
+    }
+
+    private void CheckVelocity()
+    {
+        if (GetComponent<Rigidbody>().velocity == Vector3.zero)
+        {
+            if (_animator != null)
+                _animator.SetTrigger("Grounded");
+            //flight = false;
+            PhysicsCheck = false;
+        }
+    }
 
     private void FixedUpdate()
     {
         Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
         if (PhysicsCheck)
         {
-            RaycastHit hit;
             Debug.DrawRay(transform.position, -transform.up * 2f, Color.red);
-
-            if (Physics.Raycast(transform.position, -transform.up, out hit, .2f)
-                && (!hit.transform.gameObject.CompareTag("Player")
-                    && !hit.transform.gameObject.CompareTag("PassCollision")
-                    && hit.transform.gameObject.layer != 5))
-            {
-                GetComponent<Rigidbody>().velocity = Vector3.zero;
-                if(_animator != null)
-                    _animator.SetTrigger("Grounded");
-                flight = false;
-                PhysicsCheck = false;
-            }
+            //CheckRay();
+            CheckVelocity();
         }
         GetComponent<Rigidbody>().velocity += Physics.gravity * .05f;
-        if(flight)
+        if (flight)
         {
-            this.transform.RotateAround(this.transform.position, -Forward, (speed * Time.deltaTime));
+            this.transform.RotateAround(this.transform.position + GetComponent<BoxCollider>().center, -Forward, (speed * Time.deltaTime));
         }
     }
 
     IEnumerator Pickup()
     {
+        //Debug.Log(GetComponent<BoxCollider>().center);
         transform.SetParent(_playerEquipPoint.transform);
-        transform.position = new Vector3(_playerInteractionPoint.transform.position.x, transform.position.y, _playerInteractionPoint.transform.position.z) ;
+        transform.position = new Vector3(_playerInteractionPoint.transform.position.x, Player.Instance.transform.position.y, _playerInteractionPoint.transform.position.z) ;
+        transform.rotation = Quaternion.identity;
         startPos = transform.position;
         _value = 0;
 
@@ -126,7 +150,8 @@ public class Throw : MonoBehaviour, IInteractable
         GetComponent<Rigidbody>().useGravity = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().freezeRotation = true;
-        GetComponent<Rigidbody>().isKinematic = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Collider>().isTrigger = true;
         yield return new WaitForSeconds(0.75f);
 
         if (_animator != null)
@@ -134,14 +159,12 @@ public class Throw : MonoBehaviour, IInteractable
 
         while (_value <= 1)
         {
-            //yield return new WaitForSeconds(_overheadSpeed / 1000f);
             yield return new WaitForSeconds(0.0025f);
             transform.transform.position = (BeziurCurve(_value));
             _value += 0.05f;
         }
 
-        // Object를 Player의 머리 위로 옮김
-        //transform.SetParent(_playerEquipPoint.transform);
+        // Object를 Player의 머리 위로 옮김.
         GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().useGravity = false;
 
@@ -164,15 +187,11 @@ public class Throw : MonoBehaviour, IInteractable
 
     IEnumerator Throwing(Interactor interactor)
     {
-        //_animator.enabled = false;
         if(autoTarget != null)
         {
-
             Player.Instance.GetComponent<CharacterController>().enabled = false;
-
             Player.Instance.transform.LookAt(autoTarget);
             Player.Instance.GetComponent<CharacterController>().enabled = true;
-
         }
         yield return new WaitForSeconds(0.2f);
         if (_animator != null)
@@ -184,24 +203,18 @@ public class Throw : MonoBehaviour, IInteractable
         _playerEquipPoint.transform.DetachChildren();
 
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
+        //GetComponent<Rigidbody>().useGravity = true;
         GetComponent<Rigidbody>().freezeRotation = false;
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        //GetComponent<Rigidbody>().constraints = ;
-        //GetComponent<Rigidbody>().useGravity = true;
         GetComponent<Rigidbody>().isKinematic = false;
+        GetComponent<Collider>().isTrigger = false;
 
-        // 정한 방식대로 날라감
-        //_playerForwardTransform = interactor.player.transform.forward;
-        //_playerForwardTransform.x *= _force;
-        //_playerForwardTransform.y = _yForce * _yAngle;
-        //_playerForwardTransform.z *= _force;
-        if (autoTarget == null)
-            GetComponent<Rigidbody>().velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
-        else if (autoTarget != null)
-            GetComponent<Rigidbody>().velocity = CaculateVelocity(autoTarget.position, this.transform.position, _hight);
+        GetComponent<Rigidbody>().velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
 
         Forward = _playerInteractionPoint.transform.right;
-
+        //GameObject obj = Instantiate(cube);
+        //obj.transform.position = transform.position + GetComponent<BoxCollider>().center;
+        //obj.transform.parent = this.transform;
         //if (_animator != null)
         PhysicsCheck = true;
         if(_animator == null)
@@ -243,14 +256,16 @@ public class Throw : MonoBehaviour, IInteractable
     private void OnCollisionEnter(Collision collision)
     {
         //if(collision.gameObject.CompareTag())
-        if (!collision.gameObject.CompareTag("PassCollision")&&
+        if (!collision.gameObject.CompareTag("PassCollision") &&
             !collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log(collision.gameObject.name);
+
+            //Debug.Log(collision.gameObject.name);
             flight = false;
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
             GetComponent<Rigidbody>().useGravity = true;
-            GetComponent<Rigidbody>().freezeRotation = false ;
-        }   
+            GetComponent<Rigidbody>().freezeRotation = false;
+        }
     }
 
 }
