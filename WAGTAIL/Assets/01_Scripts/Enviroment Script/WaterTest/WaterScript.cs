@@ -40,7 +40,7 @@ public class WaterScript : MonoBehaviour
         else if (LayerMask.NameToLayer("Interactable") == other.gameObject.layer)
         {
             //Debug.Log(other.gameObject.layer);
-            other.gameObject.layer = LayerMask.NameToLayer("Default");
+            //other.gameObject.layer = LayerMask.NameToLayer("Default");
             //other.GetComponent<IInteractable>() = false;
         }
         else if (other.gameObject.CompareTag("Platform"))

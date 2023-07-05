@@ -54,6 +54,7 @@ public class Throw : MonoBehaviour, IInteractable
         _animator = GetComponent<Animator>();
         rigidbody = GetComponent<Rigidbody>();
         rigidbody.useGravity = true;
+        spawnPoint = this.transform.position;
 
         center = new GameObject();
         center.transform.position = this.transform.position + GetComponent<BoxCollider>().center;
@@ -105,7 +106,7 @@ public class Throw : MonoBehaviour, IInteractable
             if (_animator != null)
                 _animator.SetTrigger("Grounded");
             //flight = false;
-            PhysicsCheck = false;
+            //PhysicsCheck = false;
             //GetComponent<Rigidbody>().freezeRotation = false ;
         }
     }
@@ -120,6 +121,8 @@ public class Throw : MonoBehaviour, IInteractable
 
     private void FixedUpdate()
     {
+        if(Input.GetKeyDown(KeyCode.K))
+            ResetPoint();
         UnityEngine.Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
         if (PhysicsCheck)
         {
@@ -233,6 +236,7 @@ public class Throw : MonoBehaviour, IInteractable
     {
         // 위치 초기화
         transform.position = spawnPoint;
+        transform.rotation = Quaternion.identity;
     }
     public void SetAutoTarget(Transform _transform = null)
     {
