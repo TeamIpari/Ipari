@@ -101,7 +101,7 @@ public class Throw : MonoBehaviour, IInteractable
                 && !hit.transform.gameObject.CompareTag("PassCollision")
                 && hit.transform.gameObject.layer != 5))
         {
-            Debug.Log("AA");
+            //Debug.Log("AA");
             rigidbody.velocity = Vector3.zero;
             if (_animator != null)
                 _animator.SetTrigger("Grounded");
