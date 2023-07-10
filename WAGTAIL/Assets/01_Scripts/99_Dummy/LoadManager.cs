@@ -215,7 +215,7 @@ public class LoadManager : Singleton<LoadManager>
             if(time >= 0)
             {
                 yield return null;
-                time -= isSpeedUp ? Time.deltaTime * 100f : Time.deltaTime;
+                time -= Time.deltaTime;
             }
             else
             {
