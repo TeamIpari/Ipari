@@ -17,7 +17,8 @@ public class CutScene : MonoBehaviour
 
     private bool IsCutScene;
     public bool IsIntro;
-    public bool ISText;     
+    public bool ISText;
+    public bool isSpeedUp = false;
 
     public int sceneCount;
 
@@ -40,30 +41,26 @@ public class CutScene : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void DoubleSpeed()
     {
-        if (IsCutScene && Input.GetKeyDown("space"))
-        {
-            Time.timeScale = 10f;
-        }
+        Time.timeScale = Input.GetKey("space") ? 3.0f : 1f;
+        LoadManager.GetInstance().isSpeedUp = Input.GetKey("space") ? true : false;
+    }
 
-        if (IsCutScene && Input.GetKeyUp("space"))
-        {
-            Time.timeScale = 1f;
-        }
-        
-        if(IsCutScene
-           && Input.GetKeyDown(KeyCode.F)
-           || (sceneCount > 0 && cutScenes[sceneCount - 1].state == PlayState.Paused))
+    private void SceneChange()
+    {
+        bool bInputNextKey = Input.GetKeyDown(KeyCode.F);
+        bool bSceneState = sceneCount > 0 && cutScenes[sceneCount - 1].state == PlayState.Paused;
+
+        if(bInputNextKey || bSceneState)
         {
             if (sceneCount >= cutScenes.Length && cutScenes[sceneCount - 1].state == PlayState.Paused)
             {
                 Player.Instance.playerInput.enabled = true;
                 HideCutScenes();
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
-                SoundTest.GetInstance().PlayBGM("isTitle",false);
-                SoundTest.GetInstance().PlayBGM("isInGame",true);
+                SoundTest.GetInstance().PlayBGM("isTitle", false);
+                SoundTest.GetInstance().PlayBGM("isInGame", true);
             }
             else if (sceneCount < cutScenes.Length)
             {
@@ -72,6 +69,16 @@ public class CutScene : MonoBehaviour
                 if (TextViewer != null)
                     LoadManager.GetInstance().PlayTyping();
             }
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(IsCutScene)
+        {
+            DoubleSpeed();
+            SceneChange();
         }
     }
 

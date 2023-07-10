@@ -17,10 +17,6 @@ public class Throw : MonoBehaviour, IInteractable
     private Rigidbody rigidbody;
 
     [Header("Throw Setting")]
-    //[SerializeField] float _force = 1.0f;
-    //[SerializeField] float _yForce = 1.0f;
-    //[Range(0, 1)]
-    //[SerializeField] float _yAngle = 0.45f;
     [Range(0, 5)]
     [SerializeField] float _value = 0.0f;
     [SerializeField] float _hight = 0.0f;
@@ -84,7 +80,6 @@ public class Throw : MonoBehaviour, IInteractable
 
         else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
         {
-            //Throwing(interactor);
             StartCoroutine(Throwing(interactor));
             interactor.player.isCarry = false;
             return true;
@@ -96,10 +91,12 @@ public class Throw : MonoBehaviour, IInteractable
     private void CheckRay()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, -transform.up, out hit, 0.2f)
-            && (!hit.transform.gameObject.CompareTag("Player")
-                && !hit.transform.gameObject.CompareTag("PassCollision")
-                && hit.transform.gameObject.layer != 5))
+        bool bRangeHit = Physics.Raycast(transform.position, -transform.up, out hit, 0.2f);
+        bool bTagHit = !hit.transform.gameObject.CompareTag("Player")
+            && !hit.transform.gameObject.CompareTag("PassCollision");
+        bool bLayerHit = hit.transform.gameObject.layer != 5;
+
+        if (bRangeHit && bTagHit && bLayerHit)
         {
             rigidbody.velocity = Vector3.zero;
             if (_animator != null)
@@ -115,28 +112,28 @@ public class Throw : MonoBehaviour, IInteractable
         }
     }
 
-    private void FixedUpdate()
+    private void PhyscisChecking()
     {
-        if(Input.GetKeyDown(KeyCode.K))
-            ResetPoint();
-        //UnityEngine.Debug.DrawRay(transform.position, _playerInteractionPoint.transform.forward * 10, Color.red);
         if (PhysicsCheck)
         {
-            //UnityEngine.Debug.DrawRay(transform.position, -transform.up * 2f, Color.red);
-            //CheckRay();
             rigidbody.velocity += Physics.gravity * .05f;
         }
         if (flight)
         {
             this.transform.RotateAround(center.transform.position, -Forward, (speed * Time.deltaTime));
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if(Input.GetKeyDown(KeyCode.K))
+            ResetPoint();
+        PhyscisChecking();
         CheckVelocity();
-        //CheckRay();
     }
 
     IEnumerator Pickup()
     {
-        //Debug.Log(GetComponent<BoxCollider>().center);
         transform.SetParent(_playerEquipPoint.transform);
         transform.position = new Vector3(_playerInteractionPoint.transform.position.x, Player.Instance.transform.position.y, _playerInteractionPoint.transform.position.z) ;
         transform.rotation = Quaternion.identity;
@@ -257,20 +254,10 @@ public class Throw : MonoBehaviour, IInteractable
 
     private void OnCollisionEnter(Collision collision)
     {
-        //if(collision.gameObject.CompareTag())
-        //if (!collision.gameObject.CompareTag("PassCollision") &&
-        //    !collision.gameObject.CompareTag("Player"))
-        //{
+        bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
+            !collision.gameObject.CompareTag("Player");
 
-        //    //Debug.Log(collision.gameObject.name);
-        //    flight = false;
-        //    GetComponent<Rigidbody>().velocity = Vector3.zero;
-        //    GetComponent<Rigidbody>().useGravity = true;
-        //    GetComponent<Rigidbody>().freezeRotation = false;
-        //}
-
-        if (!collision.gameObject.CompareTag("PassCollision") &&
-            !collision.gameObject.CompareTag("Player"))
+        if (bTagHit)
         {
             flight = false;
             PhysicsCheck = false;
@@ -278,7 +265,6 @@ public class Throw : MonoBehaviour, IInteractable
             if (_animator != null)
             {
                 _animator.SetTrigger("Grounded");
-                transform.rotation = Quaternion.identity;
                 rigidbody.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
             }
             else
