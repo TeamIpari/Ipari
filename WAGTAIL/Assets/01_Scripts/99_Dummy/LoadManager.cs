@@ -50,10 +50,11 @@ public class LoadManager : Singleton<LoadManager>
     public ChapterScript Dic_Say;
     public List<Scriptable> ChapterSay = new List<Scriptable>();
 
+    public bool isSpeedUp = false;
 
 
     bool isTypingEnd = false;   // 치고 있는 상태인가?
-    float time = 0;
+    public float time = 0;
     int dialogNum;
     public float StandardTime;
     int FastForTime;
@@ -165,8 +166,6 @@ public class LoadManager : Singleton<LoadManager>
 
     public void PlayTyping()
     {
-        //if(tmp == null)
-
         if (isTypingEnd)        
         {
             if (TmpNum == 0)
@@ -180,6 +179,8 @@ public class LoadManager : Singleton<LoadManager>
             Tmps[TmpNum].enabled = true;
             Tmps[TmpNum].text = "";
             Debug.Log("TmpNum = " + TmpNum + "// Dialong = " + dialogNum);
+            if (dialogNum >= ChapterSay.Count)
+                dialogNum = 0;
             StartCoroutine(TypingCo(ChapterSay[dialogNum]));
         }
         else
@@ -214,7 +215,7 @@ public class LoadManager : Singleton<LoadManager>
             if(time >= 0)
             {
                 yield return null;
-                time -= Time.deltaTime;
+                time -= isSpeedUp ? Time.deltaTime * 100f : Time.deltaTime;
             }
             else
             {

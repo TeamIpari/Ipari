@@ -91,10 +91,12 @@ public class Throw : MonoBehaviour, IInteractable
     private void CheckRay()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, -transform.up, out hit, 0.2f)
-            && (!hit.transform.gameObject.CompareTag("Player")
-                && !hit.transform.gameObject.CompareTag("PassCollision")
-                && hit.transform.gameObject.layer != 5))
+        bool bRangeHit = Physics.Raycast(transform.position, -transform.up, out hit, 0.2f);
+        bool bTagHit = !hit.transform.gameObject.CompareTag("Player")
+            && !hit.transform.gameObject.CompareTag("PassCollision");
+        bool bLayerHit = hit.transform.gameObject.layer != 5;
+
+        if (bRangeHit && bTagHit && bLayerHit)
         {
             rigidbody.velocity = Vector3.zero;
             if (_animator != null)
@@ -110,10 +112,8 @@ public class Throw : MonoBehaviour, IInteractable
         }
     }
 
-    private void FixedUpdate()
+    private void PhyscisChecking()
     {
-        if(Input.GetKeyDown(KeyCode.K))
-            ResetPoint();
         if (PhysicsCheck)
         {
             rigidbody.velocity += Physics.gravity * .05f;
@@ -122,6 +122,13 @@ public class Throw : MonoBehaviour, IInteractable
         {
             this.transform.RotateAround(center.transform.position, -Forward, (speed * Time.deltaTime));
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if(Input.GetKeyDown(KeyCode.K))
+            ResetPoint();
+        PhyscisChecking();
         CheckVelocity();
     }
 
@@ -247,8 +254,10 @@ public class Throw : MonoBehaviour, IInteractable
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!collision.gameObject.CompareTag("PassCollision") &&
-            !collision.gameObject.CompareTag("Player"))
+        bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
+            !collision.gameObject.CompareTag("Player");
+
+        if (bTagHit)
         {
             flight = false;
             PhysicsCheck = false;
