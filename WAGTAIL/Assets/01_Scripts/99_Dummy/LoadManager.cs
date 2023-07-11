@@ -200,11 +200,6 @@ public class LoadManager : Singleton<LoadManager>
         }
     }
 
-    private void GetTyping()
-    {
-
-    }
-
     private IEnumerator TypingCo(Scriptable sc)
     {
         int dialogNum = 0;          // 몇 번째 문장 실행 중.
@@ -245,103 +240,4 @@ public class LoadManager : Singleton<LoadManager>
             yield break;
         }
     }
-
-    //public float timeForCharacter;
-
-    //public float timeForCharacter_Fast;
-
-    //[SerializeField] float characterTime;
-
-    //[SerializeField] string dialogsSave;
-    //TextMeshProUGUI tmpSave;
-
-    //public static bool isDialogEnd;
-
-    //[SerializeField] bool isTypingEnd = false;
-    //int dialogNumber = 0;
-
-    //float timer;
-
-    ///// <summary>
-    ///// 현재 스테이지가 몇 번째 스테이지에 따라 호출.
-    ///// </summary>
-    ///// <param name="i"></param>
-    //public void CallCutScene(int i)
-    //{
-        
-    //}
-
-    //public void Typing(string dialogs, TextMeshProUGUI textObj)
-    //{
-    //    isDialogEnd = false;
-    //    dialogsSave = dialogs;
-    //    tmpSave = textObj;
-    //    if(dialogNumber < dialogs.Length)
-    //    {
-    //        char[] chars = dialogs.ToCharArray(); // 받아온 다이얼 로그를 char로 변환
-    //        StartCoroutine(ITyper(chars , textObj));
-    //    }
-    //    else
-    //    {
-    //        tmpSave.text = "";
-    //        isDialogEnd = true;
-    //        dialogsSave = null;
-    //        tmpSave = null;
-    //        dialogNumber = 0;
-    //    }
-    //}
-    //IEnumerator ITyper(char[] chars, TextMeshProUGUI textObj)
-    //{
-    //    int currentChar = 0;
-    //    int charLength = chars.Length;
-    //    isTypingEnd = false;
-
-    //    while (currentChar < charLength)
-    //    {
-    //        if (timer >= 0)
-    //        {
-    //            yield return null;
-    //            timer -= Time.deltaTime;
-    //        }
-    //        else
-    //        {
-    //            textObj.text += chars[currentChar].ToString();
-    //            currentChar++;
-    //            timer = characterTime;  // 타이머 초기화
-    //        }
-    //    }
-    //    if(currentChar >= charLength)
-    //    {
-    //        isTypingEnd = true;
-    //        dialogNumber++;
-    //        yield break;
-    //    }
-    //}
-
-    //public void GetInputDown()
-    //{
-    //    if(dialogsSave != null)
-    //    {
-    //        if (isTypingEnd)
-    //        {
-    //            tmpSave.text = "";
-    //            Typing(dialogsSave, tmpSave);
-    //        }
-    //        else
-    //        {
-    //            characterTime = timeForCharacter_Fast; // 빠른 문장으로 넘김.
-    //            Debug.Log(characterTime);
-    //        }
-    //    }
-    //}
-
-    //public void GetInputUp()
-    //{
-    //    // 인풋이 끝나면?
-    //    if(dialogsSave != null)
-    //    {
-    //        characterTime = timeForCharacter;
-    //    }
-    //}
-
 }
