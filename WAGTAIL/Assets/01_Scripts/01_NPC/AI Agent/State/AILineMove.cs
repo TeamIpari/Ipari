@@ -5,10 +5,6 @@ using System.Drawing;
 using UnityEditor.Rendering;
 using UnityEngine;
 
-/// <summary>
-/// 작성자 : 성지훈
-/// 추가 작성
-/// </summary>
 public class AILineMove : AIState
 {
     // 일정 방향으로 직선으로 움직이는 기능을 가지고 있음. 

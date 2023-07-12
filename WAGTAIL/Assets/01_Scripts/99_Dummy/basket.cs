@@ -4,10 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-/// <summary>
-/// 작성자: 성지훈
-/// 추가 작성
-/// </summary>
+
 public class basket : MonoBehaviour
 {
     public int TargetCount;

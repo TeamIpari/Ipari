@@ -4,10 +4,7 @@ using System.Runtime.ExceptionServices;
 using UnityEngine;
 
 
-/// <summary>
-/// 작성자: 성지훈
-/// 추가 작성
-/// </summary>
+
 public enum STATES
 {
     IDLE,

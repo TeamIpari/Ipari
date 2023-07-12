@@ -4,10 +4,6 @@ using System.Runtime.ExceptionServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
-/// <summary>
-/// 작성자: 성지훈
-/// 추가 작성
-/// </summary>
 
 public class Lift : MonoBehaviour
 {

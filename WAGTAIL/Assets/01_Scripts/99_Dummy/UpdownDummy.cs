@@ -1,10 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// 작성자: 성지훈
-/// 추가 작성
-/// </summary>
+
 public class UpdownDummy : MonoBehaviour
 {
     // 주기적으로 오브젝트를 올려주는 오브젝트

@@ -120,7 +120,7 @@ public class Throw : MonoBehaviour, IInteractable
         }
         if (flight)
         {
-            this.transform.RotateAround(center.transform.position, -Forward, (speed * Time.deltaTime));
+            this.transform.RotateAround(center.transform.position, Forward, (speed * Time.deltaTime));
         }
     }
 

@@ -7,10 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Timeline;
 
-/// <summary>
-/// 작성자 : 성지훈
-/// 추가 작성
-/// </summary>
+
 public class DummyAttack2 : AIState
 {
     private float curTimer = 0;
