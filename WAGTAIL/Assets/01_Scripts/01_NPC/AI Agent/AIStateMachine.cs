@@ -6,10 +6,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-/// <summary>
-/// 작성자 : 성지훈
-/// 추가 작성
-/// </summary>
+
+
 public class AIStateMachine
 {
     public NPCBase NPCBase;

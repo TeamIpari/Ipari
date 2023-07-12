@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 4424818259693503730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7.75, y: 0, z: 15.869999}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.1081986, y: 2.1081986, z: 2.1081986}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4243136034765108890}
@@ -121,6 +121,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4771982769161545580, guid: d5cbca30dde5893418fdc3f8ba6862fb,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a21960eb3a44fde4a950b5022d96d777, type: 2}
     - target: {fileID: -4593130486874181694, guid: d5cbca30dde5893418fdc3f8ba6862fb,
         type: 3}
       propertyPath: m_TagString
@@ -130,6 +135,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BigMushroom2
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5cbca30dde5893418fdc3f8ba6862fb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5cbca30dde5893418fdc3f8ba6862fb, type: 3}
@@ -172,20 +182,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4424818258753210718}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &4424818259355690323
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9019004622613587612}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8245426573784773463, guid: d5cbca30dde5893418fdc3f8ba6862fb, type: 3}
 --- !u!114 &4424818259355690320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,13 +194,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8db24aadc574d84384e780bcddd686d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JumpHeight: 5
+  JumpHeight: 2.65
   mushroom: {fileID: 4424818259693503728}
   Curtime: 0
   lowPos: {fileID: 0}
   heightPos: {fileID: 0}
   targetPos: {x: 0, y: 0, z: 0}
   MoveTime: 0
+--- !u!65 &4961143207182344390
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9019004622613587612}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.6850905, y: 1.0472854, z: 2.7039235}
+  m_Center: {x: -0.0034165962, y: 3.2401433, z: -0.053191736}
 --- !u!1001 &4424818259451717921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -267,6 +276,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4771982769161545580, guid: e5febb9fd3dd6784ca9d3007411912ec,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a21960eb3a44fde4a950b5022d96d777, type: 2}
     - target: {fileID: -4593130486874181694, guid: e5febb9fd3dd6784ca9d3007411912ec,
         type: 3}
       propertyPath: m_TagString
@@ -276,6 +290,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BigMushroom
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e5febb9fd3dd6784ca9d3007411912ec,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5febb9fd3dd6784ca9d3007411912ec, type: 3}
@@ -339,7 +358,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9019004621910230755}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8db24aadc574d84384e780bcddd686d, type: 3}
   m_Name: 
@@ -413,6 +432,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4771982769161545580, guid: 93697c2d287190c47a3a9c42115adbca,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a21960eb3a44fde4a950b5022d96d777, type: 2}
     - target: {fileID: -4593130486874181694, guid: 93697c2d287190c47a3a9c42115adbca,
         type: 3}
       propertyPath: m_TagString
@@ -422,6 +446,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Mushroom2
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 93697c2d287190c47a3a9c42115adbca,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93697c2d287190c47a3a9c42115adbca, type: 3}
@@ -464,8 +493,8 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4424818259536988945}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &4424818258213102050
-MeshCollider:
+--- !u!65 &904434658
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -474,10 +503,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8245426573784773463, guid: 93697c2d287190c47a3a9c42115adbca, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 2.561135, y: 2.7063408, z: 0.8498779}
+  m_Center: {x: -0.011573747, y: 0.08388659, z: 2.5817423}
 --- !u!114 &4424818258213102051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,7 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8db24aadc574d84384e780bcddd686d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JumpHeight: 5
+  JumpHeight: 2.65
   mushroom: {fileID: 4424818259693503728}
   Curtime: 0
   lowPos: {fileID: 0}
@@ -559,6 +587,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4771982769161545580, guid: a2ce036a0f6ab344cbb4b88ab672bf6d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a21960eb3a44fde4a950b5022d96d777, type: 2}
     - target: {fileID: -4593130486874181694, guid: a2ce036a0f6ab344cbb4b88ab672bf6d,
         type: 3}
       propertyPath: m_TagString
@@ -568,6 +601,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Mushroom
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a2ce036a0f6ab344cbb4b88ab672bf6d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2ce036a0f6ab344cbb4b88ab672bf6d, type: 3}
@@ -631,7 +669,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9019004621727792819}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8db24aadc574d84384e780bcddd686d, type: 3}
   m_Name: 

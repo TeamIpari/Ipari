@@ -5,10 +5,6 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// 작성자 : 성지훈
-/// 추가 작성
-/// </summary>
 public class AIIdleState : AIState
 {
     /// <summary>
