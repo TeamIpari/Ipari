@@ -35,6 +35,7 @@ public class basket : MonoBehaviour
                 {
                     if (TargetCount >= 0)
                     {
+                        _throw.gameObject.layer = 0;
                         //_throw.enabled = false;
                         Debug.Log(other.name);
                         TargetCount--;
