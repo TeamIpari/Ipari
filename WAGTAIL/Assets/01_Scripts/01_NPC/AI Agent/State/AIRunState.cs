@@ -1,12 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Cryptography;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class AIRunState : AIState
@@ -36,14 +27,11 @@ public class AIRunState : AIState
     public override void Enter()
     {
         stateMachine.NPCBase.stateName = "Run";
-        //destination
 
     }
 
     public override void Exit()
     {
-        //stateMachine.NPCBase.stateName = "None";
-        //Debug.Log("End AI Run State");
         destination = Vector3.zero;
     }
 

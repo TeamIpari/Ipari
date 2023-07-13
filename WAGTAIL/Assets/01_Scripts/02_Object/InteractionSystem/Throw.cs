@@ -1,11 +1,6 @@
 using System;
 using System.Collections;
-using System.Net;
-using Unity.VisualScripting;
-using UnityEditor.TerrainTools;
-//using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.Animations;
 
 public class Throw : MonoBehaviour, IInteractable
 {
