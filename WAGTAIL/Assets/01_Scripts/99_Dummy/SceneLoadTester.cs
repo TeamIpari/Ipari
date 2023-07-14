@@ -10,7 +10,6 @@ public class SceneLoadTester : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))
         {
             SceneLoader.GetInstance().LoadScene("SceneLoadTest");
-            //UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
         }
     }
 }

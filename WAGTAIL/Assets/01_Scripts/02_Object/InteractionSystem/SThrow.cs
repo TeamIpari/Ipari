@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
-using UnityEngine.UIElements;
-
 
 public class SThrow : MonoBehaviour, IInteractable
 {

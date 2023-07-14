@@ -1,11 +1,6 @@
-using Cinemachine.Utility;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
-//using UnityEditor.SceneTemplate;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 
 public class DummyAttack2 : AIState
