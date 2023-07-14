@@ -1,12 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-
-
 
 public class AIStateMachine
 {
@@ -81,8 +77,6 @@ public class AIStateMachine
         {
             cur = 0;
         }
-        //cur++;
-        //Debug.Log("cur = " + cur.ToString() + " / patton = " + pattern.Count.ToString());
         ChangeState(Pattern[cur]);
 
     }
