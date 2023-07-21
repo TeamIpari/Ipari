@@ -68,7 +68,6 @@ public class Pulling : MonoBehaviour, IInteractable
 
     public bool GetDistance()
     {
-       // Debug.Log(Vector3.Distance(Player.Instance.transform.position, _shatterObject.transform.position)/* > minDistance*/);
         if (Vector3.Distance(Player.Instance.transform.position, _shatterObject.transform.position) > minDistance)
         {
             return false;
@@ -77,31 +76,9 @@ public class Pulling : MonoBehaviour, IInteractable
         return true;
     }
 
-    //private void Update()
-    //{
-        
-    //}
-
-    //private void LateUpdate()
-    //{
-
-    //}
-
     void AngleCheck(Player player)
     {
         player.transform.rotation = Quaternion.Euler(0, 0, 0);
-
-        //if (player.transform.rotation.eulerAngles.y < 45f
-        //        && player.transform.rotation.eulerAngles.y > -45f)
-        //{
-        //}
-        //else if (player.transform.rotation.eulerAngles.y > 45f
-        //    && player.transform.rotation.eulerAngles.y < 135f)
-        //{
-        //    player.transform.rotation = Quaternion.Euler(0, 90, 0);
-        //}
-        //else if (player.transform.rotation.eulerAngles.y > 135
-        //    && player.transform.rotation.eulerAngles.y )
 
 
     }
