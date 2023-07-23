@@ -9,6 +9,11 @@ public class Node : MonoBehaviour
     public GameObject _next;
     public Vector3 __next;
 
+    public float minDistance = 1f;
+
+    private bool isPrev = false;
+    private bool isNext = false;
+
     public bool _useNode;
     public float halfsize_1 = 0;
     public float halfsize_2 = 0;
@@ -16,14 +21,38 @@ public class Node : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _useNode = false;
         halfsize_1 = Calcsize();
+        isPrev = _prev == null ? false : true;
+        isNext = _next == null ? false : true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        NodeSlerp();
+        if(GetComponent<Rigidbody>() != null)   
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+        NodeSlerp_2();
+    }
+
+    private void NodeSlerp_2()
+    {
+        //if(_useNode)
+        //{
+        //    return;
+        //}
+        if (isPrev && Distance(_prev.transform))
+        {
+            _prev?.GetComponent<Node>().PrevSlerp();
+        }
+        if (isNext && Distance(_next.transform))
+        {
+            _next?.GetComponent<Node>().NextSlerp();
+        }
+    }
+
+    private bool Distance(Transform target)
+    {
+        return Vector3.Distance(transform.position, target.transform.position) > minDistance ? true : false;        
     }
     
     public void NodeSlerp_1()
@@ -41,22 +70,49 @@ public class Node : MonoBehaviour
 
     public void PrevSlerp()
     {
-        if (_parent.GetComponent<LinearInterpolation>()._HeadRope != this.gameObject)
+        try
         {
-            transform.position
-                = Vector3.Lerp(_prev.transform.position, _next.transform.position, 0.5f);
-            _prev?.GetComponent<Node>().PrevSlerp();
+            //if (_parent.GetComponent<LinearInterpolation>()._HeadRope != this.gameObject)
+            if (isPrev)
+            {
+                transform.position
+                    = Vector3.Lerp(_prev.transform.position, _next.transform.position, 0.5f);
+                _prev?.GetComponent<Node>().PrevSlerp();
+            }
+            else if(!_useNode)
+            {
+                transform.position = Vector3.Lerp(transform.position, _next.transform.position, 0.5f);
+            }
+        }
+        catch
+        {
+            //Debug.Log("_prev" + _prev.name);
+            //Debug.Log("_next" + _next.name);
         }
     }
 
     public void NextSlerp()
     {
-        if (_parent.GetComponent<LinearInterpolation>()._TailRope != this.gameObject)
-        {  
-            // ÈÖ´Â ±â´É
-            transform.position
-                = Vector3.Lerp(_next.transform.position, _prev.transform.position, 0.5f);
-            _next?.GetComponent<Node>().NextSlerp();
+        try
+        {
+            //if (_parent.GetComponent<LinearInterpolation>()._TailRope != this.gameObject)
+            if (isNext)
+            {
+                // ÈÖ´Â ±â´É
+                transform.position
+                    = Vector3.Lerp(_next.transform.position, _prev.transform.position, 0.5f);
+                _next?.GetComponent<Node>().NextSlerp();
+            }
+            else if (!_useNode)
+            {
+                //Debug.Log("AA");
+                transform.position = Vector3.Lerp(_prev.transform.position, transform.position, 0.5f);
+            }
+        }
+        catch
+        {
+            //Debug.Log(_prev.name);
+            //Debug.Log(_next.name);
         }
     }
 

@@ -14,15 +14,15 @@ public class RotAround : MonoBehaviour, IEnviroment
     [Space(10f)]
     [Header("Create Rot Around Objects")]
     [Range(3, 30)]
-    public int polygon = 3;
-    public float size = 1.0f;
-    public Vector3 offset = new Vector3(0, 0, 0);
+    public int Polygon = 3;
+    public float CircleSize = 1.0f;
+    public Vector3 Offset = new Vector3(0, 0, 0);
     public GameObject CreateObj1;
     public GameObject CreateObj2;
 
     [SerializeField] List<GameObject> objs = new List<GameObject>();
     //Mesh mesh;
-    Vector3[] vertices;
+    [SerializeField] Vector3[] vertices;
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
@@ -40,7 +40,7 @@ public class RotAround : MonoBehaviour, IEnviroment
         if (Center == null)
             Center = this.transform;
 
-        setMeshData(size, polygon);
+        setMeshData(CircleSize, Polygon);
     }
 
     // Update is called once per frame
@@ -162,13 +162,13 @@ public class RotAround : MonoBehaviour, IEnviroment
 
         vertices = new Vector3[polygon + 1];
 
-        vertices[0] = new Vector3(0, 0, 0) + offset;
+        vertices[0] = new Vector3(0, 0, 0) + Offset;
         for (int i = 1; i <= polygon; i++)
         {
             float angle = -i * (Mathf.PI * 2.0f) / polygon;
 
             vertices[i]
-                = (new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * size) + offset;
+                = (new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * size) + Offset;
 
             if (CreateObj2 != null)
                 CreateObj = i % 2 == 1 ? CreateObj1 : CreateObj2;
