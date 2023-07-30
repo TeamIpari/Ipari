@@ -26,7 +26,6 @@ public class RotAround : MonoBehaviour, IEnviroment
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
-
     public bool IsHit { get; set; }
     public bool Rot = false;
     public bool Interact()
@@ -34,12 +33,12 @@ public class RotAround : MonoBehaviour, IEnviroment
         Rot = true;
         return false;
     }
+
     // Start is called before the first frame update
     private void Start() 
     {
         if (Center == null)
             Center = this.transform;
-
         setMeshData(CircleSize, Polygon);
     }
 
@@ -85,72 +84,6 @@ public class RotAround : MonoBehaviour, IEnviroment
         Player.Instance.transform.RotateAround(Center.position, Vector3.up, (temp * Time.deltaTime));
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        try
-        {
-            if (other.gameObject.CompareTag("Player"))
-            {
-                Interactor inter = other.GetComponent<Interactor>();
-                inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(this.transform);
-            }
-        }
-        catch
-        {
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        try
-        {
-            if (other.gameObject.CompareTag("Player"))
-            {
-
-                // Player tag를 가진 GameObject는 interactor를 가지고 있습니다.
-            }
-        }
-        catch
-        {
-        }
-    }
-
-
-    private void OnTriggerExit(Collider other)
-    {
-        try
-        {
-            if (other.gameObject.CompareTag("Player"))
-            {
-                Interactor inter = other.GetComponent<Interactor>();
-                inter.player.currentInteractable.GetComponent<SThrow>().SetPosHeight(null);
-
-            }
-        }
-        catch
-        {
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        try
-        {
-            // 탄환이 적중하였을 때... 움직임을 정지하고 tag를 변경, 시킬 예정.
-            if (collision.gameObject.CompareTag("interactable"))
-            {
-                collision.gameObject.GetComponent<SThrow>().Throwing();
-                collision.gameObject.transform.parent = this.transform;
-                if (transform.childCount < 3)
-                {
-                    Speed += AddGravity;
-                }
-            }
-        }
-        catch
-        {
-        }
-    }
     void setMeshData(float size, int polygon)
     {
         GameObject CreateObj;
