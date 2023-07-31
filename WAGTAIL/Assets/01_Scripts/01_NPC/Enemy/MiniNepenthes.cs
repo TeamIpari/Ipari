@@ -14,17 +14,19 @@ public class MiniNepenthes : Enemy
 
         AiIdle = new NepenthesIdleState(AiSM);
         AiAttack = new NepenthesAttackState(AiSM);
+
         AiSM.Initialize(AiIdle);
-        
 
-
-
+        AttackTimer = 0;
     }
+
 
     // Update is called once per frame
     void Update()
     {
+        isAttack();
         if (AiSM != null)
             AiSM.CurrentState.Update();
+        
     }
 }

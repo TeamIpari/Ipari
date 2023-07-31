@@ -9,13 +9,38 @@ public class Character : MonoBehaviour
 
     public float MoveSpeed;
 
+    public float AttackRange;
+    public float AttackRate;
+    protected float AttackTimer;
+
     // State Machine
     public AIStateMachine AiSM;
 
-    // 관리하에 있는 States
-    //public AIIdleStateDummy
+    // States 
+    public AIIdleState AiIdle;
+    public AIAttackState AiAttack;
+    public AIMoveState AiMove;
 
 
+
+    public virtual bool isAttack()
+    {
+        if (AttackTimer < AttackRate)
+        {
+            //Debug.Log("AA");
+            AttackTimer += Time.deltaTime;
+
+            return false;
+        }
+        //Debug.Log("BB");
+        // 공격 가능 상태
+        return true;
+    }
+
+    public void AttackTimerReset()
+    {
+        AttackTimer = 0;
+    }
 
 
 

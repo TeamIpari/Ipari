@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.XR.Haptics;
 
 public class NepenthesIdleState : AIIdleState
 {
@@ -55,7 +56,7 @@ public class NepenthesIdleState : AIIdleState
         if (isSearch)
         {
             stateMachine.Transform.LookAt(new Vector3(Target.transform.position.x, stateMachine.Transform.position.y, Target.transform.position.z));
-
+            stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
         }
         else
         {
