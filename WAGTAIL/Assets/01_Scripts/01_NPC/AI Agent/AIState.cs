@@ -8,6 +8,7 @@ public abstract class AIState
     public AIStateMachine stateMachine;
     public AIState parent;
     public List<AIState> children = new List<AIState>();
+    public GameObject Target;
     public int current;
     public AIState(AIStateMachine stateMachine)
     {
