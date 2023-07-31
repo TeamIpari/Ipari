@@ -72,7 +72,6 @@ public class Node : MonoBehaviour
     {
         try
         {
-            //if (_parent.GetComponent<LinearInterpolation>()._HeadRope != this.gameObject)
             if (isPrev)
             {
                 transform.position
@@ -86,8 +85,7 @@ public class Node : MonoBehaviour
         }
         catch
         {
-            //Debug.Log("_prev" + _prev.name);
-            //Debug.Log("_next" + _next.name);
+
         }
     }
 
@@ -95,7 +93,6 @@ public class Node : MonoBehaviour
     {
         try
         {
-            //if (_parent.GetComponent<LinearInterpolation>()._TailRope != this.gameObject)
             if (isNext)
             {
                 // ÈÖ´Â ±â´É
@@ -105,14 +102,11 @@ public class Node : MonoBehaviour
             }
             else if (!_useNode)
             {
-                //Debug.Log("AA");
                 transform.position = Vector3.Lerp(_prev.transform.position, transform.position, 0.5f);
             }
         }
         catch
         {
-            //Debug.Log(_prev.name);
-            //Debug.Log(_next.name);
         }
     }
 

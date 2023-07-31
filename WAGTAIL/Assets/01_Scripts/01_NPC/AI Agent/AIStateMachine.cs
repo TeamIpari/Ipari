@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class AIStateMachine
 {
-    public NPCBase NPCBase;
+    public Character character;
     public Transform Transform;
     public Animator Animator;
     public Rigidbody Physics;
@@ -27,7 +27,7 @@ public class AIStateMachine
     public static AIStateMachine CreateFormGameObject(GameObject gameObject)
     {
         AIStateMachine ai = new AIStateMachine();
-        ai.NPCBase = gameObject.GetComponent<NPCBase>() ;
+        //ai.NPCBase = gameObject.GetComponent<NPCBase>() ;
         ai.Transform = gameObject.transform;
         ai.Animator = gameObject.GetComponent<Animator>();
         ai.Physics = gameObject.GetComponent<Rigidbody>();
@@ -43,8 +43,6 @@ public class AIStateMachine
     public void Initialize(AIState startState)
     {
         CurrentState = startState;
-        //pauseTimer = 1f;
-        //currentTime = 0f;
         Pattern.Clear();
         cur = 0;
 
