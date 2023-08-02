@@ -16,6 +16,9 @@ public class CutScene : MonoBehaviour
     public bool ISText;
     public bool isSpeedUp = false;
 
+    private float colorValue = 255;
+
+
     private bool IsCutScene;
     private int sceneCount;
 
@@ -25,6 +28,8 @@ public class CutScene : MonoBehaviour
         HideCutScenes();
         IsCutScene = true;
         sceneCount = 0;
+        colorValue = 255;
+        colorCurve = -51f;
     }
 
     // Start is called before the first frame update
@@ -44,6 +49,9 @@ public class CutScene : MonoBehaviour
         Time.timeScale = Input.GetKey("space") ? 3.0f : 1f;
         LoadManager.GetInstance().isSpeedUp = Input.GetKey("space") ? true : false;
     }
+
+    private float colorTimer = 0f;
+    private float colorCurve = -51f;
 
     private void SceneChange()
     {
@@ -67,6 +75,13 @@ public class CutScene : MonoBehaviour
                 if (TextViewer != null)
                     LoadManager.GetInstance().PlayTyping();
             }
+        }
+        
+        // 글자를 점점 사라지게 하는 기능.
+        if(sceneCount >= cutScenes.Length)
+        {
+            colorValue -= Time.deltaTime * (255f / 5f);
+            TextViewer.color = new Color32((byte)(colorValue), (byte)(colorValue), (byte)(colorValue), (byte)colorValue);
         }
     }
 
