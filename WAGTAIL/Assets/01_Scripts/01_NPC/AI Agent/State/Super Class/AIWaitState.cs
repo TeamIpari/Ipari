@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AIAttackState : AIState
+public abstract class AIWaitState : AIState
 {
-    public AIAttackState(AIStateMachine stateMachine) : base(stateMachine)
+    public AIState NextState;
+
+    public AIWaitState(AIStateMachine stateMachine) : base(stateMachine)
     {
     }
 
@@ -26,6 +28,11 @@ public abstract class AIAttackState : AIState
     public override void Update()
     {
         throw new System.NotImplementedException();
+    }
+
+    public virtual void SetNextState(AIState nextState)
+    {
+        NextState = nextState;
     }
 
 }

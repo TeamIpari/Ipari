@@ -44,11 +44,12 @@ public class NepenthesAttackState : AIAttackState
     public override void Update()
     {
         //base.Update();
-        Debug.Log("공겨어어어어억!");
         if(AttackCheck())
         {
             stateMachine.character.AttackTimerReset();
-            stateMachine.ChangeState(stateMachine.character.AiIdle);
+            stateMachine.character.CAttack();
+            stateMachine.character.AiWait.SetNextState(stateMachine.character.AiIdle);
+            stateMachine.ChangeState(stateMachine.character.AiWait);
         }
     }
 
