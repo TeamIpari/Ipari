@@ -11,6 +11,7 @@ public class Character : MonoBehaviour
 
     public float AttackRange;
     public float AttackRate;
+    public float WaitRate;
     protected float AttackTimer;
 
     // State Machine
@@ -20,10 +21,11 @@ public class Character : MonoBehaviour
     public AIIdleState AiIdle;
     public AIAttackState AiAttack;
     public AIMoveState AiMove;
+    public AIWaitState AiWait;
 
 
 
-    public virtual bool isAttack()
+    public bool isAttack()
     {
         if (AttackTimer < AttackRate)
         {
@@ -35,6 +37,11 @@ public class Character : MonoBehaviour
         //Debug.Log("BB");
         // 공격 가능 상태
         return true;
+    }
+
+    public virtual void CAttack()
+    {
+
     }
 
     public void AttackTimerReset()

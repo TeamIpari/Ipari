@@ -40,7 +40,7 @@ public class NepenthesIdleState : AIIdleState
             {
                 if (cols[i].CompareTag("Player"))
                 {
-                    Target = cols[i].gameObject;
+                    stateMachine.Target = cols[i].gameObject;
                     isSearch = true;
                     return true;
                 }
@@ -55,7 +55,7 @@ public class NepenthesIdleState : AIIdleState
         base.Update();
         if (isSearch)
         {
-            stateMachine.Transform.LookAt(new Vector3(Target.transform.position.x, stateMachine.Transform.position.y, Target.transform.position.z));
+            stateMachine.Transform.LookAt(new Vector3(stateMachine.Target.transform.position.x, stateMachine.Transform.position.y, stateMachine.Target.transform.position.z));
             stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
         }
         else

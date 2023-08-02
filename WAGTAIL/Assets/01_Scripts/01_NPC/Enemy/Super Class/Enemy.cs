@@ -5,6 +5,9 @@ using UnityEngine;
 public class Enemy : Character
 {
 
-    
-    
+    public override void CAttack()
+    {
+        base.CAttack();
+    }
+
 }

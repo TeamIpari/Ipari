@@ -11,12 +11,13 @@ public class CutScene : MonoBehaviour
     public TextMeshProUGUI TextViewer;
     public Transform[] cuts;
 
-    private bool IsCutScene;
     public bool IsIntro;
+    public int SayType;
     public bool ISText;
     public bool isSpeedUp = false;
 
-    public int sceneCount;
+    private bool IsCutScene;
+    private int sceneCount;
 
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class CutScene : MonoBehaviour
         if (IsIntro)
         {
             PlayCutScene();
+            LoadManager.GetInstance().IO_GetScriptable(SayType);
             LoadManager.GetInstance().TmpSet(TextViewer);
             LoadManager.GetInstance().PlayTyping();
         }
