@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-9164013981506647967
+--- !u!114 &-9212932706179060943
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10,43 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/SFX.bank
+  m_Name: bank:/Master.strings.bank
   m_EditorClassIdentifier: 
-  Path: Assets/FMod/IpariAudio/Build/Desktop/SFX.bank
-  Name: SFX
-  StudioPath: bank:/SFX
-  lastModified: 638266395604828897
+  Path: ../../IpariFMOD/IpariAudio/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 638267746005519834
   FileSizes:
   - Name: Desktop
-    Value: 1145888
+    Value: 1892
   Exists: 1
---- !u!114 &-9161939351211237613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/Tavuti_ingame2
-  m_EditorClassIdentifier: 
-  Path: event:/BGM/Tavuti_ingame2
-  Guid:
-    Data1: 1172652772
-    Data2: 1096849244
-    Data3: 1626328197
-    Data4: 1334314980
-  Banks:
-  - {fileID: -613734373820235904}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 110248
 --- !u!114 &-6798952750526602233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,7 +39,7 @@ MonoBehaviour:
     Data3: 327143578
     Data4: 974880928
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -93,7 +66,7 @@ MonoBehaviour:
     Data3: -1850851651
     Data4: 1549350424
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -101,7 +74,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 2063
---- !u!114 &-5173233469188526964
+--- !u!114 &-5874241669103714710
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -111,16 +84,43 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.strings.bank
+  m_Name: bank:/BGM.bank
   m_EditorClassIdentifier: 
-  Path: Assets/FMod/IpariAudio/Build/Desktop/Master.strings.bank
-  Name: Master.strings
-  StudioPath: bank:/Master.strings
-  lastModified: 638265324121511489
+  Path: ../../IpariFMOD/IpariAudio/Build/Desktop/BGM.bank
+  Name: BGM
+  StudioPath: bank:/BGM
+  lastModified: 638267746005484915
   FileSizes:
   - Name: Desktop
-    Value: 1804
+    Value: 10839296
   Exists: 1
+--- !u!114 &-5434048139715753575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/tavuti_ingame1
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/tavuti_ingame1
+  Guid:
+    Data1: 948676747
+    Data2: 1227712620
+    Data3: -1017469557
+    Data4: -1232547804
+  Banks:
+  - {fileID: -5874241669103714710}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 109122
 --- !u!114 &-5105116297782140563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
     Data3: -1546562640
     Data4: -816232933
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -167,7 +167,7 @@ MonoBehaviour:
     Data3: -1702922857
     Data4: 1738409538
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -175,6 +175,26 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-2881751703213603275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: ../../IpariFMOD/IpariAudio/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 638267743331531387
+  FileSizes:
+  - Name: Desktop
+    Value: 1340
+  Exists: 1
 --- !u!114 &-2203443509780619189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,7 +214,7 @@ MonoBehaviour:
     Data3: -766163584
     Data4: 319510773
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -221,7 +241,7 @@ MonoBehaviour:
     Data3: 144500900
     Data4: -1687243536
   Banks:
-  - {fileID: -613734373820235904}
+  - {fileID: -5874241669103714710}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
@@ -248,7 +268,7 @@ MonoBehaviour:
     Data3: -178578771
     Data4: 1052847077
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -256,7 +276,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-613734373820235904
+--- !u!114 &-967478359317666395
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -266,15 +286,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/BGM.bank
+  m_Name: bank:/SFX.bank
   m_EditorClassIdentifier: 
-  Path: Assets/FMod/IpariAudio/Build/Desktop/BGM.bank
-  Name: BGM
-  StudioPath: bank:/BGM
-  lastModified: 638264544310794291
+  Path: ../../IpariFMOD/IpariAudio/Build/Desktop/SFX.bank
+  Name: SFX
+  StudioPath: bank:/SFX
+  lastModified: 638267743340228614
   FileSizes:
   - Name: Desktop
-    Value: 3929024
+    Value: 1145888
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -289,14 +309,12 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
   EditorBanks:
-  - {fileID: -5173233469188526964}
-  - {fileID: -613734373820235904}
-  - {fileID: 3695996637443507341}
-  - {fileID: -9164013981506647967}
+  - {fileID: -9212932706179060943}
+  - {fileID: -5874241669103714710}
+  - {fileID: -2881751703213603275}
+  - {fileID: -967478359317666395}
   EditorEvents:
   - {fileID: -2147358079028692848}
-  - {fileID: 8332291563078237807}
-  - {fileID: -9161939351211237613}
   - {fileID: -5105116297782140563}
   - {fileID: 189394081147474556}
   - {fileID: 4272523165065080824}
@@ -313,12 +331,16 @@ MonoBehaviour:
   - {fileID: 1980771994715216255}
   - {fileID: 304311371414844245}
   - {fileID: -1497379590986229519}
+  - {fileID: 2102295944100262537}
+  - {fileID: -5434048139715753575}
+  - {fileID: 1610176271404922307}
+  - {fileID: 3653492775891839127}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 3695996637443507341}
+  - {fileID: -2881751703213603275}
   StringsBanks:
-  - {fileID: -5173233469188526964}
-  cacheTime: 638266395604828897
+  - {fileID: -9212932706179060943}
+  cacheTime: 638267746005519834
   cacheVersion: 131605
 --- !u!114 &189394081147474556
 MonoBehaviour:
@@ -339,7 +361,7 @@ MonoBehaviour:
     Data3: 1971146173
     Data4: -1481470806
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -366,7 +388,7 @@ MonoBehaviour:
     Data3: 388917127
     Data4: -408534711
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -393,8 +415,35 @@ MonoBehaviour:
     Data3: 218973597
     Data4: 499390499
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &1610176271404922307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/test
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/test
+  Guid:
+    Data1: -1059833457
+    Data2: 1253542699
+    Data3: -338358873
+    Data4: 775534634
+  Banks:
+  - {fileID: -5874241669103714710}
+  IsStream: 1
   Is3D: 0
   IsOneShot: 1
   Parameters: []
@@ -420,7 +469,7 @@ MonoBehaviour:
     Data3: 1226250647
     Data4: 1383568854
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 1
   Is3D: 1
   IsOneShot: 0
@@ -428,6 +477,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 68889
+--- !u!114 &2102295944100262537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/test2
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/test2
+  Guid:
+    Data1: -839459200
+    Data2: 1158110859
+    Data3: -183060576
+    Data4: 1601068035
+  Banks:
+  - {fileID: -5874241669103714710}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 323056
 --- !u!114 &2408692712108069469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,7 +523,7 @@ MonoBehaviour:
     Data3: -1760948335
     Data4: -1373955044
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -474,7 +550,7 @@ MonoBehaviour:
     Data3: 979799986
     Data4: 1160229082
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -501,7 +577,7 @@ MonoBehaviour:
     Data3: 1908183699
     Data4: -1513147371
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -509,7 +585,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &3695996637443507341
+--- !u!114 &3653492775891839127
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -518,17 +594,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.bank
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/tavuti_ingame2
   m_EditorClassIdentifier: 
-  Path: Assets/FMod/IpariAudio/Build/Desktop/Master.bank
-  Name: Master
-  StudioPath: bank:/Master
-  lastModified: 638265324121511489
-  FileSizes:
-  - Name: Desktop
-    Value: 1340
-  Exists: 1
+  Path: event:/BGM/tavuti_ingame2
+  Guid:
+    Data1: 1172652772
+    Data2: 1096849244
+    Data3: 1626328197
+    Data4: 1334314980
+  Banks:
+  - {fileID: -5874241669103714710}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 110248
 --- !u!114 &4272523165065080824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,7 +631,7 @@ MonoBehaviour:
     Data3: 1519357069
     Data4: -1122432260
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -575,7 +658,7 @@ MonoBehaviour:
     Data3: -1860747614
     Data4: 1802208756
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -602,7 +685,7 @@ MonoBehaviour:
     Data3: 693188530
     Data4: 1557820508
   Banks:
-  - {fileID: -9164013981506647967}
+  - {fileID: -967478359317666395}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -610,30 +693,3 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &8332291563078237807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/Tavuti_ingame1
-  m_EditorClassIdentifier: 
-  Path: event:/BGM/Tavuti_ingame1
-  Guid:
-    Data1: 948676747
-    Data2: 1227712620
-    Data3: -1017469557
-    Data4: -1232547804
-  Banks:
-  - {fileID: -613734373820235904}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 109122
