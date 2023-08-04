@@ -37,12 +37,13 @@ public enum FModSFXEventType
    Get_Bead = 14,
    Player_Jump = 15,
    GameOver = 16,
-   Death_CutScene = 17
+   Death_CutScene = 17,
+   Parry = 18
 }
 
 public enum FModNoGroupEventType
 {
-   No_14 = 18
+   No_14 = 19
 }
 
 public sealed class FModEventReferenceList
@@ -67,6 +68,7 @@ public sealed class FModEventReferenceList
         new FMOD.GUID{ Data1=61617350, Data2=1314310624, Data3=-766163584, Data4=319510773 },
         new FMOD.GUID{ Data1=106925798, Data2=1271508359, Data3=327143578, Data4=974880928 },
         new FMOD.GUID{ Data1=1315365849, Data2=1266621721, Data3=-1860747614, Data4=1802208756 },
+        new FMOD.GUID{ Data1=-1220480411, Data2=1248944845, Data3=952852399, Data4=-1385580044 },
         new FMOD.GUID{ Data1=-738566357, Data2=1166266538, Data3=1971146173, Data4=-1481470806 }
     };
 }
