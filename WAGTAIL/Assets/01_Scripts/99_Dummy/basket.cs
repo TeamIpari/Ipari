@@ -1,13 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
-/// <summary>
-/// 작성자: 성지훈
-/// 추가 작성
-/// </summary>
+
 public class basket : MonoBehaviour
 {
     public int TargetCount;
@@ -38,6 +32,7 @@ public class basket : MonoBehaviour
                 {
                     if (TargetCount >= 0)
                     {
+                        _throw.gameObject.layer = 0;
                         //_throw.enabled = false;
                         Debug.Log(other.name);
                         TargetCount--;

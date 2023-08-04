@@ -1,15 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 
-/// <summary>
-/// 작성자: 성지훈
-/// 추가 작성
-/// </summary>
+
 public class Trampoline : MonoBehaviour, IEnviroment
 {
 

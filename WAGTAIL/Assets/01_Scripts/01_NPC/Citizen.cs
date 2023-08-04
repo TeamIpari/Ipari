@@ -2,15 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 작성자: 성지훈
-/// 추가 작성
-/// </summary>
-public class Citizen : NPCBase
+
+public class Citizen : NPC
 {
     // State Init
     private AIStateMachine aiStateMachine;
-    private AIIdleState idle;
+    private AIIdleStateDummy idle;
     private AIPatrolState patrol;
     private AIBoundaryState boundary;
     private AIRunState run;
@@ -28,25 +25,25 @@ public class Citizen : NPCBase
     {
         aiStateMachine = AIStateMachine.CreateFormGameObject(gameObject);
 
-        idle = new AIIdleState(aiStateMachine, NextStateTimer, SearchDistance);
-        patrol = new AIPatrolState(aiStateMachine, SearchDistance);
-        boundary = new AIBoundaryState(aiStateMachine, ComeDistance, RunDistance);
-        run = new AIRunState(aiStateMachine, RunDistance, MoveSpeed);
+        //idle = new AIIdleState(aiStateMachine, NextStateTimer, SearchDistance);
+        //patrol = new AIPatrolState(aiStateMachine, SearchDistance);
+        //boundary = new AIBoundaryState(aiStateMachine, ComeDistance, RunDistance);
+        //run = new AIRunState(aiStateMachine, RunDistance, MoveSpeed);
 
-        // count == 0;
-        idle.SetChildren(patrol);
-        // count == 1;
-        idle.SetChildren(boundary);
+        //// count == 0;
+        //idle.SetChildren(patrol);
+        //// count == 1;
+        //idle.SetChildren(boundary);
 
-        boundary.SetChildren(run);
+        //boundary.SetChildren(run);
 
-        aiStateMachine.Initialize(idle);
+        //aiStateMachine.Initialize(idle);
 
     }
 
     // Update is called once per frame
     private void FixedUpdate()
     {
-        aiStateMachine.CurrentState.Update();
+        //aiStateMachine.CurrentState.Update();
     }
 }

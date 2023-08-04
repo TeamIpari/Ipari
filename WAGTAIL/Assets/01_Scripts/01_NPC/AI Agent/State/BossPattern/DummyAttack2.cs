@@ -1,16 +1,8 @@
-using Cinemachine.Utility;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
-//using UnityEditor.SceneTemplate;
 using UnityEngine;
-using UnityEngine.Timeline;
 
-/// <summary>
-/// 작성자 : 성지훈
-/// 추가 작성
-/// </summary>
+
 public class DummyAttack2 : AIState
 {
     private float curTimer = 0;

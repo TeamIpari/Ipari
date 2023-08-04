@@ -1,14 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
-using UnityEngine.UIElements;
 
-/// <summary>
-/// 작성자: 성지훈
-/// 사용하지 않을 예정 or 추후 다른 방식으로 사용 예정.
-/// </summary>
 public class SThrow : MonoBehaviour, IInteractable
 {
     public string InteractionPrompt => throw new System.NotImplementedException();

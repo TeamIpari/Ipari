@@ -1,14 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using Unity;
 using UnityEngine;
-//using UnityEditorInternal;
 
-/// <summary>
-/// 작성자 : 성지훈
-/// 추가 작성
-/// </summary>
 public class DummyAttack1 : AIState
 {
     private int curAnim = 0;

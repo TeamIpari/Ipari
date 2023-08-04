@@ -1,12 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-/// <summary>
-/// 작성자 : 성지훈
-/// 추가 작성
-/// </summary>
 public class Bridge : MonoBehaviour
 {
     [SerializeField] 

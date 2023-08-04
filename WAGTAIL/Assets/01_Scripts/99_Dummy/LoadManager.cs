@@ -1,16 +1,7 @@
-//using Mono.Cecil;
 using System.Collections;
 using System.Collections.Generic;
-//using TMPro.EditorUtilities;
 using UnityEngine;
-using System.IO;
-using Unity.VisualScripting;
 using TMPro;
-using System.Data;
-using System;
-using UnityEditor.Rendering;
-using JetBrains.Annotations;
-using System.Linq;
 
 public class LoadManager : Singleton<LoadManager>
 {
@@ -107,7 +98,6 @@ public class LoadManager : Singleton<LoadManager>
             num = ChapterNum;
         Scriptable sc;
         ChapterSay.Clear();
-        //dic_Say.TryGetValue(chapterNum, out sc);
         for (int i = 0; i < Dic_Say.Count; i++)
         {
             Dic_Say.TryGetValue(i, out sc);
