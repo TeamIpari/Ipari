@@ -6,9 +6,8 @@ public sealed class TestScript : MonoBehaviour
 {
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Parry, transform.position, 3f);
+        if(Input.GetKeyDown(KeyCode.T)){
+            FModAudioManager.PlayBGM(FModBGMEventType.test2);
         }
     }
 }
