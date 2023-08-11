@@ -12,17 +12,18 @@ public class AutoMoveLarva : MonoBehaviour
     public bool Hit = false;
     public float DamagedAnimTimer = 1.5f;
     public float timer = 0;
+
     public MovePoint MPCenter;
+    public Animator Animator;
 
 
 
     private void Start()
     {
         timer = 0;
-        //timer = DamagedAnimTimer;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (Hit)
         {
@@ -30,29 +31,44 @@ public class AutoMoveLarva : MonoBehaviour
                 timer += Time.deltaTime;
             else
             {
+
+            }
+            {
                 timer = 0;
                 Hit = false;
             }
         }
         else 
-            this.transform.RotateAround(MPCenter.transform.position, Vector3.up, (ObjSpeed * Time.deltaTime));
-        //MoveCircle();
+            this.transform.RotateAround(MPCenter.transform.position, -Vector3.up, (ObjSpeed * Time.deltaTime));
     }
 
-    public void SetUp(MovePoint Center)
+    public void SetUp(MovePoint Center, bool delay = false)
     {
         MPCenter = Center;
-        ObjSpeed = 50f;
+        ObjSpeed = Center.MoveSpeed;
         ObjSize = Center.Polygon;
         CircleR = Center.CircleSize;
         DamagedAnimTimer = Center.DamagedAnimTimer;
         Deg = 0;
+        Animator = GetComponent<Animator>();
+        if (delay && Animator != null)
+        {
+            Invoke("WalkAnimPlay", 1f);
+        }
+        else if (!delay && Animator != null)
+        {
+            WalkAnimPlay();
+        }
+    }
+
+    private void WalkAnimPlay()
+    {
+        Animator.SetTrigger("isWalk");
     }
 
     public void OnDamage()
     {
         timer = 0;
-        // 데미지를 입음
         Hit = true;
 
     }

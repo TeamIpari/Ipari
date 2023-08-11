@@ -16,15 +16,17 @@ public class MovePoint : MonoBehaviour
     public List<GameObject> Objs;
     public List<GameObject> Larvas;
     public Vector3 Offset = new Vector3(0, 0, 0);
-    public float caculate = 6.25f;
+    public float caculate;  // defualt 6.25f -> 4.75f
 
     public int CreatePoint;
+    public float MoveSpeed = 0; 
 
+    public GameObject[] LarvaPrefabs;
     public GameObject HeadObj;
     public GameObject BodyObj;
     public bool Reverse = false;
 
-    public int tails;
+    //public int tails;
     int count = 1;
     public float DamagedAnimTimer = 1.5f;
 
@@ -36,14 +38,14 @@ public class MovePoint : MonoBehaviour
             Center = this.transform;
         CircleSize = Polygon / caculate;
         CreatePoint = Polygon / CreatePoint;
+        if (MoveSpeed == 0)
+            MoveSpeed = 50f;
         SetVertices(CircleSize, Polygon);
 
     }
 
     private void SetVertices(float size, int polygon)
     {
-        GameObject CreateObj;
-        float m_Vec;
         Vector3 createPos;
 
         for (int i = 0; i < Objs.Count; i++)
@@ -72,11 +74,13 @@ public class MovePoint : MonoBehaviour
             if ((ver1 % (CreatePoint * count)) == 0.0f)
             {
                 count += 1;
-                for (int ver2 = ver1; ver2 >= ver1 - tails; ver2--)
+                // ver2는 -- 연산자임에 반해 LarvaCur은 ++인 이유
+                // 개발자들이 Inspector에는 머리 - 몸통 - 꼬리 순으로 넣을 것이기 때문에 반대로 연산하게 만듬.
+                for (int ver2 = ver1, LarvaCur = LarvaPrefabs.Length - 1; ver2 > ver1 - LarvaPrefabs.Length; ver2--)
                 {
-                    Debug.Log(Objs[ver2 - 1].transform.position);
-                    GameObject obj2 = Instantiate(HeadObj);
-                    obj2.AddComponent<AutoMoveLarva>().SetUp(this);
+                    //Debug.Log(Objs[ver2 - 1].transform.position);
+                    GameObject obj2 = Instantiate(LarvaPrefabs[LarvaCur--]);
+                    obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? true: false);
 
                     obj2.transform.position = Objs[ver2 - 1].transform.position;
                     Larvas.Add(obj2);
@@ -91,29 +95,3 @@ public class MovePoint : MonoBehaviour
         
     }
 }
-
-//[CanEditMultipleObjects]
-//[CustomEditor(typeof(MovePoint))]
-//public class MovePointEditor : Editor
-//{
-
-
-//    //MovePointEditor()
-//    private void OnSceneGUI()
-//    {
-//        MovePoint Generator = (MovePoint)target;
-
-//        Generator.P1 = Handles.PositionHandle(Generator.P1, Quaternion.identity);
-//        Generator.P2 = Handles.PositionHandle(Generator.P2, Quaternion.identity);
-//        Generator.P3 = Handles.PositionHandle(Generator.P3, Quaternion.identity);
-//        Generator.P4 = Handles.PositionHandle(Generator.P4, Quaternion.identity);
-
-
-//        //for(int i = 0; i < 10; i++)
-//        //{
-//        //    Vector3 vector3
-//        //}
-
-//    }
-
-//}
