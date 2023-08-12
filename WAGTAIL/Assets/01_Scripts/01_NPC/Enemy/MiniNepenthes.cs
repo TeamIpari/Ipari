@@ -9,13 +9,15 @@ public class MiniNepenthes : Enemy
     public Bullet BulletPrefab;
     public Transform ShotPosition;
     public float ShotSpeed;
+    public int angle;
+
 
     // Start is called before the first frame update
     void Start()
     {
         AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
 
-        AiIdle = new NepenthesIdleState(AiSM);
+        AiIdle = new NepenthesIdleState(AiSM, angle);
         AiAttack = new NepenthesAttackState(AiSM);
         AiWait = new NepenthesWaitState(AiSM);
         
@@ -41,8 +43,6 @@ public class MiniNepenthes : Enemy
         GameObject Bomb = Instantiate(BulletPrefab.gameObject);
         Bomb.GetComponent<Bullet>().SetDirection(direction * ShotSpeed);
         Bomb.transform.position = ShotPosition.position;
-
-
     }
 
 
@@ -52,6 +52,5 @@ public class MiniNepenthes : Enemy
         isAttack();
         if (AiSM != null)
             AiSM.CurrentState.Update();
-        
     }
 }

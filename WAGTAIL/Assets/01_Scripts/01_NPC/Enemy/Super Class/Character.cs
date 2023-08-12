@@ -14,6 +14,8 @@ public class Character : MonoBehaviour
     public float WaitRate;
     protected float AttackTimer;
 
+    public Transform RotatePoint;
+
     // State Machine
     public AIStateMachine AiSM;
 
@@ -29,12 +31,10 @@ public class Character : MonoBehaviour
     {
         if (AttackTimer < AttackRate)
         {
-            //Debug.Log("AA");
             AttackTimer += Time.deltaTime;
 
             return false;
         }
-        //Debug.Log("BB");
         // 공격 가능 상태
         return true;
     }

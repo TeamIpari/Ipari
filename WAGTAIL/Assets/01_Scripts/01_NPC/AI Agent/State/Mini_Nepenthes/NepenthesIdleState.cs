@@ -6,16 +6,23 @@ using UnityEngine.InputSystem.XR.Haptics;
 
 public class NepenthesIdleState : AIIdleState
 {
+    int DetectionAngle;
+    float RadianRange;
     bool isSearch ;
-    public NepenthesIdleState(AIStateMachine stateMachine) : base(stateMachine)
+    Vector3 DefualtRot;
+    public NepenthesIdleState(AIStateMachine stateMachine, int angle) : base(stateMachine)
     {
-
+        DetectionAngle = angle;
+        RadianRange = Mathf.Cos((DetectionAngle / 2) * Mathf.Deg2Rad);
+        DefualtRot = stateMachine.character.RotatePoint.rotation.eulerAngles;
+        
     }
 
     public override void Enter()
     {
         base.Enter();
-        isSearch = false;
+        //isSearch = Search();
+        //isSearch = false;
     }
 
     public override void Exit()
@@ -33,12 +40,16 @@ public class NepenthesIdleState : AIIdleState
         // 원 범위 내에 플레이어가 들어오면 바라보고 일정 주기가 지나면 Attack
         Collider[] cols = Physics.OverlapSphere(stateMachine.Transform.position, 5.0f);
 
+
         // Layer가 Player인 캐릭터를 서치 
         if(cols.Length  > 0)
         {
             for (int i = 0; i < cols.Length; i++)
             {
-                if (cols[i].CompareTag("Player"))
+                float targetRadian = Vector3.Dot(stateMachine.Transform.forward, (cols[i].transform.position - stateMachine.Transform.position).normalized);
+
+                
+                if (/*targetRadian > RadianRange &&*/ cols[i].CompareTag("Player"))
                 {
                     stateMachine.Target = cols[i].gameObject;
                     isSearch = true;
@@ -55,13 +66,30 @@ public class NepenthesIdleState : AIIdleState
         base.Update();
         if (isSearch)
         {
-            stateMachine.Transform.LookAt(new Vector3(stateMachine.Target.transform.position.x, stateMachine.Transform.position.y, stateMachine.Target.transform.position.z));
-            stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
+            // 행렬 변환
+            //stateMachine.character.RotatePoint.transform.LookAt(stateMachine.Target.transform);
+            //Vector3 temp = stateMachine.character.RotatePoint.rotation.eulerAngles;
+            //stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 90f, temp.z);
+
+            Vector3 dir = stateMachine.character.RotatePoint.position - stateMachine.Target.transform.position;
+            dir.y = stateMachine.character.RotatePoint.position.y;
+            
+            Quaternion quat = Quaternion.LookRotation(dir.normalized);
+
+            Vector3 temp = quat.eulerAngles;
+            Vector3 temp2 = stateMachine.character.RotatePoint.rotation.eulerAngles;
+
+            stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y + 90f, temp2.z);
+
+            //stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
         }
         else
         {
             Search();
+            //stateMachine.character.RotatePoint.rotation = stateMachine.character.RotatePoint.rotation == Quaternion.Euler(DefualtRot) ? stateMachine.character.RotatePoint.rotation : Quaternion.Euler(DefualtRot);
+            //stateMachine.character.RotatePoint.rotation = Quaternion.Euler(0f, 0f, 0f);
+            //stateMachine.character.RotatePoint.transform.rotation;
         }
-       
+
     }
 }
