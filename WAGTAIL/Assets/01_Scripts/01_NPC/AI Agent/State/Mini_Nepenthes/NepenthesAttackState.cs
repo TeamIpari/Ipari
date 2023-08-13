@@ -6,17 +6,18 @@ using UnityEngine.XR;
 public class NepenthesAttackState : AIAttackState
 {
     float Timer;
-    float DelayTime = 2;
+    float DelayTime = 0.5f;
 
     public NepenthesAttackState(AIStateMachine stateMachine) : base(stateMachine)
     {
-
+        
     }
 
     public override void Enter()
     {
         Timer = 0;
-        
+        stateMachine.Animator.SetTrigger("isAttack");
+
         //base.Enter();
     }
 
@@ -44,8 +45,9 @@ public class NepenthesAttackState : AIAttackState
     public override void Update()
     {
         //base.Update();
-        if(AttackCheck())
+        if (AttackCheck())
         {
+            // µÙ∑π¿Ã ¡÷±‚.
             stateMachine.character.AttackTimerReset();
             stateMachine.character.CAttack();
             stateMachine.character.AiWait.SetNextState(stateMachine.character.AiIdle);

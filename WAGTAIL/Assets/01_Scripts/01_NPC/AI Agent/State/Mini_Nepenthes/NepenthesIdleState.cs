@@ -7,14 +7,14 @@ using UnityEngine.InputSystem.XR.Haptics;
 public class NepenthesIdleState : AIIdleState
 {
     int DetectionAngle;
-    float RadianRange;
+    //float RadianRange;
     bool isSearch ;
-    Vector3 DefualtRot;
+    //Vector3 DefualtRot;
     public NepenthesIdleState(AIStateMachine stateMachine, int angle) : base(stateMachine)
     {
-        DetectionAngle = angle;
-        RadianRange = Mathf.Cos((DetectionAngle / 2) * Mathf.Deg2Rad);
-        DefualtRot = stateMachine.character.RotatePoint.rotation.eulerAngles;
+        //DetectionAngle = angle;
+        //RadianRange = Mathf.Cos((DetectionAngle / 2) * Mathf.Deg2Rad);
+        //DefualtRot = stateMachine.character.RotatePoint.rotation.eulerAngles;
         
     }
 
@@ -38,7 +38,7 @@ public class NepenthesIdleState : AIIdleState
     private bool Search()
     {
         // 원 범위 내에 플레이어가 들어오면 바라보고 일정 주기가 지나면 Attack
-        Collider[] cols = Physics.OverlapSphere(stateMachine.Transform.position, 5.0f);
+        Collider[] cols = Physics.OverlapSphere(stateMachine.Transform.position, stateMachine.character.AttackRange);
 
 
         // Layer가 Player인 캐릭터를 서치 
@@ -81,7 +81,7 @@ public class NepenthesIdleState : AIIdleState
 
             stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
 
-            //stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
+            stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
         }
         else
         {
