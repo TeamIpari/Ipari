@@ -79,7 +79,7 @@ public class NepenthesIdleState : AIIdleState
             Vector3 temp = quat.eulerAngles;
             Vector3 temp2 = stateMachine.character.RotatePoint.rotation.eulerAngles;
 
-            stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y + 90f, temp2.z);
+            stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
 
             //stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
         }
