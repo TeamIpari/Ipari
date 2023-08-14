@@ -1,13 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class AIStateMachine
 {
-    public Character character;
+    public NPCBase NPCBase;
     public Transform Transform;
     public Animator Animator;
     public Rigidbody Physics;
@@ -28,7 +27,7 @@ public class AIStateMachine
     public static AIStateMachine CreateFormGameObject(GameObject gameObject)
     {
         AIStateMachine ai = new AIStateMachine();
-        ai.character = gameObject.GetComponent<Character>();
+        ai.NPCBase = gameObject.GetComponent<NPCBase>() ;
         ai.Transform = gameObject.transform;
         ai.Animator = gameObject.GetComponent<Animator>();
         ai.Physics = gameObject.GetComponent<Rigidbody>();
@@ -44,6 +43,8 @@ public class AIStateMachine
     public void Initialize(AIState startState)
     {
         CurrentState = startState;
+        //pauseTimer = 1f;
+        //currentTime = 0f;
         Pattern.Clear();
         cur = 0;
 
@@ -55,7 +56,7 @@ public class AIStateMachine
         CurrentState.Exit();
         if (CurrentState != newState)
         {
-            CurrentState = newState != null ? newState : CurrentState;
+            CurrentState = newState;
             CurrentState.Enter();
         }
         else

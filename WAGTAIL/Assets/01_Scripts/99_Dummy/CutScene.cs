@@ -11,19 +11,12 @@ public class CutScene : MonoBehaviour
     public TextMeshProUGUI TextViewer;
     public Transform[] cuts;
 
+    private bool IsCutScene;
     public bool IsIntro;
-    public int SayType;
     public bool ISText;
     public bool isSpeedUp = false;
 
-    [Header("")]
-    public float LastTimeLineTime = 5f;
-    public float WaitTime = 0;
-
-    private float colorValue = 255;
-
-    private bool IsCutScene;
-    private int sceneCount;
+    public int sceneCount;
 
     private void Awake()
     {
@@ -31,8 +24,6 @@ public class CutScene : MonoBehaviour
         HideCutScenes();
         IsCutScene = true;
         sceneCount = 0;
-        colorValue = 255;
-        colorCurve = -51f;
     }
 
     // Start is called before the first frame update
@@ -41,7 +32,6 @@ public class CutScene : MonoBehaviour
         if (IsIntro)
         {
             PlayCutScene();
-            LoadManager.GetInstance().IO_GetScriptable(SayType);
             LoadManager.GetInstance().TmpSet(TextViewer);
             LoadManager.GetInstance().PlayTyping();
         }
@@ -52,10 +42,6 @@ public class CutScene : MonoBehaviour
         Time.timeScale = Input.GetKey("space") ? 3.0f : 1f;
         LoadManager.GetInstance().isSpeedUp = Input.GetKey("space") ? true : false;
     }
-
-    private float colorTimer = 0f;
-    private float colorCurve = -51f;
-    private float WaitTimer = 0;
 
     private void SceneChange()
     {
@@ -78,18 +64,6 @@ public class CutScene : MonoBehaviour
                 cutScenes[sceneCount++].gameObject.SetActive(true);
                 if (TextViewer != null)
                     LoadManager.GetInstance().PlayTyping();
-            }
-        }
-
-        // 글자를 점점 사라지게 하는 기능.
-        if (sceneCount >= cutScenes.Length)
-        {
-            if (WaitTime > WaitTimer)
-                WaitTimer  += Time.deltaTime;
-            else
-            {
-                colorValue -= Time.deltaTime * (255f / LastTimeLineTime);
-                TextViewer.color = new Color32((byte)(colorValue), (byte)(colorValue), (byte)(colorValue), (byte)colorValue);
             }
         }
     }
