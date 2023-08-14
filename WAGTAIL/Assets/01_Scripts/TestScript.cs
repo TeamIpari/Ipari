@@ -4,10 +4,24 @@ using UnityEngine;
 
 public sealed class TestScript : MonoBehaviour
 {
-    void Update()
+    FModEventInstance TestIns;
+
+    private void Start()
     {
-        if(Input.GetKeyDown(KeyCode.T)){
-            FModAudioManager.PlayBGM(FModBGMEventType.test2);
+        
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
         }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
+        }
+
     }
 }

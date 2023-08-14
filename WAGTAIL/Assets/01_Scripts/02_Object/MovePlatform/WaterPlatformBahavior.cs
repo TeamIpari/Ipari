@@ -80,15 +80,20 @@ public sealed class WaterPlatformBahavior : PlatformBehaviorBase
             Yspeed += accel;
         }
 
-        //최종 적용
+        //최종 적용f
         Vector3 offset = (Vector3.up * Yspeed);
         platformTr.position += offset;
 
         Vector3 currEuler = platformTr.transform.eulerAngles;
+        float radian  = Mathf.Atan2( _startRotation.z, _startRotation.x ) + Mathf.Deg2Rad* currEuler.y;
+        float cos     = Mathf.Cos(radian);
+        float sin     = Mathf.Sin(radian);
+
+        Vector3 startRot = new Vector3(cos, 0f, sin) * _startRotation.magnitude;
         Vector3 rotEuler  = new Vector3(
-            SpinPow * Yspeed * _startRotation.z,
+            SpinPow * Yspeed * (-startRot.z),
             currEuler.y,
-            SpinPow * Yspeed * -_startRotation.x
+            SpinPow * Yspeed * (startRot.x)
         );
 
         platformTr.rotation = Quaternion.Euler( rotEuler );

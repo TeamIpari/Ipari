@@ -46,7 +46,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     //=======================================
     //////       Public Methods          ////
     //=======================================
-    public void AddPlatformReaction( PlatformBehaviorBase newReaction)
+    public void AddPlatformBehavior( PlatformBehaviorBase newReaction)
     {
         if (Behaviors.Contains(newReaction)) return;
         Behaviors.Add(newReaction);
@@ -55,7 +55,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         RefreshInteractionCopy(true);
     }
 
-    public void RemovePlatformReaction( PlatformBehaviorBase removeReaction)
+    public void RemovePlatformBehavior( PlatformBehaviorBase removeReaction)
     {
         if (!Behaviors.Contains(removeReaction)) return;
         Behaviors.Remove(removeReaction);
@@ -64,11 +64,22 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         RefreshInteractionCopy(true);
     }
 
-    public bool IsContainsPlatformReaction(PlatformBehaviorBase newReaction)
+    public bool IsContainsPlatformBehavior(PlatformBehaviorBase newReaction)
     {
         return Behaviors.Contains(newReaction);
     }
 
+    public bool IsContainsPlatformBehavior<T>()
+    {
+        System.Type type = typeof(T);
+
+        for(int i=0; i<_CopyCount; i++)
+        {
+            if (_InteractionsCopy[i].GetType().Equals(type)) return true;
+        }
+
+        return false;
+    }
 
 
     //=======================================
