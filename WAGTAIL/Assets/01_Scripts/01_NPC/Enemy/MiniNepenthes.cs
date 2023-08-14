@@ -28,6 +28,8 @@ public class MiniNepenthes : Enemy
             ShotSpeed = 1.0f;
         if (WaitRate <= 0)
             WaitRate = 1.0f;
+        if (AttackRange <= 0)
+            AttackRange = 5.0f;
     }
 
     public override void CAttack()

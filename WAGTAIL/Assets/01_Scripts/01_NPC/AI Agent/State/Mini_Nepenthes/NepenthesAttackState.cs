@@ -6,7 +6,7 @@ using UnityEngine.XR;
 public class NepenthesAttackState : AIAttackState
 {
     float Timer;
-    float DelayTime = 2;
+    float DelayTime = 0.25f;
 
     public NepenthesAttackState(AIStateMachine stateMachine) : base(stateMachine)
     {
@@ -16,8 +16,8 @@ public class NepenthesAttackState : AIAttackState
     public override void Enter()
     {
         Timer = 0;
-        
-        //base.Enter();
+
+        stateMachine.Animator.SetTrigger("isAttack");
     }
 
     public override void Exit()
@@ -44,7 +44,7 @@ public class NepenthesAttackState : AIAttackState
     public override void Update()
     {
         //base.Update();
-        if(AttackCheck())
+        if (AttackCheck())
         {
             stateMachine.character.AttackTimerReset();
             stateMachine.character.CAttack();
