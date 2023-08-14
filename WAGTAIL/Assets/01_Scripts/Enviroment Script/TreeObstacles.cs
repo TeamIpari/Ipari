@@ -17,7 +17,6 @@ public sealed class TreeObstacles : MonoBehaviour
     ////      Property And Fields      ////
     //=====================================
     [SerializeField] public SwitchRange Range = new SwitchRange();
-    [SerializeField] public Transform   TreePosition;
     [SerializeField] public Transform   FallDownDir;
     [SerializeField] public float       FallDownSpeed = 1f;
     [SerializeField] public bool        FallDownUsedCollision = false;
@@ -27,6 +26,7 @@ public sealed class TreeObstacles : MonoBehaviour
     private Rigidbody   _Body;
     private Collider    _Collider;
     private bool        _IsSwitch = false;
+    private Vector3     _TreePosition;
 
     private float fallDownSpeed = 0f;
     private float fallDownRot   = 0f;
@@ -65,7 +65,7 @@ public sealed class TreeObstacles : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Platform")
+        if (other.gameObject.CompareTag("Platform"))
         {
             //나무에 충돌한 발판들을 파괴한다.
             //TODO: 파괴된 발판들의 이펙트는, 각 발판의 OnDestory()에서 실행하도록 생각중.
@@ -75,7 +75,7 @@ public sealed class TreeObstacles : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Platform")
+        if (collision.gameObject.CompareTag("Platform"))
         {
             //나무에 충돌한 발판들을 파괴한다.
             //TODO: 파괴된 발판들의 이펙트는, 각 발판의 OnDestory()에서 실행하도록 생각중.
@@ -86,6 +86,11 @@ public sealed class TreeObstacles : MonoBehaviour
         //땅에 닿으면 튕겨난다.
         if (rebound > 0)
         {
+            //최초 부딫혔을 때 부숴지는 소리를 실행.
+            if (rebound >= maxRebound){
+                FModAudioManager.PlayOneShotSFX(FModSFXEventType.Stone_Broken, transform.position, 1f);
+            }
+
             fallDownSpeed = -rebound;
             fallDownRot -= rebound;
             rebound -= maxRebound * ReboundValue;
@@ -94,12 +99,12 @@ public sealed class TreeObstacles : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Vector3 center = (TreePosition.position + Range.offset);
+        Vector3 center = (transform.position + Range.offset);
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(center, Range.Scale);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine( TreePosition.position, center );
+        Gizmos.DrawLine(transform.position, center );
     }
 
 
@@ -114,25 +119,50 @@ public sealed class TreeObstacles : MonoBehaviour
         /***************************************
          * 계산에 필요한 모든 것들을 구한다.
          ***/
-        Vector3 currRot = transform.eulerAngles;
-        Vector3 standingDir = (FallDownDir.position - TreePosition.position).normalized;
-        Vector3 fallDownDir = new Vector3(standingDir.x, 0f, standingDir.z).normalized;
+        Vector3 currRot     = transform.eulerAngles;
+        Quaternion startRot = transform.rotation;
+        Vector3 startPos    = transform.position;
+
+        /**나무의 뿌리지점이 될 Point를 얻는다.*/
+        RaycastHit[] hits = null;
+        if (_Collider != null) {
+
+            MeshRenderer filter = GetComponent<MeshRenderer>();
+            Bounds bounds = filter.bounds;
+            hits = Physics.RaycastAll(startPos, -transform.up, bounds.extents.y * bounds.size.y);
+        }
+
+        if (hits!=null)
+        {
+            int Count = hits.Length;
+            float distance = float.MaxValue;
+            for (int i = 0; i < Count; i++){
+
+                bool isNotGround    = ( hits[i].normal.y < 0 );
+                bool isSameCollider = (hits[i].collider == _Collider);
+                bool isTrigger      = ( hits[i].collider.isTrigger==true);
+
+                if (isNotGround || isSameCollider || isTrigger || distance < hits[i].distance) continue;
+                startPos = hits[i].point;
+                distance = hits[i].distance;
+            }
+           
+        }
+
+        /**나무가 쓰러지는 방향을 가지는 회전방향벡터를 구한다.*/
+        Vector3 fallDownDir         = FallDownDir!=null?(FallDownDir.position - transform.position):(transform.right);
+        float   height              = (transform.position-startPos).magnitude;
+        float   radian              = Mathf.Atan2(fallDownDir.z, fallDownDir.x);
+        float   cos                 = Mathf.Cos(radian);
+        float   sin                 = Mathf.Sin(radian);
+
+        Vector3 rotEuler = new Vector3(
+            sin,
+            0f,
+            -cos
+        );
 
         WaitForFixedUpdate waitTime = new WaitForFixedUpdate();
-        Vector3 startPos = new Vector3()
-        {
-            x = transform.position.x,
-            y = TreePosition.position.y,
-            z = transform.position.z
-        };
-        Vector3 heightDir    = (transform.position - startPos);
-        float   height       = heightDir.magnitude * (heightDir.y>0?1f:-1f);
-        Vector3 fallDownDir2 = new Vector3()
-        {
-            x = fallDownDir.z,
-            y = 0f,
-            z = -fallDownDir.x
-        };
 
 
         /****************************************
@@ -145,19 +175,19 @@ public sealed class TreeObstacles : MonoBehaviour
 
             //나무가 쓰러졌을 때의 사운드 재생.
             if(fallDownRot>= FallDownTargetAngle) {
-               FModAudioManager.PlayOneShotSFX(FModSFXEventType.Stone_Broken, transform.position, 1f);
+
+                FModAudioManager.PlayOneShotSFX(FModSFXEventType.Stone_Broken, transform.position, 1f);
             }
 
             //나무가 바닥에 붙어있도록 수정.
-            if (FallDownUsedCollision) _Body.MovePosition(startPos + (transform.up * height));
-            else _Body.position = startPos + (transform.up * height);
+            _Body.position = startPos + (transform.up * height);
 
-            _Body.MoveRotation(Quaternion.Euler(fallDownDir2 * fallDownRot));
+            _Body.MoveRotation(Quaternion.AngleAxis( fallDownRot, rotEuler)*startRot);
             yield return waitTime;
         }
 
         //collision을 사용중이고, 반동이 0이면 탈출.
-        if(rebound<=0f && FallDownUsedCollision)
+        if (rebound<=0f && FallDownUsedCollision)
         {
             _Body.Sleep();
             _Body.isKinematic = true;
@@ -185,7 +215,11 @@ public sealed class TreeObstacles : MonoBehaviour
             fallDownSpeed += FallDownSpeed * Time.deltaTime;
             fallDownRot += fallDownSpeed;
 
-            transform.rotation = Quaternion.Euler(fallDownDir2 * fallDownRot);
+            //나무가 바닥에 붙어있도록 수정.
+            if (FallDownUsedCollision) _Body.MovePosition(startPos + (transform.up * height));
+            else _Body.position = startPos + (transform.up * height);
+
+            _Body.MoveRotation(Quaternion.AngleAxis(fallDownRot, rotEuler) * startRot);
             yield return waitTime;
         }
 
@@ -207,7 +241,7 @@ public sealed class TreeObstacles : MonoBehaviour
         float pmaxZ = pCenter.z + pRadius;
 
         //Trigger Range
-        Vector3 rangePos = (TreePosition.position + Range.offset);
+        Vector3 rangePos = (transform.position + Range.offset);
         float minX = rangePos.x - Range.Scale.x * .5f;
         float maxX = rangePos.x + Range.Scale.x * .5f;
         float minY = rangePos.y - Range.Scale.y * .5f;

@@ -12,14 +12,271 @@ using System.Reflection;
 using UnityEngine.Networking.Types;
 using System.Net.NetworkInformation;
 using FMOD;
+using System.Text.RegularExpressions;
+using static UnityEngine.InputSystem.Layouts.InputControlLayout;
+using System.Runtime.InteropServices;
+using UnityEngine.Rendering;
+using UnityEngine.Events;
+using System.Xml;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Diagnostics.Tracing;
+using UnityEngine.Networking;
+using UnityEditor.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.AnimatedValues;
 using UnityEditor.PackageManager;
 using static UnityEditor.ObjectChangeEventStream;
 #endif
 
-public interface IFModAudioFadeComplete { void FModFadeComplete(int fadeID, float goalVolume); }
+#region Define_FModEventInstance
+#if FMOD_Event_ENUM
+
+public struct FModEventInstance
+{
+    //==================================
+    ////     Property And Fields   ///// 
+    //==================================
+    public FMOD.GUID    GUID
+    {
+        get
+        {
+            FMOD.Studio.EventDescription desc;
+            Ins.getDescription(out desc);
+
+            FMOD.GUID guid;
+            desc.getID(out guid);
+
+            return guid;
+        }
+
+    }
+    public bool         IsPaused 
+    { 
+        get {
+
+            bool ret;
+            Ins.getPaused(out ret);
+            return ret;
+        } 
+    }
+    public bool         Is3DEvent
+    {
+        get
+        {
+            FMOD.Studio.EventDescription desc;
+            Ins.getDescription(out desc);
+
+            bool is3D;
+            desc.is3D(out is3D);
+            return is3D;
+        }
+
+    }
+    public Vector3      Position
+    {
+        get
+        {
+            FMOD.ATTRIBUTES_3D attributes;
+            Ins.get3DAttributes(out attributes);
+
+            FMOD.VECTOR pos = attributes.position;
+            return new Vector3( pos.x, pos.y, pos.z );
+        }
+
+        set
+        {
+            Ins.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(value));
+        }
+    }
+    public bool         IsValid{ get{ return Ins.isValid(); } }
+    public float        Volume
+    {
+        get
+        {
+
+            float volume;
+            Ins.getVolume(out volume);
+            return volume;
+        }
+
+        set { Ins.setVolume((value < 0 ? 0f : value)); }
+    }
+    public GameObject   AttachedGameObject
+    {
+        get { return _AttachedGameObject; }
+
+        set {
+
+            if (value == null) FMODUnity.RuntimeManager.DetachInstanceFromGameObject(Ins);
+            else FMODUnity.RuntimeManager.AttachInstanceToGameObject(Ins, value.transform); 
+        
+            _AttachedGameObject = value;
+        }
+    }
+    public float        Pitch
+    {
+        get
+        {
+            float pitch;
+            Ins.getPitch(out pitch);
+            return pitch;
+        }
+
+        set { Ins.setPitch(value); }
+    }
+    public bool         IsPlaying
+    {
+        get
+        {
+            FMOD.Studio.PLAYBACK_STATE state;
+            Ins.getPlaybackState(out state);
+            return (state == FMOD.Studio.PLAYBACK_STATE.PLAYING);
+        }
+
+    }
+    public int          TimelinePosition
+    {
+        get
+        {
+            int position;
+            Ins.getTimelinePosition(out position);
+            return position;
+        }
+
+        set{  Ins.setTimelinePosition(value); }
+    }
+    public float        TimelinePositionRatio
+    {
+        get
+        {
+            EventDescription desc;
+            Ins.getDescription(out desc);
+
+            int length;
+            desc.getLength(out length);
+
+            int position;
+            Ins.getTimelinePosition(out position);
+
+            return (position/length);
+        }
+
+        set
+        {
+            EventDescription desc;
+            Ins.getDescription(out desc);
+
+            int length;
+            desc.getLength(out length);
+
+            float ratio = Mathf.Clamp(value, 0.0f, 1.0f);
+            Ins.setTimelinePosition( Mathf.RoundToInt(length*ratio) );
+        }
+    }
+
+    private EventInstance Ins;
+    private GameObject _AttachedGameObject;
+
+    //==================================
+    ////        Public Methods     ///// 
+    //==================================
+    public FModEventInstance(EventInstance instance, Vector3 position=default) 
+    { 
+        Ins = instance;
+        _AttachedGameObject = null;
+
+        bool is3D;
+        FMOD.Studio.EventDescription desc;
+        Ins.getDescription(out desc);
+        desc.is3D(out is3D);
+        if (is3D)
+        {
+            Ins.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+        }
+    }
+
+    public void Play(float volume = -1f, int startTimelinePosition = -1, string paramName = "", float paramValue = 0f)
+    {
+        if(volume>=0) Ins.setVolume(volume);
+        if (startTimelinePosition >= 0) Ins.setTimelinePosition(startTimelinePosition);
+        if(paramName!="") Ins.setParameterByName(paramName, paramValue);
+
+        Ins.start();
+    }
+
+    public void Pause()
+    {
+        Ins.setPaused(true);
+    }
+
+    public void Resume()
+    {
+        Ins.setPaused(false);
+    }
+
+    public void Stop()
+    {
+        Ins.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+    }
+
+    public void Destroy(bool destroyAtComplete=false)
+    {
+        if(destroyAtComplete)
+        {
+            Ins.release();
+            Ins.clearHandle();
+            return;
+        }
+
+        Ins.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        Ins.release();
+        Ins.clearHandle();
+    }
+
+    public void SetParameter(FModGlobalParamType paramType, float paramValue)
+    {
+        string paramName = FModReferenceList.Params[(int)paramType];
+        Ins.setParameterByName(paramName, paramValue);
+    }
+
+    public void SetParameter(FModLocalParamType paramType, float paramValue)
+    {
+        string paramName = FModReferenceList.Params[(int)paramType];
+        Ins.setParameterByName(paramName, paramValue);
+    }
+
+    public void SetParameter(string paramName, float value)
+    {
+        Ins.setParameterByName(paramName, value);
+    }
+
+    public void Set3DDistance(float minDistance, float maxDistance )
+    {
+        bool is3D;
+        FMOD.Studio.EventDescription desc;
+        Ins.getDescription(out desc);
+        desc.is3D(out is3D);
+        if (is3D)
+        {
+            Ins.setProperty(FMOD.Studio.EVENT_PROPERTY.MINIMUM_DISTANCE, minDistance);
+            Ins.setProperty(FMOD.Studio.EVENT_PROPERTY.MAXIMUM_DISTANCE, maxDistance);
+        }
+    }
+
+    //TODO: 
+    public void SetCallback(EVENT_CALLBACK callback, EVENT_CALLBACK_TYPE callbackmask = EVENT_CALLBACK_TYPE.ALL)
+    {
+        Ins.setCallback(callback, callbackmask);
+    }
+
+}
+#endif
+#endregion
+
 public delegate void FModEventFadeCompleteNotify( int fadeID, float goalVolume );
 
 public sealed class FModAudioManager : MonoBehaviour
@@ -29,646 +286,960 @@ public sealed class FModAudioManager : MonoBehaviour
      * 에디터 확장을 위한 private class
      ***/
 #if UNITY_EDITOR
-    private sealed class FMODSoundManagerWindow : EditorWindow
+    private sealed class FModAudioManagerWindow : EditorWindow
     {
-        //==================================
-        ////          Fields           ///// 
-        //==================================
-        private const string _ResourcePath          = "Assets/Plugins/FMOD/src/FMODAudioManagerDefine.cs";
-        private const string _EditorDataPath        = "Assets/Plugins/FMOD/Resources/FModAudioManagerSettings.asset";
-        private const string _EditorSettingsPath    = "Assets/Plugins/FMOD/Resources/FMODStudioSettings.asset";
-        private const string _ScriptDefine          = "FMOD_Event_ENUM";
-        private const string _ScriptVersion         = "v1.230730";
-        private const string _EventRootPath         = "event:/";
-        private string       _CategoryCountColor    = "";
+        //=====================================
+        ////            Fields           ///// 
+        //====================================
 
-        private Vector2 _ScrollPos = Vector2.zero;
+        /*************************************
+         *   Editor Data Path String...
+         * **/
+        private const string _DataScriptPath     = "Assets/Plugins/FMOD/src/FMODAudioManagerDefine.cs";
+        private const string _EditorSettingsPath = "Assets/Plugins/FMOD/Resources/FModAudioEditorSettings.asset";
+        private const string _StudioSettingsPath = "Assets/Plugins/FMOD/Resources/FMODStudioSettings.asset";
+        private const string _GroupFolderPath    = "Metadata/Group";
+        private const string _ScriptDefine       = "FMOD_Event_ENUM";
+        private const string _EditorVersion      = "v1.230814";
 
-        /*********************************
-         * Editor Settings Datas
+        private const string _EventRootPath      = "event:/";
+        private const string _BusRootPath        = "bus:/";
+        private const string _BankRootPath       = "bank:/";
+
+        /*************************************
+         *  Texture Path and reference
          ***/
-        private static FMODAudioEventData _EventData;
-        private static FMODUnity.Settings _SettingData;
+        private static Texture  _BannerWhiteTex;
+        private const string    _BannerWhitePath = "Assets/Plugins/FMOD/images/FMODLogoWhite.png";
+
+        private static Texture  _BannerBlackTex;
+        private const string    _BannerBlackPath = "Assets/Plugins/FMOD/images/FMODLogoBlack.png";
+
+        private static Texture  _StudioIconTex;
+        private const string    _StudioIconPath = "Assets/Plugins/FMOD/images/StudioIcon.png";
+
+        private static Texture  _SearchIconTex;
+        private const string    _SearchIconPath = "Assets/Plugins/FMOD/images/SearchIconBlack.png";
+
+        private static Texture _BankIconTex;
+        private const string   _BankIconPath    = "Assets/Plugins/FMOD/images/BankIcon.png";
+
+        private static Texture  _AddIconTex;
+        private const string    _AddIconPath = "Assets/Plugins/FMOD/images/AddIcon.png";
+
+        private static Texture  _XYellowIconTex;
+        private const string    _XYellowIconPath = "Assets/Plugins/FMOD/images/CrossYellow.png";
+
+        private static Texture _DeleteIconTex;
+        private const string   _DeleteIconPath = "Assets/Plugins/FMOD/images/Delete.png";
+
+        private static Texture _NotFoundIconTex;
+        private const string   _NotFoundIconPath = "Assets/Plugins/FMOD/images/NotFound.png";
+
+        private static Texture _ParamLabelIconTex;
+        private const string   _ParamLabelIconPath = "Assets/Plugins/FMOD/images/LabeledParameterIcon.png";
 
 
-        /***********************************
-         * Categorys
+        /****************************************
+         *   Editor ScriptableObject Fields...
          ***/
-        private int _EventCategorySelect = 0;
-        private static readonly string[] _EventCategories = new string[] { "BGM", "SFX", "NoGroup" };
-        private static readonly string[] _DescPropertyStr = new string[] { "BGMEvents", "SFXEvents", "NoneEvents" };
+        private static FModAudioEditorSettings _EditorSettings;
+        private static FMODUnity.Settings      _StudioSettings;
 
 
-        /**************************
-         * Textures
-         ***/
-        private static Texture _Banner;
-        private static Texture _BannerBlack;
-        private static Texture _SearchIcon;
-        private static Texture _AddIcon;
-        private static Texture _RemoveIcon;
-        private static Texture _xIcon;
-        private static Texture _WarningIcon;
-        private static Texture _studioIcon;
+        /******************************************
+         *   Editor GUI Fields...
+         * **/
+        private Regex   _regex     = new Regex(@"[^a-zA-Z0-9_]");
+        private Vector2 _Scrollpos = Vector2.zero;
 
-        /**********************************
-         * Show and Warning bools
-         ***/
-        private bool _addCategory = false;
-        private string _addName = string.Empty;
-        private bool _addWarning = false;
-        private bool _showRefreshHelp = false;
+        /** Categorys... *************************/
+        private static readonly string[] _EventGroups = new string[] { "BGM", "SFX", "NoGroup" };
+        private static readonly string[] _ParamGroups = new string[] { "Global Parameters", "Local Parameters" };
+        private int _EventGroupSelected = 0;
+        private int _ParamGroupSelected = 0;
 
-        private int _checkOverlapIndex = -1;
-        private bool _eventIsOverlap = false;
-        private string _overlapEventName = string.Empty;
+        /** Styles... ****************************/
+        private static GUIStyle _BoldTxtStyle;
+        private static GUIStyle _BoldErrorTxtStyle;
+        private static GUIStyle _FoldoutTxtStyle;
+        private static GUIStyle _ButtonStyle;
+        private static GUIStyle _TxtFieldStyle;
+        private static GUIStyle _TxtFieldErrorStyle;
+        private static GUIStyle _CategoryTxtStyle;
+        private static GUIStyle _ContentTxtStyle;
+        private string _CountColorStyle = "#8DFF9E";
+        private string _ContentColorStyle = "#6487AA";
 
-        private bool _showStudioPath = false;
-        private bool _showApplySettings = false;
+        /** GUI Boolean ****************************/
+        private static AnimBool _StudioPathSettingsFade;
+        private static AnimBool _BusSettingsFade;
+        private static AnimBool _BankSettingsFade;
+        private static AnimBool _ParamSettingsFade;
+        private static AnimBool _EventSettingsFade;
 
-
-        /************************************
-         * GUIStyles
-         ***/
-        private static GUIStyle _notValidEventStyle;
-        private static GUIStyle _BannerTxtStyle;
-        private static GUIStyle _FoldTxtStyle;
-        private static GUIStyle _toolbarStyle;
+        private bool _EventSettingsInValid = false;
 
 
-        //==================================
-        ////        Core Methods        //// 
-        //==================================
-        [MenuItem("Managers/FMODAudio Settings")]
+        /** SerializedProperty **********************/
+        private SerializedObject   _StudioSettingsObj;
+        private SerializedProperty _StudioPathProperty;
+
+
+
+        //=======================================
+        ////          Magic Methods           ////
+        //=======================================
+        [MenuItem("FMOD/FMODAudio Settings")]
         public static void OpenWindow()
         {
-            EditorWindow.GetWindow(typeof(FMODSoundManagerWindow), false, "FMODAudio Settings");
-        }
-
-        private void OnFocus()
-        {
-            _showRefreshHelp = false;
-
-            //EventManager.RefreshBanks();
-
-            //중복체크
-            if (_checkOverlapIndex > -1 && _eventIsOverlap == false)
-            {
-                List<FMODUnity.EventReference> lists = GetEventList(_EventCategorySelect);
-
-                bool EventRefIsNull = lists[_checkOverlapIndex].IsNull;
-                string EventPath = EventRefIsNull ? "-" : lists[_checkOverlapIndex].Path;
-                string[] PathSplit = EventPath.Split('/');
-                _overlapEventName = PathSplit[PathSplit.Length - 1];
-
-                if (_eventIsOverlap == false && CheckEventIsOverlap(_checkOverlapIndex, GetEventList(_EventCategorySelect))) {
-                    _eventIsOverlap = true;
-                    lists[_checkOverlapIndex] = new FMODUnity.EventReference();
-                }
-                else
-                {
-                    _checkOverlapIndex = -1;
-                }
-            }
-
+            EditorWindow.GetWindow(typeof(FModAudioManagerWindow), false, "FMODAudio Settings");
         }
 
         private void OnEnable()
         {
-            //에디터 세팅 정보를 가져온다.
-            if(_EventData==null) _EventData = AssetDatabase.LoadAssetAtPath<FMODAudioEventData>(_EditorDataPath);
-            if(_SettingData==null) _SettingData = AssetDatabase.LoadAssetAtPath<FMODUnity.Settings>(_EditorSettingsPath);
-
-            //존재하지 않는다면 생성.
-            if (_EventData == null) {
-                _EventData = new FMODAudioEventData();
-                _EventData.BGMBusName = "BGM";
-                _EventData.SFXBusName = "SFX";
-                _EventData.BGMGroupRootFolder = "BGM";
-                _EventData.SFXGroupRootFolder = "SFX";
-                AssetDatabase.CreateAsset(_EventData, _EditorDataPath);
-            }
+            /**AnimBool 갱신...***************************/
+            FadeAnimBoolInit();
         }
 
-        public void OnGUI()
+        private void OnGUI()
         {
-            Intialized();
+            GUI_InitEditor();
 
-            //최상단 라벨
-            _ScrollPos = EditorGUILayout.BeginScrollView(_ScrollPos, true, true, GUILayout.Height(position.height));
+            //에디터 스킨에 따른 색상 변화
+            bool isBlack = ( EditorGUIUtility.isProSkin==false );
+            _BoldTxtStyle.normal.textColor = (isBlack ? Color.black : Color.white);
 
-            /*Scroll Start**********************/
-            EditorGUI.indentLevel++;
+            _FoldoutTxtStyle.normal.textColor = (isBlack ? Color.black : Color.white);
+            _FoldoutTxtStyle.onNormal.textColor = (isBlack ? Color.black : Color.white);
 
-            //최상단 FMOD Image 출력
-            ShowFMODImage();
+            _CategoryTxtStyle.normal.textColor = (isBlack ? Color.black : Color.white);
+            _CategoryTxtStyle.onNormal.textColor = (isBlack ? Color.black : Color.white);
+
+            //-----------------------------------------------------
+            using (var view = new EditorGUILayout.ScrollViewScope(_Scrollpos, false, false, GUILayout.Height(position.height))) 
+            {
+                /** 스크롤 뷰 시작. **************************/
+                _Scrollpos = view.scrollPosition;
+                GUI_ShowLogo();
+                GUI_DrawLine();
+
+                GUI_StudioPathSettings();
+                GUI_DrawLine();
+
+                using (var scope = new EditorGUI.DisabledGroupScope(!StudioPathIsValid()))
+                {
+                    GUI_BankSettings();
+                    GUI_DrawLine();
+
+                    GUI_BusSettings();
+                    GUI_DrawLine();
+
+                    GUI_ParamSettings();
+                    GUI_DrawLine();
+
+                    GUI_EventSettings();
+
+                    scope.Dispose();
+                }
+                /** 스크롤 뷰 끝. ***************************/
+
+                view.Dispose();
+            }
+            //--------------------------------------------------------
+        }
+
+
+
+        //========================================
+        ////        GUI Content Methods       ////
+        //========================================
+        private void GUI_DrawLine(float space=5f, float subOffset=0f)
+        {
+            #region Omit
+            EditorGUILayout.Space(15f);
+            var rect = EditorGUILayout.BeginHorizontal();
+            Handles.color = Color.gray;
+            Handles.DrawLine(new Vector2(rect.x - 15 + subOffset, rect.y), new Vector2(rect.width + 15 - subOffset*2, rect.y));
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(10f);
-
-            //Fmod Bus목록 표시
-            ShowFMODBusList();
-            EditorGUILayout.Space(30f);
-
-            //Event목록 표시
-            ShowEventList();
-            EditorGUILayout.Space(30f);
-
-            EditorGUI.indentLevel--;
-            /*Scroll End***********************/
-
-            EditorGUILayout.EndScrollView();
-        }
-
-
-        //==================================
-        ////         GUI Methods       ///// 
-        //==================================
-        private void Intialized()
-        {
-            #region Ommission
-
-            bool isBlackSkin = EditorGUIUtility.isProSkin;
-
-            /**********************************
-             * 이미지 로드
-             ***/
-            //바로가기 아이콘 로드
-            if (_studioIcon == null) {
-
-                _studioIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/StudioIcon.png", typeof(Texture));
-            }
-
-            //돋보기 버튼 로드
-            if (_SearchIcon == null){
-
-                _SearchIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/SearchIconBlack.png", typeof(Texture));
-            }
-
-            //배너 로드
-            if (_Banner == null){
-
-                _Banner = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/FMODLogoWhite.png", typeof(Texture));
-            }
-
-            if (_BannerBlack == null)
-            {
-                _BannerBlack = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/FMODLogoBlack.png", typeof(Texture));
-            }
-
-            //추가 버튼 로드
-            if (_AddIcon == null){
-
-                _AddIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/AddIcon.png", typeof(Texture));
-            }
-
-            //삭제 버튼 로드
-            if (_xIcon == null){
-
-                _xIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/CrossYellow.png", typeof(Texture));
-            }
-
-            //돋보기 버튼 로드
-            if (_SearchIcon == null){
-
-                _SearchIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/SearchIconBlack.png", typeof(Texture));
-            }
-
-            //삭제 버튼 로드
-            if (_RemoveIcon == null){
-
-                _RemoveIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/Delete.png", typeof(Texture));
-            }
-
-            //경고 아이콘 로드
-            if (_RemoveIcon == null){
-
-                _RemoveIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Plugins/FMOD/images/NotFound.png", typeof(Texture));
-            }
-
-            /*******************************
-             * 스타일 초기화
-             ***/
-            //툴바 스타일 생성
-            if (_toolbarStyle == null) {
-
-                _toolbarStyle = new GUIStyle(EditorStyles.selectionRect);
-                _toolbarStyle.richText = true;
-            }
-
-            //접기 스타일 생성
-            if (_FoldTxtStyle == null){
-
-                _FoldTxtStyle = new GUIStyle(EditorStyles.foldout);
-                //_FoldTxtStyle.normal.textColor = Color.white;
-                _FoldTxtStyle.richText = true;
-            }
-
-            //배너 텍스트 스타일
-            if (_BannerTxtStyle == null)
-            {
-                _BannerTxtStyle = new GUIStyle();
-                _BannerTxtStyle.normal.textColor = (isBlackSkin?Color.white:Color.black);
-                _BannerTxtStyle.fontStyle = FontStyle.Bold;
-            }
-
-            _CategoryCountColor = (isBlackSkin ? "#8DFF9E":"#1B882B");
-
             #endregion
         }
 
-        private void ShowFMODImage()
+        private void GUI_InitEditor()
         {
-            #region Ommision
-            /****************************************
-             * 배너 표시.
-             ***/
-            //Banner이미지가 없다면 생성.
-            if (_Banner != null) {
+            #region Omit
+            /*************************************
+             *   에디터에서 사용할 에셋 초기화.
+             * **/
+            if (_EditorSettings == null) _EditorSettings = AssetDatabase.LoadAssetAtPath<FModAudioEditorSettings>(_EditorSettingsPath);
+            if (_StudioSettings == null) _StudioSettings = AssetDatabase.LoadAssetAtPath<FMODUnity.Settings>(_StudioSettingsPath);
 
-                Texture useBanner = (EditorGUIUtility.isProSkin==false ? _BannerBlack : _Banner);
-                GUILayout.Box(useBanner, GUILayout.Width(position.width), GUILayout.Height(100f));
-                GUILayout.BeginArea(new Rect(position.width * .3f, 100f - 20, 300, 30));
-                GUILayout.Label("FMODAudio Settings Editor " + _ScriptVersion, _BannerTxtStyle);
-                GUILayout.EndArea();
+            //EditorSettings이 없다면 새로 생성한다.
+            if(_EditorSettings==null) {
+
+                _EditorSettings = new FModAudioEditorSettings();
+                AssetDatabase.CreateAsset(_EditorSettings, _EditorSettingsPath);
+            }
+
+            /**************************************
+             *  페이드 Anim들을 초기화한다.
+             * **/
+            if(_StudioPathSettingsFade==null){
+
+                _StudioPathSettingsFade = new AnimBool(true);
+                _StudioPathSettingsFade.speed = 3f;
+                _StudioPathSettingsFade.valueChanged.AddListener(new UnityAction(base.Repaint));
+            }
+
+            if (_BusSettingsFade == null){
+
+                _BusSettingsFade = new AnimBool(false);
+                _BusSettingsFade.speed = 3f;
+                _BusSettingsFade.valueChanged.AddListener(new UnityAction(base.Repaint));
+            }
+
+            if (_BankSettingsFade == null){
+
+                _BankSettingsFade = new AnimBool(false);
+                _BankSettingsFade.speed = 3f;
+                _BankSettingsFade.valueChanged.AddListener(new UnityAction(base.Repaint));
+            }
+
+            if (_ParamSettingsFade == null){
+
+                _ParamSettingsFade = new AnimBool(false);
+                _ParamSettingsFade.speed = 3f;
+                _ParamSettingsFade.valueChanged.AddListener(new UnityAction(base.Repaint));
+            }
+
+            if (_EventSettingsFade == null)
+            {
+
+                _EventSettingsFade = new AnimBool(false);
+                _EventSettingsFade.speed = 3f;
+                _EventSettingsFade.valueChanged.AddListener(new UnityAction(base.Repaint));
             }
 
             /*************************************
-             * Studio 바로가기
+             *  모든 텍스쳐들을 초기화한다.
+             * **/
+            if(_ParamLabelIconTex==null){
+
+                _ParamLabelIconTex = (Texture)AssetDatabase.LoadAssetAtPath(_ParamLabelIconPath, typeof(Texture));  
+            }
+
+            if(_BankIconTex==null){
+
+                _BankIconTex = (Texture)AssetDatabase.LoadAssetAtPath(_BankIconPath, typeof(Texture));
+            }
+
+            if (_BannerBlackTex == null) {
+
+                _BannerBlackTex = (Texture)AssetDatabase.LoadAssetAtPath(_BannerBlackPath, typeof(Texture));
+            }
+
+            if (_BannerWhiteTex == null){
+
+                _BannerWhiteTex = (Texture)AssetDatabase.LoadAssetAtPath(_BannerWhitePath, typeof(Texture));
+            }
+
+            if(_StudioIconTex==null) {
+
+                _StudioIconTex = (Texture)AssetDatabase.LoadAssetAtPath(_StudioIconPath, typeof(Texture));
+            }
+
+            if(_SearchIconTex==null){
+
+                _SearchIconTex = (Texture)AssetDatabase.LoadAssetAtPath(_SearchIconPath, typeof(Texture));
+            }
+
+            if(_AddIconTex==null) {
+
+                _AddIconTex = (Texture)AssetDatabase.LoadAssetAtPath(_AddIconPath, typeof(Texture));
+            }
+
+            if(_XYellowIconTex==null){
+
+                _XYellowIconTex = (Texture)AssetDatabase.LoadAssetAtPath(_XYellowIconPath, typeof(Texture));
+            }
+
+            if(_DeleteIconTex==null){
+
+                _DeleteIconTex = (Texture)AssetDatabase.LoadAssetAtPath(_DeleteIconPath, typeof(Texture));
+            }
+
+            if(_NotFoundIconTex==null){
+
+                _NotFoundIconTex = (Texture)AssetDatabase.LoadAssetAtPath(_NotFoundIconPath, typeof(Texture));  
+            }
+
+            /*********************************
+             *  텍스트 스타일 초기화
              ***/
-            if (GUI.Button(new Rect(position.width * .9f, 70f, 30f, 30f), _studioIcon))
-            {
-                System.Diagnostics.Process.Start(Application.dataPath.Replace("Assets", "") + _SettingData.SourceProjectPath);
+            if(_BoldTxtStyle==null) {
+
+                _BoldTxtStyle = new GUIStyle();
+                _BoldTxtStyle.normal.textColor = Color.white;
+                _BoldTxtStyle.fontStyle = FontStyle.Bold;
+                _BoldTxtStyle.richText = true;
             }
 
-            GUILayout.BeginArea(new Rect(position.width * .9f - 30f, 75f, 30f, 30f));
-            _showStudioPath = EditorGUILayout.Foldout(_showStudioPath, "");
-            GUILayout.EndArea();
+            if (_FoldoutTxtStyle == null){
 
-            //경로지정 표시
-            if (_showStudioPath)
+                _FoldoutTxtStyle = new GUIStyle(EditorStyles.foldout);
+                _FoldoutTxtStyle.normal.textColor = Color.white;
+                _FoldoutTxtStyle.fontStyle = FontStyle.Bold;
+                _FoldoutTxtStyle.richText = true;
+                _FoldoutTxtStyle.fontSize = 14;
+            }
+
+            if(_CategoryTxtStyle==null){
+
+                _CategoryTxtStyle = new GUIStyle(EditorStyles.foldout);
+                _CategoryTxtStyle.normal.textColor = Color.white;
+                _CategoryTxtStyle.richText = true;
+                _CategoryTxtStyle.fontStyle = FontStyle.Bold;
+                _CategoryTxtStyle.fontSize = 12;
+            }
+
+            if(_ContentTxtStyle==null)
             {
-                EditorGUILayout.LabelField("FMOD Studio project file Setting", _BannerTxtStyle, GUILayout.Width(position.width * .3f));
-                GUILayout.Space(3f);
-                EditorGUILayout.TextField("Studio Project Path: ", _SettingData.SourceProjectPath, GUILayout.Width(position.width*.88f));
+                _ContentTxtStyle = new GUIStyle(EditorStyles.label);
+                _ContentTxtStyle.richText= true;
+                _ContentTxtStyle.fontStyle = FontStyle.Bold;
+                _ContentTxtStyle.fontSize = 12;
+            }
 
-                //돋보기 버튼을 눌렀을 경우
-                if(GUI.Button(new Rect(position.width * .88f + 10f, 122f, 30f, 30f), _SearchIcon)) {
+            if (_BoldErrorTxtStyle == null)
+            {
 
-                    SerializedObject obj = new SerializedObject(_SettingData);
-                    FMODUnity.SettingsEditor.BrowseForSourceProjectPath(obj);
-                }
+                _BoldErrorTxtStyle = new GUIStyle();
+                _BoldErrorTxtStyle.normal.textColor = Color.red;
+                _BoldErrorTxtStyle.onNormal.textColor = Color.red;
+                _BoldErrorTxtStyle.fontStyle = FontStyle.Bold;
+                _BoldErrorTxtStyle.fontSize = 14;
+                _BoldErrorTxtStyle.richText = true;
+            }
+
+            if (_ButtonStyle==null){
+
+                _ButtonStyle = new GUIStyle(GUI.skin.button);
+                _ButtonStyle.padding.top = 1;
+                _ButtonStyle.padding.bottom = 1;
+            }
+
+            if(_TxtFieldStyle==null){
+
+                _TxtFieldStyle = new GUIStyle(EditorStyles.textField);
+                _TxtFieldStyle.richText = true;
+            }
+
+            if (_TxtFieldErrorStyle == null){
+
+                _TxtFieldErrorStyle = new GUIStyle(EditorStyles.textField);
+                _TxtFieldErrorStyle.richText = true;
+                _TxtFieldErrorStyle.normal.textColor = Color.red;
+                _TxtFieldErrorStyle.fontStyle = FontStyle.Bold;
+                _TxtFieldErrorStyle.onNormal.textColor= Color.red;
+            }
 
 
+            /**************************************
+             *  SerializedProperty 초기화
+             ****/
+            if (_StudioSettingsObj==null) _StudioSettingsObj = new SerializedObject(_StudioSettings);
+            if(_StudioPathProperty==null) _StudioPathProperty = _StudioSettingsObj.FindProperty("sourceProjectPath");
+
+            bool isBlackSkin = ( EditorGUIUtility.isProSkin );
+            _CountColorStyle = ( isBlackSkin ? "#8DFF9E" : "#107C05" );
+            _ContentColorStyle = (isBlackSkin ? "#6487AA" : "#104C87");
+            #endregion
+        }
+
+        private void GUI_ShowLogo()
+        {
+            #region Omit
+            bool isBlack        = ( EditorGUIUtility.isProSkin==false );
+            Texture useBanner   = ( isBlack ? _BannerBlackTex : _BannerWhiteTex);
+
+            GUILayout.Box(useBanner, GUILayout.Width(position.width), GUILayout.Height(100f));
+
+            /**Editor Version을 띄운다.*/
+            using(var scope = new GUILayout.AreaScope(new Rect(position.width*.5f-5f, 100f - 20, 300, 30)))
+            {
+                //////////////////////////////////////
+                GUILayout.Label($"FModAudio Settings Editor {_EditorVersion}", _BoldTxtStyle);
+                /////////////////////////////////////
+
+                scope.Dispose();
             }
 
             #endregion
         }
 
-        private void ShowFMODBusList()
+        private void GUI_StudioPathSettings()
         {
-            #region Omission
-            if (_EventData == null) return;
-            EditorGUILayout.LabelField("FMOD Bus Settings", _BannerTxtStyle);
+            #region Omit
 
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.TextField("Master Bus", "Master", GUILayout.Width(position.width * .9f));
-            EditorGUI.EndDisabledGroup();
-
-            _EventData.BGMBusName = EditorGUILayout.TextField("BGM Bus", _EventData.BGMBusName, GUILayout.Width(position.width * .9f));
-            _EventData.SFXBusName = EditorGUILayout.TextField("SFX Bus", _EventData.SFXBusName, GUILayout.Width(position.width * .9f));
-            #endregion
-        }
-
-        private void ShowEventList()
-        {
-            #region Omission
-            if (_EventData == null) return;
-            EditorGUILayout.LabelField("FMOD Event Settings", _BannerTxtStyle, GUILayout.Width(position.width * .3f));
-
-            EditorGUILayout.Space(5f);
-            GUILayout.BeginHorizontal();
-
-            //Refrsh Settings
-            if (GUILayout.Button("Update And Save Settings"))
-            {
-                CreateEnumScript();
-                UnityEngine.Debug.LogWarning("FModBGMEventType & FModSFXEventType 열거형이 갱신됬습니다.");
-                _showRefreshHelp = true;
-                
-                if(_EventData!=null)
-                {
-                    EditorUtility.SetDirty(_EventData);
-                }
-
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, _ScriptDefine);
-                AssetDatabase.Refresh();
-            }
-
-            //Apply Studio Settings
-            if (GUILayout.Button("Apply FMod Studio Event Settings"))
-            {
-                RefreshStudioChanges();
-            }
-
-            GUILayout.EndHorizontal();
-
-            GUILayout.Space(4f);
-
-            EditorGUI.indentLevel--;
-            _showApplySettings = EditorGUILayout.Foldout(_showApplySettings, "");
             EditorGUI.indentLevel++;
+            _StudioPathSettingsFade.target = EditorGUILayout.Foldout(_StudioPathSettingsFade.target,"FMod Studio Path Setting", _FoldoutTxtStyle);
+            EditorGUILayout.Space(3f);
 
-            //Studio Event Settings
-            if (_showApplySettings)
+
+            using (var fadeScope = new EditorGUILayout.FadeGroupScope(_StudioPathSettingsFade.faded))
+            {
+                if (fadeScope.visible)
+                {
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.BeginHorizontal();
+                    /*************************************/
+                    float buttonWidth = 25f;
+                    float pathWidth = (position.width - buttonWidth * 4f);
+
+                    GUILayoutOption buttonWidthOption = GUILayout.Width(buttonWidth);
+                    GUILayoutOption buttonHeightOption = GUILayout.Height(buttonWidth);
+                    GUILayoutOption pathWidthOption = GUILayout.Width(pathWidth);
+                    GUILayoutOption pathHeightOption = GUILayout.Height(buttonWidth);
+
+                    //경로 표시
+                    using (var scope = new EditorGUI.ChangeCheckScope())
+                    {
+                        GUIStyle usedStyle = ( StudioPathIsValid()?_TxtFieldStyle:_TxtFieldErrorStyle );
+                        string newPath = EditorGUILayout.TextField("Studio Project Path: ", _StudioPathProperty.stringValue,usedStyle, pathWidthOption, pathHeightOption);
+
+                        //경로가 변경되었을 경우
+                        if (scope.changed && newPath.EndsWith(".fspro")) {
+
+                            _StudioPathProperty.stringValue = newPath;
+                            ResetEditorSettings();
+                        }
+
+                        scope.Dispose();
+                    }
+
+                    //돋보기 버튼을 눌렀을 경우
+                    if (GUILayout.Button(_SearchIconTex, _ButtonStyle, buttonWidthOption, buttonHeightOption)){
+
+                        string prevPath = _StudioSettings.SourceProjectPath;
+                        if(FMODUnity.SettingsEditor.BrowseForSourceProjectPath(_StudioSettingsObj) && !prevPath.Equals(_StudioSettings.SourceProjectPath))
+                        {
+                            ResetEditorSettings();
+                        }
+                        
+                    }
+
+                    //스튜디오 바로가기 버튼
+                    if (GUILayout.Button(_StudioIconTex, _ButtonStyle, buttonWidthOption, buttonHeightOption))
+                    {
+                        string projPath = Application.dataPath.Replace("Assets", "") + _StudioPathProperty.stringValue;
+
+                        if (StudioPathIsValid()){
+
+                            System.Diagnostics.Process.Start(projPath);
+                        }
+                    }
+                    EditorGUI.indentLevel--;
+
+                    /**************************************/
+                    EditorGUILayout.EndHorizontal();
+
+                    GUI_CreateEnumAndRefreshData();
+                }
+
+                fadeScope.Dispose();
+            }
+
+            EditorGUI.indentLevel--; 
+
+            #endregion
+        }
+
+        private void GUI_CreateEnumAndRefreshData()
+        {
+            #region Omit
+            using (var scope = new EditorGUILayout.HorizontalScope())
             {
                 EditorGUILayout.Space(10f);
-                EditorGUILayout.LabelField("FMod Studio Event Apply Settings", _BannerTxtStyle);
-                EditorGUILayout.Space(3f);
-                _EventData.BGMGroupRootFolder = EditorGUILayout.TextField("BGMGroup Root Folder: ", _EventData.BGMGroupRootFolder, GUILayout.Width(position.width*.9f));
-                _EventData.SFXGroupRootFolder = EditorGUILayout.TextField("SFXGroup Root Folder: ", _EventData.SFXGroupRootFolder, GUILayout.Width(position.width * .9f));
-            }
 
+                //옵션 저장 및 갱신
+                if(GUILayout.Button( "Save and Apply Settings", GUILayout.Width(position.width*.5f))){
 
-            EditorGUILayout.Space(10f);
+                    CreateEnumScript();
+                    if (_EditorSettings != null){
+                        EditorUtility.SetDirty(_EditorSettings);
+                    }
 
-            if (_showRefreshHelp) EditorGUILayout.HelpBox("FModBGMEventType & FModSFXEventType 열거형이 갱신되었습니다!", MessageType.Info);
+                    PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, _ScriptDefine);
+                    AssetDatabase.Refresh();
+                }
 
-            //BGM or SFX 선택 툴바 표시
-            _EventCategories[0] = $"BGM({_EventData.BGMEvents.Count})";
-            _EventCategories[1] = $"SFX({_EventData.SFXEvents.Count})";
-            _EventCategories[2] = $"NoGroup({_EventData.NoneEvents.Count})";
-
-            int newSelect = GUILayout.Toolbar(_EventCategorySelect, _EventCategories, GUILayout.Width(position.width), GUILayout.Height(50f));
-            if (_EventCategorySelect != newSelect)
-            {
-                _EventCategorySelect = newSelect;
-                _showRefreshHelp = false;
-            }
-
-            List<FMODUnity.EventReference>  events  = GetEventList(_EventCategorySelect);
-            List<FMODEventCategoryDesc>     descs   = GetCategoryList(_EventCategorySelect);
-
-            GUILayout.BeginHorizontal();
-            /*Horizontal Start***********************************/
-
-            //Add Category
-            if (GUILayout.Button("Add Category"))
-            {
-                _checkOverlapIndex = -1;
-                _showRefreshHelp = false;
-                _addCategory = true;
-                _addWarning = false;
-            }
-
-            /*Horizontal End***********************************/
-            GUILayout.EndHorizontal();
-
-            //카테고리 추가창
-            if (_addCategory)
-            {
-                _addName = EditorGUILayout.TextField("New Category Name: ", _addName);
-
-                if (_addWarning) EditorGUILayout.HelpBox("카테고리는 중복될 수 없습니다!", MessageType.Warning);
-
-                GUILayout.BeginHorizontal();
-                //카테고리 추가 취소
-                if (GUILayout.Button("Back", GUILayout.Width(position.width * .5f)))
+                //FMod Studio 데이터 불러오기
+                if(GUILayout.Button("Loaded Studio Settings", GUILayout.Width(position.width*.5f)))
                 {
-                    _showRefreshHelp = false;
-                    _addCategory = false;
+
+                    if (_EditorSettings!=null){
+
+                        GetBusList(_EditorSettings.BusList);
+                        GetBankList(_EditorSettings.BankList);
+                        GetParamList(_EditorSettings.ParamDescList, _EditorSettings.ParamLableList);
+                        GetEventList(_EditorSettings.CategoryDescList, _EditorSettings.EventRefs, _EditorSettings.EventGroups);
+                    }
                 }
 
-                //카테고리 추가
-                if (GUILayout.Button("Create", GUILayout.Width(position.width * .5f)))
-                {
-                    _showRefreshHelp = false;
-                    if (CheckCategoryExist(_addName, descs) != -1)
-                    {
-                        _addWarning = true;
-                    }
-                    else
-                    {
-                        _addCategory = false;
-                        _addWarning = false;
-                        descs.Add(new FMODEventCategoryDesc { categoryName = _addName, show = false, Count = 0 });
-                    }
-                }
-                GUILayout.EndHorizontal();
+
+
+                scope.Dispose();
             }
-
-
-            /*****************************************
-             * 추가한 카테고리들을 표시한다.
-             ***/
-
-            int Count = descs.Count;
-            int startIndex = 0;
-
-            for (int i = 0; i < Count; i++)
-            {
-                FMODEventCategoryDesc desc = descs[i];
-                int EventCount = desc.Count;
-
-                EditorGUILayout.BeginHorizontal();
-
-                //카테고리 삭제 버튼
-                if (GUILayout.Button(_xIcon, GUILayout.Width(25f), GUILayout.Height(25f)))
-                {
-                    _showRefreshHelp = false;
-
-                    //이 카테고리에 속해있는 모든 이벤트를 삭제한다.
-                    for (int d = desc.Count; d > 0; d--) {
-                        events.RemoveAt(startIndex);
-                    }
-
-                    descs.RemoveAt(i);
-                    i--;
-                    Count--;
-                    EditorGUILayout.EndHorizontal();
-                    continue;
-                }
-
-                desc.show = EditorGUILayout.Foldout(desc.show, desc.categoryName + $"<color={_CategoryCountColor}>({EventCount})</color>", _FoldTxtStyle);
-                EditorGUILayout.EndHorizontal();
-
-                descs[i] = desc;
-
-                //접기 상태가 아니라면 해당 카테고리에 속해있는 모든 이벤트 목록을 보여준다.
-                if (desc.show) {
-
-                    EditorGUILayout.Space(20f);
-
-                    for (int i2 = startIndex; i2 < (startIndex + EventCount); i2++)
-                    {
-                        ShowEventField(ref i2, ref EventCount, events, ref desc);
-                        descs[i] = desc;
-                    }
-
-                    //추가버튼을 눌렀을 경우
-                    if (GUILayout.Button(_AddIcon))
-                    {
-                        _showRefreshHelp = false;
-                        _checkOverlapIndex = -1;
-                        events.Insert(startIndex + desc.Count, new FMODUnity.EventReference());
-                        desc.Count++;
-                        descs[i] = desc;
-                        EventCount++;
-                    }
-                }
-
-                EditorGUILayout.Space(5);
-                var rect = EditorGUILayout.BeginHorizontal();
-                Handles.color = Color.gray;
-                Handles.DrawLine(new Vector2(rect.x - 15, rect.y), new Vector2(rect.width + 15, rect.y));
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.Space(10);
-
-                startIndex += EventCount;
-            }
-
             #endregion
         }
 
-        private void ShowEventField(ref int index, ref int count, List<FMODUnity.EventReference> lists, ref FMODEventCategoryDesc desc)
+        private void GUI_BusSettings()
         {
-            #region Ommission
-            if (_EventData == null) return;
+            #region Omit
+            List<NPData> busList = _EditorSettings.BusList;
+            int Count = busList.Count;
 
-            //유효하지 않은 이벤트 텍스트필드 스타일
-            if (_notValidEventStyle == null)
-            {
-                _notValidEventStyle = new GUIStyle(EditorStyles.textField);
-                _notValidEventStyle.normal.textColor = Color.red;
-                _notValidEventStyle.onNormal.textColor = Color.red;
-                _notValidEventStyle.fontStyle = FontStyle.Bold;
-            }
-
-            float baseHeight = GUI.skin.textField.CalcSize(GUIContent.none).y;
-
-            Rect removeRect = new Rect(position.width * .9f, baseHeight, 35f, 50f);
-            Rect searchRect = new Rect(position.width * .82f, baseHeight, 35f, 50f);
-            Rect headerRect = position;
-            headerRect.width = EditorGUIUtility.labelWidth;
-            headerRect.height = baseHeight;
-
-            Rect pathRect = position;
-            pathRect.xMin = headerRect.xMax;
-            pathRect.xMax = searchRect.x - 3;
-            pathRect.height = baseHeight;
-
-            //이벤트 이름 표시
-            bool EventIsValid = CheckEventIsValid(index, lists);
-            bool EventRefIsNull = lists[index].IsNull;
-            string EventPath = EventRefIsNull ? "-" : lists[index].Path;
-            string[] PathSplit = EventPath.Split('/');
-            string EventName = PathSplit[PathSplit.Length - 1].Replace(' ', '_');
-
-            GUILayout.BeginHorizontal();
             EditorGUI.indentLevel++;
-            EditorGUI.indentLevel++;
+            _BusSettingsFade.target = EditorGUILayout.Foldout(_BusSettingsFade.target, $"FMod Bus<color={_CountColorStyle}>({Count})</color>", _FoldoutTxtStyle);
+            EditorGUILayout.Space(3f);
 
-            if (EventIsValid == true)
+
+            using (var fadeScope = new EditorGUILayout.FadeGroupScope(_BusSettingsFade.faded))
             {
-                EditorGUILayout.TextField(EventName.Replace(' ', '_'), EventPath, GUILayout.Width(position.width * .85f), GUILayout.Height(25f));
+                if (fadeScope.visible)
+                {
+                    EditorGUILayout.BeginVertical();
+                    /*******************************************/
+                    float buttonWidth = 25f;
+                    float pathWidth = (position.width - buttonWidth * 8f);
+
+                    GUILayoutOption buttonWidthOption = GUILayout.Width(buttonWidth);
+                    GUILayoutOption buttonHeightOption = GUILayout.Height(buttonWidth);
+                    GUILayoutOption pathWidthOption = GUILayout.Width(pathWidth);
+                    GUILayoutOption pathHeightOption = GUILayout.Height(buttonWidth);
+
+                    if(Count>0) EditorGUILayout.HelpBox("An FModBusType enum is created based on the information shown below.", MessageType.Info);
+
+                    //모든 버스 목록들을 보여준다.
+                    EditorGUI.indentLevel++;
+                    EditorGUI.BeginDisabledGroup(true);
+
+                    using(var horizontal = new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.LabelField($"<color={_ContentColorStyle}>Master</color>", _ContentTxtStyle, GUILayout.Width(150));
+                        EditorGUILayout.TextArea("bus:/", _TxtFieldStyle, pathWidthOption, pathHeightOption);
+                        horizontal.Dispose();
+                    }
+                    EditorGUI.EndDisabledGroup();
+
+                    for (int i=0; i<Count; i++) {
+
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.LabelField($"<color={_ContentColorStyle}>{busList[i].Name}</color>", _ContentTxtStyle, GUILayout.Width(150));
+                            EditorGUILayout.TextArea(busList[i].Path, _TxtFieldStyle, pathWidthOption, pathHeightOption);
+                            horizontal.Dispose();
+                        }
+                    }
+                    EditorGUI.indentLevel--;
+
+                    EditorGUILayout.EndVertical();
+                    /*******************************************/
+                }
+
+                fadeScope.Dispose();
             }
-            else EditorGUILayout.TextField(EventName.Replace(' ', '_'), EventPath, _notValidEventStyle, GUILayout.Width(position.width * .85f), GUILayout.Height(25f));
-
-            //돋보기 버튼을 눌렀을 경우
-            if (GUILayout.Button(_SearchIcon, GUILayout.Width(25f), GUILayout.Height(25f)))
-            {
-                var eventBrowser = ScriptableObject.CreateInstance<EventBrowser>();
-
-                SerializedObject dataObject = new SerializedObject(_EventData);
-                SerializedProperty eventsProperty = dataObject.FindProperty(_DescPropertyStr[_EventCategorySelect]);
-                SerializedProperty elementProperty = eventsProperty.GetArrayElementAtIndex(index);
-
-                eventBrowser.ChooseEvent(elementProperty);
-                var windowRect = searchRect;
-                windowRect.xMin = pathRect.xMin;
-                windowRect.position = GUIUtility.GUIToScreenPoint(windowRect.position);
-                windowRect.height = searchRect.height + 1;
-                windowRect.width = Mathf.Max(windowRect.width, 300f);
-                eventBrowser.ShowAsDropDown(windowRect, new Vector2(windowRect.width, 400));
-
-                _eventIsOverlap = false;
-                _checkOverlapIndex = index;
-            }
-
-            //제거 버튼을 눌렀을 경우
-            if (GUILayout.Button(_RemoveIcon, GUILayout.Width(25f), GUILayout.Height(25f)))
-            {
-                _checkOverlapIndex = -1;
-                lists.RemoveAt(index);
-                index -= 1;
-                count--;
-
-                desc.Count--;
-            }
-            GUILayout.EndHorizontal();
-
-            if (_checkOverlapIndex == index && _eventIsOverlap) {
-                string categoryName = (_EventCategorySelect == 0 ? "BGM" : "SFX");
-                EditorGUILayout.HelpBox($"{_overlapEventName}는 이미{categoryName}카테고리에 존재하는 이벤트입니다.", MessageType.Error);
-            }
-
-            if (EventIsValid == false)
-            {
-                EditorGUILayout.HelpBox($"{EventName}은(는) FMod Studio Project에서 존재하지 않는 이벤트입니다.", MessageType.Error);
-            }
-
-            GUILayout.Space(3f);
 
             EditorGUI.indentLevel--;
+            #endregion
+        }
+
+        private void GUI_BankSettings()
+        {
+            #region Omit
+            List<NPData> bankList = _EditorSettings.BankList;
+            int Count = bankList.Count;
+
+            EditorGUI.indentLevel++;
+            _BankSettingsFade.target = EditorGUILayout.Foldout(_BankSettingsFade.target, $"FMod Banks<color={_CountColorStyle}>({Count})</color>", _FoldoutTxtStyle);
+            EditorGUILayout.Space(3f);
+
+
+            using (var fadeScope = new EditorGUILayout.FadeGroupScope(_BankSettingsFade.faded))
+            {
+                if (fadeScope.visible)
+                {
+                    EditorGUILayout.BeginVertical();
+                    /*******************************************/
+                    float buttonWidth = 25f;
+                    float pathWidth = (position.width - buttonWidth * 8f);
+
+                    GUILayoutOption buttonWidthOption = GUILayout.Width(buttonWidth);
+                    GUILayoutOption buttonHeightOption = GUILayout.Height(buttonWidth);
+                    GUILayoutOption pathWidthOption = GUILayout.Width(pathWidth);
+                    GUILayoutOption pathHeightOption = GUILayout.Height(buttonWidth);
+
+                    if(Count>0) EditorGUILayout.HelpBox("An FModBankType enum is created based on the information shown below.", MessageType.Info);
+
+                    //모든 뱅크 목록들을 보여준다.
+                    EditorGUI.indentLevel++;
+                    for (int i = 0; i < Count; i++){
+
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.LabelField($"<color={_ContentColorStyle}>{bankList[i].Name}</color>", _ContentTxtStyle, GUILayout.Width(150));
+                            EditorGUILayout.TextArea(bankList[i].Path, _TxtFieldStyle, pathWidthOption, pathHeightOption);
+                            horizontal.Dispose();
+                        }
+                    }
+                    EditorGUI.indentLevel--;
+
+                    EditorGUILayout.EndVertical();
+                    /*******************************************/
+                }
+
+                fadeScope.Dispose();
+            }
+
             EditorGUI.indentLevel--;
+            #endregion
+        }
+
+        private void GUI_MenuSelected()
+        {
+            //TODO: 
+        }
+
+        private void GUI_ParamSettings()
+        {
+            #region Omit
+            List<FModParamDesc> descs   = _EditorSettings.ParamDescList;
+            List<string>        labels  = _EditorSettings.ParamLableList;
+            int Count = descs.Count;
+            int labelStartIndex = 0;
+
+            float buttonWidth = 25f;
+            float pathWidth = (position.width - buttonWidth * 10f);
+            if (pathWidth <= 0f) pathWidth = 0f;
+
+            GUILayoutOption buttonWidthOption = GUILayout.Width(buttonWidth);
+            GUILayoutOption buttonHeightOption = GUILayout.Height(buttonWidth);
+            GUILayoutOption pathWidthOption = GUILayout.Width(pathWidth);
+            GUILayoutOption pathHeightOption = GUILayout.Height(buttonWidth);
+
+            EditorGUI.indentLevel++;
+            _ParamSettingsFade.target = EditorGUILayout.Foldout(_ParamSettingsFade.target, $"FMod Parameters<color={_CountColorStyle}>({Count})</color>", _FoldoutTxtStyle);
+            EditorGUILayout.Space(3f);
+
+            using (var fadeScope = new EditorGUILayout.FadeGroupScope(_ParamSettingsFade.faded))
+            {
+                if (fadeScope.visible)
+                {
+                    if(Count>0) EditorGUILayout.HelpBox("An FModGlobalParameter/FModLocalParameter enum is created based on the information shown below.", MessageType.Info);
+
+                    _ParamGroups[0] = $"Global Parameters({_EditorSettings.ParamCountList[0]})";
+                    _ParamGroups[1] = $"Local Parameters({_EditorSettings.ParamCountList[1]})";
+                    _ParamGroupSelected = GUILayout.Toolbar(_ParamGroupSelected, _ParamGroups, GUILayout.Height(40f));
+
+                    //모든 파라미터 목록들을 보여준다.
+                    EditorGUI.indentLevel++;
+                    for (int i = 0; i < Count; i++)
+                    {
+                        using (var horizontal = new EditorGUILayout.HorizontalScope())
+                        {
+                            FModParamDesc desc = descs[i];
+
+                            if (descs[i].isGlobal && _ParamGroupSelected != 0 
+                                || !descs[i].isGlobal && _ParamGroupSelected!=1) {
+
+                                labelStartIndex += desc.LableCount;
+                                continue;
+                            }
+
+                            GUILayout.Space(5f);
+                            EditorGUILayout.LabelField($"<color={_ContentColorStyle}>{desc.ParamName}</color>", _ContentTxtStyle, GUILayout.Width(140));
+                            EditorGUILayout.TextArea($"( <color=red>Min:</color> {desc.Min}~ <color=red>Max:</color> {desc.Max} )", _TxtFieldStyle, pathWidthOption, pathHeightOption);
+
+                            //레이블 확인버튼
+                            using(var disable = new EditorGUI.DisabledGroupScope( desc.LableCount<=0 ))
+                            {
+                                //레이블이 존재한다면 버튼을 누를 수 있도록 한다.
+                                if (EditorGUILayout.DropdownButton(new GUIContent("Labeld"), FocusType.Passive, GUILayout.Width(70f))) {
+
+                                    GenericMenu menu= new GenericMenu();
+                                    for (int j = 0; j < desc.LableCount; j++){
+
+                                        menu.AddItem(new GUIContent(labels[labelStartIndex + j]), true, GUI_MenuSelected);
+                                    }
+
+                                    menu.ShowAsContext();
+                                }
+                            }
+
+                            horizontal.Dispose();
+                            labelStartIndex += desc.LableCount;
+                        }
+                    }
+                    EditorGUI.indentLevel--;
+
+                }
+
+                fadeScope.Dispose();
+            }
+
+            EditorGUI.indentLevel--;
+            #endregion
+        }
+
+        private void GUI_EventSettings()
+        {
+            #region Omit
+            FModGroupInfo[]             descs       = _EditorSettings.EventGroups;
+            List<FModEventCategoryDesc> categorys   = _EditorSettings.CategoryDescList;
+            List<FModEventInfo>         infos       = _EditorSettings.EventRefs;
+            int infoCount = infos.Count;
+            int descCount = descs.Length;
+            int categoryCount = categorys.Count;
+
+            EditorGUI.indentLevel++;
+            _EventSettingsFade.target = EditorGUILayout.Foldout(_EventSettingsFade.target, $"FMod Events<color={_CountColorStyle}>({infoCount})</color>", _FoldoutTxtStyle);
+            EditorGUILayout.Space(3f);
+
+
+            using (var fadeScope = new EditorGUILayout.FadeGroupScope(_EventSettingsFade.faded))
+            {
+                ////////////////////////////////////////////////////
+                if (fadeScope.visible)
+                {
+                    EditorGUI.indentLevel--;
+                    if (categoryCount>0) EditorGUILayout.HelpBox("An FModBGMEventType/FModSFXEventType/FModNoGroupEventType enum is created based on the information shown below.", MessageType.Info);
+                    EditorGUI.indentLevel++;
+
+                    _EventGroups[0] = $"BGM({descs[0].TotalEvent})";
+                    _EventGroups[1] = $"SFX({descs[1].TotalEvent})";
+                    _EventGroups[2] = $"NoGroups({descs[2].TotalEvent})";
+                    _EventGroupSelected = GUILayout.Toolbar(_EventGroupSelected, _EventGroups, GUILayout.Height(40f));
+
+
+                    //모든 카테고리를 순회한다.
+                    EditorGUI.indentLevel += 1;
+
+                    int startIndex = 0;
+                    for (int i = 0; i < categoryCount; i++)
+                    {
+                        FModEventCategoryDesc category = categorys[i];
+
+                        //현재 선택된 그룹의 카테고리가 아니라면 스킵.
+                        if (category.GroupIndex != _EventGroupSelected){
+
+                            startIndex += category.EventCount;
+                            continue;
+                        }
+
+                        //해당 카테고리의 폴드아웃 효과 구현.
+                        using(var change = new EditorGUI.ChangeCheckScope())
+                        {
+                            category.foldout = EditorGUILayout.Foldout(category.foldout, $"<color={_ContentColorStyle}>{category.CategoryName}</color>" + $"<color={_CountColorStyle}>({category.EventCount})</color>", _CategoryTxtStyle);
+
+                            //foldout값이 바뀌었을 경우
+                            if(change.changed){
+
+                                categorys[i] = category;
+                            }
+
+                            change.Dispose();
+                        }
+
+                        //카테고리가 펼쳐진 상태라면 해당 카테고리에 속해있는 모든 이벤트를 출력한다.
+                        if (category.foldout)
+                        {
+                            int EventCount = categorys[i].EventCount;
+                            EditorGUI.indentLevel++;
+                            for (int j = 0; j < EventCount; j++){
+
+                                int realIndex      = (startIndex+j);
+                                bool isValid       = CheckEventIsValid(realIndex, infos);
+                                FModEventInfo info = infos[realIndex];
+                                GUIStyle usedStyle = (isValid?_TxtFieldStyle:_TxtFieldErrorStyle);
+
+                                EditorGUILayout.BeginHorizontal();
+                                EditorGUILayout.TextField(info.Name, $"{info.Path}", usedStyle, GUILayout.Width(position.width-50f));
+                                EditorGUILayout.EndHorizontal();
+                            }
+                            EditorGUI.indentLevel--;
+                        }
+
+                        GUI_DrawLine(3f, 40f);
+                        startIndex += category.EventCount;
+                    }
+
+                    EditorGUI.indentLevel -= 1;
+                }
+
+                fadeScope.Dispose();
+                /////////////////////////////////////////////////////////
+            }
+
+            EditorGUI.indentLevel--;
+            #endregion
+        }
+
+
+        //========================================
+        ////          Utility Methods         ////
+        //========================================
+        private void ResetEditorSettings()
+        {
+            #region Omit
+            if (_EditorSettings == null) return;
+
+            //Editor Settings Reset
+            _EditorSettings.FoldoutBooleans = 0;
+            _EditorSettings.BankList.Clear();
+            _EditorSettings.BusList.Clear();
+            _EditorSettings.ParamCountList[0] = 0;
+            _EditorSettings.ParamCountList[1] = 0;
+            _EditorSettings.ParamDescList.Clear();
+            _EditorSettings.ParamLableList.Clear();
+            _EditorSettings.CategoryDescList.Clear();
+            _EditorSettings.EventRefs.Clear();
+            _EditorSettings.EventGroups[0].TotalEvent = 0;
+            _EditorSettings.EventGroups[1].TotalEvent = 0;
+            _EditorSettings.EventGroups[2].TotalEvent = 0;
+            EditorUtility.SetDirty(_EditorSettings);
             #endregion
         }
 
         private void CreateEnumScript()
         {
             #region Ommision
-            if (_EventData == null) return;
+            if (_EditorSettings == null) return;
+
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("using UnityEngine;");
             builder.AppendLine("");
 
+
             /**************************************
-             * Bus Enum 정의
-             ***/
+             * Bus Enum 정의.
+             *****/
             builder.AppendLine("public enum FModBusType");
             builder.AppendLine("{");
-            builder.AppendLine($"   MasterBus = 0,");
-            builder.AppendLine($"   BGMBus = 1,");
-            builder.AppendLine($"   SFXBus = 2");
+
+            List<NPData> busLists = _EditorSettings.BusList;
+            int Count = busLists.Count;
+            for(int i=0; i<Count; i++)
+            {
+                string busName  = RemoveInValidChar(busLists[i].Name);
+                string comma    = (i == Count - 1 ? "" : ",");
+                builder.AppendLine($"   {busName}={i}{comma}");
+            }
+
             builder.AppendLine("}");
             builder.AppendLine("");
 
 
-            builder.AppendLine("public sealed class FModBusPath");
+            /********************************************
+             *  Bank Enum 정의
+             ***/
+            builder.AppendLine("public enum FModBankType");
             builder.AppendLine("{");
-            builder.AppendLine($"   public static readonly string MasterBus=\"bus:/\";");
-            builder.AppendLine($"   public static readonly string BGMBus=\"bus:/{_EventData.BGMBusName}\";");
-            builder.AppendLine($"   public static readonly string SFXBus=\"bus:/{_EventData.SFXBusName}\";");
+
+            List<EditorBankRef> bankList = FMODUnity.EventManager.Banks;
+
+            Count = bankList.Count;
+            for (int i = 0; i < Count; i++)
+            {
+                EditorBankRef bank = bankList[i];
+                string bankName = RemoveInValidChar(bank.Name);
+                string comma = (i == Count - 1 ? "" : ",");
+                builder.AppendLine($"   {bankName}={i}{comma}");
+            }
+
             builder.AppendLine("}");
             builder.AppendLine("");
+
+
+            /*******************************************
+             *  Global Parameter Enum 정의
+             * ***/
+            builder.AppendLine("public enum FModGlobalParamType");
+            builder.AppendLine("{");
+
+            List<FModParamDesc> paramDescs = _EditorSettings.ParamDescList;
+
+            Count = paramDescs.Count;
+            for(int i=0; i<Count; i++)
+            {
+                FModParamDesc desc = paramDescs[i];
+                if (desc.isGlobal == false) continue;
+
+                string comma = (i == Count - 1 ? "" : ",");
+                builder.AppendLine($"   {desc.ParamName}={i}{comma}");
+            }
+
+            builder.AppendLine("}");
+            builder.AppendLine("");
+
+
+
+            /*******************************************
+             *  Local Parameter Enum 정의
+             * ***/
+            builder.AppendLine("public enum FModLocalParamType");
+            builder.AppendLine("{");
+
+            Count = paramDescs.Count;
+            for (int i = 0; i < Count; i++)
+            {
+                FModParamDesc desc = paramDescs[i];
+                if (desc.isGlobal) continue;
+
+                string comma = (i == Count - 1 ? "" : ",");
+                builder.AppendLine($"   {desc.ParamName}={i}{comma}");
+            }
+
+            builder.AppendLine("}");
+            builder.AppendLine("");
+
+
 
             /**************************************
-             * BGM Enum 정의
+             * BGM Events Enum 정의
              ***/
-            int total = 0;
+            int     total           = 0;
+            float   writeEventCount = 0;
+            List<FModEventCategoryDesc> categoryDescs = _EditorSettings.CategoryDescList;
+            List<FModEventInfo>         infos         = _EditorSettings.EventRefs;
+            Count = _EditorSettings.CategoryDescList.Count;
 
             builder.AppendLine("public enum FModBGMEventType");
             builder.AppendLine("{");
 
-            int Count = _EventData.BGMEvents.Count;
             for (int i = 0; i < Count; i++)
             {
-                if (_EventData.BGMEvents[i].IsNull || !CheckEventIsValid(i, _EventData.BGMEvents))
+                FModEventCategoryDesc desc = categoryDescs[i];
+
+                //BGM 그룹이 아니라면 스킵.
+                if (desc.GroupIndex != 0)
+                {
+
+                    total += desc.EventCount;
                     continue;
+                }
 
-                string comma = (i == Count - 1 ? "" : ",");
-                string[] pathSplit = _EventData.BGMEvents[i].Path.Split('/');
-                string enumName = pathSplit[pathSplit.Length - 1].Replace(' ', '_');
+                //해당 카테고리의 모든 이벤트를 추가한다.
+                for (int j = 0; j < desc.EventCount; j++){
 
-                builder.AppendLine($"   {enumName} = {i}{comma}");
+                    int realIndex = (total + j);
+                    string comma = (++writeEventCount == _EditorSettings.EventGroups[0].TotalEvent ? "" : ",");
+
+                    if (CheckEventIsValid(realIndex, infos) == false) continue;
+                    builder.AppendLine($"   {infos[realIndex].Name}={realIndex}{comma}");
+                }
+
+                total += desc.EventCount;
             }
 
             builder.AppendLine("}");
@@ -676,46 +1247,68 @@ public sealed class FModAudioManager : MonoBehaviour
 
 
             /**************************************
-             * SFX Enum 정의
-             ***/
-            total += Count;
+             *   SFX Events Enum 정의
+             * ****/
             builder.AppendLine("public enum FModSFXEventType");
             builder.AppendLine("{");
 
-            Count = _EventData.SFXEvents.Count;
-            for (int i = 0; i < Count; i++)
+            total = 0;
+            writeEventCount = 0;
+            for(int i=0; i<Count; i++)
             {
-                if (_EventData.SFXEvents[i].IsNull || !CheckEventIsValid(i, _EventData.SFXEvents))
+                FModEventCategoryDesc desc = categoryDescs[i];
+
+                //SFX 그룹이 아니라면 스킵.
+                if (desc.GroupIndex != 1){
+
+                    total += desc.EventCount;
                     continue;
+                }
 
-                string   comma       = (i == Count - 1 ? "" : ",");
-                string[] pathSplit   = _EventData.SFXEvents[i].Path.Split('/');
-                string   enumName    = pathSplit[pathSplit.Length - 1].Replace(' ', '_'); ;
+                //해당 카테고리의 모든 이벤트를 추가한다.
+                for (int j = 0; j < desc.EventCount; j++)
+                {
+                    int realIndex = (total + j);
+                    string comma = (++writeEventCount == _EditorSettings.EventGroups[1].TotalEvent ? "" : ",");
+                    builder.AppendLine($"   {infos[realIndex].Name}={realIndex}{comma}");
+                }
 
-                builder.AppendLine($"   {enumName} = {i+total}{comma}");
+                total += desc.EventCount;
             }
 
             builder.AppendLine("}");
             builder.AppendLine("");
 
+
             /**************************************
-             * None Enum 정의
-             ***/
+             *   NoGroups Events Enum 정의
+             * ****/
             builder.AppendLine("public enum FModNoGroupEventType");
             builder.AppendLine("{");
 
-            total += Count;
-            Count = _EventData.NoneEvents.Count;
+            total = 0;
+            writeEventCount = 0;
             for (int i = 0; i < Count; i++)
             {
-                if (_EventData.SFXEvents[i].IsNull || !CheckEventIsValid(i, _EventData.SFXEvents))
+                FModEventCategoryDesc desc = categoryDescs[i];
+
+                //NoGroup 그룹이 아니라면 스킵.
+                if (desc.GroupIndex != 2)
+                {
+
+                    total += desc.EventCount;
                     continue;
+                }
 
-                string   comma       = (i == Count - 1 ? "" : ",");
-                string[] pathSplit   = _EventData.NoneEvents[i].Path.Split('/');
-                string   enumName    = pathSplit[pathSplit.Length - 1].Replace(' ', '_'); ;
+                //해당 카테고리의 모든 이벤트를 추가한다.
+                for (int j = 0; j < desc.EventCount; j++)
+                {
+                    int realIndex = (total + j);
+                    string comma = (++writeEventCount == _EditorSettings.EventGroups[2].TotalEvent ? "" : ",");
+                    builder.AppendLine($"   {infos[realIndex].Name}={realIndex}{comma}");
+                }
 
-                builder.AppendLine($"   {enumName} = {i+total}{comma}");
+                total += desc.EventCount;
             }
 
             builder.AppendLine("}");
@@ -725,227 +1318,340 @@ public sealed class FModAudioManager : MonoBehaviour
             /***************************************
              * Event Reference List class 정의
              ***/
-            builder.AppendLine("public sealed class FModEventReferenceList");
+            builder.AppendLine("public sealed class FModReferenceList");
             builder.AppendLine("{");
             builder.AppendLine("    public static readonly FMOD.GUID[] Events = new FMOD.GUID[]");
             builder.AppendLine("    {");
-
-            AddEventListScript(builder, _EventData.BGMEvents); //Add BGMEvents
-            AddEventListScript(builder, _EventData.SFXEvents); //Add SFXEvents
-            AddEventListScript(builder, _EventData.NoneEvents,true); //Add NoneEvents
-
-
+            AddEventListScript(builder, _EditorSettings.EventRefs); 
             builder.AppendLine("    };");
+            builder.AppendLine("");
+
+            builder.AppendLine("    public static readonly string[] Banks = new string[]");
+            builder.AppendLine("    {");
+            AddBankListScript(builder);
+            builder.AppendLine("    };");
+            builder.AppendLine("");
+
+
+            builder.AppendLine("    public static readonly string[] Params = new string[]");
+            builder.AppendLine("    {");
+            AddParamListScript(builder);
+            builder.AppendLine("    };");
+            builder.AppendLine("");
+
+            builder.AppendLine("    public static readonly string[] BusPaths = new string[]");
+            builder.AppendLine("    {");
+            AddBusPathListScript(builder);
+            builder.AppendLine("    };");
+            builder.AppendLine("");
+
             builder.AppendLine("}");
             builder.AppendLine("");
 
 
             //생성 및 새로고침
-            File.WriteAllText(_ResourcePath, builder.ToString());
+            File.WriteAllText(_DataScriptPath, builder.ToString());
 
             #endregion
         }
 
-        private void AddEventListScript(StringBuilder builder, List<FMODUnity.EventReference> list, bool lastWork=false)
+        private void AddBusPathListScript(StringBuilder builder)
         {
+            #region Omit
+            List<NPData> list = _EditorSettings.BusList;
             int Count = list.Count;
             for (int i = 0; i < Count; i++)
             {
-                if (list[i].IsNull) continue;
-
-                string comma = (i == Count - 1 && lastWork ? "" : ",");
-                string guidValue = $"Data1={list[i].Guid.Data1}, Data2={list[i].Guid.Data2}, Data3={list[i].Guid.Data3}, Data4={list[i].Guid.Data4}";
-
-                builder.AppendLine("        new FMOD.GUID{ " + guidValue + " }" + comma);
-            }
-        }
-
-        private void RefreshStudioChanges()
-        {
-            #region Ommission
-            if (_EventData == null) return;
-
-            //기존 데이터 초기화
-            _EventData.BGMDesc.Clear();
-            _EventData.BGMEvents.Clear();
-
-            _EventData.SFXDesc.Clear();
-            _EventData.SFXEvents.Clear();
-
-            _EventData.NoneEvents.Clear();
-            _EventData.NoneDesc.Clear();
-
-            //모든 이벤트들을 FMOD Studio의 값대로 갱신.
-            List<EditorEventRef> events = EventManager.Events;
-            List<EditorBankRef> banks = EventManager.Banks;
-            string[] pathSplits;
-
-
-            foreach (EditorEventRef eventRef in events)
-            {
-                pathSplits = eventRef.Path.Split('/');
-
-                List<FMODEventCategoryDesc> descLists;
-                List<FMODUnity.EventReference> eventLists;
-
-                if (pathSplits[1] == _EventData.BGMGroupRootFolder) {
-
-                    descLists = _EventData.BGMDesc;
-                    eventLists= _EventData.BGMEvents;
-                }
-                else if (pathSplits[1] == _EventData.SFXGroupRootFolder){
-
-                    descLists = _EventData.SFXDesc;
-                    eventLists = _EventData.SFXEvents;
-                }
-                else{
-
-                    descLists = _EventData.NoneDesc;
-                    eventLists = _EventData.NoneEvents;
-                }
-
-
-                string eventName = pathSplits[pathSplits.Length - 1];
-                string eventpath = eventRef.Path.Replace($"/{eventName}", "").Replace("event:/", "");
-                if (eventpath == "event:") eventpath = "NoGroup";
-
-                int categoryIndex = CheckCategoryExist(eventpath, descLists);
-
-                eventpath = eventpath.Replace($"{{pathSplits[0]}}/{{pathSplits[1]","");
-
-                //카테고리가 존재하지 않다면 생성.
-                if (categoryIndex == -1) {
-
-                    descLists.Add(new FMODEventCategoryDesc() { categoryName = eventpath, Count = 0, show = false });
-                    categoryIndex = descLists.Count - 1;
-                }
-                FMODEventCategoryDesc desc = descLists[categoryIndex];
-
-                //카테고리에 추가.
-                int startIndex = GetCategoryEventStartIndex(descLists, categoryIndex);
-                eventLists.Insert(startIndex, new FMODUnity.EventReference() { Guid = eventRef.Guid, Path = eventRef.Path });
-                desc.Count++;
-                descLists[categoryIndex] = desc;
+                string comma = (i == Count - 1 ? "" : ",");
+                builder.AppendLine($"        \"{list[i].Path}\"" + comma);
             }
             #endregion
         }
 
-        private List<FMODUnity.EventReference> GetEventList(int index)
+        private void AddParamListScript(StringBuilder builder)
         {
-            if (_EventData == null) return null;
-
-            switch (index)
+            #region Omit
+            List<FModParamDesc> list = _EditorSettings.ParamDescList;
+            int Count = list.Count;
+            for (int i = 0; i < Count; i++)
             {
-                case (0): return _EventData.BGMEvents;
-                case (1): return _EventData.SFXEvents;
-                case (2): return _EventData.NoneEvents;
+                string comma = (i == Count - 1 ? "" : ",");
+                builder.AppendLine($"        \"{list[i].ParamName}\"" + comma);
             }
-
-            return null;
+            #endregion
         }
 
-        private List<FMODEventCategoryDesc> GetCategoryList(int index)
+        private void AddBankListScript(StringBuilder builder)
         {
-            if (_EventData == null) return null;
-
-            switch(index)
+            #region Omit
+            List<FMODUnity.EditorBankRef> list = FMODUnity.EventManager.Banks;
+            int Count = list.Count;
+            for (int i = 0; i < Count; i++)
             {
-                case (0): return _EventData.BGMDesc;
-                case (1): return _EventData.SFXDesc;
-                case (2): return _EventData.NoneDesc;
+                string comma = (i == Count - 1 ? "" : ",");
+                builder.AppendLine($"        \"{list[i].Name}\"" + comma);
             }
-
-            return null;
+            #endregion
         }
 
-        private string GetCategoryName(int index)
+        private void AddEventListScript(StringBuilder builder, List<FModEventInfo> list, bool lastWork = false)
         {
-            if (_EventData == null) return null;
-
-            switch (index)
+            #region Omit
+            int Count = list.Count;
+            for (int i = 0; i < Count; i++)
             {
-                case (0): return "BGM";
-                case (1): return "SFX";
-                case (2): return "NoGroup";
-            }
+                string comma = (i == Count - 1 && lastWork ? "" : ",");
+                string guidValue = $"Data1={list[i].GUID.Data1}, Data2={list[i].GUID.Data2}, Data3={list[i].GUID.Data3}, Data4={list[i].GUID.Data4}";
 
-            return null;
+                builder.AppendLine("        new FMOD.GUID{ " + guidValue + " }" + comma);
+            }
+            #endregion
         }
 
-        private int GetCategoryEventStartIndex(List<FMODEventCategoryDesc> list, int index)
+        private void FadeAnimBoolInit()
         {
-            int total = 0;
+            #region Omit
+            UnityAction repaintEvent = new UnityAction(base.Repaint);
 
-            for(int i=0; i<index; i++)
-            {
-                total += list[i].Count;
-            }
+            _StudioPathSettingsFade?.valueChanged.RemoveAllListeners();
+            _StudioPathSettingsFade?.valueChanged.AddListener(repaintEvent);
 
-            return total;
+            _BusSettingsFade?.valueChanged.RemoveAllListeners();
+            _BusSettingsFade?.valueChanged.AddListener(repaintEvent);
+
+            _ParamSettingsFade?.valueChanged.RemoveAllListeners();
+            _ParamSettingsFade?.valueChanged.AddListener(repaintEvent);
+
+            _EventSettingsFade?.valueChanged.RemoveAllListeners();
+            _EventSettingsFade?.valueChanged.AddListener(repaintEvent);
+
+            _BusSettingsFade?.valueChanged.RemoveAllListeners();
+            _BusSettingsFade?.valueChanged.AddListener(repaintEvent);
+
+            #endregion
         }
 
-        private int CheckCategoryExist(string name, List<FMODEventCategoryDesc> list)
+        private bool StudioPathIsValid()
         {
-            for(int i=list.Count-1; i>=0; i--)
+            string projPath = Application.dataPath.Replace("Assets", "") + _StudioPathProperty.stringValue;
+            return File.Exists(projPath);
+        }
+
+        private string RemoveInValidChar(string inputString)
+        {
+            //시작 숫자 제거
+            inputString = inputString.Substring(Regex.Match(inputString, @"^\d*").Length, inputString.Length);
+
+            //사용하지 못하는 특수문자 제거
+            inputString = _regex.Replace(inputString, "_");
+
+            return inputString;
+        }
+
+        private void GetBankList(List<NPData> lists)
+        {
+            #region Omit
+            if (lists == null) return;
+            lists.Clear();
+
+            List<FMODUnity.EditorBankRef> banks = FMODUnity.EventManager.Banks;
+            
+            int Count = banks.Count;
+            for (int i = 0; i < Count; i++){
+
+                EditorBankRef bank = banks[i];
+                string bankName = RemoveInValidChar(bank.Name);
+                string bankPath = bank.Path;
+
+                NPData info = new NPData()
+                {
+                    Name = bankName,
+                    Path = bankPath
+                };
+
+                lists.Add(info);
+            }
+            #endregion
+        }
+
+        private void GetBusList(List<NPData> lists)
+        {
+            #region Omit
+            if (lists == null || StudioPathIsValid() == false) return;
+            lists.Clear();
+
+            string studiopath   = Application.dataPath.Replace("Assets", "") + _StudioPathProperty.stringValue;
+            string[] pathSplit  = studiopath.Split('/');
+            string busPath      = studiopath.Replace(pathSplit[pathSplit.Length-1], "") + _GroupFolderPath;
+
+            Dictionary<string, NPData> busMap = new Dictionary<string, NPData>();
+            DirectoryInfo dPath = new DirectoryInfo(busPath);
+            XmlDocument document= new XmlDocument();
+
+            //Studio folder의 모든 bus 데이터들을 읽어들인후 기록.
+            foreach(FileInfo file in dPath.GetFiles())
             {
-                if (list[i].categoryName == name) return i;
+                if (!file.Exists) continue;
+
+                try { document.LoadXml(File.ReadAllText(file.FullName)); }catch { continue;}
+                string  idNode      = document.SelectSingleNode("//object/@id")?.InnerText;
+                string nameNode     = document.SelectSingleNode("//object/property[@name='name']/value")?.InnerText;
+                string outputNode   = document.SelectSingleNode("//object/relationship[@name='output']/destination")?.InnerText;
+            
+                if(idNode!=null && nameNode!=null && outputNode!=null){
+
+                    busMap.Add(idNode, new NPData { Name = nameNode, Path = outputNode });
+                    lists.Add(new NPData { Name=nameNode, Path=outputNode });
+                }
+            }
+
+            //불러온 모든 busData들의 경로를 제대로 기록한다.
+            int Count = lists.Count;
+            for(int i=0; i<Count; i++)
+            {
+                string busName   = lists[i].Name;
+                string parentBus = lists[i].Path;
+                string finalPath = busName;
+
+                while( busMap.ContainsKey(parentBus) ) {
+
+                    finalPath = busMap[parentBus].Name + "/" + finalPath;
+                    parentBus = busMap[parentBus].Path;
+                }
+
+                //마무리 작업
+                lists[i] = new NPData { Name = busName, Path = _BusRootPath + finalPath };
+            }
+
+            #endregion
+        }
+
+        private void GetParamList(List<FModParamDesc> descList, List<string> lableList)
+        {
+            #region Omit
+            if (descList == null || lableList == null) return;
+            descList.Clear();
+            lableList.Clear();
+
+            List<EditorEventRef> EventRefs = FMODUnity.EventManager.Events;
+            _EditorSettings.ParamCountList[0] = _EditorSettings.ParamCountList[1] = 0;
+
+            int eventCount = EventRefs.Count;
+            for(int i=0; i<eventCount; i++)
+            {
+                EditorEventRef eventRef = EventRefs[i];
+                List<EditorParamRef> paramRef = eventRef.Parameters;
+                int paramCount = paramRef.Count;
+
+                for(int j=0; j<paramCount; j++)
+                {
+                    EditorParamRef param = paramRef[j];
+                    int labelCount = (param.Labels == null ? 0 : param.Labels.Length);
+
+                    descList.Add(new FModParamDesc()
+                    {
+                        Max = param.Max,
+                        Min = param.Min,
+                        LableCount = labelCount,
+                        ParamName= param.Name,
+                        isGlobal=param.IsGlobal
+                    });
+
+                    int CountIndex = (param.IsGlobal? 0:1);
+                    _EditorSettings.ParamCountList[CountIndex]++;
+
+                    //레이블이 존재한다면
+                    for(int k=0; k<labelCount; k++) {
+
+                        lableList.Add(param.Labels[k]);
+                    }
+                }
+
+            }
+
+            #endregion
+        }
+
+        private int GetCategoryIndex(string categoryName, List<FModEventCategoryDesc> descs)
+        {
+            int Count = descs.Count;
+            for(int i=0; i<Count; i++)
+            {
+                if (descs[i].CategoryName.Equals(categoryName)) return i;
             }
 
             return -1;
         }
 
-        private bool CheckEventIsOverlap(int index, List<FMODUnity.EventReference> guidList)
+        private int GetCategoryEventStartIndex(string categoryName, List<FModEventCategoryDesc> descs)
         {
-            #region Omission
-            List<FMODUnity.EventReference> list;
-            FMOD.GUID guid = guidList[index].Guid;
-
-            //중복 체크를 실행한다.
-
-            //BGM
-            list = _EventData.BGMEvents;
-            int Count = list.Count;
-            for (int i=0; i<Count; i++)
+            #region Omit
+            int total = 0;
+            int Count = descs.Count;
+            for(int i=0; i<Count; i++)
             {
-                if (i == index || list[i].IsNull) continue;
-
-                //중복 확인이 되었을 경우
-                if (guid.Equals(list[i].Guid)) return true;
+                if (descs[i].CategoryName == categoryName) return total;
+                total += descs[i].EventCount;
             }
 
-            //SFX
-            list = _EventData.SFXEvents;
-            Count = list.Count;
-            for (int i = 0; i < Count; i++)
-            {
-                if (i == index || list[i].IsNull) continue;
-
-                //중복 확인이 되었을 경우
-                if (guid.Equals(list[i].Guid)) return true;
-            }
-
-            //NoneGroup
-            list = _EventData.NoneEvents;
-            Count = list.Count;
-            for (int i = 0; i < Count; i++)
-            {
-                if (i == index || list[i].IsNull) continue;
-
-                //중복 확인이 되었을 경우
-                if (guid.Equals(list[i].Guid)) return true;
-            }
-
-            return false;
+            return total;
             #endregion
         }
 
-        private bool CheckEventIsValid( int index, List<FMODUnity.EventReference> lists )
+        private void GetEventList(List<FModEventCategoryDesc> categoryList, List<FModEventInfo> refList, FModGroupInfo[] groupList)
         {
-            if (Settings.Instance.EventLinkage == EventLinkage.Path && !lists[index].Guid.IsNull)
-            {
-                EditorEventRef eventRef = EventManager.EventFromGUID(lists[index].Guid);
+            #region Omit
+            if (categoryList == null || refList == null || groupList==null) return;
+            categoryList.Clear();
+            refList.Clear();
 
-                if (eventRef == null || eventRef != null && (eventRef.Path != lists[index].Path)) {
+            groupList[0].TotalEvent = groupList[1].TotalEvent = groupList[2].TotalEvent = 0;
+
+            List<EditorEventRef> eventRefs = FMODUnity.EventManager.Events;
+            int eventCount = eventRefs.Count;
+
+            //모든 이벤트들을 그룹별로 분류한다.
+            for (int i = 0; i < eventCount; i++)
+            {
+                EditorEventRef eventRef = eventRefs[i];
+                string Path             = eventRef.Path;
+                string[] PathSplit      = Path.Split('/');
+                string Name             = RemoveInValidChar(PathSplit[PathSplit.Length - 1]);
+                string CategoryName     = Path.Replace("event:/", "").Replace("/"+PathSplit[PathSplit.Length-1], "");
+                int GroupIndex          = GetEventGroupIndex(PathSplit[1]);
+                int CategoryIndex       = GetCategoryIndex(CategoryName, categoryList);
+
+                //카테고리가 없으면 카테고리를 새로 만든다.
+                if (CategoryName.Equals(PathSplit[PathSplit.Length - 1])) CategoryName = "Root";
+                if (CategoryIndex == -1){
+
+                    categoryList.Add(new FModEventCategoryDesc { CategoryName = CategoryName, EventCount = 1, GroupIndex = GroupIndex });
+                    CategoryIndex = (categoryList.Count - 1);
+                }
+                else categoryList[CategoryIndex] = new FModEventCategoryDesc(categoryList[CategoryIndex], 1);
+                groupList[GroupIndex].TotalEvent++;
+
+                int eventStartIndex = GetCategoryEventStartIndex(CategoryName, categoryList);
+                refList.Insert( eventStartIndex, new FModEventInfo { Name=Name, Path=Path, GUID=eventRef.Guid } );
+            }
+            #endregion
+        }
+
+        private int GetEventGroupIndex(string RootFolder)
+        {
+            if (_EditorSettings.EventGroups[0].RootFolderName.Equals(RootFolder)) return 0;
+            else if (_EditorSettings.EventGroups[1].RootFolderName.Equals(RootFolder)) return 1;
+            else return 2;
+        }
+
+        private bool CheckEventIsValid(int index, List<FModEventInfo> lists)
+        {
+            if (Settings.Instance.EventLinkage == EventLinkage.Path && !lists[index].GUID.IsNull)
+            {
+                EditorEventRef eventRef = EventManager.EventFromGUID(lists[index].GUID);
+
+                if (eventRef == null || eventRef != null && (eventRef.Path != lists[index].Path))
+                {
                     return false;
                 }
             }
@@ -957,665 +1663,619 @@ public sealed class FModAudioManager : MonoBehaviour
 
     #endregion
 
-    private enum FadeState
+    #region Define
+    public struct FadeInfo
     {
-        NONE=0,
-        PLAYING,
-        PENDING_KILL
+        public FModEventInstance TargetIns;
+        public int FadeID;
+        public float duration;
+        public float durationDiv;
+        public float startVolume;
+        public float distance;
+        public bool destroyAtCompleted;
+        public bool pendingKill;
     }
 
-    private enum BGMFadeState
+    public enum FadeState
     {
-        NONE,
-        SMALL_Apply,
-        SMALL_COMPLETE,
-        BIG_Apply,
-        BIG_COMPLETE
+        None,
+        PendingKill_Ready,
+        PendingKill
     }
+    #endregion
 
-    private sealed class FadeInfo
-    {
-       public int             fadeID     = -1;
-       public int             fadeCount  = 0;
-       public FadeState       fadeState  = FadeState.NONE;
-    }
-
-    //==================================
-    ////          Property          //// 
-    //==================================
+    //=======================================
+    /////            Property           /////
+    ///======================================
     public static bool  AutoFadeInOutBGM    { get; set; } = false;
     public static float AutoFadeBGMDuration { get; set; } = 3f;
-    public const  int   AutoFadeBGMID = -9724;
-    public static int   TCount = 0;
-
-    public FModEventFadeCompleteNotify OnEventFadeComplete;
+    public const  int   AutoFadeBGMID = -9324;
+    public static FModEventFadeCompleteNotify OnEventFadeComplete;
 
 
-    //==================================
-    ////          Fields            //// 
-    //==================================
-    private static FModAudioManager _Ins;
-    private int             _BGMuuid;
-    private Coroutine       _BGMFadeCoroutine;
+    //=======================================
+    /////            Fields            /////
+    ///======================================
+    private static FModAudioManager _Instance;
+    private FModEventInstance       _BGMIns;
 
-    #if FMOD_Event_ENUM
-    private FModBGMEventType _NextBGMType;
-    private bool              _NextBGMFade = false;
-    private float            _NextBGMVolume = 1f;
-    private int              _NextBGMstartPosition = 0;
-    private string           _NextBGMParam = String.Empty;
-    private float            _NextBGMParamValue = 0f;
-    #endif
+    private FMOD.Studio.Bus[] _BusList;
 
-    private FMOD.Studio.Bus[]                          _BusList  = new FMOD.Studio.Bus[3];
-    private Dictionary<int, FMOD.Studio.EventInstance> _InsList  = new Dictionary<int, EventInstance>();
-    private List<FadeInfo>                             _FadeList = new List<FadeInfo>(10);
+    private FadeInfo[]   _fadeInfos = new FadeInfo[10];
+    private Coroutine    _fadeCoroutine;
+    private int          _fadeCount = 0;
+    private FadeState    _fadeState = FadeState.None;
+
+    private int     _NextBGMEvent = -1;
+    private float   _NextBGMVolume = 0f;
+    private int     _NextBGMStartPos = 0;
+    private string  _NextBGMParam = "";
+    private float   _NextBGMParamValue = 0f;
+    private Vector3 _NextBGMPosition = Vector3.zero;
 
 
-    //==================================
-    ////      Public Methods         /// 
-    //==================================
+    //=======================================
+    /////         Core Methods          /////
+    ///======================================
+
 #if FMOD_Event_ENUM
+    /*****************************************
+     *   Bus Methods
+     * ***/
+    public static void SetBusVolume(FModBusType busType, float newVolume)
+     {
+        if (_Instance == null) return;
 
-    /**************************************
-    * Union methods
-    ***/
-    private FadeInfo GetFadeInfo(int fadeID)
+        int index = (int)busType;
+        FMOD.Studio.Bus bus = _Instance._BusList[index];
+
+        if (bus.isValid() == false) return;
+        bus.setVolume(newVolume);
+     }
+
+    public static float GetBusVolume(FModBusType busType)
     {
-        int Count = _FadeList.Count;
-        for (int i = 0; i < Count; i++)
-        {
-            if (_FadeList[i].fadeID == fadeID) return _FadeList[i];
-        }
+        if (_Instance== null) return 0;
 
-        return null;
+        int index = (int)busType;
+        FMOD.Studio.Bus bus = _Instance._BusList[index];
+
+        if (bus.isValid() == false) return 0;
+
+        float volume;
+        bus.getVolume(out volume);
+        return volume;
     }
 
-    private static void AddFadeInfo(int fadeID)
+    public static void StopBusAllEvents(FModBusType busType)
     {
-        #region Ommission
-        int emptyIndex = -1;
-        int Count = _Ins._FadeList.Count;
+        if (_Instance == null) return;
 
-        //이미 같은 ID의 페이드가 실행중이라면
+        int index = (int)busType;
+        FMOD.Studio.Bus bus = _Instance._BusList[index];
+
+        if (bus.isValid() == false) return;
+        bus.stopAllEvents(FMOD.Studio.STOP_MODE.IMMEDIATE);
+    }
+
+    public static void SetBusMute(FModBusType busType, bool isMute)
+    {
+        if (_Instance == null) return;
+
+        int index = (int)busType;
+        FMOD.Studio.Bus bus = _Instance._BusList[index];
+
+        if (bus.isValid() == false) return;
+        bus.setMute(isMute);
+    }
+
+    public static bool GetBusMute(FModBusType busType)
+    {
+        if (_Instance == null) return false;
+
+        int index = (int)busType;
+        FMOD.Studio.Bus bus = _Instance._BusList[index];
+
+        if (bus.isValid() == false) return false;
+
+        bool isMute;
+        bus.getMute(out isMute);
+        return isMute;
+    }
+
+    public static void SetAllBusMute(bool isMute)
+    {
+        if (_Instance == null) return;
+
+        int Count = _Instance._BusList.Length;
+        for(int i=0; i<Count; i++)
+        {
+            if (!_Instance._BusList[i].isValid()) continue;
+            _Instance._BusList[i].setMute(isMute);
+        }
+    }
+
+
+    /****************************************
+     *   Bank Methods
+     * ****/
+    public static void LoadBank(FModBankType bankType)
+    {
+        if (_Instance == null) return;
+
+        string bankName = FModReferenceList.Banks[(int)bankType];
+        FMODUnity.RuntimeManager.LoadBank(bankName);
+    }
+
+    public static void UnloadBank(FModBankType bankType)
+    {
+        if (_Instance == null) return;
+
+        string bankName = FModReferenceList.Banks[(int)bankType];
+        FMODUnity.RuntimeManager.UnloadBank(bankName);
+    }
+
+    public static bool BankIsLoaded(FModBankType bankType)
+    {
+        if (_Instance == null) return false;
+
+        string bankName = FModReferenceList.Banks[(int)bankType];
+        return FMODUnity.RuntimeManager.HasBankLoaded(bankName);
+    }
+
+    public static void LoadAllBank()
+    {
+        if (_Instance == null) return;
+
+        string[] bankLists = FModReferenceList.Banks;
+        int Count = bankLists.Length;
+
+        //모든 뱅크를 로드한다.
+        for(int i=0; i<Count; i++){
+
+            if (FMODUnity.RuntimeManager.HasBankLoaded(bankLists[i])){
+
+                continue;
+            }
+
+            FMODUnity.RuntimeManager.LoadBank(bankLists[i]);
+        }
+    }
+
+    public static void UnLoadAllBank()
+    {
+        if (_Instance == null) return;
+
+        string[] bankLists = FModReferenceList.Banks;
+        int Count = bankLists.Length;
+
+        //모든 뱅크를 언로드한다.
         for (int i = 0; i < Count; i++)
         {
-            FadeInfo info = _Ins._FadeList[i];
-            if (info.fadeID == fadeID && info.fadeState == FadeState.PLAYING)
-            {
+            if (!FMODUnity.RuntimeManager.HasBankLoaded(bankLists[i])){
 
-                info.fadeCount++;
+                continue;
+            }
+
+            FMODUnity.RuntimeManager.UnloadBank(bankLists[i]);
+        }
+    }
+
+
+    /******************************************
+     *   FModEventInstance Methods
+     * **/
+    public static FModEventInstance CreateInstance(FModBGMEventType eventType, Vector3 position=default)
+    {
+        if(_Instance== null) return new FModEventInstance();
+
+        FMOD.GUID guid = FModReferenceList.Events[(int)eventType];
+        FModEventInstance newInstance = new FModEventInstance(FMODUnity.RuntimeManager.CreateInstance(guid), position);
+
+        return newInstance;
+    }
+
+    public static FModEventInstance CreateInstance(FModSFXEventType eventType, Vector3 position=default)
+    {
+        return CreateInstance((FModBGMEventType)eventType, position);
+    }
+
+    public static FModEventInstance CreateInstance(FModNoGroupEventType eventType, Vector3 position=default)
+    {
+        return CreateInstance((FModBGMEventType)eventType, position);
+    }
+
+    public static void StopAllInstance()
+    {
+        if (_Instance == null) return;
+
+        FMOD.Studio.Bus[] busLists = _Instance._BusList;
+        int Count = busLists.Length;
+
+        for(int i=0; i<Count; i++){
+
+            busLists[i].stopAllEvents(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        }
+    }
+
+
+    /*********************************************
+     *  PlayOneShot Methods
+     * ***/
+    public static void PlayOneShotSFX(FModSFXEventType eventType, Vector3 position=default, float volume = -1f, float startTimelinePositionRatio=-1f, string paramName = "", float paramValue = 0f, float minDistance = 1f, float maxDistance = 20f)
+    {
+        if(_Instance == null) return;
+
+        FMOD.GUID guid = FModReferenceList.Events[(int)eventType];
+        bool volumeIsChanged = ( volume>=0f );
+        bool stPosIsChanged  = ( startTimelinePositionRatio>=0f );
+        bool paramIsChanged  = ( paramName!="" );
+
+        FModEventInstance newInstance = new FModEventInstance(FMODUnity.RuntimeManager.CreateInstance(guid));
+        newInstance.Set3DDistance(minDistance, maxDistance);
+        newInstance.Position = position;
+        if(stPosIsChanged) newInstance.TimelinePositionRatio = startTimelinePositionRatio;
+        if(volumeIsChanged) newInstance.Volume = volume;  
+        if(paramIsChanged) newInstance.SetParameter(paramName, paramValue);
+        newInstance.Play();
+        newInstance.Destroy(true);
+    }
+    
+    public static void PlayOneShotSFX(FModNoGroupEventType eventType, Vector3 position = default, float volume = -1f, float startTimelinePositionRatio = -1f, string paramName = "", float paramValue = 0f, float minDistance = 1f, float maxDistance = 20f)
+    {
+        PlayOneShotSFX((FModSFXEventType)eventType, position, volume, startTimelinePositionRatio, paramName, paramValue, minDistance, maxDistance);
+    }
+
+
+    /*********************************************
+     *   BGM Methods
+     * ***/
+    public static void PlayBGM(FModBGMEventType eventType, float volume = -1f, int startTimelinePositionRatio = -1, string paramName = "", float paramValue = 0f, Vector3 position = default)
+    {
+        #region Omit
+        if (_Instance == null) return;
+
+        bool volumeIsChanged = (volume >= 0f);
+        bool stPosIsChanged = (startTimelinePositionRatio >= 0f);
+        bool paramIsChanged = (paramName != "");
+
+        //기존에 BGM 인스턴스가 존재할 경우
+        if(_Instance._BGMIns.IsValid)
+        {
+            if (AutoFadeInOutBGM){
+
+                _Instance._NextBGMEvent = (int)eventType;
+                _Instance._NextBGMVolume = volume;
+                _Instance._NextBGMStartPos = startTimelinePositionRatio;
+                _Instance._NextBGMParam = paramName;
+                _Instance._NextBGMParamValue = paramValue;
+                _Instance._NextBGMPosition = position;
+
+                StopFade(AutoFadeBGMID);
+                ApplyBGMFade(0f, AutoFadeBGMDuration * .5f, AutoFadeBGMID, true);
                 return;
             }
-
-            if (emptyIndex == -1 && info.fadeState == FadeState.NONE)
-            {
-                emptyIndex = i;
-            }
+            else _Instance._BGMIns.Destroy();
         }
 
-        //같은 ID의 페이드가 없다면
-        bool isFulled = (emptyIndex == -1);
-        FadeInfo newInfo = (isFulled ? new FadeInfo() : _Ins._FadeList[emptyIndex]);
+        _Instance._BGMIns = CreateInstance(eventType, position);
+        _Instance._BGMIns.Position = position;
+        if (stPosIsChanged) _Instance._BGMIns.TimelinePositionRatio = startTimelinePositionRatio;
+        if (paramIsChanged) _Instance._BGMIns.SetParameter(paramName, paramValue);
 
-        if (isFulled) _Ins._FadeList.Add(newInfo);
-        newInfo.fadeID = fadeID;
-        newInfo.fadeCount = 1;
-        newInfo.fadeState = FadeState.PLAYING;
+        //페이드를 적용하면서 시작할 경우
+        if (AutoFadeInOutBGM)
+        {
+            float newVolume = (volumeIsChanged ? volume : _Instance._BGMIns.Volume);
+            _Instance._NextBGMEvent = -1;
+            _Instance._BGMIns.Volume = 0f;
+            ApplyBGMFade(newVolume, AutoFadeBGMDuration, AutoFadeBGMID);
+        }
+        else if (volumeIsChanged) _Instance._BGMIns.Volume = volume;
+
+        _Instance._BGMIns.Play();
         #endregion
     }
 
-    public static bool FadeIsPlaying(int fadeID)
+    public static void PlayBGM(FModNoGroupEventType eventType, float volume = -1f, int startTimelinePositionRatio = -1, string paramName = "", float paramValue = 0f, Vector3 position = default)
     {
-        if (_Ins == null) return false;
+        PlayBGM((FModBGMEventType)eventType, volume, startTimelinePositionRatio, paramName, paramValue, position);
+    }
 
-        int Count = _Ins._FadeList.Count;
-        for (int i = 0; i < Count; i++)
-        {
-            FadeInfo info = _Ins._FadeList[i];
-            bool isPlaying = (info.fadeState == FadeState.NONE);
-            bool isSameID = (info.fadeID == fadeID);
+    public static void SetBGMPause()
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid==false) return;
+        _Instance._BGMIns.Pause();
+    }
 
-            if (isPlaying && isSameID) return true;
+    public static void SetBGMResume()
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return;
+        _Instance._BGMIns.Resume();
+    }
+
+    public static void SetBGMVolume(float newVolume)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid==false) return;
+        _Instance._BGMIns.Volume = newVolume;
+    }
+
+    public static float GetBGMVolume(float newVolume)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return 0f;
+        return _Instance._BGMIns.Volume;
+    }
+
+    public static void SetBGMParameter(FModGlobalParamType paramType, float paramValue)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return;
+        _Instance._BGMIns.SetParameter(paramType, paramValue);
+    }
+
+    public static void SetBGMParameter(FModLocalParamType paramType, float paramValue)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return;
+        _Instance._BGMIns.SetParameter(paramType, paramValue);
+    }
+
+    public static void SetBGMParameter(string paramType, float paramValue)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return;
+        _Instance._BGMIns.SetParameter(paramType, paramValue);
+    }
+
+    public static void SetBGMTimelinePosition(int timelinePositionMillieSeconds)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return;
+        _Instance._BGMIns.TimelinePosition= timelinePositionMillieSeconds;
+    }
+
+    public static void SetBGMTimelinePosition(float timelinePositionRatio)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return;
+        _Instance._BGMIns.TimelinePositionRatio = timelinePositionRatio;
+    }
+
+    public static int GetBGMTimelinePosition()
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return 0;
+        return _Instance._BGMIns.TimelinePosition;
+    }
+
+    public static float GetBGMTimelinePosition(float timelinePositionRatio)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return 0f;
+        return _Instance._BGMIns.TimelinePositionRatio;
+    }
+
+
+    /********************************************
+     *   Fade Methods
+     * ***/
+    public static void ApplyInstanceFade(FModEventInstance Instance, float goalVolume, float fadeTime, int fadeID = 0, bool completeDestroy = false)
+    {
+        if (_Instance == null || Instance.IsValid==false) return;
+
+        _Instance.AddFadeInfo(Instance, goalVolume, fadeTime, fadeID, completeDestroy);
+    }
+
+    public static void ApplyBGMFade(float goalVolume, float fadeTime, int fadeID = 0, bool completeDestroy = false)
+    {
+        if (_Instance == null || _Instance._BGMIns.IsValid==false) return;
+
+        _Instance.AddFadeInfo(_Instance._BGMIns, goalVolume, fadeTime, fadeID, completeDestroy);
+    }
+
+    public static bool FadeIsPlaying(int FadeID)
+    {
+        if (_Instance == null) return false;
+
+        for(int i=0; i<_Instance._fadeCount; i++){
+
+            if (_Instance._fadeInfos[i].FadeID == FadeID) return true;
         }
 
         return false;
     }
 
-    public static int GetFadeCount(int fadeID)
+    public static int GetFadeCount(int FadeID)
     {
-        if (_Ins == null) return -1;
+        if (_Instance == null) return 0;
 
-        int Count = _Ins._FadeList.Count;
-        for (int i = 0; i < Count; i++)
-        {
-            FadeInfo info = _Ins._FadeList[i];
-            bool isPlaying = (info.fadeState == FadeState.PLAYING);
-            bool isSameID = (info.fadeID == fadeID);
+        int total = 0;
+        for (int i = 0; i < _Instance._fadeCount; i++){
 
-            if (isPlaying && isSameID) return info.fadeCount;
+            if (_Instance._fadeInfos[i].FadeID == FadeID) total++;
         }
 
-        return -1;
+        return total;
     }
 
-    public static void StopFadeByID(int fadeID)
+    public static void StopFade(int FadeID)
     {
-        if (_Ins == null) return;
+        if (_Instance == null) return;
 
-        int Count = _Ins._FadeList.Count;
-        for (int i = 0; i < Count; i++)
-        {
-            bool isPlaying = _Ins._FadeList[i].fadeState == FadeState.PLAYING;
+        for (int i = 0; i < _Instance._fadeCount; i++){
 
-            //changed pendking state
-            if (isPlaying && _Ins._FadeList[i].fadeID == fadeID)
+            if (_Instance._fadeInfos[i].FadeID == FadeID)
             {
-
-                _Ins._FadeList[i].fadeState = FadeState.PENDING_KILL;
-                return;
+                _Instance.RemoveFadeInfo(i);
+                if(_Instance._fadeState==FadeState.None) i--;
             }
         }
     }
 
     public static void StopAllFade()
     {
-        if (_Ins == null) return;
+        if(_Instance == null) return;
 
-        int Count = _Ins._FadeList.Count;
-        for (int i = 0; i < Count; i++)
-        {
-            bool isPlaying = _Ins._FadeList[i].fadeState == FadeState.PLAYING;
+        if (_Instance._fadeCoroutine != null){
 
-            //changed pendking state
-            if (isPlaying)
-            {
-                _Ins._FadeList[i].fadeState = FadeState.PENDING_KILL;
-            }
-        }
-    }
-
-    public static void StopAllEvent()
-    {
-        if (_Ins == null) return;
-
-        StopAllFade();
-        StopAllInstance();
-        StopBGM();
-    }
-
-    public static void DestroyAllEvent()
-    {
-        StopAllFade();
-        DestroyAllInstance();
-        DestroyBGM();
-    }
-
-    /**************************************
-     * Bus
-     ***/
-    public static void SetBusVolume(FModBusType busType, float volume)
-    {
-        if (_Ins == null) return;
-
-        int index = (int)busType;
-        if (_Ins._BusList[index].isValid() == false) return;
-
-        _Ins._BusList[index].setVolume(volume);
-    }
-
-    public static float GetBusVolume(FModBusType busType)
-    {
-        if (_Ins == null) return -1f;
-
-        int index = (int)busType;
-        if (_Ins._BusList[index].isValid() == false) return -1f;
-
-        float volume;
-        _Ins._BusList[index].getVolume(out volume);
-
-        return volume;
-    }
-
-    /************************************
-     * BGM
-     **/
-    public static void PlayBGM( FModBGMEventType type, float volume=-1f, int startProgress = -1, string paramName="", float paramValue=0f, Vector3 position=default)
-    {
-        if (_Ins == null) return;
-
-        //이미 배경음이 존재할 경우
-        if(InstanceIsValid(_Ins._BGMuuid))
-        {
-            //자동 페이드를 사용한다면( volume~0 )
-            if(AutoFadeInOutBGM) {
-
-                _Ins._NextBGMType = type;
-                _Ins._NextBGMVolume = volume;
-                _Ins._NextBGMstartPosition = startProgress;
-                _Ins._NextBGMParam = paramName;
-                _Ins._NextBGMParamValue = paramValue;
-                _Ins._NextBGMFade = true;
-                ApplyBGMFade(0f, AutoFadeBGMDuration * .5f, AutoFadeBGMID, true);
-                return;
-            }
-
-            DestroyInstance(_Ins._BGMuuid);
+            _Instance.StopCoroutine(_Instance._fadeCoroutine);
+            _Instance._fadeCoroutine = null;
         }
 
-        float startVolume = (AutoFadeInOutBGM?0f:volume);
-        CreateInstance(type, out _Ins._BGMuuid, position);
-        PlayInstance(_Ins._BGMuuid, startVolume, startProgress, paramName, paramValue );
-
-        //자동 페이드르 사용한다면( 0~volume )
-        if(AutoFadeInOutBGM){
-
-            _Ins._NextBGMFade = false;
-            ApplyBGMFade(volume, AutoFadeBGMDuration * (_Ins._NextBGMFade?.5f:1f), AutoFadeBGMID);
-        }
+        _Instance._fadeCount = 0;
     }
 
-    public static void PlayBGM(FModNoGroupEventType type, float volume = -1f, int startProgress = -1, string paramName = "", float paramValue = 0f)
+    private void AddFadeInfo(FModEventInstance Instance, float goalVolume, float fadeTime, int fadeID, bool completeDestroy )
     {
-        PlayBGM((FModBGMEventType)type, volume, startProgress, paramName, paramValue);
-    }
-    
-    public static void StopBGM(bool applyAutoFade=true)
-    {
-        if (InstanceIsValid(_Ins._BGMuuid)==false) return;
+        #region Omit
+        //FadeInfo 배열이 존재하지 않는다면 스킵.
+        if (_fadeInfos == null) return;
 
-        if(applyAutoFade && AutoFadeInOutBGM)
+
+        //새로운 페이드 정보가 들어갈 공간이 부족하다면 배로 할당.
+        int containerCount = _fadeInfos.Length;
+        if( (_fadeCount) >= containerCount)
         {
-            _Ins._NextBGMFade = false;
-            ApplyBGMFade(0f, AutoFadeBGMDuration, AutoFadeBGMID);
+            FadeInfo[] temp = _fadeInfos;
+            _fadeInfos = new FadeInfo[containerCount*2];
+            Array.Copy(temp, 0, _fadeInfos, 0, containerCount);
+        }
+
+        //새로운 페이드 정보를 추가한다.
+        _fadeInfos[_fadeCount++] = new FadeInfo()
+        {
+            startVolume = Instance.Volume,
+            distance    = ( goalVolume-Instance.Volume ),
+            duration    = fadeTime,
+            durationDiv = (1f / fadeTime),
+            FadeID      = fadeID,
+            TargetIns   = Instance,
+            pendingKill = false,
+            destroyAtCompleted = completeDestroy,
+        };
+
+        //페이드 코루틴이 없다면 생성한다.
+        if (_fadeCoroutine == null) _fadeCoroutine = StartCoroutine(FadeProgress());
+
+        #endregion
+    }
+
+    private void RemoveFadeInfo(int index)
+    {
+        if (_fadeInfos == null) return;
+
+        //PendingKill Ready라면, PendingKill상태로 전환.
+        if(_fadeState!=FadeState.None){
+
+            _fadeState= FadeState.PendingKill;
+            _fadeInfos[index].pendingKill = true;
             return;
         }
 
-        StopInstance(_Ins._BGMuuid);
+        _fadeInfos[index] = _fadeInfos[_fadeCount - 1];
+        _fadeCount--;
     }
 
-    public static void DestroyBGM()
+    private IEnumerator FadeProgress()
     {
-        if (InstanceIsValid(_Ins._BGMuuid)==false) return;
-
-        DestroyInstance(_Ins._BGMuuid);
-    }
-
-    public static bool IsPlayingBGM()
-    {
-        return InstanceIsPlaying(_Ins._BGMuuid);
-    }
-
-    public static void ApplyBGMFade(float goalVolume, float fadeTime, int fadeID=0, bool completeDestroy=false)
-    {
-        if ( InstanceIsValid(_Ins._BGMuuid)==false) return;
-
-        //기존에 실행되던 BGM Fade가 있다면 정지시킨다.
-        if (_Ins._BGMFadeCoroutine != null)
+        #region Omit
+        //페이드가 존재하는 동안 지속된다.
+        while (_fadeCount>0)
         {
-            FadeInfo deleteInfo = _Ins.GetFadeInfo(fadeID);
-            deleteInfo.fadeCount--;
-            _Ins.StopCoroutine(_Ins._BGMFadeCoroutine);
+            float DeltaTime = Time.deltaTime;
+            int   fadeCount = _fadeCount;
+
+            /********************************
+             *  모든 페이드 정보를 업데이트한다.
+             * **/
+            _fadeState = FadeState.PendingKill_Ready;
+            for(int i=0; i< fadeCount; i++)
+            {
+                //페이드 대상 인스턴스가 유효하지 않을 경우, PendingKill상태를 적용.
+                if (_fadeInfos[i].TargetIns.IsValid==false)
+                {
+                    _fadeInfos[i].pendingKill = true;
+                    continue;
+                }
+
+                _fadeInfos[i].duration -= DeltaTime;
+                float fadeTimeRatio = Mathf.Clamp(1f - ( _fadeInfos[i].duration * _fadeInfos[i].durationDiv ), 0f, 1f);
+                float newVolume     = _fadeInfos[i].startVolume + (fadeTimeRatio * _fadeInfos[i].distance);
+
+                //최종 적용
+                _fadeInfos[i].TargetIns.Volume = _fadeInfos[i].startVolume + ( fadeTimeRatio * _fadeInfos[i].distance );
+                if (fadeTimeRatio < 1f) continue;
+
+                /*********************************
+                 *  페이드 마무리 단계...
+                 * **/
+                OnEventFadeComplete?.Invoke(_fadeInfos[i].FadeID, newVolume);
+
+                //마무리 단계 파괴 적용.
+                if (_fadeInfos[i].destroyAtCompleted){
+
+                    _fadeInfos[i].TargetIns.Destroy();
+                }
+
+                _fadeInfos[i].pendingKill = true;
+                _fadeState = FadeState.PendingKill;
+            }
+
+            /*********************************
+             *  PendingKill 상태를 처리한다.
+             * **/
+            if (_fadeState == FadeState.PendingKill)
+            {
+                _fadeState = FadeState.None;
+
+                for (int i = 0; i < fadeCount; i++){
+
+                    if (!_fadeInfos[i].pendingKill) continue;
+
+                    RemoveFadeInfo(i);
+                    fadeCount--;
+                    i--;
+                }
+            }
+
+            yield return null;
         }
 
-        AddFadeInfo(fadeID);
-
-        if(goalVolume<0f) {
-            _Ins._InsList[_Ins._BGMuuid].getVolume(out goalVolume);
-        }
-
-        _Ins._BGMFadeCoroutine = _Ins.StartCoroutine(_Ins.EventFadeProgress(goalVolume, fadeTime, _Ins._BGMuuid, fadeID, completeDestroy));
+        _fadeCoroutine = null;
+        #endregion
     }
 
-    public static void SetBGMParameter( string paramName, float paramValue )
+    private void BGMFadeComplete(int fadeID, float goalVolume)
     {
-        SetInstanceParameter(_Ins._BGMuuid, paramName, paramValue);
-    }
+        if (fadeID != AutoFadeBGMID || _NextBGMEvent<0) return;
 
-    public static void SetBGMVolume( float volume )
-    {
-        SetInstanceVolume(_Ins._BGMuuid, volume);
-    }
-
-    public static void SetBGMProgress( int progressByMillieSeconds )
-    {
-        SetInstanceProgress(_Ins._BGMuuid, progressByMillieSeconds);
-    }
-
-    public static void SetBGMProgress( float progressRatio )
-    {
-        SetInstanceProgress(_Ins._BGMuuid, progressRatio);
-    }
-
-    /***********************************
-     * SFX
-     **/
-    public static void PlayOneShotSFX( FModSFXEventType type, Vector3 position=default, float volume=-1f, int startProgress=-1, string paramName="", float paramValue=0f, float minDistance=1f, float maxDistance=20f)
-    {
-        if (_Ins == null) return; 
-        var instance = FMODUnity.RuntimeManager.CreateInstance(FModEventReferenceList.Events[(int)type]);
-
-        bool is3D;
-        FMOD.Studio.EventDescription desc;
-        instance.getDescription(out desc);
-        desc.is3D(out is3D);
-        if (is3D)
-        {
-            instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
-            instance.setProperty(FMOD.Studio.EVENT_PROPERTY.MINIMUM_DISTANCE, minDistance);
-            instance.setProperty(FMOD.Studio.EVENT_PROPERTY.MAXIMUM_DISTANCE, maxDistance);
-        }
-
-        instance.start();
-        if (volume >= 0) instance.setVolume(volume);
-        if (paramName!="") instance.setParameterByName(paramName, paramValue);
-        if (startProgress >= 0) instance.setTimelinePosition(startProgress);
-        instance.release();
-    }
-
-    public static void PlayOneShotSFX(FModNoGroupEventType type, Vector3 position=default, float volume = -1f, int startProgress = -1, string paramName = "", float paramValue = 0f, float minDistance = 1f, float maxDistance = 20f)
-    {
-        PlayOneShotSFX((FModSFXEventType)type, position, volume, startProgress, paramName, paramValue, minDistance, maxDistance);
-    }
-
-    /***************************************
-     * Event Instance
-     **/
-    public static bool InstanceIsValid(int UUID)
-    {
-        if (_Ins == null) return false;
-        return _Ins._InsList.ContainsKey(UUID);
-    }
-
-    public static bool CreateInstance(FModBGMEventType type, out int outUUID, Vector3 position=default )
-    {
-        if (_Ins == null)
-        {
-            outUUID = default;
-            return false;
-        }
-
-        int index = (int)type;
-        EventInstance newInstance = FMODUnity.RuntimeManager.CreateInstance(FModEventReferenceList.Events[index]);
-
-        bool is3D;
-        FMOD.Studio.EventDescription desc;
-        newInstance.getDescription(out desc);
-        desc.is3D(out is3D);
-        if (is3D)
-        {
-            newInstance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
-            newInstance.setProperty(FMOD.Studio.EVENT_PROPERTY.MINIMUM_DISTANCE, 1f);
-            newInstance.setProperty(FMOD.Studio.EVENT_PROPERTY.MAXIMUM_DISTANCE, 20f);
-        }
-
-        _Ins._InsList.Add(newInstance.GetHashCode(), newInstance);
-        outUUID = newInstance.GetHashCode();
-        return true;
-    }
-
-    public static bool CreateInstance(FModNoGroupEventType type, out int outUUID, Vector3 position=default)
-    {
-        return CreateInstance((FModBGMEventType)type, out outUUID, position);
-    }
-
-    public static bool CreateInstance(FModSFXEventType type, out int outUUID, Vector3 position=default)
-    {
-        return CreateInstance((FModBGMEventType)type, out outUUID, position);
-    }
-
-    public static bool DestroyInstance(int UUID)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return false;
-        _Ins._InsList[UUID].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        _Ins._InsList[UUID].release();
-        _Ins._InsList[UUID].clearHandle();
-        _Ins._InsList.Remove(UUID);
-
-        return true;
-    }
-
-    public static void PlayInstance(int UUID, float volume = -1f, int startProgress = -1, string paramName="", float paramValue=0f)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-
-        _Ins._InsList[UUID].start();
-        if(paramName!="") _Ins._InsList[UUID].setParameterByName(paramName, paramValue);
-        if (volume >= 0) _Ins._InsList[UUID].setVolume(volume);
-        if (startProgress>=0)_Ins._InsList[UUID].setTimelinePosition(startProgress);
-    }
-
-    public static void SetInstanceParameter(int UUID, string paramName, float paramValue)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-
-        _Ins._InsList[UUID].start();
-        _Ins._InsList[UUID].setParameterByName(paramName, paramValue);
-    }
-
-    public static void StopInstance(int UUID)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-        _Ins._InsList[UUID].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-    }
-
-    public static void SetInstanceVolume(int UUID, float volume)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-        if (volume < 0f) volume = 0f;
-        _Ins._InsList[UUID].setVolume(volume);
-    }
-
-    public static void SetInstanceProgress(int UUID, int progressByMillieSeconds)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-        if (progressByMillieSeconds < 0) progressByMillieSeconds = 0;
-        _Ins._InsList[UUID].setTimelinePosition(progressByMillieSeconds);
-    }
-
-    public static void SetInstanceProgress(int UUID, float progressRatio)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-        if (progressRatio < 0) progressRatio = 0;
-
-        EventDescription desc;
-        _Ins._InsList[UUID].getDescription(out desc);
-
-        int length;
-        desc.getLength(out length);
-        _Ins._InsList[UUID].setTimelinePosition(Mathf.RoundToInt(length*progressRatio));
-    }
-
-    public static void SetInstancePosition(int UUID, Vector3 position, float minDistance=1f, float maxDistance=20f)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-
-        bool is3D;
-        FMOD.Studio.EventDescription desc;
-        _Ins._InsList[UUID].getDescription(out desc);
-        desc.is3D(out is3D);
-        if (is3D)
-        {
-            _Ins._InsList[UUID].set3DAttributes(RuntimeUtils.To3DAttributes(position));
-            _Ins._InsList[UUID].setProperty(FMOD.Studio.EVENT_PROPERTY.MINIMUM_DISTANCE, minDistance);
-            _Ins._InsList[UUID].setProperty(FMOD.Studio.EVENT_PROPERTY.MAXIMUM_DISTANCE, maxDistance);
-        }
-    }
-
-    public static void SetInstanceDistance( int UUID, float Min, float Max )
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-        FMOD.Studio.EventDescription desc;
-        _Ins._InsList[UUID].getDescription(out desc);
-
-        bool is3D;
-        desc.is3D(out is3D);
-
-        if(is3D)
-        {
-            _Ins._InsList[UUID].setProperty(FMOD.Studio.EVENT_PROPERTY.MINIMUM_DISTANCE, Min);
-            _Ins._InsList[UUID].setProperty(FMOD.Studio.EVENT_PROPERTY.MAXIMUM_DISTANCE, Max);
-        }
-    }
-
-    public static void ApplyInstanceFade(int UUID, float goalVolume, float fadeTime, int fadeID = 0, bool completeDestroy = false)
-    {
-        if (_Ins==null || _Ins._InsList.ContainsKey(UUID) == false) return;
-
-        AddFadeInfo(fadeID);
-        _Ins.StartCoroutine(_Ins.EventFadeProgress(goalVolume, fadeTime, UUID, fadeID, completeDestroy));
-    }
-
-    public static void StopAllInstance()
-    {
-        if (_Ins == null) return;
-
-        int Count = _Ins._InsList.Count;
-        for (int i = 0; i < Count; i++)
-        {
-            _Ins._InsList[i].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        }
-    }
-
-    public static void DestroyAllInstance()
-    {
-        if (_Ins == null) return;
-
-        foreach (KeyValuePair<int, EventInstance> key in _Ins._InsList)
-        {
-            int UUID = key.Key;
-
-            _Ins._InsList[UUID].release();
-            _Ins._InsList[UUID].clearHandle();
-        }
-
-        _Ins._InsList.Clear();
-    }
-
-    public static bool InstanceIsPlaying(int uuid)
-    {
-        if (_Ins == null || InstanceIsValid(uuid)==false) return false;
-
-        FMOD.Studio.PLAYBACK_STATE state;
-        _Ins._InsList[uuid].getPlaybackState(out state);
-
-        return (state == FMOD.Studio.PLAYBACK_STATE.PLAYING);
+        PlayBGM((FModBGMEventType)_NextBGMEvent, _NextBGMVolume, _NextBGMStartPos, _NextBGMParam, _NextBGMParamValue, _NextBGMPosition);
     }
 
 #endif
-
-
-    //===================================
-    ////       Core  methods         //// 
-    //===================================
+    //=======================================
+    /////        Magic Methods           /////
+    ///======================================
     private void Awake()
     {
-        if(_Ins==null)
+        #region Omit
+        if (_Instance == null)
         {
-            _Ins = this;
-            TCount = 0;
+            _Instance = this;
             DontDestroyOnLoad(gameObject);
 
             #if FMOD_Event_ENUM
-            OnEventFadeComplete += BGMFadeChange;
+            OnEventFadeComplete += BGMFadeComplete;
 
-            _BusList[(int)FModBusType.MasterBus] = FMODUnity.RuntimeManager.GetBus(FModBusPath.MasterBus);
-            _BusList[(int)FModBusType.BGMBus] = FMODUnity.RuntimeManager.GetBus(FModBusPath.BGMBus);
-            _BusList[(int)FModBusType.SFXBus] = FMODUnity.RuntimeManager.GetBus(FModBusPath.SFXBus);
+            //모든 버스 목록을 얻어온다.
+            int busCount = FModReferenceList.BusPaths.Length;
+            _BusList = new Bus[busCount];
+
+            for (int i = 0; i < busCount; i++){
+
+                string busName = FModReferenceList.BusPaths[i];
+                try { _BusList[i] = FMODUnity.RuntimeManager.GetBus(busName); } catch { continue; }
+            }
             #endif
-
-            //FadeInfo 초기화
-            if (_FadeList == null) _FadeList = new List<FadeInfo>(10);
-            for (int i = 0; i < 10; i++) _FadeList.Add(new FadeInfo());
 
             return;
         }
 
         Destroy(gameObject);
-    }
-
-    #region Fade_Progress
-#if FMOD_Event_ENUM
-    private IEnumerator EventFadeProgress( float goalVolume, float fadeTime, int targetUUID, int fadeID, bool completeDestroy )
-    {
-        #region Omission
-        //계산에 필요한 것들을 구한다.
-        if (InstanceIsValid(targetUUID) == false) yield break;
-
-        EventInstance targetIns = _InsList[targetUUID];
-        FadeInfo info = GetFadeInfo( fadeID );
-        if (info == null) yield break;
-
-        float startVolume;
-        targetIns.getVolume(out startVolume);    
-
-        float distance      = ( goalVolume- startVolume);
-        float fadeTimeDiv   = (1f / fadeTime);
-        float fadeTimeRatio = 0f;
-
-        //페이드 효과 적용.
-        do
-        {
-            //Check pendingKill
-            bool isPendingKill     = (info.fadeState == FadeState.PENDING_KILL);
-            bool InsNotValid       = (targetIns.isValid() == false) || InstanceIsValid(targetUUID)==false;
-            bool infoIsNull        = (info == null);
-
-            if (isPendingKill || InsNotValid || infoIsNull)
-            {
-                info.fadeCount--;
-                if(info.fadeCount<=0) {
-
-                    info.fadeState = FadeState.NONE;
-                }
-
-                yield break;
-            }
-
-            fadeTime -= Time.deltaTime;
-            fadeTimeRatio = 1f - (fadeTime * fadeTimeDiv);
-
-            float currVolume;
-            targetIns.getVolume(out currVolume);
-
-            float newVolume = startVolume + (distance * fadeTimeRatio);
-            if (newVolume < 0) newVolume = 0f;
-            if (fadeTimeRatio >= 1f) newVolume = goalVolume;
-
-            targetIns.setVolume(newVolume);
-
-             yield return null;
-        }
-        while(fadeTimeRatio<1f);
-
-        targetIns.setVolume(goalVolume);
-
-        //페이드 마무리
-        info.fadeCount--;
-        if (info.fadeCount <= 0) {
-            info.fadeState = FadeState.NONE;
-        }
-
-        //완료될 때 원한다면 해당 인스턴스를 파괴한다.
-        if (completeDestroy) {
-
-            DestroyInstance(targetUUID);
-        }
-
-        _BGMFadeCoroutine = null;
-        OnEventFadeComplete(fadeID, goalVolume);
         #endregion
     }
-
-    private void BGMFadeChange(int fadeID, float goalVolume)
-    {
-        if (fadeID != AutoFadeBGMID || _NextBGMFade==false) return;
-
-        PlayBGM(_NextBGMType, _NextBGMVolume, _NextBGMstartPosition, _NextBGMParam, _NextBGMParamValue);
-    }
-
-#endif
-
-    #endregion
 
 }
