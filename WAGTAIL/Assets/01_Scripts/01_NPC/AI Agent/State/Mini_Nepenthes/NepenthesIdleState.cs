@@ -64,13 +64,16 @@ public class NepenthesIdleState : AIIdleState
     public override void Update()
     {
         base.Update();
+
+
         if (isSearch)
         {
-            // 행렬 변환
-            //stateMachine.character.RotatePoint.transform.LookAt(stateMachine.Target.transform);
-            //Vector3 temp = stateMachine.character.RotatePoint.rotation.eulerAngles;
-            //stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 90f, temp.z);
-
+            if(Vector3.Distance(stateMachine.Transform.position, stateMachine.Target.transform.position) > stateMachine.character.AttackRange)
+            {
+                isSearch = false;
+                return;
+            }
+            
             Vector3 dir = stateMachine.character.RotatePoint.position - stateMachine.Target.transform.position;
             dir.y = stateMachine.character.RotatePoint.position.y;
             
