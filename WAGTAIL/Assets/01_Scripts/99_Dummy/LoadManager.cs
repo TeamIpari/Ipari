@@ -98,6 +98,7 @@ public class LoadManager : Singleton<LoadManager>
             num = ChapterNum;
         Scriptable sc;
         ChapterSay.Clear();
+        //dic_Say.TryGetValue(chapterNum, out sc);
         for (int i = 0; i < Dic_Say.Count; i++)
         {
             Dic_Say.TryGetValue(i, out sc);
