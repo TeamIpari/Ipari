@@ -15,12 +15,13 @@ public class AutoMoveLarva : MonoBehaviour
 
     public MovePoint MPCenter;
     public Animator Animator;
-
+    Vector3 temp;
 
 
     private void Start()
     {
         timer = 0;
+        //Animator = GetComponent<Animator>();
     }
 
     void FixedUpdate()
@@ -31,15 +32,29 @@ public class AutoMoveLarva : MonoBehaviour
                 timer += Time.deltaTime;
             else
             {
-
-            }
-            {
                 timer = 0;
                 Hit = false;
             }
         }
-        else 
+        else
+        {
+            transform.LookAt(MPCenter.transform);
+            temp = transform.rotation.eulerAngles;
+            transform.rotation = Quaternion.Euler(temp.x, temp.y +90, temp.z);
             this.transform.RotateAround(MPCenter.transform.position, -Vector3.up, (ObjSpeed * Time.deltaTime));
+
+        }
+    }
+
+    void SetRot()
+    {
+        Vector3 dir = MPCenter.transform.position - transform.position;
+        dir.y = transform.position.y;
+
+        Quaternion quat = Quaternion.LookRotation(dir.normalized);
+        Vector3 temp = quat.eulerAngles;
+        
+        transform.rotation = Quaternion.Euler(temp.x , temp.y -45f, temp.z);
     }
 
     public void SetUp(MovePoint Center, bool delay = false)
@@ -49,6 +64,7 @@ public class AutoMoveLarva : MonoBehaviour
         ObjSize = Center.Polygon;
         CircleR = Center.CircleSize;
         DamagedAnimTimer = Center.DamagedAnimTimer;
+        //SetRot();
         Deg = 0;
         Animator = GetComponent<Animator>();
         if (delay && Animator != null)

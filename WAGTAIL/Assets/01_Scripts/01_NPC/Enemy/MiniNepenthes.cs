@@ -41,9 +41,9 @@ public class MiniNepenthes : Enemy
         Vector3 PlayerPos = new Vector3(AiSM.Target.transform.position.x, ShotPosition.position.y, AiSM.Target.transform.position.z);
         Vector3 direction = PlayerPos - ShotPosition.position;
 
-        BulletPrefab.SetDirection(direction);
+        BulletPrefab.SetDirection(direction, ShotSpeed);
         GameObject Bomb = Instantiate(BulletPrefab.gameObject);
-        Bomb.GetComponent<Bullet>().SetDirection(direction * ShotSpeed);
+        Bomb.GetComponent<Bullet>().SetDirection(direction , ShotSpeed);
         Bomb.transform.position = ShotPosition.position;
     }
 

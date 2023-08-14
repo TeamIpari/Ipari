@@ -12,10 +12,10 @@ public class AcidBomb : Bullet
         base.Flying();
     }
 
-    public override void SetDirection(Vector3 vector3)
+    public override void SetDirection(Vector3 vector3, float speed)
     {
         //base.SetDirection(vector3);
-        Direction = vector3.normalized;
+        Direction = vector3.normalized * speed;
     }
 
     // Start is called before the first frame update

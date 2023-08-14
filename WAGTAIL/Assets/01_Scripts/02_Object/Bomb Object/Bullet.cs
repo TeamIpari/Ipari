@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public Rigidbody BulletRigidBody;
-    public virtual void SetDirection(Vector3 vector3) 
+    public virtual void SetDirection(Vector3 vector3, float speed) 
     {
     
     }
