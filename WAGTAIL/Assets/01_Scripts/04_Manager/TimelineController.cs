@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 public class TimelineController : MonoBehaviour
 {
     private GameObject _player;
-    //private CharacterController _playerCtrl;
+    private CharacterController _playerCtrl;
     private GameObject _timeline;
     private bool _isStart;
 
@@ -27,7 +27,7 @@ public class TimelineController : MonoBehaviour
 
     private void Start()
     {
-        //_playerCtrl = Player.Instance.GetComponent<CharacterController>();
+        _playerCtrl = Player.Instance.GetComponent<CharacterController>();
         _timeline = GetComponentInChildren<PlayableDirector>().gameObject;
         _timeline.SetActive(false);
         _fakeObject.SetActive(false);
@@ -40,12 +40,10 @@ public class TimelineController : MonoBehaviour
         if(other.CompareTag("Player") && !_isStart)
         {
             _isStart = true;
-            _player = other.gameObject;
             SetActiveObjects(false);
             _fakeObject.SetActive(true);
             _timeline.SetActive(true);
-            //_playerCtrl.enabled = false;
-            _player.SetActive(false);
+            _playerCtrl.enabled = false;
         }
     }
 
@@ -64,8 +62,7 @@ public class TimelineController : MonoBehaviour
                 Player.Instance.gameObject.transform.position = _fakeTavuti.transform.position;
                 Player.Instance.gameObject.transform.rotation = _fakeTavuti.transform.rotation;
             }
-            _player.SetActive(true);
-            //_playerCtrl.enabled = true;
+            _playerCtrl.enabled = true;
         }
     }
 
