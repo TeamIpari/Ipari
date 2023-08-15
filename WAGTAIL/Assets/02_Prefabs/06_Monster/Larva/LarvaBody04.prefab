@@ -234,6 +234,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2783886383222529896}
   - component: {fileID: 8089156793927419154}
+  - component: {fileID: 227516993479689089}
+  - component: {fileID: -8089396172910886948}
   m_Layer: 0
   m_Name: LarvaBody04
   m_TagString: Untagged
@@ -279,6 +281,35 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!135 &227516993479689089
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3308326339009234386}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &-8089396172910886948
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3308326339009234386}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &3333585352037396628
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,6 +415,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1453257043801789055}
   - component: {fileID: 1460006884942133806}
+  - component: {fileID: 3746944794059813647}
   m_Layer: 0
   m_Name: Horn01
   m_TagString: Untagged
@@ -470,6 +502,20 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00023472309, y: 0.33351928, z: -0.33923155}
     m_Extent: {x: 1.4045205, y: 1.4380763, z: 1.2292345}
   m_DirtyAABB: 0
+--- !u!64 &3746944794059813647
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3760388334965074468}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &4449894947124621276
 GameObject:
   m_ObjectHideFlags: 0
