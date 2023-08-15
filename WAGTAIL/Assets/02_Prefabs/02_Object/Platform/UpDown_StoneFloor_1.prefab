@@ -192,20 +192,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2176253805206578675}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &1789710221
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2975281803251293149}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5060444177187149915, guid: b09885d68b4547d42968a8a4568ccd6f, type: 3}
 --- !u!114 &2176253805924420875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,6 +211,19 @@ MonoBehaviour:
   MoveSpeed: 3
   startPoint: {fileID: 2176253804502899874}
   endPoint: {fileID: 2176253805267190434}
+--- !u!65 &2176253804421005961
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2975281803251293149}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 1, z: 3}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &7968332665889739690 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8117367901533632089, guid: 02bf74fbc2d41ab4cb071fab5007f396,
