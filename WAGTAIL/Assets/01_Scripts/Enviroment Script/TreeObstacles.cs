@@ -33,6 +33,8 @@ public sealed class TreeObstacles : MonoBehaviour
     private float rebound       = .4f;
     private float maxRebound    = .4f;
 
+    private List<Collider> _hitColliders= new List<Collider>();
+    private Coroutine fallDownCoroutine;
 
     //=====================================
     ////         Magic Methods         ////
@@ -59,7 +61,7 @@ public sealed class TreeObstacles : MonoBehaviour
             _Body.isKinematic = false;
             _IsSwitch = true;
             _Body.WakeUp();
-            StartCoroutine(FallDownProgress());
+            fallDownCoroutine = StartCoroutine(FallDownProgress());
         }
     }
 
@@ -67,16 +69,48 @@ public sealed class TreeObstacles : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Platform"))
         {
+            //have ShatterObject...
+            ShatterObject shatter = other.gameObject.GetComponent<ShatterObject>();
+            if(shatter!=null)
+            {
+                shatter.Explode();
+                return;
+            }
+
             //나무에 충돌한 발판들을 파괴한다.
             //TODO: 파괴된 발판들의 이펙트는, 각 발판의 OnDestory()에서 실행하도록 생각중.
             Destroy(other.gameObject);
         }
     }
 
+    private void OnCollisionExit(Collision collision)
+    {
+        if(_hitColliders.Contains(collision.collider))
+        {
+            _hitColliders.Remove(collision.collider);
+
+            /**나무가 충돌이후 미동이 없다가, 벗어나면 다시 시작...*/
+            if(_hitColliders.Count<=0 && rebound<=0f){
+
+                rebound = maxRebound;
+            }
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
+        _hitColliders.Add(collision.collider);
+
         if (collision.gameObject.CompareTag("Platform"))
         {
+            //have ShatterObject...
+            ShatterObject shatter = collision.gameObject.GetComponent<ShatterObject>();
+            if (shatter != null)
+            {
+                shatter.Explode();
+                return;
+            }
+
             //나무에 충돌한 발판들을 파괴한다.
             //TODO: 파괴된 발판들의 이펙트는, 각 발판의 OnDestory()에서 실행하도록 생각중.
             Destroy(collision.gameObject);
@@ -84,7 +118,7 @@ public sealed class TreeObstacles : MonoBehaviour
         }
 
         //땅에 닿으면 튕겨난다.
-        if (rebound > 0)
+        if (rebound>=0)
         {
             //최초 부딫혔을 때 부숴지는 소리를 실행.
             if (rebound >= maxRebound){
@@ -94,6 +128,7 @@ public sealed class TreeObstacles : MonoBehaviour
             fallDownSpeed = -rebound;
             fallDownRot -= rebound;
             rebound -= maxRebound * ReboundValue;
+            if (rebound < 0) rebound = 0;
         }
     }
 
@@ -168,10 +203,13 @@ public sealed class TreeObstacles : MonoBehaviour
         /****************************************
          * 나무가 쓰러진다.
          ***/
-        while (fallDownRot<= FallDownTargetAngle && rebound>0f)
+        while (fallDownRot<= FallDownTargetAngle)
         {
-            fallDownSpeed += FallDownSpeed * Time.fixedDeltaTime;
-            fallDownRot   += fallDownSpeed;
+            if(rebound>0)
+            {
+                fallDownSpeed += FallDownSpeed * Time.fixedDeltaTime;
+                fallDownRot += fallDownSpeed;
+            }
 
             //나무가 쓰러졌을 때의 사운드 재생.
             if(fallDownRot>= FallDownTargetAngle) {
