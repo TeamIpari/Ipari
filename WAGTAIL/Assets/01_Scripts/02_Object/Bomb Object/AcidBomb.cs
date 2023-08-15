@@ -34,4 +34,14 @@ public class AcidBomb : Bullet
     {
         BulletRigidBody.velocity = Direction;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Destroy(this.gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Destroy(this.gameObject);
+    }
 }
