@@ -8,11 +8,15 @@ public sealed class TestScript : MonoBehaviour
 
     private void Start()
     {
-        
     }
 
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Flowers_Burst);
+        }
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
             FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
