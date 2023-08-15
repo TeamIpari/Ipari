@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class DummyAttack2 : AIState
+public class BossNepenthesAttack2 : AIAttackState
 {
     private float curTimer = 0;
     private float changeTimer = 3;
@@ -17,7 +17,7 @@ public class DummyAttack2 : AIState
     private float time;
 
 
-    public DummyAttack2(AIStateMachine stateMachine, GameObject bullet, Transform sp, GameObject obj, float time) : base(stateMachine)
+    public BossNepenthesAttack2(AIStateMachine stateMachine, GameObject bullet, Transform sp, GameObject obj, float time) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
         this.circleObj = obj;
@@ -31,12 +31,14 @@ public class DummyAttack2 : AIState
         // 타겟 설정.
         CreateMarker();
         PositionLuncher();
-      //  Debug.Log("Start Attack2");
+        curTimer = 0;
+        Debug.Log("Start Attack2");
     }
 
     public override void Exit()
     {
         GameObject.Destroy(marker);
+        marker = null;
 //Debug.Log("End Attack1");
     }
 
@@ -48,7 +50,7 @@ public class DummyAttack2 : AIState
     public override void Update()
     {
         curTimer += Time.deltaTime;
-        //base.Update();
+        //marker.transform.localScale = Vector3.one  * Time.deltaTime / changeTimer;
         if (curTimer > changeTimer)
         {
             if (children.Count > 0)
@@ -81,29 +83,11 @@ public class DummyAttack2 : AIState
 
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
         obj.transform.localScale = Vector3.one * 3f;
-        obj.GetComponent<Rigidbody>().velocity = pos;
+        Debug.Log(obj.GetComponent<Bullet>());
+        obj.GetComponent<AcidBomb>().ShotDirection(pos);
+
     }
 
-    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
-    {
-        // define the distance x and y first;
-        Vector3 distance = target - origin;
-        Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-        distanceXZ.y = 0f; // y는 0으로 설정.
 
-        // Create a float the represent our distance
-        float Sy = distance.y;      // 세로 높이의 거리를 지정.
-        float Sxz = distanceXZ.magnitude;
-
-        // 속도 추가
-        float Vxz = Sxz / time;
-        float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-
-        // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
-        Vector3 result = distanceXZ.normalized;
-        result *= Vxz;
-        result.y = Vy;
-        return result;
-    }
 
 }
