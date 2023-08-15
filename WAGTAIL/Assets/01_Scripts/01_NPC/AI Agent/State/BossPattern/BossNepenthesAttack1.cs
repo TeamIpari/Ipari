@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DummyAttack1 : AIState
+public class BossNepenthesAttack1 : AIAttackState
 {
     private int curAnim = 0;
 
@@ -19,25 +19,26 @@ public class DummyAttack1 : AIState
     private int count = 0;
 
 
-    public DummyAttack1(AIStateMachine stateMachine, GameObject tentacle, GameObject danger) : base(stateMachine)
+    public BossNepenthesAttack1(AIStateMachine stateMachine) : base(stateMachine)
     {
         //curTimer = 0;
         this.stateMachine = stateMachine;
-        this.dangerousEffect = danger;
-        this.tentacle = tentacle;
+        //this.dangerousEffect = danger;
+        //this.tentacle = tentacle;
         curAnim = 0;
     }
 
     public override void Enter()
     {
+        curTimer = 0;
         //dangerousEffect.SetActive(true);
-        dangerousEffect.transform.position 
-            = new Vector3
-            (Player.Instance.transform.position.x, 
-            Player.Instance.transform.position.y + 0.1f, 
-            Player.Instance.transform.position.z);
+        //dangerousEffect.transform.position 
+        //    = new Vector3
+        //    (Player.Instance.transform.position.x, 
+        //    Player.Instance.transform.position.y + 0.1f, 
+        //    Player.Instance.transform.position.z);
 
-        tentacle.transform.position = dangerousEffect.transform.position;
+        //tentacle.transform.position = dangerousEffect.transform.position;
 
         Debug.Log("Start Attack1");
     }
@@ -45,7 +46,7 @@ public class DummyAttack1 : AIState
 
     public override void Exit()
     {
-        dangerousEffect.SetActive(false);
+        //dangerousEffect.SetActive(false);
         Debug.Log("End Attack1");
 
     }
@@ -57,20 +58,20 @@ public class DummyAttack1 : AIState
 
     public override void Update()
     {
-        curTimer += Time.deltaTime;
-        switch(curAnim)
-        {
-            case 0:
-                BlinkEffect();
-                break;
-            case 1:
-                ShowTentacle();
-                break;
-            case 2:
-                break;
-            default:
-                break;
-        }
+        //curTimer += Time.deltaTime;
+        //switch(curAnim)
+        //{
+        //    case 0:
+        //        BlinkEffect();
+        //        break;
+        //    case 1:
+        //        ShowTentacle();
+        //        break;
+        //    case 2:
+        //        break;
+        //    default:
+        //        break;
+        //}
         //if(curTimer > changeTimer)
         //{
         //    // 공격 기능.

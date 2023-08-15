@@ -12,16 +12,23 @@ public class AcidBomb : Bullet
         base.Flying();
     }
 
-    public override void SetDirection(Vector3 vector3, float speed)
+    public override void ShotDirection(Vector3 vector3)
+    {
+        DirectionLine = true;
+        BulletRigidBody.velocity = vector3;
+    }
+
+    public override void SetDirection(Vector3 vector3)
     {
         //base.SetDirection(vector3);
-        Direction = vector3.normalized * speed;
+        Direction = vector3.normalized;
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         BulletRigidBody = GetComponent<Rigidbody>();
+
         if (BulletRigidBody == null)
         {
             this.AddComponent<Rigidbody>();
@@ -30,9 +37,13 @@ public class AcidBomb : Bullet
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        BulletRigidBody.velocity = Direction;
+        if (!DirectionLine)
+        {
+            Debug.Log("AA");
+            BulletRigidBody.velocity = Direction;
+        }
     }
 
     private void OnTriggerEnter(Collider other)

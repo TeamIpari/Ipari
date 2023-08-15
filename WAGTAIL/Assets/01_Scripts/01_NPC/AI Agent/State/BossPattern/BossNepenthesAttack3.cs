@@ -4,26 +4,26 @@ using UnityEngine;
 
 
 
-public class DummyAttack3 : AIState
+public class BossNepenthesAttack3 : AIAttackState
 {
     private int targetCount = 0;
     private float curTimer = 0;
-    private float changeTimer = 2;
+    private float changeTimer = 2f;
     private float rad;
     private float time = 2f;
     private Transform shootPoint;
-    private GameObject blackBullet;
+    private GameObject AcidBullet;
     private GameObject circleObj;
 
     private List<Vector3> targets = new List<Vector3>();
     private List<GameObject> marker = new List<GameObject>();
 
-    public DummyAttack3(AIStateMachine stateMachine, GameObject bullet, Transform sp, GameObject obj, float flightTime, int count, float rad) : base(stateMachine)
+    public BossNepenthesAttack3(AIStateMachine stateMachine, GameObject bullet, Transform sp, GameObject obj, float flightTime, int count, float rad) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
         shootPoint = sp;
         targetCount = count;
-        blackBullet = bullet;
+        AcidBullet = bullet;
         time = flightTime;
         this.rad = rad;
         circleObj = obj;
@@ -33,7 +33,8 @@ public class DummyAttack3 : AIState
     {
         CreateMarker();
         PositionLuncher();
-        Debug.Log("Start Attack2");
+        curTimer = 0;
+        Debug.Log("Start Attack3");
     }
 
     public override void Exit()
@@ -42,6 +43,7 @@ public class DummyAttack3 : AIState
         {
             GameObject.Destroy(m);
         }
+        marker.Clear();
         Debug.Log("End Attack2");
     }
 
@@ -54,6 +56,12 @@ public class DummyAttack3 : AIState
     {
         // Bullet이 충돌할 경우 다음 스테이트로 이동.
         curTimer += Time.deltaTime;
+        Debug.Log(marker.Count);
+        foreach (var m in marker)
+        {
+            Debug.Log(m.transform.localScale);
+            m.transform.localScale += Vector3.one * Time.deltaTime / changeTimer;
+        }
         if (curTimer > changeTimer)
         {
             if (children.Count > 0)
@@ -71,10 +79,12 @@ public class DummyAttack3 : AIState
 
     void CreateMarker()
     {
+        
         targets.Clear();
         // Player 기준 원 범위 서치
         for (int i = 0; i < targetCount; i++)
             targets.Add(Search());
+        Debug.Log(targets.Count);
 
         foreach (var t in targets)
         {
@@ -92,34 +102,32 @@ public class DummyAttack3 : AIState
         foreach (var t in targets)
         {
             Vector3 pos = CaculateVelocity(t, shootPoint.position, time);
-
-            GameObject obj = GameObject.Instantiate(blackBullet, shootPoint.position, Quaternion.identity);
-            obj.GetComponent<Rigidbody>().velocity = pos;
-
+            GameObject obj = GameObject.Instantiate(AcidBullet, shootPoint.position, Quaternion.identity);
+            obj.GetComponent<AcidBomb>().ShotDirection(pos);
         }
     }
 
-    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
-    {
-        // define the distance x and y first;
-        Vector3 distance = target - origin;
-        Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-        distanceXZ.y = 0f; // y는 0으로 설정.
+    //private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
+    //{
+    //    // define the distance x and y first;
+    //    Vector3 distance = target - origin;
+    //    Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
+    //    distanceXZ.y = 0f; // y는 0으로 설정.
 
-        // Create a float the represent our distance
-        float Sy = distance.y;      // 세로 높이의 거리를 지정.
-        float Sxz = distanceXZ.magnitude;
+    //    // Create a float the represent our distance
+    //    float Sy = distance.y;      // 세로 높이의 거리를 지정.
+    //    float Sxz = distanceXZ.magnitude;
 
-        // 속도 추가
-        float Vxz = Sxz / time;
-        float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
+    //    // 속도 추가
+    //    float Vxz = Sxz / time;
+    //    float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
 
-        // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
-        Vector3 result = distanceXZ.normalized;
-        result *= Vxz;
-        result.y = Vy;
-        return result;
-    }
+    //    // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
+    //    Vector3 result = distanceXZ.normalized;
+    //    result *= Vxz;
+    //    result.y = Vy;
+    //    return result;
+    //}
 
     Vector3 Search()
     {
