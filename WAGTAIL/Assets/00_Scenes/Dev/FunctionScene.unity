@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1847,10 +1847,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94b70b1561ce1fa4c9c2395ee1450269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tf: {fileID: 227137335}
+  Center: {fileID: 0}
   Reverse: 0
   Speed: 50
   AddGravity: 10
+  Polygon: 3
+  CircleSize: 1
+  Offset: {x: 0, y: 0, z: 0}
+  CreateObj1: {fileID: 0}
+  CreateObj2: {fileID: 0}
+  objs: []
+  vertices: []
   Rot: 0
 --- !u!1 &427230351
 GameObject:
@@ -1914,10 +1921,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _promt: 
-  _force: 300
-  _yForce: 300
-  _yAngle: 0.45
   _value: 0
+  _hight: 0
+  _range: 0
+  autoTarget: {fileID: 0}
+  _overheadSpeed: 0
+  PhysicsCheck: 0
+  flight: 0
+  Forward: {x: 0, y: 0, z: 0}
+  speed: 1
 --- !u!95 &427230355
 Animator:
   serializedVersion: 5
@@ -3315,12 +3327,12 @@ PrefabInstance:
     - target: {fileID: 8259764396587708548, guid: 7b53358512e7b044ca70f6352c2bdad3,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00000002383389
+      value: 0.00000002383389
       objectReference: {fileID: 0}
     - target: {fileID: 8259764396587708548, guid: 7b53358512e7b044ca70f6352c2bdad3,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000004905563
+      value: -0.000000004905563
       objectReference: {fileID: 0}
     - target: {fileID: 8259764396587708548, guid: 7b53358512e7b044ca70f6352c2bdad3,
         type: 3}
@@ -3346,6 +3358,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259764396587708555, guid: 7b53358512e7b044ca70f6352c2bdad3,
+        type: 3}
+      propertyPath: field of view
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b53358512e7b044ca70f6352c2bdad3, type: 3}
@@ -4037,12 +4054,12 @@ PrefabInstance:
     - target: {fileID: 5456100892034684546, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00000002383389
+      value: 0.00000002383389
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892034684546, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000049055635
+      value: -0.0000000049055635
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892060526553, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
@@ -4097,32 +4114,32 @@ PrefabInstance:
     - target: {fileID: 5456100892159807873, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000018722702
+      value: -0.000000018722702
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892159807873, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00000000441983
+      value: 0.00000000441983
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892374821701, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_FollowOffset.y
-      value: 3.714294
+      value: 0.8816308
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892374821701, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_FollowOffset.z
-      value: -5.908865
+      value: -5.634082
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892967987567, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_FollowOffset.y
-      value: 3.714294
+      value: 0.8816308
       objectReference: {fileID: 0}
     - target: {fileID: 5456100892967987567, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_FollowOffset.z
-      value: -5.908865
+      value: -5.634082
       objectReference: {fileID: 0}
     - target: {fileID: 5456100893075423408, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
@@ -4197,12 +4214,12 @@ PrefabInstance:
     - target: {fileID: 5456100893629557078, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_FollowOffset.y
-      value: 3.714294
+      value: 0.8816308
       objectReference: {fileID: 0}
     - target: {fileID: 5456100893629557078, guid: bcd992a7a24138d4f996952eb5d27c36,
         type: 3}
       propertyPath: m_FollowOffset.z
-      value: -5.908865
+      value: -5.634082
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bcd992a7a24138d4f996952eb5d27c36, type: 3}
@@ -4758,10 +4775,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94b70b1561ce1fa4c9c2395ee1450269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tf: {fileID: 1721125961}
+  Center: {fileID: 0}
   Reverse: 1
   Speed: 50
   AddGravity: 10
+  Polygon: 3
+  CircleSize: 1
+  Offset: {x: 0, y: 0, z: 0}
+  CreateObj1: {fileID: 0}
+  CreateObj2: {fileID: 0}
+  objs: []
+  vertices: []
   Rot: 0
 --- !u!64 &709183620
 MeshCollider:
@@ -5067,6 +5091,12 @@ Transform:
   m_Father: {fileID: 1506956959}
   m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &748796693 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 713078477416428854, guid: 00d1e1dbe736add47ac3f823a8cc863c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1470490261}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &764731089
 GameObject:
   m_ObjectHideFlags: 0
@@ -5697,10 +5727,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _promt: 
-  _force: 300
-  _yForce: 300
-  _yAngle: 0.45
   _value: 0
+  _hight: 0
+  _range: 0
+  autoTarget: {fileID: 0}
+  _overheadSpeed: 0
+  PhysicsCheck: 0
+  flight: 0
+  Forward: {x: 0, y: 0, z: 0}
+  speed: 1
 --- !u!95 &952262375
 Animator:
   serializedVersion: 5
@@ -6202,10 +6237,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _promt: 
-  _force: 300
-  _yForce: 300
-  _yAngle: 0.45
   _value: 0
+  _hight: 0
+  _range: 0
+  autoTarget: {fileID: 0}
+  _overheadSpeed: 0
+  PhysicsCheck: 0
+  flight: 0
+  Forward: {x: 0, y: 0, z: 0}
+  speed: 1
 --- !u!95 &1108204566
 Animator:
   serializedVersion: 5
@@ -7074,11 +7114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d21b886301562e49967522d33dae97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Lid: {fileID: 553747850}
-  localPoint1: {fileID: 591492068}
-  localPoint2: {fileID: 1655147414}
-  LoopTarget: {x: 0, y: 0, z: 0}
-  HideTime: 1
+  TargetCount: 0
+  CountBase: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1001 &1302557292
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7247,6 +7285,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ea1b446fa02ec04d9b6f92f2511e3cf, type: 3}
+--- !u!4 &1306960731 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 713078476681180213, guid: 00d1e1dbe736add47ac3f823a8cc863c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1470490261}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1307568162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8294,6 +8338,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 713078476998755747, guid: 00d1e1dbe736add47ac3f823a8cc863c,
+        type: 3}
+      propertyPath: endPoint
+      value: 
+      objectReference: {fileID: 748796693}
+    - target: {fileID: 713078476998755747, guid: 00d1e1dbe736add47ac3f823a8cc863c,
+        type: 3}
+      propertyPath: MoveSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 713078476998755747, guid: 00d1e1dbe736add47ac3f823a8cc863c,
+        type: 3}
+      propertyPath: startPoint
+      value: 
+      objectReference: {fileID: 1306960731}
+    - target: {fileID: 713078476998755747, guid: 00d1e1dbe736add47ac3f823a8cc863c,
+        type: 3}
+      propertyPath: IsUpdownMode
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00d1e1dbe736add47ac3f823a8cc863c, type: 3}
 --- !u!4 &1470490262 stripped
@@ -9133,6 +9197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   JumpHeight: 0
+  mushroom: {fileID: 0}
   Curtime: 0
   lowPos: {fileID: 0}
   heightPos: {fileID: 0}
@@ -10695,13 +10760,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acc7409be50925449a5bcc1f7bfd94fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: 
-  Hp: 0
-  MoveSpeed: 0
+  HP: 0
   AttackDamage: 0
-  IsDead: 0
-  NextStateTimer: 0
-  SearchDistance: 0
+  MoveSpeed: 0
+  AttackRange: 0
+  AttackRate: 0
+  WaitRate: 0
+  RotatePoint: {fileID: 0}
   ChangeTimer: 0
   ComeDistance: 0
   RunDistance: 0

@@ -7,18 +7,18 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 {
     private MeshRenderer mesh;
     private Collider col;
+    public GameObject Right;
     public bool IsUpdownMode = false;
 
     public float HideNDownTime = 1.0f;
     public float ShowNUpTime = 1.0f;
 
     // 위 아래 최종 이동 위치
-    //public float downPos = 0.0f;
-    //public float upPos = 0.0f;
     public float MoveSpeed = 0.0f;
 
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
+    
 
 
     Vector3 localPoint1;
@@ -59,7 +59,8 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator DownPlatform(bool callBack = false)
     {
-        mesh.material.color = Color.red;
+        //mesh.material.color = Color.red;
+        Right.SetActive(true);
         yield return new WaitForSeconds(HideNDownTime);
 
         while(Mathf.Abs(Vector3.Distance(transform.position, endPoint.transform.position)) > 0.1f )
@@ -73,7 +74,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator UpPlatform()
     {
-        mesh.material.color = Color.gray;
+        Right.SetActive(false);
         yield return new WaitForSeconds(ShowNUpTime);
 
         while (Mathf.Abs(Vector3.Distance(transform.position, startPoint.transform.position)) > 0.1f)
