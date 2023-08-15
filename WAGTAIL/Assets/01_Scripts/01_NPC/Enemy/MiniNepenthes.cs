@@ -21,6 +21,7 @@ public class MiniNepenthes : Enemy
         AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
 
         AiIdle = new NepenthesIdleState(AiSM, angle);
+        AiAttack = new NepenthesAttackState(AiSM);
         SetAttackPattern();
         AiWait = new NepenthesWaitState(AiSM);
         
@@ -48,6 +49,7 @@ public class MiniNepenthes : Enemy
         GameObject Bomb = Instantiate(BulletPrefab.gameObject);
         Bomb.GetComponent<Bullet>().SetDirection(direction.normalized * ShotSpeed);
         Bomb.transform.position = ShotPosition.position;
+        Destroy(Bomb, 2f);
     }
 
 

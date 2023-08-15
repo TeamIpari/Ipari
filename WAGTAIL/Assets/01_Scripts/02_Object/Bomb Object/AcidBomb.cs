@@ -21,7 +21,8 @@ public class AcidBomb : Bullet
     public override void SetDirection(Vector3 vector3)
     {
         //base.SetDirection(vector3);
-        Direction = vector3.normalized;
+        DirectionLine = false;
+        Direction = vector3;
     }
 
     // Start is called before the first frame update

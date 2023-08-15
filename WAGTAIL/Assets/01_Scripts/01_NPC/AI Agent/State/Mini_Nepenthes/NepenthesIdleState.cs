@@ -9,6 +9,7 @@ public class NepenthesIdleState : AIIdleState
     bool isSearch ;
     public NepenthesIdleState(AIStateMachine stateMachine, int angle) : base(stateMachine)
     {
+
     }
 
     public override void Enter()
@@ -41,7 +42,6 @@ public class NepenthesIdleState : AIIdleState
             {
                 float targetRadian = Vector3.Dot(stateMachine.Transform.forward, (cols[i].transform.position - stateMachine.Transform.position).normalized);
 
-                
                 if ( cols[i].CompareTag("Player"))
                 {
                     stateMachine.Target = cols[i].gameObject;
