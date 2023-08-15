@@ -11,7 +11,10 @@ public class MiniNepenthes : Enemy
     public float ShotSpeed;
     public int angle;
 
-
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, AttackRange);
+    }
     // Start is called before the first frame update
     void Start()
     {

@@ -108,6 +108,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6320814146646634052, guid: a2f91a015c064184c97719fc6c588293,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8324707186148957094, guid: a2f91a015c064184c97719fc6c588293,
         type: 3}
       propertyPath: m_Name
@@ -175,30 +180,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2f91a015c064184c97719fc6c588293, type: 3}
+--- !u!1 &1335849410428062528 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6320814146646634052, guid: a2f91a015c064184c97719fc6c588293,
+    type: 3}
+  m_PrefabInstance: {fileID: 4986022500826096900}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3942518947908484770 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8324707186148957094, guid: a2f91a015c064184c97719fc6c588293,
     type: 3}
   m_PrefabInstance: {fileID: 4986022500826096900}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4986022502035918940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3942518947908484770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25b002c68db0d284d8def109e732be4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsUpdownMode: 1
-  HideNDownTime: 1
-  ShowNUpTime: 1
-  MoveSpeed: 3
-  startPoint: {fileID: 4986022501297864758}
-  endPoint: {fileID: 4986022502012957575}
 --- !u!64 &738177470
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -213,6 +206,25 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5060444177187149915, guid: 908e4032cee382a44a540c15dd74eef6, type: 3}
+--- !u!114 &4986022502035918940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3942518947908484770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25b002c68db0d284d8def109e732be4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Right: {fileID: 1335849410428062528}
+  IsUpdownMode: 1
+  HideNDownTime: 1
+  ShowNUpTime: 1
+  MoveSpeed: 3
+  startPoint: {fileID: 4986022501297864758}
+  endPoint: {fileID: 4986022502012957575}
 --- !u!4 &4466854725503198232 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8704505597614915868, guid: a2f91a015c064184c97719fc6c588293,
