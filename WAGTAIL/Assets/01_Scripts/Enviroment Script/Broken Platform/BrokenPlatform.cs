@@ -41,20 +41,20 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private void OnDrawGizmos()
     {
-        if (IsUpdownMode)
-        {
-            if (startPoint != null)
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireCube(startPoint.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
-            }
+        //if (IsUpdownMode)
+        //{
+        //    if (startPoint != null)
+        //    {
+        //        Gizmos.color = Color.red;
+        //        Gizmos.DrawWireCube(startPoint.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+        //    }
 
-            if (endPoint != null)
-            {
-                Gizmos.color = Color.blue;
-                Gizmos.DrawWireCube(endPoint.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
-            }
-        }
+        //    if (endPoint != null)
+        //    {
+        //        Gizmos.color = Color.blue;
+        //        Gizmos.DrawWireCube(endPoint.transform.position + Vector3.up * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
+        //    }
+        //}
     }
 
     private IEnumerator DownPlatform(bool callBack = false)
