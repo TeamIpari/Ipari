@@ -30,12 +30,14 @@ public struct FModEventCategoryDesc
     public int EventCount;
     public int GroupIndex;
     public bool foldout;
+    public bool EventIsValid;
 
     public FModEventCategoryDesc( FModEventCategoryDesc copy, int addEventCount )
     {
         CategoryName = copy.CategoryName;
         EventCount = copy.EventCount + addEventCount;
         GroupIndex = copy.GroupIndex;
+        EventIsValid = true;
         foldout = false;
     }
 }
@@ -77,6 +79,7 @@ public class FModAudioEditorSettings : ScriptableObject
 
     [SerializeField] public List<FModEventCategoryDesc> CategoryDescList    = new List<FModEventCategoryDesc>();
     [SerializeField] public List<FModEventInfo>         EventRefs           = new List<FModEventInfo>();
+    [SerializeField] public bool                        RootFolderFoldout   = true;
 
     [SerializeField]
     public FModGroupInfo[] EventGroups = new FModGroupInfo[3]

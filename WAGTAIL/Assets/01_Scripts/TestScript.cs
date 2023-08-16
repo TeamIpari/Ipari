@@ -8,6 +8,8 @@ public sealed class TestScript : MonoBehaviour
 
     private void Start()
     {
+        FModAudioManager.AutoFadeInOutBGM = true;
+        FModAudioManager.AutoFadeBGMDuration = 10f;
     }
 
     private void Update()

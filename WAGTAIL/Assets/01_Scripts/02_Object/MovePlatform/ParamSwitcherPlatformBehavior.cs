@@ -33,6 +33,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         private SerializedProperty ParamFloatValueProperty;
         private SerializedProperty ParamIntValueProperty;
         private SerializedProperty ParamTexValueProperty;
+        private SerializedProperty ParamColorValueProperty;
         private SerializedProperty ParamLerpTimeProperty;
 
         private const float DefaultSpace = 95f;
@@ -88,7 +89,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
 
             float baseHeight = GetBaseHeight();
             float height;
-            bool isLerp = ( ParamTypeProperty != null && ParamTypeProperty.intValue == (int)ParameterType.FLOAT_LERP );
+            bool isLerp = IsLerpType();
 
             if (property.isExpanded)
             {
@@ -112,15 +113,16 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         private void GUI_IntializedDrawer(SerializedProperty property)
         {
             #region Omit
-            TargetProperty = property.FindPropertyRelative("Target");
-            MaterialIndexProperty = property.FindPropertyRelative("MaterialIndex");
-            ParamNameProperty = property.FindPropertyRelative("ParamName");
-            ParamTypeProperty = property.FindPropertyRelative("ParamType");
-            ParamApplyTimingProperty = property.FindPropertyRelative("ParamApplyTiming");
-            ParamFloatValueProperty = property.FindPropertyRelative("ParamFloatValue");
-            ParamIntValueProperty = property.FindPropertyRelative("ParamIntValue");
-            ParamTexValueProperty = property.FindPropertyRelative("ParamTexValue");
-            ParamLerpTimeProperty = property.FindPropertyRelative("LerpTime");
+            TargetProperty              = property.FindPropertyRelative("Target");
+            MaterialIndexProperty       = property.FindPropertyRelative("MaterialIndex");
+            ParamNameProperty           = property.FindPropertyRelative("ParamName");
+            ParamTypeProperty           = property.FindPropertyRelative("ParamType");
+            ParamApplyTimingProperty    = property.FindPropertyRelative("ParamApplyTiming");
+            ParamFloatValueProperty     = property.FindPropertyRelative("ParamFloatValue");
+            ParamIntValueProperty       = property.FindPropertyRelative("ParamIntValue");
+            ParamTexValueProperty       = property.FindPropertyRelative("ParamTexValue");
+            ParamColorValueProperty     = property.FindPropertyRelative("ParamColorValue");
+            ParamLerpTimeProperty       = property.FindPropertyRelative("LerpTime");
             #endregion
         }
 
@@ -178,7 +180,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
             ParamTypeProperty.SetEnumValue(typeResult);
 
             //타입이 러프타입일 경우...
-            if(ParamTypeProperty.intValue==(int)ParameterType.FLOAT_LERP)
+            if(IsLerpType())
             {
                 paramTypeRect.y += space;
                 spaceMul++;
@@ -243,6 +245,13 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
                         break;
                     }
 
+                    case (ParameterType.COLOR_LERP):
+                    case (ParameterType.COLOR):
+                    {
+                        ParamColorValueProperty.colorValue = EditorGUI.ColorField(rect, "Param Color Value", ParamColorValueProperty.colorValue);
+                        break;
+                    }
+
             }
             #endregion
         }
@@ -251,6 +260,14 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         //===========================================
         //////         Utility Methods           ///
         //==========================================
+        private bool IsLerpType()
+        {
+            bool proeprtyIsNull = (ParamTypeProperty==null);
+            if (proeprtyIsNull) return false;
+
+            return ((ParameterType)ParamTypeProperty.intValue).ToString().IndexOf("LERP")!=-1;
+        }
+
         private static float GetBaseHeight()
         {
             return GUI.skin.textField.CalcSize(GUIContent.none).y;
@@ -267,7 +284,9 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         INT,
         FLOAT,
         FLOAT_LERP,
-        TEXTURE
+        TEXTURE,
+        COLOR,
+        COLOR_LERP
     }
 
     public enum ApplyTiming : int
@@ -293,11 +312,13 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         public float        ParamFloatValue;
         public int          ParamIntValue;
         public Texture      ParamTexValue;
+        public Color        ParamColorValue;
 
         public float        LerpTimeDiv;
         public float        LeftTime;
         public float        LerpTime;
         public float        StartValue;
+        public Color        StartColorValue;
 
         public void SwitchParamValue(ref List<ParamSwitcherData> lerpLists,  ref int lerpCount,  ApplyTiming currTiming=ApplyTiming.None)
         {
@@ -315,6 +336,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
                         break;
                     }
 
+                    case ((int)ParameterType.COLOR_LERP):
                     case ((int)ParameterType.FLOAT_LERP):
                     {
                         //중복 파라미터를 제어하는 러프를 제거한다.
@@ -338,13 +360,22 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
 
                         LeftTime = LerpTime;
                         LerpTimeDiv = ( 1f / LerpTime );
-                        StartValue = Material.GetFloat(ParamName);
+
+                        //타입에 알맞는 시작값을 가져온다...
+                        if(ParamType==(int)ParameterType.FLOAT_LERP) StartValue = Material.GetFloat(ParamName);
+                        if(ParamType == (int)ParameterType.COLOR_LERP) StartColorValue = Material.GetColor(ParamName);
                         break;
                     }
 
                     case ((int)ParameterType.FLOAT):
                     {
                         Material.SetFloat(ParamName, ParamFloatValue);
+                        break;
+                    }
+
+                    case ((int)ParameterType.COLOR):
+                    {
+                        Material.SetColor(ParamName, ParamColorValue);
                         break;
                     }
 
@@ -362,15 +393,29 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         public bool ApplyLerpProgress(ref List<ParamSwitcherData> lerpLists, ref int lerpCount)
         {
             #region
-            if (ParamType != (int)ParameterType.FLOAT_LERP) return false;
-
             LeftTime -= Time.fixedDeltaTime;
             float progressRatio = Mathf.Clamp((1f - LeftTime * LerpTimeDiv), 0f, 1f);
-            float distance = (ParamFloatValue - StartValue);
 
-            Material.SetFloat(ParamName, StartValue + distance * progressRatio);
+            //러프 타입에 따라서 별도로 처리...
+            switch(ParamType){
 
-            if(progressRatio>=1f)
+                    case ((int)ParameterType.FLOAT_LERP):
+                    {
+                        float distance = (ParamFloatValue - StartValue);
+                        Material.SetFloat(ParamName, StartValue + distance * progressRatio);
+                        break;
+                    }
+
+                    case ((int)ParameterType.COLOR_LERP):
+                    {
+                        Color distance = (ParamColorValue - StartColorValue);
+                        Material.SetColor(ParamName, StartColorValue + distance * progressRatio);
+                        break;
+                    }
+            }
+
+            //러프 마무리...
+            if (progressRatio >= 1f)
             {
                 lerpLists.Remove(this);
                 lerpCount--;
@@ -395,6 +440,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
 
     private List<ParamSwitcherData> _LerpTargets = new List<ParamSwitcherData>();
     private int _LerpCount = 0;
+
 
     //============================================
     //////       Override Methods            /////

@@ -35,26 +35,32 @@ MonoBehaviour:
     EventCount: 5
     GroupIndex: 0
     foldout: 0
+    EventIsValid: 1
   - CategoryName: SFX/Environment
     EventCount: 8
     GroupIndex: 1
     foldout: 0
-  - CategoryName: SFX/Item
-    EventCount: 4
-    GroupIndex: 1
-    foldout: 0
-  - CategoryName: SFX/Player
-    EventCount: 1
-    GroupIndex: 1
-    foldout: 0
-  - CategoryName: SFX/UI
-    EventCount: 2
-    GroupIndex: 1
-    foldout: 0
+    EventIsValid: 1
   - CategoryName: Root
     EventCount: 1
     GroupIndex: 2
     foldout: 0
+    EventIsValid: 1
+  - CategoryName: SFX/Item
+    EventCount: 4
+    GroupIndex: 1
+    foldout: 0
+    EventIsValid: 1
+  - CategoryName: SFX/Player
+    EventCount: 1
+    GroupIndex: 1
+    foldout: 0
+    EventIsValid: 1
+  - CategoryName: SFX/UI
+    EventCount: 2
+    GroupIndex: 1
+    foldout: 0
+    EventIsValid: 1
   EventRefs:
   - Name: tavuti_ingame2
     Path: event:/BGM/tavuti_ingame2
@@ -147,6 +153,13 @@ MonoBehaviour:
       Data2: 1121479672
       Data3: -1546562640
       Data4: -816232933
+  - Name: No_14
+    Path: event:/No_14
+    GUID:
+      Data1: -738566357
+      Data2: 1166266538
+      Data3: 1971146173
+      Data4: -1481470806
   - Name: Get_Flower
     Path: event:/SFX/Item/Get_Flower
     GUID:
@@ -196,13 +209,7 @@ MonoBehaviour:
       Data2: 1266621721
       Data3: -1860747614
       Data4: 1802208756
-  - Name: No_14
-    Path: event:/No_14
-    GUID:
-      Data1: -738566357
-      Data2: 1166266538
-      Data3: 1971146173
-      Data4: -1481470806
+  RootFolderFoldout: 0
   EventGroups:
   - RootFolderName: BGM
     TotalEvent: 5

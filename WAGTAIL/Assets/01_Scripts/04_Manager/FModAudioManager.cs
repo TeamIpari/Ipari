@@ -9,11 +9,9 @@ using System.Text;
 using UnityEngine.UIElements;
 using System;
 using System.Reflection;
-using UnityEngine.Networking.Types;
 using System.Net.NetworkInformation;
 using FMOD;
 using System.Text.RegularExpressions;
-using static UnityEngine.InputSystem.Layouts.InputControlLayout;
 using System.Runtime.InteropServices;
 using UnityEngine.Rendering;
 using UnityEngine.Events;
@@ -228,7 +226,6 @@ public struct FModEventInstance
         if(destroyAtComplete)
         {
             Ins.release();
-            Ins.clearHandle();
             return;
         }
 
@@ -240,7 +237,9 @@ public struct FModEventInstance
     public void SetParameter(FModGlobalParamType paramType, float paramValue)
     {
         string paramName = FModReferenceList.Params[(int)paramType];
-        Ins.setParameterByName(paramName, paramValue);
+
+        FMOD.Studio.System system = FMODUnity.RuntimeManager.StudioSystem;
+        system.setParameterByName(paramName, paramValue);
     }
 
     public void SetParameter(FModLocalParamType paramType, float paramValue)
@@ -252,6 +251,33 @@ public struct FModEventInstance
     public void SetParameter(string paramName, float value)
     {
         Ins.setParameterByName(paramName, value);
+    }
+
+    public float GetParameter(FModGlobalParamType paramType)
+    {
+        string paramName = FModReferenceList.Params[(int)paramType];
+        float value;
+        FMOD.Studio.System system = FMODUnity.RuntimeManager.StudioSystem;
+        system.getParameterByName(paramName, out value);
+
+        return value;
+    }
+
+    public float GetParameter(FModLocalParamType paramType) 
+    {
+        string paramName = FModReferenceList.Params[(int)paramType];
+        float value;
+        Ins.getParameterByName(paramName, out value);
+
+        return value;
+    }
+
+    public float GetParameter(string paramName) 
+    {
+        float value;
+        Ins.getParameterByName(paramName, out value);
+
+        return value;
     }
 
     public void Set3DDistance(float minDistance, float maxDistance )
@@ -300,7 +326,7 @@ public sealed class FModAudioManager : MonoBehaviour
         private const string _StudioSettingsPath = "Assets/Plugins/FMOD/Resources/FMODStudioSettings.asset";
         private const string _GroupFolderPath    = "Metadata/Group";
         private const string _ScriptDefine       = "FMOD_Event_ENUM";
-        private const string _EditorVersion      = "v1.230814";
+        private const string _EditorVersion      = "v1.230816";
 
         private const string _EventRootPath      = "event:/";
         private const string _BusRootPath        = "bus:/";
@@ -378,7 +404,7 @@ public sealed class FModAudioManager : MonoBehaviour
         private static AnimBool _ParamSettingsFade;
         private static AnimBool _EventSettingsFade;
 
-        private bool _EventSettingsInValid = false;
+        private static bool[] _GroupIsValids = new bool[3] { true, true, true };
 
 
         /** SerializedProperty **********************/
@@ -405,6 +431,9 @@ public sealed class FModAudioManager : MonoBehaviour
         private void OnGUI()
         {
             GUI_InitEditor();
+
+            //이벤트들이 유효한지 사전 판단.
+            EventGroupIsValid(_GroupIsValids);
 
             //에디터 스킨에 따른 색상 변화
             bool isBlack = ( EditorGUIUtility.isProSkin==false );
@@ -689,6 +718,9 @@ public sealed class FModAudioManager : MonoBehaviour
 
             using (var fadeScope = new EditorGUILayout.FadeGroupScope(_StudioPathSettingsFade.faded))
             {
+                bool EventIsValid = (_GroupIsValids[0] && _GroupIsValids[1] && _GroupIsValids[2]);
+                bool PathIsValid = StudioPathIsValid();
+
                 if (fadeScope.visible)
                 {
                     EditorGUI.indentLevel++;
@@ -705,8 +737,8 @@ public sealed class FModAudioManager : MonoBehaviour
                     //경로 표시
                     using (var scope = new EditorGUI.ChangeCheckScope())
                     {
-                        GUIStyle usedStyle = ( StudioPathIsValid()?_TxtFieldStyle:_TxtFieldErrorStyle );
-                        string newPath = EditorGUILayout.TextField("Studio Project Path: ", _StudioPathProperty.stringValue,usedStyle, pathWidthOption, pathHeightOption);
+                        GUIStyle usedStyle  = ( PathIsValid?_TxtFieldStyle:_TxtFieldErrorStyle );
+                        string newPath      = EditorGUILayout.TextField("Studio Project Path: ", _StudioPathProperty.stringValue,usedStyle, pathWidthOption, pathHeightOption);
 
                         //경로가 변경되었을 경우
                         if (scope.changed && newPath.EndsWith(".fspro")) {
@@ -745,6 +777,8 @@ public sealed class FModAudioManager : MonoBehaviour
                     EditorGUILayout.EndHorizontal();
 
                     GUI_CreateEnumAndRefreshData();
+                    if (!PathIsValid) EditorGUILayout.HelpBox("The FMod Studio Project for that path does not exist.", MessageType.Error);
+                    else if (!EventIsValid) EditorGUILayout.HelpBox("Among the events currently loaded into the Editor, an invalid event exists. Press the Loaded Studio Settings button to reload.", MessageType.Error);
                 }
 
                 fadeScope.Dispose();
@@ -763,15 +797,22 @@ public sealed class FModAudioManager : MonoBehaviour
                 EditorGUILayout.Space(10f);
 
                 //옵션 저장 및 갱신
-                if(GUILayout.Button( "Save and Apply Settings", GUILayout.Width(position.width*.5f))){
+                bool allGroupInValid    = !(_GroupIsValids[0] && _GroupIsValids[1] && _GroupIsValids[2]);
+                bool studioPathInValid  = !StudioPathIsValid();
 
-                    CreateEnumScript();
-                    if (_EditorSettings != null){
-                        EditorUtility.SetDirty(_EditorSettings);
+                using (var disableScope = new EditorGUI.DisabledGroupScope(allGroupInValid || studioPathInValid))
+                {
+                    if (GUILayout.Button("Save and Apply Settings", GUILayout.Width(position.width * .5f))){
+
+                        CreateEnumScript();
+                        if (_EditorSettings != null)
+                        {
+                            EditorUtility.SetDirty(_EditorSettings);
+                        }
+
+                        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, _ScriptDefine);
+                        AssetDatabase.Refresh();
                     }
-
-                    PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, _ScriptDefine);
-                    AssetDatabase.Refresh();
                 }
 
                 //FMod Studio 데이터 불러오기
@@ -1003,7 +1044,9 @@ public sealed class FModAudioManager : MonoBehaviour
             int categoryCount = categorys.Count;
 
             EditorGUI.indentLevel++;
-            _EventSettingsFade.target = EditorGUILayout.Foldout(_EventSettingsFade.target, $"FMod Events<color={_CountColorStyle}>({infoCount})</color>", _FoldoutTxtStyle);
+            bool allGroupIsValid = ( _GroupIsValids[0] && _GroupIsValids[1] && _GroupIsValids[2]);
+            string eventSettingsColor = ( allGroupIsValid ? "" : "red");
+            _EventSettingsFade.target = EditorGUILayout.Foldout(_EventSettingsFade.target, $"<color={eventSettingsColor}>FMod Events</color><color={_CountColorStyle}>({infoCount})</color>", _FoldoutTxtStyle);
             EditorGUILayout.Space(3f);
 
 
@@ -1015,6 +1058,18 @@ public sealed class FModAudioManager : MonoBehaviour
                     EditorGUI.indentLevel--;
                     if (categoryCount>0) EditorGUILayout.HelpBox("An FModBGMEventType/FModSFXEventType/FModNoGroupEventType enum is created based on the information shown below.", MessageType.Info);
                     EditorGUI.indentLevel++;
+
+                    //루트폴더 세팅...
+                    if (_EditorSettings.RootFolderFoldout = EditorGUILayout.Foldout(_EditorSettings.RootFolderFoldout, "Event Group RootFolder Settings"))
+                    {
+                        using (var scope = new EditorGUILayout.HorizontalScope()){
+
+                            _EditorSettings.EventGroups[0].RootFolderName = EditorGUILayout.TextField("BGM RootFolder", _EditorSettings.EventGroups[0].RootFolderName, GUILayout.Width(position.width * .5f));
+                            _EditorSettings.EventGroups[1].RootFolderName = EditorGUILayout.TextField("SFX RootFolder", _EditorSettings.EventGroups[1].RootFolderName, GUILayout.Width(position.width * .5f));
+                            scope.Dispose();
+                        }
+                    }
+
 
                     _EventGroups[0] = $"BGM({descs[0].TotalEvent})";
                     _EventGroups[1] = $"SFX({descs[1].TotalEvent})";
@@ -1040,7 +1095,8 @@ public sealed class FModAudioManager : MonoBehaviour
                         //해당 카테고리의 폴드아웃 효과 구현.
                         using(var change = new EditorGUI.ChangeCheckScope())
                         {
-                            category.foldout = EditorGUILayout.Foldout(category.foldout, $"<color={_ContentColorStyle}>{category.CategoryName}</color>" + $"<color={_CountColorStyle}>({category.EventCount})</color>", _CategoryTxtStyle);
+                            string groupColor = (category.EventIsValid ? _ContentColorStyle : "red");
+                            category.foldout = EditorGUILayout.Foldout(category.foldout, $"<color={groupColor}>{category.CategoryName}</color>" + $"<color={_CountColorStyle}>({category.EventCount})</color>", _CategoryTxtStyle);
 
                             //foldout값이 바뀌었을 경우
                             if(change.changed){
@@ -1059,6 +1115,7 @@ public sealed class FModAudioManager : MonoBehaviour
                             for (int j = 0; j < EventCount; j++){
 
                                 int realIndex      = (startIndex+j);
+                                int groupIndex     = (category.GroupIndex);
                                 bool isValid       = CheckEventIsValid(realIndex, infos);
                                 FModEventInfo info = infos[realIndex];
                                 GUIStyle usedStyle = (isValid?_TxtFieldStyle:_TxtFieldErrorStyle);
@@ -1175,13 +1232,13 @@ public sealed class FModAudioManager : MonoBehaviour
                 FModParamDesc desc = paramDescs[i];
                 if (desc.isGlobal == false) continue;
 
-                string comma = (i == Count - 1 ? "" : ",");
-                builder.AppendLine($"   {desc.ParamName}={i}{comma}");
+                string comma    = (i == Count - 1 ? "" : ",");
+                string enumName = RemoveInValidChar(desc.ParamName);
+                builder.AppendLine($"   {enumName}={i}{comma}");
             }
 
             builder.AppendLine("}");
             builder.AppendLine("");
-
 
 
             /*******************************************
@@ -1196,13 +1253,40 @@ public sealed class FModAudioManager : MonoBehaviour
                 FModParamDesc desc = paramDescs[i];
                 if (desc.isGlobal) continue;
 
-                string comma = (i == Count - 1 ? "" : ",");
-                builder.AppendLine($"   {desc.ParamName}={i}{comma}");
+                string comma    = (i == Count - 1 ? "" : ",");
+                string enumName = RemoveInValidChar(desc.ParamName);
+                builder.AppendLine($"   {enumName}={i}{comma}");
             }
 
             builder.AppendLine("}");
             builder.AppendLine("");
 
+
+            /**********************************************
+             *   Param Lable Enum 정의
+             * *****/
+            builder.AppendLine("public struct FModParamLabel");
+            builder.AppendLine("{");
+
+            Count = paramDescs.Count;
+            for (int i = 0; i < Count; i++) {
+
+                FModParamDesc desc = paramDescs[i];
+                if(desc.LableCount<=0) continue;
+
+                string structName = RemoveInValidChar(desc.ParamName);
+
+                builder.AppendLine($"    public struct {structName}");
+                builder.AppendLine("    {");
+
+                AddParamLabelListScript(builder, i);
+
+                builder.AppendLine("    }");
+            }
+
+
+            builder.AppendLine("}");
+            builder.AppendLine("");
 
 
             /**************************************
@@ -1222,8 +1306,7 @@ public sealed class FModAudioManager : MonoBehaviour
                 FModEventCategoryDesc desc = categoryDescs[i];
 
                 //BGM 그룹이 아니라면 스킵.
-                if (desc.GroupIndex != 0)
-                {
+                if (desc.GroupIndex != 0){
 
                     total += desc.EventCount;
                     continue;
@@ -1381,6 +1464,25 @@ public sealed class FModAudioManager : MonoBehaviour
             #endregion
         }
 
+        private void AddParamLabelListScript(StringBuilder builder, int descIndex) 
+        {
+            #region Omit
+            List<FModParamDesc> descs   = _EditorSettings.ParamDescList;
+            List<string>        labels  = _EditorSettings.ParamLableList;
+
+            FModParamDesc desc = descs[descIndex];
+            if( desc.LableCount<=0 ) return;
+
+            int startIndex = GetParamLabelStartIndex(descIndex);
+            for(int i=0; i<desc.LableCount; i++) 
+            {
+                int realIndex = (startIndex+i);
+                string labelName = RemoveInValidChar(labels[realIndex]);
+                builder.AppendLine($"       public const float {labelName}  ={i}f;");
+            }
+            #endregion
+        }
+
         private void AddBankListScript(StringBuilder builder)
         {
             #region Omit
@@ -1440,10 +1542,14 @@ public sealed class FModAudioManager : MonoBehaviour
         private string RemoveInValidChar(string inputString)
         {
             //시작 숫자 제거
-            inputString = inputString.Substring(Regex.Match(inputString, @"^\d*").Length, inputString.Length);
+            int removeCount = Regex.Match(inputString, @"^\d*").Length;
+            inputString = inputString.Substring(removeCount, inputString.Length-removeCount);
 
             //사용하지 못하는 특수문자 제거
             inputString = _regex.Replace(inputString, "_");
+
+            //공백문자 제거.
+            inputString = inputString.Replace(" ", "_");
 
             return inputString;
         }
@@ -1488,21 +1594,30 @@ public sealed class FModAudioManager : MonoBehaviour
             DirectoryInfo dPath = new DirectoryInfo(busPath);
             XmlDocument document= new XmlDocument();
 
-            //Studio folder의 모든 bus 데이터들을 읽어들인후 기록.
-            foreach(FileInfo file in dPath.GetFiles())
+            try
             {
-                if (!file.Exists) continue;
+                //Studio folder의 모든 bus 데이터들을 읽어들인후 기록.
+                foreach (FileInfo file in dPath.GetFiles())
+                {
+                    if (!file.Exists) continue;
 
-                try { document.LoadXml(File.ReadAllText(file.FullName)); }catch { continue;}
-                string  idNode      = document.SelectSingleNode("//object/@id")?.InnerText;
-                string nameNode     = document.SelectSingleNode("//object/property[@name='name']/value")?.InnerText;
-                string outputNode   = document.SelectSingleNode("//object/relationship[@name='output']/destination")?.InnerText;
-            
-                if(idNode!=null && nameNode!=null && outputNode!=null){
+                    try { document.LoadXml(File.ReadAllText(file.FullName)); } catch { continue; }
+                    string idNode = document.SelectSingleNode("//object/@id")?.InnerText;
+                    string nameNode = document.SelectSingleNode("//object/property[@name='name']/value")?.InnerText;
+                    string outputNode = document.SelectSingleNode("//object/relationship[@name='output']/destination")?.InnerText;
 
-                    busMap.Add(idNode, new NPData { Name = nameNode, Path = outputNode });
-                    lists.Add(new NPData { Name=nameNode, Path=outputNode });
+                    if (idNode != null && nameNode != null && outputNode != null)
+                    {
+
+                        busMap.Add(idNode, new NPData { Name = nameNode, Path = outputNode });
+                        lists.Add(new NPData { Name = nameNode, Path = outputNode });
+                    }
                 }
+            }
+            catch{
+
+                //파일을 찾는데 실패하면 스킵한다.
+                return;
             }
 
             //불러온 모든 busData들의 경로를 제대로 기록한다.
@@ -1548,6 +1663,8 @@ public sealed class FModAudioManager : MonoBehaviour
                     EditorParamRef param = paramRef[j];
                     int labelCount = (param.Labels == null ? 0 : param.Labels.Length);
 
+                    if (GetParamIsAlreadyContain(param.Name, descList)) continue;
+
                     descList.Add(new FModParamDesc()
                     {
                         Max = param.Max,
@@ -1570,6 +1687,17 @@ public sealed class FModAudioManager : MonoBehaviour
             }
 
             #endregion
+        }
+
+        private bool GetParamIsAlreadyContain(string checkParamName, List<FModParamDesc> descs)
+        {
+            int Count = descs.Count;
+            for(int i=0; i<Count; i++)
+            {
+                if (descs[i].ParamName == checkParamName) return true;
+            }
+
+            return false;
         }
 
         private int GetCategoryIndex(string categoryName, List<FModEventCategoryDesc> descs)
@@ -1622,7 +1750,12 @@ public sealed class FModAudioManager : MonoBehaviour
                 int CategoryIndex       = GetCategoryIndex(CategoryName, categoryList);
 
                 //카테고리가 없으면 카테고리를 새로 만든다.
-                if (CategoryName.Equals(PathSplit[PathSplit.Length - 1])) CategoryName = "Root";
+                if (CategoryName.Equals(PathSplit[PathSplit.Length - 1]))
+                {
+                    CategoryName = "Root";
+                    CategoryIndex = GetCategoryIndex(CategoryName, categoryList);
+                }
+
                 if (CategoryIndex == -1){
 
                     categoryList.Add(new FModEventCategoryDesc { CategoryName = CategoryName, EventCount = 1, GroupIndex = GroupIndex });
@@ -1642,6 +1775,62 @@ public sealed class FModAudioManager : MonoBehaviour
             if (_EditorSettings.EventGroups[0].RootFolderName.Equals(RootFolder)) return 0;
             else if (_EditorSettings.EventGroups[1].RootFolderName.Equals(RootFolder)) return 1;
             else return 2;
+        }
+
+        private int GetParamLabelStartIndex(int descIndex) 
+        {
+            #region Omit
+            int total = 0;
+            List<FModParamDesc> descs = _EditorSettings.ParamDescList;
+
+            for(int i=0; i<descIndex; i++) 
+            {
+                total+=descs[i].LableCount;
+            }
+
+            return total;
+            #endregion
+        }
+
+        private void EventGroupIsValid(bool[] groupEventBooleans)
+        {
+            #region Omit
+            if (_EditorSettings == null) return;
+
+            FModGroupInfo[]             groups    = _EditorSettings.EventGroups;
+            List<FModEventCategoryDesc> categorys = _EditorSettings.CategoryDescList;
+            List<FModEventInfo>         infos     = _EditorSettings.EventRefs;
+
+            groupEventBooleans[0] = groupEventBooleans[1] = groupEventBooleans[2] = true;
+
+            int total = 0;
+            int CategoryCount = categorys.Count;
+
+            /************************************
+             *   모든 카테고리를 순회한다.
+             * **/
+            for(int i=0; i<CategoryCount; i++){
+
+                FModEventCategoryDesc desc = categorys[i];
+                desc.EventIsValid = true;
+
+                for(int j=0; j<desc.EventCount; j++)
+                {
+                    int realIndex = (total+j);
+                    bool eventIsValid = CheckEventIsValid(realIndex, infos);
+
+                    //유효하지 않은 인덱스를 가지고 있다면....
+                    if(eventIsValid==false){
+
+                        groupEventBooleans[desc.GroupIndex] = false;
+                        desc.EventIsValid = false;
+                    }
+                }
+
+                categorys[i] = desc;
+                total += desc.EventCount;
+            }
+            #endregion
         }
 
         private bool CheckEventIsValid(int index, List<FModEventInfo> lists)
@@ -1666,7 +1855,9 @@ public sealed class FModAudioManager : MonoBehaviour
     #region Define
     public struct FadeInfo
     {
+#if FMOD_Event_ENUM
         public FModEventInstance TargetIns;
+#endif
         public int FadeID;
         public float duration;
         public float durationDiv;
@@ -1697,7 +1888,9 @@ public sealed class FModAudioManager : MonoBehaviour
     /////            Fields            /////
     ///======================================
     private static FModAudioManager _Instance;
+#if FMOD_Event_ENUM
     private FModEventInstance       _BGMIns;
+#endif
 
     private FMOD.Studio.Bus[] _BusList;
 
@@ -2024,6 +2217,22 @@ public sealed class FModAudioManager : MonoBehaviour
         _Instance._BGMIns.SetParameter(paramType, paramValue);
     }
 
+    public static float GetBGMParameter(FModGlobalParamType paramType) 
+    {
+        if(_Instance==null || _Instance._BGMIns.IsValid==false) return -1f;
+        return _Instance._BGMIns.GetParameter(paramType);
+    }
+
+    public static float GetBGMParameter(FModLocalParamType paramType) {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return -1f;
+        return _Instance._BGMIns.GetParameter(paramType);
+    }
+
+    public static float GetBGMParameter(string paramName) {
+        if (_Instance == null || _Instance._BGMIns.IsValid == false) return -1f;
+        return _Instance._BGMIns.GetParameter(paramName);
+    }
+
     public static void SetBGMTimelinePosition(int timelinePositionMillieSeconds)
     {
         if (_Instance == null || _Instance._BGMIns.IsValid == false) return;
@@ -2188,6 +2397,7 @@ public sealed class FModAudioManager : MonoBehaviour
                 if (_fadeInfos[i].TargetIns.IsValid==false)
                 {
                     _fadeInfos[i].pendingKill = true;
+                    _fadeState = FadeState.PendingKill;
                     continue;
                 }
 
@@ -2240,9 +2450,9 @@ public sealed class FModAudioManager : MonoBehaviour
 
     private void BGMFadeComplete(int fadeID, float goalVolume)
     {
-        if (fadeID != AutoFadeBGMID || _NextBGMEvent<0) return;
-
-        PlayBGM((FModBGMEventType)_NextBGMEvent, _NextBGMVolume, _NextBGMStartPos, _NextBGMParam, _NextBGMParamValue, _NextBGMPosition);
+        if (fadeID != AutoFadeBGMID ) return;
+        if (goalVolume <= 0f) _BGMIns.Destroy();
+        if(_NextBGMEvent >0) PlayBGM((FModBGMEventType)_NextBGMEvent, _NextBGMVolume, _NextBGMStartPos, _NextBGMParam, _NextBGMParamValue, _NextBGMPosition);
     }
 
 #endif
