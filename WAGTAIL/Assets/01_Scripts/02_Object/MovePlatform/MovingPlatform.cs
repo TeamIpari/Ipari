@@ -14,7 +14,8 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private Transform _endPoint;
     [SerializeField] private float _time;
 
-    
+
+    private Collider _player;
 
     private float _currentTime;
     private Transform _prevWayPoint;
@@ -87,10 +88,16 @@ public class MovingPlatform : MonoBehaviour
             if (collider.CompareTag("Player"))
             {
                 collider.transform.SetParent(transform);
+                _player = collider;
                 return;
             }
         }
 
+        if(_player != null)
+        {
+            _player.transform.SetParent(null);
+            _player = null;
+        }
         //for(int i = 0; i < hitcolliders.Length; i++)
         //{
         //    if (hitcolliders[i].CompareTag("Player"))

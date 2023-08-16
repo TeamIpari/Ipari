@@ -22,7 +22,8 @@ public enum ChapterType
 {
     Title,
     Chapter01,
-    Chapter02
+    Chapter02,
+    BossRoom
 }
 
 public class GameManager : Singleton<GameManager>

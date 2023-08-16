@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,7 +44,12 @@ public class MovingCamera : MonoBehaviour
     {
         if (Player.Instance.isDead)
         {
+            GetComponent<CinemachineVirtualCamera>().Priority = 9;
             _currentTime = _respawnTime[GameManager.GetInstance().num];
+        }
+        else
+        {
+            GetComponent<CinemachineVirtualCamera>().Priority = 11;
         }
     }
 

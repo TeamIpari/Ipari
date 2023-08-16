@@ -26,6 +26,11 @@ public class ShatterObject : MonoBehaviour
 
     public void Explode()
     {
+        Collider col = GetComponent<Collider>();
+        if(col != null )
+        {
+            col.enabled = false;
+        }
         if (_originalObject != null)
         {
             _originalObject.SetActive(false);

@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class BossRoom : MonoBehaviour
 {
+    public ChapterType NextChapter;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            SceneLoader.GetInstance().LoadScene("Chapter02");
+            SceneLoader.GetInstance().LoadScene(NextChapter.ToString());
         }
     }
 }

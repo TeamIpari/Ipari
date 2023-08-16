@@ -27,6 +27,7 @@ public class ChapterController : MonoBehaviour
         if (Type == ChapterType.Chapter02)
         {
             GameManager.GetInstance().StartChapter(ChapterType.Chapter02);
+            CameraManager.GetInstance().CameraSetting();
         }
     }
 

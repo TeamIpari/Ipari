@@ -95,5 +95,13 @@ public class AutoMoveLarva : MonoBehaviour
 
     }
 
+    // 강띵호가 추가함
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.CompareTag("Player"))
+        {
+            collision.collider.GetComponent<Player>().isDead = true;
+        }
+    }
 
 }

@@ -49,11 +49,25 @@ public class AcidBomb : Bullet
 
     private void OnTriggerEnter(Collider other)
     {
+        // 강띵호가 추가함
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("맞음");
+            other.GetComponent<Player>().isDead = true;
+        }
+        // ==========================================================
         Destroy(this.gameObject);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        // 강띵호가 추가함
+        if(collision.collider.CompareTag("Player"))
+        {
+            Debug.Log("맞음");
+            collision.collider.GetComponent<Player>().isDead = true;
+        }
+        // ==========================================================
         Destroy(this.gameObject);
     }
 }
