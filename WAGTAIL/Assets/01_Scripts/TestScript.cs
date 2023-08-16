@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class TestScript : MonoBehaviour
+public sealed class TestScript : MonoBehaviour, IFModEventFadeComplete
 {
     FModEventInstance TestIns;
+
+    public void OnFModEventComplete(int fadeID, float goalVolume)
+    {
+       
+    }
 
     private void Start()
     {
         FModAudioManager.AutoFadeInOutBGM = true;
         FModAudioManager.AutoFadeBGMDuration = 10f;
+        FModAudioManager.OnEventFadeComplete += OnFModEventComplete;
     }
 
     private void Update()
