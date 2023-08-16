@@ -22,6 +22,10 @@ public enum FModLocalParamType
 {
 }
 
+public struct FModParamLabel
+{
+}
+
 public enum FModBGMEventType
 {
    tavuti_ingame2=0,
@@ -41,18 +45,18 @@ public enum FModSFXEventType
    Stone_Broken=10,
    Interacting_Vine=11,
    Landed_Ground=12,
-   Get_Flower=13,
-   Get_Bead=14,
-   Put_KoKoShi=15,
-   Flowers_Burst=16,
-   Player_Jump=17,
-   GameOver=18,
-   Death_CutScene=19
+   Get_Flower=14,
+   Get_Bead=15,
+   Put_KoKoShi=16,
+   Flowers_Burst=17,
+   Player_Jump=18,
+   GameOver=19,
+   Death_CutScene=20
 }
 
 public enum FModNoGroupEventType
 {
-   No_14=20
+   No_14=13
 }
 
 public sealed class FModReferenceList
@@ -72,6 +76,7 @@ public sealed class FModReferenceList
         new FMOD.GUID{ Data1=-914784664, Data2=1222737742, Data3=-1850851651, Data4=1549350424 },
         new FMOD.GUID{ Data1=-990469295, Data2=1254419191, Data3=1519357069, Data4=-1122432260 },
         new FMOD.GUID{ Data1=-1304464854, Data2=1121479672, Data3=-1546562640, Data4=-816232933 },
+        new FMOD.GUID{ Data1=-738566357, Data2=1166266538, Data3=1971146173, Data4=-1481470806 },
         new FMOD.GUID{ Data1=-1665399871, Data2=1278575409, Data3=-1760948335, Data4=-1373955044 },
         new FMOD.GUID{ Data1=1596271017, Data2=1176077993, Data3=693188530, Data4=1557820508 },
         new FMOD.GUID{ Data1=52087645, Data2=1090531362, Data3=-178578771, Data4=1052847077 },
@@ -79,7 +84,6 @@ public sealed class FModReferenceList
         new FMOD.GUID{ Data1=61617350, Data2=1314310624, Data3=-766163584, Data4=319510773 },
         new FMOD.GUID{ Data1=106925798, Data2=1271508359, Data3=327143578, Data4=974880928 },
         new FMOD.GUID{ Data1=1315365849, Data2=1266621721, Data3=-1860747614, Data4=1802208756 },
-        new FMOD.GUID{ Data1=-738566357, Data2=1166266538, Data3=1971146173, Data4=-1481470806 },
     };
 
     public static readonly string[] Banks = new string[]

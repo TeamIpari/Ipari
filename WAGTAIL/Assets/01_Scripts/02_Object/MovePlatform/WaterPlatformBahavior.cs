@@ -34,6 +34,7 @@ public sealed class WaterPlatformBahavior : PlatformBehaviorBase
 
     private Vector3         _startPosition = Vector3.zero;
     private Vector3         _startRotation = Vector3.zero;
+    private Quaternion      _defaultRotation = Quaternion.identity;
     private LandedType      _landedType    = LandedType.None;
 
 
@@ -44,6 +45,8 @@ public sealed class WaterPlatformBahavior : PlatformBehaviorBase
     public override void BehaviorStart(PlatformObject affectedPlatform)
     {
         _startPosition = transform.position;
+        _defaultRotation= transform.rotation;
+        affectedPlatform.CheckGroundOffset = 2f;
     }
 
     public override void PhysicsUpdate(PlatformObject affectedPlatform)
@@ -111,6 +114,9 @@ public sealed class WaterPlatformBahavior : PlatformBehaviorBase
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
     {
-        standingTarget.transform.position = standingPoint;
+        Vector3 pos = standingTarget.transform.position;
+        pos.y = standingPoint.y;
+
+        standingTarget.transform.position = pos;
     }
 }
