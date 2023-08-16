@@ -1838,7 +1838,7 @@ public sealed class FModAudioManager : MonoBehaviour
                 continue;
             }
 
-            FMODUnity.RuntimeManager.LoadBank(bankLists[i]);
+            try { FMODUnity.RuntimeManager.LoadBank(bankLists[i]); } catch { continue; }
         }
     }
 

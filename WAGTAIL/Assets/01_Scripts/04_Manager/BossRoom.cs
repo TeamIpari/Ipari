@@ -9,7 +9,7 @@ public class BossRoom : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SceneLoader.GetInstance().LoadScene("BossRoom");
+            SceneLoader.GetInstance().LoadScene("Chapter02");
         }
     }
 }

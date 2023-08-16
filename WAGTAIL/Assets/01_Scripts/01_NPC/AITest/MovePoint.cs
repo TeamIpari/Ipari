@@ -30,6 +30,8 @@ public class MovePoint : MonoBehaviour
     int count = 1;
     public float DamagedAnimTimer = 1.5f;
 
+    float angle = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -78,9 +80,9 @@ public class MovePoint : MonoBehaviour
                 // 개발자들이 Inspector에는 머리 - 몸통 - 꼬리 순으로 넣을 것이기 때문에 반대로 연산하게 만듬.
                 for (int ver2 = ver1, LarvaCur = LarvaPrefabs.Length - 1; ver2 > ver1 - LarvaPrefabs.Length; ver2--)
                 {
-                    //Debug.Log(Objs[ver2 - 1].transform.position);
                     GameObject obj2 = Instantiate(LarvaPrefabs[LarvaCur--]);
-                    obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? true: false);
+                    obj2.transform.rotation = Quaternion.Euler(0f , 0f ,0f);
+                    obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? false: true);
 
                     obj2.transform.position = Objs[ver2 - 1].transform.position;
                     Larvas.Add(obj2);

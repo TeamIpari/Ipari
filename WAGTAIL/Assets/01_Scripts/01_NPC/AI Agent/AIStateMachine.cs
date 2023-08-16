@@ -17,6 +17,7 @@ public class AIStateMachine
     public CapsuleCollider CapsuleCollider;
     public CharacterController CharacterController;
     public GameObject Target;
+    //public int AttackCur;
 
     public List<AIState> Pattern = new List<AIState>();
 
@@ -37,7 +38,6 @@ public class AIStateMachine
         ai.BoxCollider = gameObject.GetComponent<BoxCollider>();
         ai.CapsuleCollider = gameObject.GetComponent<CapsuleCollider>();
         ai.CharacterController = gameObject.GetComponent<CharacterController>();
-        
         return ai;
     }
 
@@ -64,6 +64,10 @@ public class AIStateMachine
         }
     }
 
+    public void ChangeAttackState()
+    {
+
+    }
     public void SetTarget(GameObject obj)
     {
         Target = obj;

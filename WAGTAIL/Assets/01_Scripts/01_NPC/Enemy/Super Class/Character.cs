@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
+    // 공격 패턴
+    public enum Pattern
+    {
+        IDLE,
+        MOVE,
+        WAIT,
+        SPECAIL1,
+        SPECAIL2,
+        SPECAIL3,
+        DIE,
+    }
     public int HP;
     public int AttackDamage;
 
@@ -13,6 +24,8 @@ public class Character : MonoBehaviour
     public float AttackRate;
     public float WaitRate;
     protected float AttackTimer;
+
+    public Pattern[] CharacterMovementPattern;
 
     public Transform RotatePoint;
 
@@ -25,7 +38,10 @@ public class Character : MonoBehaviour
     public AIMoveState AiMove;
     public AIWaitState AiWait;
 
+    public virtual void SetAttackPattern()
+    {
 
+    }
 
     public bool isAttack()
     {
@@ -36,6 +52,7 @@ public class Character : MonoBehaviour
             return false;
         }
         // 공격 가능 상태
+
         return true;
     }
 

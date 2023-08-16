@@ -23,6 +23,11 @@ public class ChapterController : MonoBehaviour
             GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
             CameraManager.GetInstance().CameraSetting();
         }
+
+        if (Type == ChapterType.Chapter02)
+        {
+            GameManager.GetInstance().StartChapter(ChapterType.Chapter02);
+        }
     }
 
 }

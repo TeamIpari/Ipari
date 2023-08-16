@@ -11,7 +11,10 @@ public class MiniNepenthes : Enemy
     public float ShotSpeed;
     public int angle;
 
-
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, AttackRange);
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +22,7 @@ public class MiniNepenthes : Enemy
 
         AiIdle = new NepenthesIdleState(AiSM, angle);
         AiAttack = new NepenthesAttackState(AiSM);
+        SetAttackPattern();
         AiWait = new NepenthesWaitState(AiSM);
         
         AiSM.Initialize(AiIdle);
@@ -41,10 +45,11 @@ public class MiniNepenthes : Enemy
         Vector3 PlayerPos = new Vector3(AiSM.Target.transform.position.x, ShotPosition.position.y, AiSM.Target.transform.position.z);
         Vector3 direction = PlayerPos - ShotPosition.position;
 
-        BulletPrefab.SetDirection(direction);
+        //BulletPrefab.SetDirection(direction, ShotSpeed);
         GameObject Bomb = Instantiate(BulletPrefab.gameObject);
-        Bomb.GetComponent<Bullet>().SetDirection(direction * ShotSpeed);
+        Bomb.GetComponent<Bullet>().SetDirection(direction.normalized * ShotSpeed);
         Bomb.transform.position = ShotPosition.position;
+        Destroy(Bomb, 2f);
     }
 
 
