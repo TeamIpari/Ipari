@@ -9545,6 +9545,7 @@ GameObject:
   - component: {fileID: 6691858040626408663}
   - component: {fileID: 6691858040626408660}
   - component: {fileID: 6691858040626408662}
+  - component: {fileID: 4293520235046891869}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -9656,6 +9657,7 @@ MonoBehaviour:
   gravityMultiplier: 2
   rotationSpeed: 5
   climbingSpeed: 3.2
+  pullingSpeed: 3.5
   slopeSpeed: 0
   respawnTime: 1.2
   speedDampTime: 0.1
@@ -9669,6 +9671,10 @@ MonoBehaviour:
   isFlight: 0
   isDead: 0
   isPull: 0
+  walkClip: {fileID: 8300000, guid: 8b321c774aa0c9b4db043460c4299ee2, type: 3}
+  jumpClip: {fileID: 8300000, guid: cdcb039d1ce4aeb48b0ead7676d6ac6c, type: 3}
+  landingClip: {fileID: 8300000, guid: d567d3cd34fe26a4090a96eb225f1940, type: 3}
+  deathClip: {fileID: 8300000, guid: 17d59120bd8ebb34182bf98697963c14, type: 3}
   gravityValue: -9.81
   normalColliderHeight: 0
   normalColliderCenter: {x: 0, y: 0, z: 0}
@@ -9689,6 +9695,19 @@ MonoBehaviour:
   UIManager: {fileID: 0}
   GameManager: {fileID: 0}
   CameraManager: {fileID: 0}
+  SoundHandler: {fileID: 0}
+--- !u!114 &4293520235046891869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6691858040626408670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5535a241265c304ca957c6a28423413, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6691858040659941365
 GameObject:
   m_ObjectHideFlags: 0
