@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     // =======================================
     public float slopeSpeed = 0f;
     public float respawnTime;
+    public float landingTime = 0.1f;
 
     [Header("Animation Smoothing")]
     [Range(0, 1)]
