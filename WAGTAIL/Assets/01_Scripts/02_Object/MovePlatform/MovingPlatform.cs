@@ -5,10 +5,16 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
+    [Header("CustomCollider")]
+    [SerializeField] private Vector3 _offset;
+    [SerializeField] private Vector3 _size;
+
     // ¿òÁ÷ÀÌ´Â ÇÃ·§Æû 
     [SerializeField] private Transform _startPoint;
     [SerializeField] private Transform _endPoint;
     [SerializeField] private float _time;
+
+    
 
     private float _currentTime;
     private Transform _prevWayPoint;
@@ -26,6 +32,7 @@ public class MovingPlatform : MonoBehaviour
 
     void FixedUpdate()
     {
+        MyCustomCollider();
         _currentTime += Time.deltaTime;
 
         if (_currentTime >= _time)
@@ -54,17 +61,40 @@ public class MovingPlatform : MonoBehaviour
         Gizmos.DrawWireCube(_startPoint.position, _pointSize);
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(_endPoint.position, _pointSize);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(_offset + transform.position, _size);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-            other.transform.SetParent(transform);
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.CompareTag("Player"))
+    //        other.transform.SetParent(transform);
+    //}
 
-    private void OnTriggerExit(Collider other)
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.CompareTag("Player"))
+    //        other.transform.SetParent(null);
+    //}
+
+    private void MyCustomCollider()
     {
-        if (other.CompareTag("Player"))
-            other.transform.SetParent(null);
+        Collider[] hitcolliders = Physics.OverlapBox(_offset + transform.position, _size * 0.5f, Quaternion.Euler(Vector3.zero));
+
+        foreach (Collider collider in hitcolliders)
+        {
+            if (collider.CompareTag("Player"))
+            {
+                collider.transform.SetParent(transform);
+                return;
+            }
+        }
+
+        //for(int i = 0; i < hitcolliders.Length; i++)
+        //{
+        //    if (hitcolliders[i].CompareTag("Player"))
+        //        hitcolliders[i].transform.SetParent(transform);
+        //}
     }
 }

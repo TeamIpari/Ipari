@@ -97,6 +97,11 @@ public class SceneLoader : Singleton<SceneLoader>
                 //CameraManager.GetInstance().CameraSetting();
             }
 
+            if(_loadSceneName == "Chapter02")
+            {
+                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+            }
+
             if (_loadSceneName == "BossRoom")
             {
                 GameManager.GetInstance().Test();

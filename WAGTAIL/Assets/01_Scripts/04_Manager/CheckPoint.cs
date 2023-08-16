@@ -17,6 +17,7 @@ public class CheckPoint : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            _gameManager.num++;
             _gameManager.SwitchCheckPoint(transform.position);
             gameObject.SetActive(false);
         }
