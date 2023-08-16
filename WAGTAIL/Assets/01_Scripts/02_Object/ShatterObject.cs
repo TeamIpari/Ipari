@@ -12,12 +12,20 @@ public class ShatterObject : MonoBehaviour
     [SerializeField] private float _explosionForceRadius = 10;
     [SerializeField] private float _fragScaleFactor = 0.01f;
 
+    
+    
     private GameObject _fractObj;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            Explode();
+        }
+    }
 
     public void Explode()
     {
-        GetComponent<BoxCollider>().enabled = false;
-
         if (_originalObject != null)
         {
             _originalObject.SetActive(false);

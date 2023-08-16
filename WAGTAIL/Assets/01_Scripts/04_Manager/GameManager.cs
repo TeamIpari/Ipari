@@ -1,3 +1,4 @@
+using Polybrush;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,8 +31,9 @@ public class GameManager : Singleton<GameManager>
     private float _masterVolume;
     private float _musicVolume;
     private float _soundEffectsVolume;
-    
+
     // CheckPoint
+    public int num;
     private List<CheckPoint> _checkPointList;
     private Vector3 _startPoint = Vector3.zero;
     private Vector3 _currentCheckPoint = Vector3.zero;
@@ -51,15 +53,15 @@ public class GameManager : Singleton<GameManager>
 
         // CheckPoints
         // ===========================================================================
-        _checkPointList = GetComponentsInChildren<CheckPoint>().ToList();
-        _checkPointList.ForEach(x=>x.gameObject.SetActive(true));
-        _startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
-        _currentCheckPoint = _startPoint;
+        //_checkPointList = GetComponentsInChildren<CheckPoint>().ToList();
+        //_checkPointList.ForEach(x=>x.gameObject.SetActive(true));
+        //_startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
+        //_currentCheckPoint = _startPoint;
         
         // Score
         // ===========================================================================
-        _scoreObjectList = GetComponentsInChildren<ScoreObject>().ToList();
-        _scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
+        //_scoreObjectList = GetComponentsInChildren<ScoreObject>().ToList();
+        //_scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
         Coin = 0;
         Flower = 0;
         
@@ -81,7 +83,22 @@ public class GameManager : Singleton<GameManager>
     // ReSharper disable Unity.PerformanceAnalysis
     public void StartChapter(ChapterType type)
     {
+        num = 0;
         Chapter desiredChapter = _chapterList.Find(x => x.ChapterType == type);
+        // CheckPoints
+        // ==================================================================================
+        _checkPointList = desiredChapter.GetComponentsInChildren<CheckPoint>().ToList();
+        _checkPointList.ForEach(x => x.gameObject.SetActive(true));
+        _startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
+        _currentCheckPoint = _startPoint;
+        // ==================================================================================
+
+        // Score
+        // ==================================================================================
+        _scoreObjectList = desiredChapter.GetComponentsInChildren<ScoreObject>().ToList();
+        _scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
+        // ==================================================================================
+
         desiredChapter.gameObject.SetActive(true);
         WrapPlayerPosition(_startPoint);
         _lastActiveChapter = desiredChapter;
