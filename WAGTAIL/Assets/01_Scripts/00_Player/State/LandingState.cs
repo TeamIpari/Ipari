@@ -19,7 +19,7 @@ public class LandingState : State
         player.SoundHandler.SetTrigger("isLanding");
         timePassed = 0f;
         player.animator.SetTrigger("land");
-        landingTime = 0.1f;
+        landingTime = 0.05f;
     }
 
     public override void LogicUpdate()
