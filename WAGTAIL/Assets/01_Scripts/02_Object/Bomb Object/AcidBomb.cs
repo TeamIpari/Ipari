@@ -42,7 +42,6 @@ public class AcidBomb : Bullet
     {
         if (!DirectionLine)
         {
-            Debug.Log("AA");
             BulletRigidBody.velocity = Direction;
         }
     }

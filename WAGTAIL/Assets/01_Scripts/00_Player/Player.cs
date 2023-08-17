@@ -135,10 +135,8 @@ public class Player : MonoBehaviour
         
 
         // player singleton 고민.
-        if (instance == null)
-        {
+        if(instance == null)
             instance = this;
-        }
     }
 
     private void Start()

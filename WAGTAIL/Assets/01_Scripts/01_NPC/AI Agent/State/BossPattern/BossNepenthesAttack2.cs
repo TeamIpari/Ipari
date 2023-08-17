@@ -14,32 +14,34 @@ public class BossNepenthesAttack2 : AIAttackState
     private Vector3 target;
     private GameObject marker;
 
+    private bool isShoot;
+    private float DelayTime;
     private float time;
 
 
-    public BossNepenthesAttack2(AIStateMachine stateMachine, GameObject bullet, Transform sp, GameObject obj, float time) : base(stateMachine)
+
+    public BossNepenthesAttack2(AIStateMachine stateMachine, BossNepenthesProfile profile, float time) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
-        this.circleObj = obj;
-        this.shootPoint = sp;
-        this.bullet = bullet;
+        this.circleObj = profile.ShotMarker;
+        this.shootPoint = profile.ShotPosition;
+        this.bullet = profile.BulletPrefab;
         this.time = time;
+        this.DelayTime = 0.8f;
     }
 
     public override void Enter()
     {
         // 타겟 설정.
-        CreateMarker();
-        PositionLuncher();
+        stateMachine.Animator.SetTrigger("isAttack");
+        isShoot = false;
         curTimer = 0;
-        Debug.Log("Start Attack2");
     }
 
     public override void Exit()
     {
         GameObject.Destroy(marker);
         marker = null;
-//Debug.Log("End Attack1");
     }
 
     public override void OntriggerEnter(Collider other)
@@ -47,24 +49,33 @@ public class BossNepenthesAttack2 : AIAttackState
         throw new System.NotImplementedException();
     }
 
-    public override void Update()
+    public void ShootDelay()
     {
-        curTimer += Time.deltaTime;
-        //marker.transform.localScale = Vector3.one  * Time.deltaTime / changeTimer;
-        if (curTimer > changeTimer)
+        if (curTimer > DelayTime && !isShoot)
         {
-            if (children.Count > 0)
-                stateMachine.ChangeState(children[current]);
-            else if (parent != null)
-                stateMachine.ChangeState(parent);
-            else if (stateMachine.Pattern.Count > 0)
-                stateMachine.NextPattern();
-            else
-                Debug.Log("연결된 State가 없음.");
-
+            CreateMarker();
+            PositionLuncher();
+            curTimer = 0;
+            isShoot = true;
+        }
+    }
+    
+    protected override void ChangeState()
+    {
+        if (curTimer > changeTimer && isShoot)
+        {
+            base.ChangeState();
             curTimer = 0;
         }
     }
+
+    public override void Update()
+    {
+        curTimer += Time.deltaTime;
+        ShootDelay();
+        ChangeState();
+    }
+
     private void CreateMarker()
     {
         target = new Vector3(Player.Instance.transform.position.x,

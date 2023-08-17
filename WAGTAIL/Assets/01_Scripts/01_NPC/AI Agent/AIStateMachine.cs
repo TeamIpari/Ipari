@@ -64,10 +64,10 @@ public class AIStateMachine
         }
     }
 
-    public void ChangeAttackState()
-    {
+    //public void ChangeAttackState()
+    //{
 
-    }
+    //}
     public void SetTarget(GameObject obj)
     {
         Target = obj;
