@@ -27,6 +27,20 @@ public abstract class AIAttackState : AIState
     {
         throw new System.NotImplementedException();
     }
+
+    protected virtual void ChangeState()
+    {
+        if (children.Count > 0)
+            stateMachine.ChangeState(children[current]);
+        else if (parent != null)
+            stateMachine.ChangeState(parent);
+        else if (stateMachine.Pattern.Count > 0)
+            stateMachine.NextPattern();
+        else
+            Debug.Log("연결된 State가 없음.");
+
+    }
+
     protected Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
     {
         // define the distance x and y first;

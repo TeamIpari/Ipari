@@ -4,20 +4,29 @@ using UnityEngine;
 
 public class BossNepenthesIdleState : AIIdleState
 {
-    public BossNepenthesIdleState(AIStateMachine stateMachine) : base(stateMachine)
+    float waitTime;
+    float curTime;
+    public BossNepenthesIdleState(AIStateMachine stateMachine, float waitTime) : base(stateMachine)
     {
+        this.waitTime = waitTime;
     }
 
     public override void Enter()
     {
         base.Enter();
-        Debug.Log($"Enter {this}");
+        curTime = 0.0f;
+        Debug.Log($"Enter {this.ToString()}");
     }
 
     public override void Update()
     {
         base.Update();
-        stateMachine.NextPattern();
+        curTime += Time.deltaTime;
+        if (curTime > waitTime)
+        {
+            stateMachine.NextPattern();
+            return;
+        }
 
     }
 

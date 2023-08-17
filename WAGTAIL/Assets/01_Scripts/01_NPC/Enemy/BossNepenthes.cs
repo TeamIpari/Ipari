@@ -2,9 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public struct BossNepenthesProfile
+{
+    public GameObject BulletPrefab;
+    public Transform ShotPosition;
+    public GameObject ShotMarker;
+
+    public void SetProfile(GameObject Bullet, Transform point, GameObject ShotMarker)
+    {
+        this.BulletPrefab = Bullet;
+        this.ShotPosition = point;
+        this.ShotMarker = ShotMarker;
+    }
+}
+
 public class BossNepenthes : Enemy
 {
     [Header("Bullet Prefab")]
+    BossNepenthesProfile BossProfile;
     public GameObject BulletPrefab;
     public Transform ShotPosition;
     public GameObject ShotMarker;
@@ -19,9 +35,25 @@ public class BossNepenthes : Enemy
     public int ShotArea;
 
 
+    public GameObject LeftVine;
+    public GameObject RightVine;
+
     AIAttackState AiAttack2;
     AIAttackState AiAttack3;
 
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        SetProfile();
+        // list로 설정된 공격 패턴을 입력함.
+        SettingPattern();
+        AiSM.CurrentState = AiSM.Pattern[0];
+    }
+    public void SetProfile()
+    {
+        BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
+    }
 
     public override void SetAttackPattern()
     {
@@ -35,11 +67,11 @@ public class BossNepenthes : Enemy
     {
         AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
 
-        AiIdle = new BossNepenthesIdleState(AiSM);
+        AiIdle = new BossNepenthesIdleState(AiSM, WaitRate);
         AiWait = new NepenthesWaitState(AiSM);
-        AiAttack = new BossNepenthesAttack1(AiSM);
-        AiAttack2 = new BossNepenthesAttack2(AiSM, BulletPrefab, ShotPosition, ShotMarker, time);
-        AiAttack3 = new BossNepenthesAttack3(AiSM, BulletPrefab, ShotPosition, ShotMarker, time, ShotCount, ShotArea);
+        AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
+        AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
+        AiAttack3 = new BossNepenthesAttack3(AiSM, BossProfile, time, ShotCount, ShotArea);
         // 죽는 기능.
 
     }
@@ -89,16 +121,6 @@ public class BossNepenthes : Enemy
                     break;
             }
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        // list로 설정된 공격 패턴을 입력함.
-        SettingPattern();
-        AiSM.CurrentState = AiSM.Pattern[0];
-        //Debug.Log(AiSM.CurrentState != null);
-
     }
 
     // Update is called once per frame

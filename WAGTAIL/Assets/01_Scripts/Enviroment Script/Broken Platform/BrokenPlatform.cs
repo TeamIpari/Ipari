@@ -7,12 +7,14 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 {
     private MeshRenderer mesh;
     private Collider col;
-    public GameObject Right;
+    public GameObject Light;
     public bool IsUpdownMode = false;
 
     public float HideNDownTime = 1.0f;
     public float ShowNUpTime = 1.0f;
+    public float VineHitTime = 2.5f;
 
+    private float DelayTime;
     // 위 아래 최종 이동 위치
     public float MoveSpeed = 0.0f;
 
@@ -31,12 +33,39 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     public bool Interact()
     {
         IsHit = true;
-        if (!IsUpdownMode)
-            StartCoroutine(HidePlatform());
-        else
-            StartCoroutine(DownPlatform());
-
+        if (BossRoomFildManager.Instance != null)
+        {
+            BossRoomFildManager.Instance.PlayerOnTilePos = this.transform.parent.localPosition;
+        }
+        PlatformFunction();
         return false;
+    }
+    
+    public void LightOn()
+    {
+        Light.SetActive(true);
+        DelayTime = VineHitTime;
+        if (!IsUpdownMode)
+        {
+            StartCoroutine(HidePlatform());
+        }
+        else
+        {
+            StartCoroutine(DownPlatform());
+        }
+    }
+
+    public void PlatformFunction()
+    {
+        DelayTime = HideNDownTime;
+        if (!IsUpdownMode)
+        {
+            StartCoroutine(HidePlatform());
+        }
+        else
+        {
+            StartCoroutine(DownPlatform());
+        }
     }
 
     private void OnDrawGizmos()
@@ -60,8 +89,8 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private IEnumerator DownPlatform(bool callBack = false)
     {
         //mesh.material.color = Color.red;
-        Right.SetActive(true);
-        yield return new WaitForSeconds(HideNDownTime);
+        Light.SetActive(true);
+        yield return new WaitForSeconds(DelayTime);
 
         while(Mathf.Abs(Vector3.Distance(transform.position, endPoint.transform.position)) > 0.1f )
         {
@@ -74,8 +103,8 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator UpPlatform()
     {
-        Right.SetActive(false);
-        yield return new WaitForSeconds(ShowNUpTime);
+        Light.SetActive(false);
+        yield return new WaitForSeconds(DelayTime);
 
         while (Mathf.Abs(Vector3.Distance(transform.position, startPoint.transform.position)) > 0.1f)
         {
@@ -89,7 +118,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private IEnumerator HidePlatform(bool callBack = false)
     {
         mesh.material.color = Color.red;
-        yield return new WaitForSeconds(HideNDownTime);
+        yield return new WaitForSeconds(DelayTime);
 
         col.enabled = false;
         mesh.enabled = false;
@@ -101,7 +130,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private IEnumerator ShowPlatform()
     {
         mesh.material.color = Color.gray;
-        yield return new WaitForSeconds(ShowNUpTime);
+        yield return new WaitForSeconds(DelayTime);
         col.enabled = true;
         mesh .enabled = true;
         IsHit = false;
