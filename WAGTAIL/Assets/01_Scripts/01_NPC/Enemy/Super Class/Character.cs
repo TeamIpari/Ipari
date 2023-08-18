@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
-public class Character : MonoBehaviour
+[System.Serializable]
+public class MonsterPattern
 {
     // 공격 패턴
     public enum Pattern
@@ -15,6 +17,13 @@ public class Character : MonoBehaviour
         SPECAIL3,
         DIE,
     }
+    [SerializeField]
+    public Pattern[] EPatterns;
+    public int PhaseHp;
+}
+
+public class Character : MonoBehaviour
+{
     public int HP;
     public int AttackDamage;
 
@@ -30,7 +39,13 @@ public class Character : MonoBehaviour
     // 죽은 상태인가?
     public bool isDeath;
 
-    public Pattern[] CharacterMovementPattern;
+    public MonsterPattern[] CharacterMovementPattern;
+    // 보여주기용 현재 어떤 패턴이 장착되어 있는지 확인하는 용도.
+    public MonsterPattern.Pattern[] curPattern;
+
+    [Tooltip("체력 이하일 경우 다음 패턴 시작")]
+    public int CurPhaseHpArray = 0;
+    [Tooltip("체력 이하일 경우 다음 패턴 시작")]
 
     public Transform RotatePoint;
 
@@ -61,6 +76,14 @@ public class Character : MonoBehaviour
         // 공격 가능 상태
 
         return true;
+    }
+    public virtual void SettingPattern(MonsterPattern.Pattern[] _pattern)
+    {
+
+    }
+    protected virtual void AddPattern(AIState curPattern)
+    {
+
     }
 
     public virtual void CAttack()

@@ -96,7 +96,7 @@ public class BossNepenthesAttack2 : AIAttackState
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
         obj.transform.localScale = Vector3.one * 3f;
         Debug.Log(obj.GetComponent<Bullet>());
-        obj.GetComponent<AcidBomb>().ShotDirection(pos);
+        obj.GetComponent<Bullet>().ShotDirection(pos);
 
     }
 

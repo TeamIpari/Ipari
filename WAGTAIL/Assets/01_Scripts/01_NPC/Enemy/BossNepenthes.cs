@@ -38,16 +38,18 @@ public class BossNepenthes : Enemy
     public GameObject LeftVine;
     public GameObject RightVine;
 
-    AIAttackState AiAttack2;
-    AIAttackState AiAttack3;
 
 
     // Start is called before the first frame update
     void Awake()
     {
+        Debug.Log($"{CurPhaseHpArray}");
         SetProfile();
+        StateSetting();
         // list로 설정된 공격 패턴을 입력함.
-        SettingPattern();
+        SettingPattern(CharacterMovementPattern[CurPhaseHpArray].EPatterns);
+        //SettingPattern(Phase2);
+        //SettingPattern(Phase3);
         AiSM.CurrentState = AiSM.Pattern[0];
     }
     public void SetProfile()
@@ -59,8 +61,6 @@ public class BossNepenthes : Enemy
     {
         base.SetAttackPattern();
 
-
-
     }
 
     void StateSetting()
@@ -68,7 +68,7 @@ public class BossNepenthes : Enemy
         AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
 
         AiIdle = new BossNepenthesIdleState(AiSM, WaitRate);
-        AiWait = new NepenthesWaitState(AiSM);
+        AiWait = new BossNepenthesWaitState (AiSM, WaitRate);
         AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
         AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
         AiAttack3 = new BossNepenthesAttack3(AiSM, BossProfile, time, ShotCount, ShotArea);
@@ -80,51 +80,14 @@ public class BossNepenthes : Enemy
 
     }
 
-    void AddPattern(AIState curPattern)
+    protected override void AddPattern(AIState curPattern)
     {
-        AiSM.AddPatern(curPattern);
+        base.AddPattern(curPattern);
     }
 
-    void SettingPattern()
+    public override void SettingPattern(MonsterPattern.Pattern[] _pattern)
     {
-        StateSetting();
-        if (CharacterMovementPattern.Length <= 0)
-        {
-            Debug.LogWarning("보스의 공격 패턴이 지정되지 않았습니다.");
-        }
-
-        for (int i = 0; i < CharacterMovementPattern.Length; i++)
-        {
-            switch (CharacterMovementPattern[i])
-            {
-                case Pattern.IDLE:
-                    AddPattern(AiIdle);
-                    break;
-                case Pattern.MOVE:
-                    //AiSM.AddPatern(AiMove);
-                    Debug.Log("Move가 존재하지 않음.");
-                    break;
-                case Pattern.WAIT:
-                    //AddPattern(AiWait);
-                    Debug.Log("Wait가 존재하지 않음.");
-                    break;
-                case Pattern.SPECAIL1:
-                    AddPattern(AiAttack);
-                    break;
-                case Pattern.SPECAIL2:
-                    AddPattern(AiAttack2);
-                    break;
-                case Pattern.SPECAIL3:
-                    AddPattern(AiAttack3);
-                    break;
-                case Pattern.DIE:
-                    //AddPattern(Die);
-                    Debug.Log("Die가 존재하지 않음.");
-                    break;
-                default:
-                    break;
-            }
-        }
+        base.SettingPattern(_pattern);
     }
 
     // Update is called once per frame

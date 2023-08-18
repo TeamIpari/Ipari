@@ -109,7 +109,7 @@ public class BossNepenthesAttack3 : AIAttackState
         {
             Vector3 pos = CaculateVelocity(t, shootPoint.position, time);
             GameObject obj = GameObject.Instantiate(AcidBullet, shootPoint.position, Quaternion.identity);
-            obj.GetComponent<AcidBomb>().ShotDirection(pos);
+            obj.GetComponent<Bullet>().ShotDirection(pos);
         }
     }
     Vector3 Search()

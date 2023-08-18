@@ -6,8 +6,29 @@ public class BossNepenthesHitState : AIHitState
 {
     float curTimer = 0;
     float delayTimer = 5.0f;
+    int nextPhaseHp = 0;
+  
     public BossNepenthesHitState(AIStateMachine stateMachine) : base(stateMachine)
     {
+        nextPhaseHp = stateMachine.GetNextPhaseTargetHp();
+    }
+
+
+    public void SetPhaseHp()
+    {
+        Debug.Log($"다음 페이즈 돌입.");
+        if (stateMachine.IsNextTargetPhaseHp())
+        {
+            nextPhaseHp = stateMachine.GetNextPhaseTargetHp();
+            stateMachine.character.CurPhaseHpArray++;
+        }
+        else
+            // 다음 페이즈가 없음.
+            nextPhaseHp = 0;
+    }
+    public void SetNextPhase()
+    {
+        stateMachine.character.SettingPattern(stateMachine.EPattern);
     }
 
     public override void Enter()
@@ -15,9 +36,15 @@ public class BossNepenthesHitState : AIHitState
         base.Enter();
         // 맞는 상태임을 인지
         stateMachine.Animator.SetTrigger("IsHit");
+        if (stateMachine.character.IsHit)
+            stateMachine.character.HP -= 10;
+        if(stateMachine.character.HP <= nextPhaseHp)
+        {
+            // 다음 패턴
+            SetPhaseHp();
+            SetNextPhase();
+        }
         curTimer = 0;
-        
-
     }
 
     public override void Exit()

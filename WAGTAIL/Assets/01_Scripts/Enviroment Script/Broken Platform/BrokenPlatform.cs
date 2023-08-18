@@ -32,7 +32,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     public bool Interact()
     {
-        IsHit = true;
         if (BossRoomFildManager.Instance != null)
         {
             BossRoomFildManager.Instance.PlayerOnTilePos = this.transform.parent.localPosition;
@@ -41,20 +40,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             ExecutionFunction(HideNDownTime);
         return false;
     }
-    
-    public void LightOn()
-    {
-        DelayTime = VineHitTime;
-        if (!IsUpdownMode)
-        {
-            StartCoroutine(HidePlatform());
-        }
-        else
-        {
-            StartCoroutine(DownPlatform());
-        }
-    }
-
 
     private void OnDrawGizmos()
     {
@@ -151,6 +136,9 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     public void ExecutionFunction(float time)
     {
+        if (IsHit)
+            return;
+        IsHit = true;
         Light.SetActive(true);
         DelayTime = time;
         if (!IsUpdownMode)
