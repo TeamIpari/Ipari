@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/****************************************************************
+ * 플레이어가 해당 밟았을 경우, 발판이 회전하는 움직임이 정의된 컴포넌트.
+ ****/
+[AddComponentMenu("Platform/RotatePlatformBehavior")]
 public sealed class RotatePlatformBehavior : PlatformBehaviorBase
 {
     //=======================================

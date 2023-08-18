@@ -2455,7 +2455,7 @@ public sealed class FModAudioManager : MonoBehaviour
     {
         if (fadeID != AutoFadeBGMID ) return;
         if (goalVolume <= 0f) _BGMIns.Destroy();
-        if(_NextBGMEvent >0) PlayBGM((FModBGMEventType)_NextBGMEvent, _NextBGMVolume, _NextBGMStartPos, _NextBGMParam, _NextBGMParamValue, _NextBGMPosition);
+        if(_NextBGMEvent >=0) PlayBGM((FModBGMEventType)_NextBGMEvent, _NextBGMVolume, _NextBGMStartPos, _NextBGMParam, _NextBGMParamValue, _NextBGMPosition);
     }
 
 #endif

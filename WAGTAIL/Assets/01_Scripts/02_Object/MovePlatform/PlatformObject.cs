@@ -8,6 +8,7 @@ using UnityEngine;
 /********************************************************
  * 플레이어가 밟을 수 있는 플랫폼의 기반이 되는 클래스입니다.
  ****/
+[AddComponentMenu("Platform/PlatformObject")]
 public sealed class PlatformObject : MonoBehaviour, IEnviroment
 {
     private enum PendingKillProgress
@@ -102,6 +103,16 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         _PkProgress = PendingKillProgress.PENDINGKILL_READY;
         for (int i = 0; i < _CopyCount; i++) 
         {
+            /************************************
+             *   배열의 원소가 유효하지 않다면 제거...
+             * ***/
+            if (_InteractionsCopy[i]==null){
+
+                _PkProgress= PendingKillProgress.PENDINGKILL;
+                Behaviors.Remove(_InteractionsCopy[i]);
+                continue;
+            }
+
             _InteractionsCopy[i].BehaviorStart(this);
         } 
         RefreshInteractionCopy(true);

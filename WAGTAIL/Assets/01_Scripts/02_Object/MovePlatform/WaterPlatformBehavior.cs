@@ -9,7 +9,8 @@ using UnityEngine.InputSystem.XR;
 /********************************************************
  * 플레이어가 해당 밟았을 경우, 발판이 출렁이는 효과를 적용합니다.
  ****/
-public sealed class WaterPlatformBahavior : PlatformBehaviorBase
+[AddComponentMenu("Platform/WaterPlatformBehavior")]
+public sealed class WaterPlatformBehavior : PlatformBehaviorBase
 {
     private enum LandedType
     {
@@ -105,8 +106,6 @@ public sealed class WaterPlatformBahavior : PlatformBehaviorBase
 
     public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
     {
-        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Enter_Water, standingPoint, 4f);
-
         _landedType = LandedType.Enter;
         Yspeed = -.1f;
         _startRotation = (standingTarget.transform.position - transform.position).normalized;
