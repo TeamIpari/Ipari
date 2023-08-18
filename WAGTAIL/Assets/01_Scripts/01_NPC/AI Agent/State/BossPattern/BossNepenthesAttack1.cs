@@ -45,7 +45,7 @@ public class BossNepenthesAttack1 : AIAttackState
     {
         //dangerousEffect.SetActive(false);
         GameObject.Destroy(Vine);
-        Debug.Log($"End {this.ToString()}");
+        //Debug.Log($"End {this.ToString()}");
 
     }
 
@@ -61,7 +61,7 @@ public class BossNepenthesAttack1 : AIAttackState
 
         // 작을 경우 왼쪽 덩쿨 출력
         Vine = GameObject.Instantiate(isLeft ? RightVinePrefab : LeftVinePrefab, BossRoomFildManager.Instance.transform);
-        Vine.transform.localPosition = new Vector3(spawnPos.x, 0, 1.5f);
+        Vine.transform.localPosition = new Vector3(spawnPos.x, -1.0f, 1.5f);
 
         // 몇 초 후 떨어지게 하기.
         BossRoomFildManager.Instance.BrokenPlatform(spawnPos.x);

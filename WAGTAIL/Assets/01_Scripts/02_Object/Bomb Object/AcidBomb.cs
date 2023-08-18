@@ -35,6 +35,7 @@ public class AcidBomb : Bullet
             this.AddComponent<Rigidbody>();
             BulletRigidBody = GetComponent<Rigidbody>();
         }
+        Damage = Damage == 0 ? 10 : Damage;
     }
 
     // Update is called once per frame
@@ -55,6 +56,10 @@ public class AcidBomb : Bullet
             other.GetComponent<Player>().isDead = true;
         }
         // ==========================================================
+        if (other.CompareTag("Platform"))
+        {
+            other.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
+        }
         Destroy(this.gameObject);
     }
 
@@ -67,6 +72,10 @@ public class AcidBomb : Bullet
             collision.collider.GetComponent<Player>().isDead = true;
         }
         // ==========================================================
+        if (collision.collider.CompareTag("Platform"))
+        {
+            collision.collider.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
+        }
         Destroy(this.gameObject);
     }
 }

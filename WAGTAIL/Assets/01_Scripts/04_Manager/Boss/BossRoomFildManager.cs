@@ -1,3 +1,4 @@
+using FMOD.Studio;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,7 +50,7 @@ public class BossRoomFildManager :MonoBehaviour
         float FindY = Y * (-StoneYSize);
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
-            BossFild[new Vector2(X, FindY)].GetComponentInChildren<BrokenPlatform>().LightOn();
+            BossFild[new Vector2(X, FindY)].GetComponentInChildren<IEnviroment>().ExecutionFunction(2.5f);
             Y++;
             FindY = Y * (-StoneYSize);
         }
@@ -74,6 +75,14 @@ public class BossRoomFildManager :MonoBehaviour
                 BossFild.Add(spawnPos, CreateTile);
                 CreateTile.transform.localPosition = new Vector3(spawnPos.x, 0, spawnPos.y) + Offset;
             }
+        }
+    }
+
+    public void EnableBrokenPlatformComponent()
+    {
+        foreach(var curTile in BossFild)
+        {
+            curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
         }
     }
 

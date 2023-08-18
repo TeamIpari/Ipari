@@ -269,4 +269,9 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
         return false;
     }
+
+    public void ExecutionFunction(float time)
+    {
+        Debug.Log($"Not Have Function");
+    }
 }

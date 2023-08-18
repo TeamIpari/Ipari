@@ -81,7 +81,8 @@ public class BossNepenthesAttack2 : AIAttackState
         target = new Vector3(Player.Instance.transform.position.x,
             Player.Instance.transform.position.y + 0.1f,
             Player.Instance.transform.position.z);
-
+        //target = BossRoomFildManager.Instance.TargetPos;
+        
         GameObject _obj = GameObject.Instantiate(circleObj);
         _obj.transform.localScale = Vector3.one * 3f;
         _obj.transform.position = target;

@@ -44,6 +44,10 @@ public class Trampoline : MonoBehaviour, IEnviroment
         
         return false;
     }
+    public void ExecutionFunction(float time)
+    {
+        Debug.Log($"Not Have Function");
+    }
 
     /// <summary>
     /// n초 후 기존의 점프 높이 돌려주는 기능.

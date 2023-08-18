@@ -120,4 +120,9 @@ public class RotAround : MonoBehaviour, IEnviroment
             objs.Add(obj);
         }
     }
+
+    public void ExecutionFunction(float time)
+    {
+        Debug.Log("Not Have Function");
+    }
 }
