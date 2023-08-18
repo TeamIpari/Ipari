@@ -6,6 +6,7 @@ using UnityEngine.InputSystem.XR;
 /********************************************************
  * 애니메이션이 적용되어 있는 플레이어가 서있을 수 있는 땅입니다.
  ****/
+[AddComponentMenu("Platform/AnimPlatformBehavior")]
 [RequireComponent(typeof(Animator))]
 public sealed class AnimPlatformBehavior : PlatformBehaviorBase
 {

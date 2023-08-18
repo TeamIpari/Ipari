@@ -2,17 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct SwitchRange
-{
-    public Vector3 offset;
-    public Vector3 Scale;
-}
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
+
+/**********************************************
+ *   나무가 쓰러지는 효과가 구현된 컴포넌트입니다.
+ * ***/
 public sealed class TreeObstacles : MonoBehaviour
 {
+    #region Define
+    [System.Serializable]
+    public struct SwitchRange
+    {
+        public Vector3 offset;
+        public Vector3 Scale;
+    }
+    #endregion
+
     //=====================================
     ////      Property And Fields      ////
     //=====================================
@@ -35,6 +42,7 @@ public sealed class TreeObstacles : MonoBehaviour
 
     private List<Collider> _hitColliders= new List<Collider>();
     private Coroutine fallDownCoroutine;
+
 
     //=====================================
     ////         Magic Methods         ////
@@ -154,9 +162,9 @@ public sealed class TreeObstacles : MonoBehaviour
         /***************************************
          * 계산에 필요한 모든 것들을 구한다.
          ***/
-        Vector3 currRot     = transform.eulerAngles;
-        Quaternion startRot = transform.rotation;
-        Vector3 startPos    = transform.position;
+        Vector3     currRot     = transform.eulerAngles;
+        Quaternion  startRot    = transform.rotation;
+        Vector3     startPos    = transform.position;
 
         /**나무의 뿌리지점이 될 Point를 얻는다.*/
         RaycastHit[] hits = null;

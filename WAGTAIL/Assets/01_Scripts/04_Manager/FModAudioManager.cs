@@ -8,20 +8,15 @@ using System.IO;
 using System.Text;
 using UnityEngine.UIElements;
 using System;
-using System.Reflection;
-using System.Net.NetworkInformation;
 using FMOD;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using UnityEngine.Rendering;
 using UnityEngine.Events;
 using System.Xml;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection.Emit;
 using System.Diagnostics.Tracing;
-using UnityEngine.Networking;
 using UnityEditor.Rendering;
+using static UnityEditor.PlayerSettings;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -303,6 +298,7 @@ public struct FModEventInstance
 #endif
 #endregion
 
+public interface IFModEventFadeComplete { void OnFModEventComplete(int fadeID, float goalVolume); }
 public delegate void FModEventFadeCompleteNotify( int fadeID, float goalVolume );
 
 public sealed class FModAudioManager : MonoBehaviour
@@ -326,7 +322,7 @@ public sealed class FModAudioManager : MonoBehaviour
         private const string _StudioSettingsPath = "Assets/Plugins/FMOD/Resources/FMODStudioSettings.asset";
         private const string _GroupFolderPath    = "Metadata/Group";
         private const string _ScriptDefine       = "FMOD_Event_ENUM";
-        private const string _EditorVersion      = "v1.230816";
+        private const string _EditorVersion      = "v1.230817";
 
         private const string _EventRootPath      = "event:/";
         private const string _BusRootPath        = "bus:/";
@@ -426,6 +422,12 @@ public sealed class FModAudioManager : MonoBehaviour
         {
             /**AnimBool 갱신...***************************/
             FadeAnimBoolInit();
+        }
+
+        private void OnFocus()
+        {
+            /** Banks 갱신... ****************************/
+            FMODUnity.EventManager.RefreshBanks();
         }
 
         private void OnGUI()
@@ -695,12 +697,9 @@ public sealed class FModAudioManager : MonoBehaviour
             GUILayout.Box(useBanner, GUILayout.Width(position.width), GUILayout.Height(100f));
 
             /**Editor Version을 띄운다.*/
-            using(var scope = new GUILayout.AreaScope(new Rect(position.width*.5f-5f, 100f - 20, 300, 30)))
-            {
-                //////////////////////////////////////
-                GUILayout.Label($"FModAudio Settings Editor {_EditorVersion}", _BoldTxtStyle);
-                /////////////////////////////////////
+            using(var scope = new GUILayout.AreaScope(new Rect(position.width*.5f-5f, 100f - 20, 300, 30))){
 
+                GUILayout.Label($"FModAudio Settings Editor {_EditorVersion}", _BoldTxtStyle);
                 scope.Dispose();
             }
 
@@ -762,8 +761,8 @@ public sealed class FModAudioManager : MonoBehaviour
                     }
 
                     //스튜디오 바로가기 버튼
-                    if (GUILayout.Button(_StudioIconTex, _ButtonStyle, buttonWidthOption, buttonHeightOption))
-                    {
+                    if (GUILayout.Button(_StudioIconTex, _ButtonStyle, buttonWidthOption, buttonHeightOption)){
+
                         string projPath = Application.dataPath.Replace("Assets", "") + _StudioPathProperty.stringValue;
 
                         if (StudioPathIsValid()){
@@ -1317,7 +1316,6 @@ public sealed class FModAudioManager : MonoBehaviour
 
                     int realIndex = (total + j);
                     string comma = (++writeEventCount == _EditorSettings.EventGroups[0].TotalEvent ? "" : ",");
-
                     if (CheckEventIsValid(realIndex, infos) == false) continue;
                     builder.AppendLine($"   {infos[realIndex].Name}={realIndex}{comma}");
                 }
@@ -1353,6 +1351,7 @@ public sealed class FModAudioManager : MonoBehaviour
                 {
                     int realIndex = (total + j);
                     string comma = (++writeEventCount == _EditorSettings.EventGroups[1].TotalEvent ? "" : ",");
+                    if (CheckEventIsValid(realIndex, infos) == false) continue;
                     builder.AppendLine($"   {infos[realIndex].Name}={realIndex}{comma}");
                 }
 
@@ -1388,6 +1387,7 @@ public sealed class FModAudioManager : MonoBehaviour
                 {
                     int realIndex = (total + j);
                     string comma = (++writeEventCount == _EditorSettings.EventGroups[2].TotalEvent ? "" : ",");
+                    if (CheckEventIsValid(realIndex, infos) == false) continue;
                     builder.AppendLine($"   {infos[realIndex].Name}={realIndex}{comma}");
                 }
 
@@ -1504,7 +1504,7 @@ public sealed class FModAudioManager : MonoBehaviour
             {
                 string comma = (i == Count - 1 && lastWork ? "" : ",");
                 string guidValue = $"Data1={list[i].GUID.Data1}, Data2={list[i].GUID.Data2}, Data3={list[i].GUID.Data3}, Data4={list[i].GUID.Data4}";
-
+                if (CheckEventIsValid(i, list) == false) continue;
                 builder.AppendLine("        new FMOD.GUID{ " + guidValue + " }" + comma);
             }
             #endregion
@@ -1750,8 +1750,8 @@ public sealed class FModAudioManager : MonoBehaviour
                 int CategoryIndex       = GetCategoryIndex(CategoryName, categoryList);
 
                 //카테고리가 없으면 카테고리를 새로 만든다.
-                if (CategoryName.Equals(PathSplit[PathSplit.Length - 1]))
-                {
+                if (CategoryName.Equals(PathSplit[PathSplit.Length - 1])){
+
                     CategoryName = "Root";
                     CategoryIndex = GetCategoryIndex(CategoryName, categoryList);
                 }
@@ -1835,6 +1835,7 @@ public sealed class FModAudioManager : MonoBehaviour
 
         private bool CheckEventIsValid(int index, List<FModEventInfo> lists)
         {
+            #region Omit
             if (Settings.Instance.EventLinkage == EventLinkage.Path && !lists[index].GUID.IsNull)
             {
                 EditorEventRef eventRef = EventManager.EventFromGUID(lists[index].GUID);
@@ -1845,6 +1846,8 @@ public sealed class FModAudioManager : MonoBehaviour
                 }
             }
             return true;
+
+            #endregion
         }
 
     }
@@ -1853,7 +1856,7 @@ public sealed class FModAudioManager : MonoBehaviour
     #endregion
 
     #region Define
-    public struct FadeInfo
+    private struct FadeInfo
     {
 #if FMOD_Event_ENUM
         public FModEventInstance TargetIns;
@@ -1867,7 +1870,7 @@ public sealed class FModAudioManager : MonoBehaviour
         public bool pendingKill;
     }
 
-    public enum FadeState
+    private enum FadeState
     {
         None,
         PendingKill_Ready,
@@ -2452,7 +2455,7 @@ public sealed class FModAudioManager : MonoBehaviour
     {
         if (fadeID != AutoFadeBGMID ) return;
         if (goalVolume <= 0f) _BGMIns.Destroy();
-        if(_NextBGMEvent >0) PlayBGM((FModBGMEventType)_NextBGMEvent, _NextBGMVolume, _NextBGMStartPos, _NextBGMParam, _NextBGMParamValue, _NextBGMPosition);
+        if(_NextBGMEvent >=0) PlayBGM((FModBGMEventType)_NextBGMEvent, _NextBGMVolume, _NextBGMStartPos, _NextBGMParam, _NextBGMParamValue, _NextBGMPosition);
     }
 
 #endif
@@ -2486,6 +2489,16 @@ public sealed class FModAudioManager : MonoBehaviour
 
         Destroy(gameObject);
         #endregion
+    }
+
+    private void OnDestroy()
+    {
+        //Destroy...
+        if(_Instance==this)
+        {
+            _Instance = null;
+            OnEventFadeComplete = null;
+        }
     }
 
 }
