@@ -37,13 +37,13 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         {
             BossRoomFildManager.Instance.PlayerOnTilePos = this.transform.parent.localPosition;
         }
-        PlatformFunction();
+        if(this.enabled)
+            ExecutionFunction(HideNDownTime);
         return false;
     }
     
     public void LightOn()
     {
-        Light.SetActive(true);
         DelayTime = VineHitTime;
         if (!IsUpdownMode)
         {
@@ -55,18 +55,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         }
     }
 
-    public void PlatformFunction()
-    {
-        DelayTime = HideNDownTime;
-        if (!IsUpdownMode)
-        {
-            StartCoroutine(HidePlatform());
-        }
-        else
-        {
-            StartCoroutine(DownPlatform());
-        }
-    }
 
     private void OnDrawGizmos()
     {
@@ -161,10 +149,24 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         col = GetComponent<Collider>();
     }
 
+    public void ExecutionFunction(float time)
+    {
+        Light.SetActive(true);
+        DelayTime = time;
+        if (!IsUpdownMode)
+        {
+            StartCoroutine(HidePlatform());
+        }
+        else
+        {
+            StartCoroutine(DownPlatform());
+        }
+    }
+
     //// Update is called once per frame
     //private void Update()
     //{
-        
+
     //}
 
 

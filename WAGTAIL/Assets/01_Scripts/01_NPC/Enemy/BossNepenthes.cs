@@ -72,7 +72,11 @@ public class BossNepenthes : Enemy
         AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
         AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
         AiAttack3 = new BossNepenthesAttack3(AiSM, BossProfile, time, ShotCount, ShotArea);
+
         // 죽는 기능.
+        AiHit = new BossNepenthesHitState(AiSM);
+        AiDie = new BossNepenthesDieState(AiSM);
+
 
     }
 
@@ -129,4 +133,23 @@ public class BossNepenthes : Enemy
         if (AiSM != null)
             AiSM.CurrentState.Update();
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // 공격을 받음.
+        if (other.CompareTag("Bullet"))
+        {
+            // 데미지는 얼마나?
+            HP -= other.GetComponent<Bullet>().Damage;
+            if (HP < 0)
+            {    // State 바꿔주기.
+                AiSM.ChangeState(AiHit);
+            }
+            else
+            {
+                AiSM.ChangeState(AiDie);
+            }
+        }
+    }
+
 }

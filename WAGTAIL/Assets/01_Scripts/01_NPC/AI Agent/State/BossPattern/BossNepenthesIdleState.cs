@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BossNepenthesIdleState : AIIdleState
@@ -22,6 +23,14 @@ public class BossNepenthesIdleState : AIIdleState
     {
         base.Update();
         curTime += Time.deltaTime;
+        if (stateMachine.character.IsHit)
+        {
+            stateMachine.ChangeState(stateMachine.character.AiHit);
+        }
+        if(stateMachine.character.isDeath)
+        {
+            stateMachine.ChangeState(stateMachine.character.AiDie);
+        }
         if (curTime > waitTime)
         {
             stateMachine.NextPattern();

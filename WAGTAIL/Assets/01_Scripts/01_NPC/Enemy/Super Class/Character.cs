@@ -25,6 +25,11 @@ public class Character : MonoBehaviour
     public float WaitRate;
     protected float AttackTimer;
 
+    // 공격을 받은 상태인가?
+    public bool IsHit;
+    // 죽은 상태인가?
+    public bool isDeath;
+
     public Pattern[] CharacterMovementPattern;
 
     public Transform RotatePoint;
@@ -37,6 +42,8 @@ public class Character : MonoBehaviour
     public AIAttackState AiAttack;
     public AIMoveState AiMove;
     public AIWaitState AiWait;
+    public AIHitState AiHit;
+    public AIDieState AiDie;
 
     public virtual void SetAttackPattern()
     {
@@ -65,8 +72,6 @@ public class Character : MonoBehaviour
     {
         AttackTimer = 0;
     }
-
-
 
 
     //public AIIdleState AIIdleState;

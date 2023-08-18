@@ -36,4 +36,9 @@ public class lendslide : MonoBehaviour, IEnviroment
         Door.Boom();
 
     }
+
+    public void ExecutionFunction(float time)
+    {
+        Debug.Log($"Not Have Function");
+    }
 }
