@@ -1985,7 +1985,7 @@ Transform:
   m_GameObject: {fileID: 4667427568522446791}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0.93318415, y: 0, z: 9.183287}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5151669836340963403}
@@ -2032,13 +2032,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6d286cb1e38f2b4db102590f865f09b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 0
+  HP: 80
   AttackDamage: 0
   MoveSpeed: 0
   AttackRange: 0
   AttackRate: 0
-  WaitRate: 2
-  CharacterMovementPattern: 00000000050000000000000005000000
+  WaitRate: 0.5
+  IsHit: 0
+  isDeath: 0
+  CharacterMovementPattern:
+  - EPatterns: 000000000300000000000000040000000000000005000000
+    PhaseHp: 70
+  - EPatterns: 0300000002000000030000000200000003000000000000000400000000000000
+    PhaseHp: 30
+  - EPatterns: 040000000500000004000000050000000300000000000000
+    PhaseHp: 0
+  curPattern: 
+  CurPhaseHpArray: 0
   RotatePoint: {fileID: 0}
   BulletPrefab: {fileID: 5455426074365179286, guid: 790b1140a4c10aa4a89c97ea7be93a81,
     type: 3}
@@ -2048,8 +2058,10 @@ MonoBehaviour:
   time: 2
   ShotCount: 10
   ShotArea: 5
-  LeftVine: {fileID: 0}
-  RightVine: {fileID: 0}
+  LeftVine: {fileID: 8479815345705671314, guid: f0ccd6fff13acfa40b5a5e3be4f042fd,
+    type: 3}
+  RightVine: {fileID: 3859027181482531311, guid: 9621e03a063fdc844b899fcf2bd0fcb9,
+    type: 3}
 --- !u!1 &4675983566746449328
 GameObject:
   m_ObjectHideFlags: 0
