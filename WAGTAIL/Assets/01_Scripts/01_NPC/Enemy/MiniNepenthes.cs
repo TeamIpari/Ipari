@@ -23,7 +23,7 @@ public class MiniNepenthes : Enemy
         AiIdle = new NepenthesIdleState(AiSM, angle);
         AiAttack = new NepenthesAttackState(AiSM);
         SetAttackPattern();
-        AiWait = new NepenthesWaitState(AiSM);
+        AiWait = new NepenthesWaitState(AiSM, WaitRate);
         
         AiSM.Initialize(AiIdle);
 

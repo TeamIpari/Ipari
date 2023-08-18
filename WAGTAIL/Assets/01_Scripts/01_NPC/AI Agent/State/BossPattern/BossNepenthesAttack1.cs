@@ -74,37 +74,4 @@ public class BossNepenthesAttack1 : AIAttackState
         if(curTimer > DelayTime)
             stateMachine.NextPattern();
     }
-
-    //private void ShowTentacle()
-    //{
-    //    tentacle.SetActive(true);
-    //    tentacle.transform.LookAt(Player.Instance.transform.position);
-    //    curAnim++;
-
-    //}
-
-    // Effect가 점멸하는 기능.
-    //private void BlinkEffect()
-    //{
-    //    curShowTimer += Time.deltaTime;
-    //    if(curShowTimer >= showTimer)
-    //    {
-    //        if (on)
-    //        {
-    //            dangerousEffect.SetActive(false);
-    //            on = false;
-    //            count++;
-    //        }
-    //        else
-    //        {
-    //            dangerousEffect.SetActive(true);
-    //            on = true;
-    //        }
-    //        curShowTimer = 0;
-    //    }
-    //    if(count > 3)
-    //    {
-    //        curAnim++;
-    //    }
-    //}
 }

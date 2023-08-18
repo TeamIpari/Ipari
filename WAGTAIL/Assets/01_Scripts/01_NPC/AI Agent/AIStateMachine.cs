@@ -64,13 +64,23 @@ public class AIStateMachine
         }
     }
 
-    //public void ChangeAttackState()
-    //{
-
-    //}
     public void SetTarget(GameObject obj)
     {
         Target = obj;
+    }
+
+    public MonsterPattern.Pattern[] EPattern { get { return character.CharacterMovementPattern[character.CurPhaseHpArray].EPatterns; }}
+
+    public bool IsNextTargetPhaseHp()
+    {
+        return character.CurPhaseHpArray < character.CharacterMovementPattern.Length - 1;
+    }
+
+    public int GetNextPhaseTargetHp()
+    {
+        cur = 0;
+        return character.CharacterMovementPattern[character.CurPhaseHpArray].PhaseHp;
+
     }
 
     public void NextPattern()
@@ -84,7 +94,12 @@ public class AIStateMachine
 
     }
 
-    public void AddPatern(AIState state)
+    public void ClearPattern()
+    {
+        Pattern.Clear();
+    }
+
+    public void AddPattern(AIState state)
     {
         Pattern.Add(state);
     }
