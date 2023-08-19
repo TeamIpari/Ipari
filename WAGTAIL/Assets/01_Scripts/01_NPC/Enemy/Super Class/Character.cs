@@ -31,6 +31,7 @@ public class Character : MonoBehaviour
 
     public float AttackRange;
     public float AttackRate;
+    public float IdleRate;
     public float WaitRate;
     protected float AttackTimer;
 

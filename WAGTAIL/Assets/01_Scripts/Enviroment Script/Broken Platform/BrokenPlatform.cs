@@ -17,6 +17,12 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private float DelayTime;
     // 위 아래 최종 이동 위치
     public float MoveSpeed = 0.0f;
+    bool shake = false;
+    
+    
+    public float ShakeSpeed = 0.0f;
+
+    Vector3 startPos;
 
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
@@ -63,7 +69,10 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     {
         //mesh.material.color = Color.red;
         Light.SetActive(true);
+
+        shake = true;
         yield return new WaitForSeconds(DelayTime);
+        shake = false;
 
         while(Mathf.Abs(Vector3.Distance(transform.position, endPoint.transform.position)) > 0.1f )
         {
@@ -77,6 +86,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private IEnumerator UpPlatform()
     {
         Light.SetActive(false);
+
         yield return new WaitForSeconds(DelayTime);
 
         while (Mathf.Abs(Vector3.Distance(transform.position, startPoint.transform.position)) > 0.1f)
@@ -91,7 +101,10 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private IEnumerator HidePlatform(bool callBack = false)
     {
         mesh.material.color = Color.red;
+
+        shake = true;
         yield return new WaitForSeconds(DelayTime);
+        shake = false;
 
         col.enabled = false;
         mesh.enabled = false;
@@ -130,8 +143,11 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     // Start is called before the first frame update
     private void Start()
     {
+        startPos = transform.position;
         mesh = GetComponent<MeshRenderer>();
         col = GetComponent<Collider>();
+        //ShakeSpeed = 0.1f;
+        //amount = 0.1f;
     }
 
     public void ExecutionFunction(float time)
@@ -151,11 +167,15 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         }
     }
 
-    //// Update is called once per frame
-    //private void Update()
-    //{
-
-    //}
+    // Update is called once per frame
+    private void Update()
+    {
+        if(shake)
+        {
+            //transform.position = PlatformShake();
+            transform.position = startPos + (Random.insideUnitSphere * ShakeSpeed);
+        }
+    }
 
 
 }
