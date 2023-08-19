@@ -67,7 +67,7 @@ public class BossNepenthes : Enemy
     {
         AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
 
-        AiIdle = new BossNepenthesIdleState(AiSM, WaitRate);
+        AiIdle = new BossNepenthesIdleState(AiSM, IdleRate);
         AiWait = new BossNepenthesWaitState (AiSM, WaitRate);
         AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
         AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
@@ -77,7 +77,7 @@ public class BossNepenthes : Enemy
         AiHit = new BossNepenthesHitState(AiSM);
         AiDie = new BossNepenthesDieState(AiSM);
 
-
+        
     }
 
     protected override void AddPattern(AIState curPattern)

@@ -27,6 +27,7 @@ public class BossRoomFildManager :MonoBehaviour
     public int StoneTwitterSize;
     public int StoneYSize;
     public Vector3 Offset;
+    public float ShakeSpeed = 0.0f;
     
     public TileMap BossFild;
 
@@ -74,6 +75,7 @@ public class BossRoomFildManager :MonoBehaviour
                 GameObject CreateTile = GameObject.Instantiate(Tiles[Random.Range(0, Tiles.Length)], this.transform);
                 BossFild.Add(spawnPos, CreateTile);
                 CreateTile.transform.localPosition = new Vector3(spawnPos.x, 0, spawnPos.y) + Offset;
+                CreateTile.GetComponentInChildren<BrokenPlatform>().ShakeSpeed = ShakeSpeed;
             }
         }
     }
