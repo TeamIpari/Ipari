@@ -106,6 +106,7 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             float baseHeight = GetBaseHeight();
+            if (PlayEventProperty!=null && PlayEventProperty.isExpanded) baseHeight += 80f;
             return baseHeight + (property.isExpanded? 60f:0f);
         }
 
@@ -130,12 +131,12 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
         public EventReference       PlayEvent;
         public PlatformApplyTiming  timing;
 
-        public void ApplyPlayEvent(PlatformApplyTiming applyTiming)
+        public void ApplyPlayEvent(PlatformApplyTiming applyTiming, Vector3 position)
         {
             int timingInt = (int)timing;    
             if((timingInt &= (int)applyTiming)>0){
 
-                FMODUnity.RuntimeManager.PlayOneShot(PlayEvent);
+                FMODUnity.RuntimeManager.PlayOneShot(PlayEvent, position);
             }
         }
     }
@@ -153,40 +154,40 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
     //=========================================
     public override void BehaviorStart(PlatformObject affectedPlatform)
     {
-        ApplyAudioPlays(PlatformApplyTiming.BehaviorStart);
+        ApplyAudioPlays(PlatformApplyTiming.BehaviorStart, affectedPlatform.transform.position);
     }
 
     public override void BehaviorEnd(PlatformObject changedTarget)
     {
-        ApplyAudioPlays(PlatformApplyTiming.BehaviorEnd);
+        ApplyAudioPlays(PlatformApplyTiming.BehaviorEnd, changedTarget.transform.position);
     }
 
     public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
     {
-        ApplyAudioPlays(PlatformApplyTiming.OnObjectEnter);
+        ApplyAudioPlays(PlatformApplyTiming.OnObjectEnter, affectedPlatform.transform.position);
     }
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
     {
-       if(UsedStayBehavior) ApplyAudioPlays(PlatformApplyTiming.OnObjectStay);
+       if(UsedStayBehavior) ApplyAudioPlays(PlatformApplyTiming.OnObjectStay, affectedPlatform.transform.position);
     }
 
     public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget)
     {
-        ApplyAudioPlays(PlatformApplyTiming.OnObjectExit);
+        ApplyAudioPlays(PlatformApplyTiming.OnObjectExit, affectedPlatform.transform.position);
     }
 
 
     //=========================================
     /////         Utility Methods       /////
     //=========================================
-    private void ApplyAudioPlays(PlatformApplyTiming timing)
+    private void ApplyAudioPlays(PlatformApplyTiming timing, Vector3 position=default)
     {
         #region Omit
         int Count = Datas.Count;
         for (int i = 0; i < Count; i++)
         {
-            Datas[i].ApplyPlayEvent(timing);
+            Datas[i].ApplyPlayEvent(timing, position);
         }
         #endregion
     }

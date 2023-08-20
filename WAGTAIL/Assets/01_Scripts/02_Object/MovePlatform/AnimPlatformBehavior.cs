@@ -7,15 +7,14 @@ using UnityEngine.InputSystem.XR;
  * 애니메이션이 적용되어 있는 플레이어가 서있을 수 있는 땅입니다.
  ****/
 [AddComponentMenu("Platform/AnimPlatformBehavior")]
-[RequireComponent(typeof(Animator))]
 public sealed class AnimPlatformBehavior : PlatformBehaviorBase
 {
     //========================================
     //////     Property And Fields      /////
     //========================================
     [SerializeField] public string AnimClipName = string.Empty;
+    [SerializeField] private Animator       _animator;
 
-    private Animator       _animator;
     private PlatformObject _platformObject;
 
 
@@ -25,7 +24,7 @@ public sealed class AnimPlatformBehavior : PlatformBehaviorBase
     public override void BehaviorStart(PlatformObject affectedPlatform)
     {
         _platformObject = affectedPlatform;
-        _animator = GetComponent<Animator>();
+        if(_animator==null) _animator = GetComponent<Animator>();
         affectedPlatform.CheckGroundOffset = 5f;
     }
 
@@ -38,8 +37,7 @@ public sealed class AnimPlatformBehavior : PlatformBehaviorBase
     public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
     {
         if (_animator == null) return;
-
-        _animator.Play(AnimClipName);
+        _animator.Play(AnimClipName, 0,0f);
     }
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)

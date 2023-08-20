@@ -34,9 +34,9 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     /**플레이어 관련 클래스 캐싱*/
     private static CharacterController _Controller;
     private StateMachine  _PlayerSM;
-    private Collider      _Collider;
 
     /**Interactions 관련*/
+    private Collider _Collider;
     private PendingKillProgress   _PkProgress = PendingKillProgress.NONE;
     private int                   _CopyCount  = 0;
     private int                   _ObjectOnPlatformCount = 0;
@@ -94,7 +94,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             _PlayerSM = Player.Instance.movementSM;
         }
 
-        Collider = GetComponent<Collider>();
+        if(Collider==null) Collider = GetComponent<Collider>();
         gameObject.tag = "Platform";
 
         //Platform Behavior 초기화 작업...

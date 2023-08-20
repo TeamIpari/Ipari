@@ -8,7 +8,7 @@ public sealed class TestScript : MonoBehaviour, IFModEventFadeComplete
 
     public void OnFModEventComplete(int fadeID, float goalVolume)
     {
-       
+        Debug.Log($"fade Complete(fadeID: {fadeID})/ goalVolume: {goalVolume}");
     }
 
     private void Start()
