@@ -48,13 +48,13 @@ public class BossNepenthes : Enemy
         StateSetting();
         // list로 설정된 공격 패턴을 입력함.
         SettingPattern(CharacterMovementPattern[CurPhaseHpArray].EPatterns);
-        //SettingPattern(Phase2);
-        //SettingPattern(Phase3);
+
         AiSM.CurrentState = AiSM.Pattern[0];
     }
     public void SetProfile()
     {
         BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
+
     }
 
     public override void SetAttackPattern()

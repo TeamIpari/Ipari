@@ -75,7 +75,6 @@ public class Character : MonoBehaviour
             return false;
         }
         // 공격 가능 상태
-
         return true;
     }
     public virtual void SettingPattern(MonsterPattern.Pattern[] _pattern)
