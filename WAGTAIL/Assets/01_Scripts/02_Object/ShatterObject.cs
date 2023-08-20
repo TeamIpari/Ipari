@@ -18,10 +18,11 @@ public class ShatterObject : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            Explode();
-        }
+        // JiHun Ãß°¡
+        //if (Input.GetKeyDown(KeyCode.G))
+        //{
+        //    Explode();
+        //}
     }
 
     public void Explode()
