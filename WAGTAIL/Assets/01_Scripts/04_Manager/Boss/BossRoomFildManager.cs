@@ -22,9 +22,11 @@ public class BossRoomFildManager :MonoBehaviour
 
     // 생성할 타일을 저장함.
     public GameObject[] Tiles;
-    public int TwitterSize;
+    public GameObject[] OddTile;
+    public GameObject[] EvenTile;
+    public int XSize;
     public int YSize;
-    public int StoneTwitterSize;
+    public int StoneXSize;
     public int StoneYSize;
     public Vector3 Offset;
     public float ShakeSpeed = 0.0f;
@@ -45,9 +47,9 @@ public class BossRoomFildManager :MonoBehaviour
         Initialized();
     }
 
-    public void BrokenPlatform(float TwitterPos)
+    public void BrokenPlatform(float XPos)
     {
-        float X = (TwitterPos - Offset.x ), Y = 0;
+        float X = (XPos - Offset.x ), Y = 0;
         float FindY = Y * (-StoneYSize);
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
@@ -69,10 +71,15 @@ public class BossRoomFildManager :MonoBehaviour
         Vector2 spawnPos = Vector2.zero;
         for (int y = 0; y < YSize; y++)
         {
-            for (int x = 0; x < TwitterSize; x++)
+            for (int x = 0; x < XSize; x++)
             {
-                spawnPos.Set(x * StoneTwitterSize, -y * StoneYSize);
-                GameObject CreateTile = GameObject.Instantiate(Tiles[Random.Range(0, Tiles.Length)], this.transform);
+                spawnPos.Set(x * StoneXSize, -y * StoneYSize);
+                // GameObject CreateTile = GameObject.Instantiate(Tiles[Random.Range(0, Tiles.Length)], this.transform);
+
+                GameObject CreateTile;
+                if ((x + y) % 2 == 0) CreateTile = GameObject.Instantiate(EvenTile[Random.Range(0, EvenTile.Length)], this.transform);
+                else CreateTile = GameObject.Instantiate(OddTile[Random.Range(0, OddTile.Length)], this.transform);
+
                 BossFild.Add(spawnPos, CreateTile);
                 CreateTile.transform.localPosition = new Vector3(spawnPos.x, 0, spawnPos.y) + Offset;
                 CreateTile.GetComponentInChildren<BrokenPlatform>().ShakeSpeed = ShakeSpeed;

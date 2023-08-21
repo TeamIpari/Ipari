@@ -57,7 +57,7 @@ public class BossNepenthesAttack1 : AIAttackState
     public void ShowVine()
     {
         Vector3 spawnPos = BossRoomFildManager.Instance.PlayerOnTilePos;
-        bool isLeft = spawnPos.x < BossRoomFildManager.Instance.TwitterSize / 2;
+        bool isLeft = spawnPos.x < BossRoomFildManager.Instance.XSize / 2;
 
         // ÀÛÀ» °æ¿ì ¿ÞÂÊ µ¢Äð Ãâ·Â
         Vine = GameObject.Instantiate(isLeft ? RightVinePrefab : LeftVinePrefab, BossRoomFildManager.Instance.transform);
