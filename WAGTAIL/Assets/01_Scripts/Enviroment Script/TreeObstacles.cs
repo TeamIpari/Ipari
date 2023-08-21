@@ -177,7 +177,7 @@ public sealed class TreeObstacles : MonoBehaviour
 
         if (hits!=null)
         {
-            int Count = hits.Length;
+            int Count      = hits.Length;
             float distance = float.MaxValue;
             for (int i = 0; i < Count; i++){
 

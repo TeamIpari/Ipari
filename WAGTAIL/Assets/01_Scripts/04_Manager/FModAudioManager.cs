@@ -392,6 +392,7 @@ public sealed class FModAudioManager : MonoBehaviour
         private static GUIStyle _ContentTxtStyle;
         private string _CountColorStyle = "#8DFF9E";
         private string _ContentColorStyle = "#6487AA";
+        private string _FoldoutColorStyle = "black";
 
         /** GUI Boolean ****************************/
         private static AnimBool _StudioPathSettingsFade;
@@ -427,7 +428,7 @@ public sealed class FModAudioManager : MonoBehaviour
         private void OnFocus()
         {
             /** Banks °»½Å... ****************************/
-            FMODUnity.EventManager.RefreshBanks();
+            try { FMODUnity.EventManager.RefreshBanks(); } catch { /*TODO:...*/ }
         }
 
         private void OnGUI()
@@ -441,10 +442,11 @@ public sealed class FModAudioManager : MonoBehaviour
             bool isBlack = ( EditorGUIUtility.isProSkin==false );
             _BoldTxtStyle.normal.textColor = (isBlack ? Color.black : Color.white);
 
-            _FoldoutTxtStyle.normal.textColor = (isBlack ? Color.black : Color.white);
+            _FoldoutTxtStyle.normal.textColor   = (isBlack ? Color.black : Color.white);
             _FoldoutTxtStyle.onNormal.textColor = (isBlack ? Color.black : Color.white);
+            _FoldoutColorStyle                  = (isBlack ? "black" : "white");
 
-            _CategoryTxtStyle.normal.textColor = (isBlack ? Color.black : Color.white);
+            _CategoryTxtStyle.normal.textColor   = (isBlack ? Color.black : Color.white);
             _CategoryTxtStyle.onNormal.textColor = (isBlack ? Color.black : Color.white);
 
             //-----------------------------------------------------
@@ -1044,7 +1046,7 @@ public sealed class FModAudioManager : MonoBehaviour
 
             EditorGUI.indentLevel++;
             bool allGroupIsValid = ( _GroupIsValids[0] && _GroupIsValids[1] && _GroupIsValids[2]);
-            string eventSettingsColor = ( allGroupIsValid ? "" : "red");
+            string eventSettingsColor = ( allGroupIsValid ? _FoldoutColorStyle : "red");
             _EventSettingsFade.target = EditorGUILayout.Foldout(_EventSettingsFade.target, $"<color={eventSettingsColor}>FMod Events</color><color={_CountColorStyle}>({infoCount})</color>", _FoldoutTxtStyle);
             EditorGUILayout.Space(3f);
 
@@ -2494,8 +2496,8 @@ public sealed class FModAudioManager : MonoBehaviour
     private void OnDestroy()
     {
         //Destroy...
-        if(_Instance==this)
-        {
+        if(_Instance==this){
+
             _Instance = null;
             OnEventFadeComplete = null;
         }
