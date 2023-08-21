@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Light: {fileID: 7968332665889739690}
-  IsUpdownMode: 0
+  IsUpdownMode: 1
   HideNDownTime: 1
   ShowNUpTime: 1
   VineHitTime: 2.5
@@ -226,6 +226,10 @@ MonoBehaviour:
   ShakeSpeed: 0
   startPoint: {fileID: 2176253804502899874}
   endPoint: {fileID: 2176253805267190434}
+  _explosionMinForce: 5
+  _explosionMaxForce: 100
+  _explosionForceRadius: 10
+  _fragScaleFactor: 0.01
   shakeDelay: 0.1
 --- !u!1 &7968332665889739690 stripped
 GameObject:
