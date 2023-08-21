@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,8 +27,9 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
-    
 
+    float curTime;
+    public float shakeDelay;
 
     Vector3 localPoint1;
     Vector3 localPoint2;
@@ -67,7 +69,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator DownPlatform(bool callBack = false)
     {
-        //mesh.material.color = Color.red;
         Light.SetActive(true);
 
         shake = true;
@@ -100,7 +101,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator HidePlatform(bool callBack = false)
     {
-        mesh.material.color = Color.red;
+        Light.SetActive(true);
 
         shake = true;
         yield return new WaitForSeconds(DelayTime);
@@ -115,8 +116,11 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator ShowPlatform()
     {
-        mesh.material.color = Color.gray;
-        yield return new WaitForSeconds(DelayTime);
+        Light.SetActive(false);
+
+        yield return new WaitForSeconds(ShowNUpTime);
+
+        transform.position = startPos;
         col.enabled = true;
         mesh .enabled = true;
         IsHit = false;
@@ -146,8 +150,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         startPos = transform.position;
         mesh = GetComponent<MeshRenderer>();
         col = GetComponent<Collider>();
-        //ShakeSpeed = 0.1f;
-        //amount = 0.1f;
     }
 
     public void ExecutionFunction(float time)
@@ -172,10 +174,12 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     {
         if(shake)
         {
-            //transform.position = PlatformShake();
-            transform.position = startPos + (Random.insideUnitSphere * ShakeSpeed);
+            curTime += Time.deltaTime;
+            if(curTime > shakeDelay)
+            {
+                transform.position = startPos + (UnityEngine.Random.insideUnitSphere * ShakeSpeed);
+                curTime = 0;
+            }
         }
     }
-
-
 }

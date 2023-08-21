@@ -121,7 +121,6 @@ public class Player : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + transform.forward);
-        //Gizmos.DrawWireCube(transform.position + Vector3.forward * GetComponent<BoxCollider>().center.y, new Vector3(1, 1, 1));
 
     }
 
