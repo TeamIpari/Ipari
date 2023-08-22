@@ -9,8 +9,9 @@ public class CarryState : State
     Vector3 currentVelocity;
     bool isGrounded;
     bool carry;
-    //bool smallThrow;
+    bool smallThrow;
     float playerSpeed;
+    bool jump;
 
     Vector3 cVelocity;
 
@@ -28,10 +29,13 @@ public class CarryState : State
         velocity = Vector3.zero;
         currentVelocity = Vector3.zero;
         gravityVelocity.y = 0;
-        carry = player.isCarry;
-        //smallThrow = player.isSmallThrow;
 
-        playerSpeed = 3.5f;
+        jump = false;
+        carry = player.isCarry;
+        smallThrow = player.isSmallThrow;
+        if(!smallThrow) playerSpeed = 3.5f;
+        playerSpeed = player.playerSpeed;
+
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
     }
@@ -39,6 +43,11 @@ public class CarryState : State
     public override void HandleInput()
     {
         base.HandleInput();
+
+        if (jumpAction.triggered)
+        {
+            jump = true;
+        }
 
         carry = player.isCarry;
         input = moveAction.ReadValue<Vector2>();
@@ -62,6 +71,11 @@ public class CarryState : State
             
             stateMachine.ChangeState(player.drop);
         }
+
+        //if (jump)
+        //{
+        //    stateMachine.ChangeState(player.jump);
+        //}
     }
 
     public override void PhysicsUpdate()

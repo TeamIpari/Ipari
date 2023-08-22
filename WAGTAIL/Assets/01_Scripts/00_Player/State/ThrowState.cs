@@ -30,7 +30,5 @@ public class ThrowState : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-
     }
-
 }

@@ -21,6 +21,7 @@ public class PickUpState : State
     {
         base.Enter();
 
+        animStr = "carry";
         timePassed = 0f;
         player.animator.SetFloat("speed", 0);
 
@@ -34,6 +35,7 @@ public class PickUpState : State
         if (!/*smallThrow*/false)
         {
             player.animator.SetTrigger("pickup");
+            player.animator.SetBool("small", true);
             animStr = "carry";
             pickUpTime = 1.5f;
         }
@@ -55,7 +57,6 @@ public class PickUpState : State
         {
             // 추가 스크립트
             player.animator.SetTrigger(animStr);
-
             stateMachine.ChangeState(player.carry);
         }
         timePassed += Time.deltaTime;
