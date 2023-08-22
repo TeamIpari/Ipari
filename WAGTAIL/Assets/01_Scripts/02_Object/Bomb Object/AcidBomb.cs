@@ -47,6 +47,19 @@ public class AcidBomb : Bullet
         }
     }
 
+    void BulletHit(Transform target)
+    {
+        // 방향 벡터 구하기
+        Vector3 bombPos = target.position - transform.position;
+        float distance = Vector3.Distance(target.position, transform.position);
+        
+
+        GameObject hitFX = GameObject.Instantiate(HitFX);
+
+        hitFX.transform.position = transform.position + bombPos.normalized;
+        Destroy(hitFX, 2f);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         // 강띵호가 추가함
@@ -60,6 +73,7 @@ public class AcidBomb : Bullet
         {
             other.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
         }
+        BulletHit(other.transform);
         Destroy(this.gameObject);
     }
 
@@ -76,6 +90,7 @@ public class AcidBomb : Bullet
         {
             collision.collider.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
         }
+        BulletHit(collision.transform);
         Destroy(this.gameObject);
     }
 }
