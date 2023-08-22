@@ -56,6 +56,10 @@ public class IdleState : State
         gravityValue = player.gravityValue;
         slopeSpeed = player.slopeSpeed;
 
+        // trigger 초기화
+        player.animator.ResetTrigger("flight");
+
+
         // FX
         // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
         _FXMove = player.MoveFX;

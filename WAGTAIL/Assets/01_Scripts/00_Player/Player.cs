@@ -43,9 +43,7 @@ public class Player : MonoBehaviour
     public bool isCarry = false;
     public bool isFlight = false;
     public bool isDead = false;
-    // 추가 스크립트
-    //public bool isSmallThrow = false;
-    //
+    public bool isSmallThrow = false;
     // 당기는데, 원점으로부터 멀어지면 멀어질 수록 최대 도달점과 비교하여
     // 퍼센테이지로 이동속도를 줄임.
     public bool isPull = false;

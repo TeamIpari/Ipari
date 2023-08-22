@@ -5,8 +5,11 @@ using UnityEngine;
 public class Throw : MonoBehaviour, IInteractable
 {
     [Header("Interactable Setting")]
+    // 추가한 스크립트
+    [SerializeField] private bool _isSmall;
     [SerializeField] private string _promt;
     private GameObject _playerEquipPoint;
+    private Vector3 _playerEquipPos;
     private GameObject _playerInteractionPoint;
     private GameObject center;
     private Rigidbody rigidbody;
@@ -40,6 +43,7 @@ public class Throw : MonoBehaviour, IInteractable
     private void Start()
     {
         _playerEquipPoint = Player.Instance.ThrowEquipPoint.gameObject;
+        _playerEquipPos = _playerEquipPoint.transform.localPosition;
         _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
          startPos = this.transform.position;
         _animator = GetComponent<Animator>();
@@ -68,6 +72,7 @@ public class Throw : MonoBehaviour, IInteractable
         {
             StartCoroutine(Pickup());
             // isCarry를 isThrow로 바꿔줘야함
+            if (_isSmall) interactor.player.isSmallThrow = true;
             interactor.player.isCarry = true;
             
             return true;
@@ -129,6 +134,13 @@ public class Throw : MonoBehaviour, IInteractable
 
     IEnumerator Pickup()
     {
+        // 추가된 스크립트 2023-08-22 강명호
+        if (_isSmall)
+        {
+            _playerEquipPoint.transform.localPosition = new Vector3(_playerEquipPoint.transform.localPosition.x, _playerEquipPoint.transform.localPosition.y - 0.338f, _playerEquipPoint.transform.localPosition.z + 0.865f);
+        }
+        // ================================
+
         transform.SetParent(_playerEquipPoint.transform);
         transform.position = new Vector3(_playerInteractionPoint.transform.position.x, Player.Instance.transform.position.y, _playerInteractionPoint.transform.position.z) ;
         transform.rotation = Quaternion.identity;
@@ -143,14 +155,18 @@ public class Throw : MonoBehaviour, IInteractable
         height = new Vector3(startPos.x, _playerEquipPoint.transform.position.y -.5f, startPos.z) + lookvec * 0.5f;
         // 머리 위
         endPos = new Vector3(_playerEquipPoint.transform.position.x, _playerEquipPoint.transform.position.y - 0.5f, _playerEquipPoint.transform.position.z);
-
         // Object가 Player의 머리 위에서 움직이는걸 방지
         rigidbody.useGravity = false;
         rigidbody.velocity = Vector3.zero;
         rigidbody.freezeRotation = true;
         rigidbody.isKinematic = true;
         GetComponent<Collider>().isTrigger = true;
-        yield return new WaitForSeconds(0.75f);
+        // 추가된 스크립트 2023-08-22 강명호
+        if (_isSmall)
+            yield return new WaitForSeconds(0.4f);
+        else
+            yield return new WaitForSeconds(0.75f);
+        // ==============================
 
         if (_animator != null)
             _animator.SetTrigger("Caught");
@@ -212,6 +228,13 @@ public class Throw : MonoBehaviour, IInteractable
         PhysicsCheck = true;
         if(_animator == null)
             flight = true;
+
+        // 추가된 스크립트 2023-08-22 강명호
+        if(_isSmall)
+        {
+            _playerEquipPoint.transform.localPosition = _playerEquipPos;
+        }
+        // ================================
     }
 
     public void ResetPoint()
