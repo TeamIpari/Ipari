@@ -41,7 +41,7 @@ public class TimelineController : MonoBehaviour
         {
             _isStart = true;
             SetActiveObjects(false);
-            _fakeObject.SetActive(true);
+            if (_fakeObject != null) _fakeObject.SetActive(true);
             _timeline.SetActive(true);
             _playerCtrl.enabled = false;
         }
@@ -53,7 +53,7 @@ public class TimelineController : MonoBehaviour
         if(_isStart)
         {
             GetComponent<BoxCollider>().enabled = false;
-            _fakeObject.SetActive(false);
+            if (_fakeObject != null) _fakeObject.SetActive(false);
             _timeline.SetActive(false);
             SetActiveObjects(true);
 
