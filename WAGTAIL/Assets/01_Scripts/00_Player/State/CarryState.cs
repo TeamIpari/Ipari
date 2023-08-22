@@ -34,7 +34,7 @@ public class CarryState : State
         carry = player.isCarry;
         smallThrow = player.isSmallThrow;
         if(!smallThrow) playerSpeed = 3.5f;
-        else playerSpeed = player.playerSpeed;
+        playerSpeed = player.playerSpeed;
 
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;

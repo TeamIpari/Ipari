@@ -72,7 +72,6 @@ public class Throw : MonoBehaviour, IInteractable
         {
             StartCoroutine(Pickup());
             // isCarry를 isThrow로 바꿔줘야함
-            if (_isSmall) interactor.player.isSmallThrow = true;
             interactor.player.isCarry = true;
             
             return true;

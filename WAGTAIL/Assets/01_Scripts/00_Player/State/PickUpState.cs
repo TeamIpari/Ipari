@@ -8,7 +8,7 @@ public class PickUpState : State
     float timePassed;
     float pickUpTime;
     // 추가 스크립트.
-    bool smallThrow;
+    //bool smallThrow;
     string animStr;
 
     public PickUpState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
@@ -31,17 +31,17 @@ public class PickUpState : State
         // 이 시간 이후 움직임이 가능해짐.
 
         // 추가 스크립트.
-        smallThrow = player.isSmallThrow;
-        if (!smallThrow)
+        //smallThrow = player.isSmallThrow;
+        if (!/*smallThrow*/false)
         {
             player.animator.SetTrigger("pickup");
+            player.animator.SetBool("small", true);
             animStr = "carry";
             pickUpTime = 1.5f;
         }
         else
         {
             player.animator.SetTrigger("pickup"); // 작은 오브젝트 줍는 애니메이션
-            player.animator.SetBool("small", true);
             animStr = "carry";  // 작은 오브젝트 들고 있는 애니메이션
             pickUpTime = 1.5f;  // 작은 오브젝트 줍는 anim 시간.
         }
