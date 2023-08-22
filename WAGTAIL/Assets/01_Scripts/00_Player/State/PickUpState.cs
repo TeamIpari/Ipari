@@ -31,7 +31,7 @@ public class PickUpState : State
         // 이 시간 이후 움직임이 가능해짐.
 
         // 추가 스크립트.
-        //smallThrow = player.isSmallThrow;
+        smallThrow = player.isSmallThrow;
         if (!smallThrow)
         {
             player.animator.SetTrigger("pickup");
