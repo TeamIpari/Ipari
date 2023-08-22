@@ -15,13 +15,13 @@ using UnityEngine.Rendering;
 using UnityEngine.Events;
 using System.Xml;
 using System.Diagnostics.Tracing;
-using UnityEditor.Rendering;
-using static UnityEditor.PlayerSettings;
 
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEditor.PackageManager;
+using UnityEditor.Rendering;
+using static UnityEditor.PlayerSettings;
 using static UnityEditor.ObjectChangeEventStream;
 #endif
 
@@ -55,6 +55,18 @@ public struct FModEventInstance
             Ins.getPaused(out ret);
             return ret;
         } 
+    }
+    public bool         IsLoop
+    {
+        get
+        {
+            EventDescription desc;
+            Ins.getDescription(out desc);
+
+            bool isOneShot;
+            desc.isSnapshot(out isOneShot);
+            return isOneShot;
+        }
     }
     public bool         Is3DEvent
     {
@@ -1264,7 +1276,7 @@ public sealed class FModAudioManager : MonoBehaviour
 
 
             /**********************************************
-             *   Param Lable Enum 정의
+             *   Param Lable Struct 정의
              * *****/
             builder.AppendLine("public struct FModParamLabel");
             builder.AppendLine("{");
@@ -1281,6 +1293,33 @@ public sealed class FModAudioManager : MonoBehaviour
                 builder.AppendLine("    {");
 
                 AddParamLabelListScript(builder, i);
+
+                builder.AppendLine("    }");
+            }
+
+
+            builder.AppendLine("}");
+            builder.AppendLine("");
+
+
+            /**********************************************
+             *   Param Range Struct 정의
+             * *****/
+            builder.AppendLine("public struct FModParamValueRange");
+            builder.AppendLine("{");
+
+            Count = paramDescs.Count;
+            for (int i = 0; i < Count; i++){
+
+                FModParamDesc desc = paramDescs[i];
+                if (desc.LableCount <= 0) continue;
+
+                string structName = RemoveInValidChar(desc.ParamName);
+
+                builder.AppendLine($"    public struct {structName}");
+                builder.AppendLine("    {");
+
+                AddParamRangeListScript(builder, i);
 
                 builder.AppendLine("    }");
             }
@@ -1463,6 +1502,17 @@ public sealed class FModAudioManager : MonoBehaviour
                 string comma = (i == Count - 1 ? "" : ",");
                 builder.AppendLine($"        \"{list[i].ParamName}\"" + comma);
             }
+            #endregion
+        }
+
+        private void AddParamRangeListScript(StringBuilder builder, int descIndex)
+        {
+            #region Omit
+            List<FModParamDesc> descs = _EditorSettings.ParamDescList;
+            FModParamDesc desc = descs[descIndex];
+
+            builder.AppendLine($"       public const float Min={desc.Min};");
+            builder.AppendLine($"       public const float Max={desc.Max};");
             #endregion
         }
 

@@ -26,6 +26,10 @@ public struct FModParamLabel
 {
 }
 
+public struct FModParamValueRange
+{
+}
+
 public enum FModBGMEventType
 {
    tavuti_ingame2=0,
