@@ -617,6 +617,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8891333537803954403, guid: 86b527a79e4a14b4098615fbfe74bf27,
+        type: 3}
+      propertyPath: m_SoftZoneWidth
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891333537803954403, guid: 86b527a79e4a14b4098615fbfe74bf27,
+        type: 3}
+      propertyPath: m_SoftZoneHeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891333537803954403, guid: 86b527a79e4a14b4098615fbfe74bf27,
+        type: 3}
+      propertyPath: m_VerticalDamping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891333537803954403, guid: 86b527a79e4a14b4098615fbfe74bf27,
+        type: 3}
+      propertyPath: m_HorizontalDamping
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8891333539721965849, guid: 86b527a79e4a14b4098615fbfe74bf27,
         type: 3}
       propertyPath: m_Name
@@ -677,8 +697,39 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8891333537803954400, guid: 86b527a79e4a14b4098615fbfe74bf27, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 86b527a79e4a14b4098615fbfe74bf27, type: 3}
+--- !u!1 &811807812 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8891333537803954406, guid: 86b527a79e4a14b4098615fbfe74bf27,
+    type: 3}
+  m_PrefabInstance: {fileID: 796741241}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &811807817
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811807812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6043bde05a7fc4cba197d06915c1e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damping: {x: 0, y: 0, z: 0}
+  ShoulderOffset: {x: 0, y: 5, z: 0}
+  VerticalArmLength: 0
+  CameraSide: 1
+  CameraDistance: 0
+  CameraCollisionFilter:
+    serializedVersion: 2
+    m_Bits: 0
+  IgnoreTag: 
+  CameraRadius: 0.001
+  DampingIntoCollision: 0
+  DampingFromCollision: 0
 --- !u!1001 &1313284715
 PrefabInstance:
   m_ObjectHideFlags: 0
