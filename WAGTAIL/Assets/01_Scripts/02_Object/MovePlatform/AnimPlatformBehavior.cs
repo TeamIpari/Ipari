@@ -13,6 +13,8 @@ public sealed class AnimPlatformBehavior : PlatformBehaviorBase
     //////     Property And Fields      /////
     //========================================
     [SerializeField] public string AnimClipName = string.Empty;
+    [SerializeField] public float StartSpeed = 0f;
+    [SerializeField] public float Speed = 1f;
     [SerializeField] private Animator       _animator;
 
     private PlatformObject _platformObject;
@@ -25,6 +27,11 @@ public sealed class AnimPlatformBehavior : PlatformBehaviorBase
     {
         _platformObject = affectedPlatform;
         if(_animator==null) _animator = GetComponent<Animator>();
+        
+        if(_animator!=null)
+        {
+            _animator.speed = StartSpeed;
+        }
         affectedPlatform.CheckGroundOffset = 5f;
     }
 
@@ -38,6 +45,7 @@ public sealed class AnimPlatformBehavior : PlatformBehaviorBase
     {
         if (_animator == null) return;
         _animator.Play(AnimClipName, 0,0f);
+        _animator.speed = Speed;
     }
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
