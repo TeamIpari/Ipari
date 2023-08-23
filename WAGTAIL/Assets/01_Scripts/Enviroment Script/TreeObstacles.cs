@@ -70,6 +70,17 @@ public sealed class TreeObstacles : MonoBehaviour
             _IsSwitch = true;
             _Body.WakeUp();
             fallDownCoroutine = StartCoroutine(FallDownProgress());
+
+            //Tree Sound 재생...
+            FModAudioManager.PlayOneShotSFX(
+                  FModSFXEventType.Tree_Obstacle,
+                  FModLocalParamType.TreeActionType,
+                  FModParamLabel.TreeActionType.TreeFallDown,
+                  transform.position,
+
+                  -1,
+                  -1
+              );
         }
     }
 
@@ -128,10 +139,16 @@ public sealed class TreeObstacles : MonoBehaviour
         //땅에 닿으면 튕겨난다.
         if (rebound>=0)
         {
-            //최초 부딫혔을 때 부숴지는 소리를 실행.
-            if (rebound >= maxRebound){
-                FModAudioManager.PlayOneShotSFX(FModSFXEventType.Stone_Broken, transform.position, 1f);
-            }
+            //Tree Sound 재생...
+            FModAudioManager.PlayOneShotSFX(
+                  FModSFXEventType.Tree_Obstacle,
+                  FModLocalParamType.TreeActionType,
+                  FModParamLabel.TreeActionType.TreeCrash,
+                  transform.position,
+
+                  -1,
+                  -1
+              );
 
             fallDownSpeed = -rebound;
             fallDownRot -= rebound;
@@ -222,7 +239,16 @@ public sealed class TreeObstacles : MonoBehaviour
             //나무가 쓰러졌을 때의 사운드 재생.
             if(fallDownRot>= FallDownTargetAngle) {
 
-                FModAudioManager.PlayOneShotSFX(FModSFXEventType.Stone_Broken, transform.position, 1f);
+                //Tree Sound 재생...
+                FModAudioManager.PlayOneShotSFX(
+                    FModSFXEventType.Tree_Obstacle,
+                    FModLocalParamType.TreeActionType,
+                    FModParamLabel.TreeActionType.TreeCrash,
+                    transform.position,
+ 
+                    -1,
+                    -1
+                );
             }
 
             //나무가 바닥에 붙어있도록 수정.
@@ -256,6 +282,17 @@ public sealed class TreeObstacles : MonoBehaviour
                 fallDownSpeed = -rebound;
                 fallDownRot = FallDownTargetAngle;
                 rebound -= maxRebound * ReboundValue;
+
+                //Tree Sound 재생...
+                FModAudioManager.PlayOneShotSFX(
+                      FModSFXEventType.Tree_Obstacle,
+                      FModLocalParamType.TreeActionType,
+                      FModParamLabel.TreeActionType.TreeCrash,
+                      transform.position,
+
+                      -1,
+                      -1
+                  );
             }
 
             fallDownSpeed += FallDownSpeed * Time.deltaTime;
