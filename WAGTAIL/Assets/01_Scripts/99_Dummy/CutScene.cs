@@ -69,9 +69,9 @@ public class CutScene : MonoBehaviour
                 Player.Instance.playerInput.enabled = true;
                 HideCutScenes();
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
-                SoundTest.GetInstance().PlayBGM("isTitle", false);
-                //CameraManager.GetInstance().SwitchCamera(CameraType.Village);
-                SoundTest.GetInstance().PlayBGM("isInGame", true);
+
+                FModAudioManager.SetBusMute(FModBusType.Player, false);
+                FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
             }
             else if (sceneCount < cutScenes.Length)
             {

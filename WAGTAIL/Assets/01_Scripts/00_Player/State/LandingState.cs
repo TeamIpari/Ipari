@@ -16,7 +16,12 @@ public class LandingState : State
     public override void Enter()
     {
         base.Enter();
-        player.SoundHandler.SetTrigger("isLanding");
+
+        FModAudioManager.PlayOneShotSFX(
+            FModSFXEventType.Player_Landed,
+            player.transform.position
+        );
+        //player.SoundHandler.SetTrigger("isLanding");
         timePassed = 0f;
         player.animator.SetTrigger("land");
         landingTime = 0.05f;

@@ -42,8 +42,9 @@ public class FlowerObject : MonoBehaviour
             _obj.GetComponent<ScoreObject>().SetTime(FlightTIme);
             //marker.Add(_obj);
         }
-        
-        SoundTest.GetInstance().PlaySound("isCoinFlowerExplo");
+
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Flowers_Burst);
+        //SoundTest.GetInstance().PlaySound("isCoinFlowerExplo");
         if (_explosionVFX != null )         
         {           
             GameObject exploVFX = Instantiate(_explosionVFX, transform.position, transform.rotation);

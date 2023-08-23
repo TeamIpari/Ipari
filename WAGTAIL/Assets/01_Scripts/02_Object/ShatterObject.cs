@@ -39,6 +39,13 @@ public class ShatterObject : MonoBehaviour
             if (_fracturedObject != null)
             {
                 _fractObj = Instantiate(_fracturedObject, _originalObject.transform.position, transform.rotation);
+                FModAudioManager.PlayOneShotSFX(
+                    FModSFXEventType.Broken,
+                    FModLocalParamType.BrokenType,
+                    FModParamLabel.BrokenType.Stone,
+                    transform.position
+                );
+
                 //_fractObj.transform.localScale = _originalObject.transform.lossyScale;
                 foreach (Transform t in _fractObj.transform)
                 {

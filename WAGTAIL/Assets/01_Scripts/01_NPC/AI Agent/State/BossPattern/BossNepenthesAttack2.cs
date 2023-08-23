@@ -55,6 +55,7 @@ public class BossNepenthesAttack2 : AIAttackState
         {
             CreateMarker();
             PositionLuncher();
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
             curTimer = 0;
             isShoot = true;
         }

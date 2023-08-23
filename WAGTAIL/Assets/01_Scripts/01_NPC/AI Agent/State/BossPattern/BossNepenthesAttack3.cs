@@ -58,6 +58,7 @@ public class BossNepenthesAttack3 : AIAttackState
     {
         if (curTimer > DelayTime && !isShoot)
         {
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
             CreateMarker();
             PositionLuncher();
             curTimer = 0;

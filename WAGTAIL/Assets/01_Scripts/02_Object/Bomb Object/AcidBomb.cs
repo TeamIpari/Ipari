@@ -66,6 +66,13 @@ public class AcidBomb : Bullet
         if (other.CompareTag("Player"))
         {
             Debug.Log("맞음");
+            FModAudioManager.PlayOneShotSFX(
+                FModSFXEventType.Player_Hit,
+                FModLocalParamType.PlayerHitType,
+                FModParamLabel.PlayerHitType.MiniNepenthes_Attack,
+                other.transform.position,
+                10f
+            );
             other.GetComponent<Player>().isDead = true;
         }
         // ==========================================================
@@ -83,6 +90,12 @@ public class AcidBomb : Bullet
         if(collision.collider.CompareTag("Player"))
         {
             Debug.Log("맞음");
+            FModAudioManager.PlayOneShotSFX(
+                FModSFXEventType.Player_Hit,
+                FModLocalParamType.PlayerHitType,
+                FModParamLabel.PlayerHitType.MiniNepenthes_Attack,
+                collision.transform.position
+            );
             collision.collider.GetComponent<Player>().isDead = true;
         }
         // ==========================================================
