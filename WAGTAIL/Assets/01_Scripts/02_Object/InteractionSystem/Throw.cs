@@ -135,10 +135,10 @@ public class Throw : MonoBehaviour, IInteractable
     IEnumerator Pickup()
     {
         // 추가된 스크립트 2023-08-22 강명호
-        if (_isSmall)
-        {
-            _playerEquipPoint.transform.localPosition = new Vector3(_playerEquipPoint.transform.localPosition.x, _playerEquipPoint.transform.localPosition.y - 0.338f, _playerEquipPoint.transform.localPosition.z + 0.865f);
-        }
+        //if (_isSmall)
+        //{
+        //    _playerEquipPoint.transform.localPosition = new Vector3(_playerEquipPoint.transform.localPosition.x, _playerEquipPoint.transform.localPosition.y - 0.338f, _playerEquipPoint.transform.localPosition.z + 0.865f);
+        //}
         // ================================
 
         transform.SetParent(_playerEquipPoint.transform);

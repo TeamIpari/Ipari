@@ -70,6 +70,7 @@ public class CutScene : MonoBehaviour
                 HideCutScenes();
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
                 SoundTest.GetInstance().PlayBGM("isTitle", false);
+                //CameraManager.GetInstance().SwitchCamera(CameraType.Village);
                 SoundTest.GetInstance().PlayBGM("isInGame", true);
             }
             else if (sceneCount < cutScenes.Length)

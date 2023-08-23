@@ -31,7 +31,7 @@ public class PickUpState : State
         // 이 시간 이후 움직임이 가능해짐.
 
         // 추가 스크립트.
-        //smallThrow = player.isSmallThrow;
+        smallThrow = player.isSmallThrow;
         if (!smallThrow)
         {
             player.animator.SetTrigger("pickup");
@@ -43,7 +43,7 @@ public class PickUpState : State
             player.animator.SetTrigger("pickup"); // 작은 오브젝트 줍는 애니메이션
             player.animator.SetBool("small", true);
             animStr = "carry";  // 작은 오브젝트 들고 있는 애니메이션
-            pickUpTime = 1.5f;  // 작은 오브젝트 줍는 anim 시간.
+            pickUpTime = 0.5f;  // 작은 오브젝트 줍는 anim 시간.
         }
 
         //pickUpTime = 1.5f;
