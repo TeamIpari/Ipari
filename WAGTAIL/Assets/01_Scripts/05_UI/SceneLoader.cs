@@ -107,7 +107,9 @@ public class SceneLoader : Singleton<SceneLoader>
                 GameManager.GetInstance().Test();
                 UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
                 CameraManager.GetInstance().Test();
-                SoundTest.GetInstance().PlayBGM("isInGame",false);
+
+                FModAudioManager.StopBGM();
+                //SoundTest.GetInstance().PlayBGM("isInGame",false);
             }
             
             gameObject.SetActive(false);

@@ -22,7 +22,8 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
-        player.SoundHandler.SetTrigger("isDeath");
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.GameOver);
+        //player.SoundHandler.SetTrigger("isDeath");
         _isAlive = false;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;

@@ -29,7 +29,9 @@ public class WaterScript : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             other.GetComponent<Player>().jumpHeight = 0.2f;
-            SoundTest.GetInstance().PlaySound("isThrowWater");
+
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Enter_Water);
+            //SoundTest.GetInstance().PlaySound("isThrowWater");
         }
         //else if(/*other.gameObject.layer == LayerMask.GetMask("Interactable"*/))
         else if (LayerMask.NameToLayer("Interactable") == other.gameObject.layer)

@@ -23,17 +23,22 @@ MonoBehaviour:
   - Name: SFX
     Path: ../../IpariFMOD/IpariAudio/Build/Desktop/SFX.bank
   BusList:
+  - Name: Boss
+    Path: bus:/SFX/Boss
+  - Name: Environment
+    Path: bus:/SFX/Environment
+  - Name: Item
+    Path: bus:/SFX/Item
   - Name: BGM
     Path: bus:/BGM
+  - Name: Player
+    Path: bus:/SFX/Player
   - Name: SFX
     Path: bus:/SFX
+  - Name: UI
+    Path: bus:/SFX/UI
   ParamCountList: 0100000006000000
   ParamDescList:
-  - ParamName: IsLooping
-    LableCount: 2
-    isGlobal: 0
-    Min: 0
-    Max: 1
   - ParamName: BGMIsLooping
     LableCount: 2
     isGlobal: 1
@@ -49,11 +54,6 @@ MonoBehaviour:
     isGlobal: 0
     Min: 0
     Max: 1
-  - ParamName: LandedType
-    LableCount: 2
-    isGlobal: 0
-    Min: 0
-    Max: 1
   - ParamName: PlayerHitType
     LableCount: 1
     isGlobal: 0
@@ -64,29 +64,33 @@ MonoBehaviour:
     isGlobal: 0
     Min: 0
     Max: 1
+  - ParamName: LandedType
+    LableCount: 2
+    isGlobal: 0
+    Min: 0
+    Max: 1
+  - ParamName: PlayerWalkType
+    LableCount: 1
+    isGlobal: 0
+    Min: 0
+    Max: 0
   ParamLableList:
-  - Used
-  - UnUsed
   - Used
   - UnUsed
   - Default
   - Stone
   - Wall
   - Stone
-  - Grass
-  - Ground
   - MiniNepenthes_Attack
   - TreeFallDown
   - TreeCrash
+  - Grass
+  - Ground
+  - Grass
   CategoryDescList:
   - CategoryName: BGM
     EventCount: 5
     GroupIndex: 0
-    foldout: 0
-    EventIsValid: 1
-  - CategoryName: Root
-    EventCount: 1
-    GroupIndex: 2
     foldout: 0
     EventIsValid: 1
   - CategoryName: SFX/Item
@@ -95,17 +99,17 @@ MonoBehaviour:
     foldout: 0
     EventIsValid: 1
   - CategoryName: SFX/Environment
-    EventCount: 8
+    EventCount: 7
     GroupIndex: 1
     foldout: 0
     EventIsValid: 1
   - CategoryName: SFX/Player
-    EventCount: 2
+    EventCount: 4
     GroupIndex: 1
     foldout: 0
     EventIsValid: 1
   - CategoryName: SFX/UI
-    EventCount: 2
+    EventCount: 3
     GroupIndex: 1
     foldout: 0
     EventIsValid: 1
@@ -150,13 +154,6 @@ MonoBehaviour:
       Data2: 1158110859
       Data3: -183060576
       Data4: 1601068035
-  - Name: No_14
-    Path: event:/No_14
-    GUID:
-      Data1: -738566357
-      Data2: 1166266538
-      Data3: 1971146173
-      Data4: -1481470806
   - Name: Get_Flower
     Path: event:/SFX/Item/Get_Flower
     GUID:
@@ -192,13 +189,6 @@ MonoBehaviour:
       Data2: 1095037392
       Data3: -2000264523
       Data4: 1766900301
-  - Name: Landed
-    Path: event:/SFX/Environment/Landed
-    GUID:
-      Data1: 594495364
-      Data2: 1183593499
-      Data3: 849544592
-      Data4: 732205388
   - Name: Broken
     Path: event:/SFX/Environment/Broken
     GUID:
@@ -241,6 +231,20 @@ MonoBehaviour:
       Data2: 1254419191
       Data3: 1519357069
       Data4: -1122432260
+  - Name: Player_Walk
+    Path: event:/SFX/Player/Player_Walk
+    GUID:
+      Data1: 859597537
+      Data2: 1187071565
+      Data3: 907815588
+      Data4: -766949796
+  - Name: Player_Landed
+    Path: event:/SFX/Player/Player_Landed
+    GUID:
+      Data1: 594495364
+      Data2: 1183593499
+      Data3: 849544592
+      Data4: 732205388
   - Name: Player_Hit
     Path: event:/SFX/Player/Player_Hit
     GUID:
@@ -255,6 +259,13 @@ MonoBehaviour:
       Data2: 1314310624
       Data3: -766163584
       Data4: 319510773
+  - Name: UI_Button
+    Path: event:/SFX/UI/UI_Button
+    GUID:
+      Data1: -738566357
+      Data2: 1166266538
+      Data3: 1971146173
+      Data4: -1481470806
   - Name: GameOver
     Path: event:/SFX/UI/GameOver
     GUID:
@@ -288,6 +299,6 @@ MonoBehaviour:
   - RootFolderName: BGM
     TotalEvent: 5
   - RootFolderName: SFX
-    TotalEvent: 18
+    TotalEvent: 20
   - RootFolderName: NoGroup
-    TotalEvent: 1
+    TotalEvent: 0

@@ -35,6 +35,7 @@ public class basket : MonoBehaviour
                         _throw.gameObject.layer = 0;
                         //_throw.enabled = false;
                         Debug.Log(other.name);
+                        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Put_KoKoShi);
                         TargetCount--;
                     }
                     if (TargetCount == -1)
