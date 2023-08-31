@@ -98,6 +98,7 @@ public class MovingPlatform : MonoBehaviour
             _player.transform.SetParent(null);
             _player = null;
         }
+
         //for(int i = 0; i < hitcolliders.Length; i++)
         //{
         //    if (hitcolliders[i].CompareTag("Player"))

@@ -96,6 +96,8 @@ public class JumpingState : State
                 player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(airVelocity),
                     player.rotationDampTime);
             }
+
+            
         }
     }
 
