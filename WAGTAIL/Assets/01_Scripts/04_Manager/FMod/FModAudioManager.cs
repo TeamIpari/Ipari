@@ -1196,6 +1196,7 @@ public sealed class FModAudioManager : MonoBehaviour
              *****/
             builder.AppendLine("public enum FModBusType");
             builder.AppendLine("{");
+            builder.AppendLine("    Master=0,");
 
             List<NPData> busLists = _EditorSettings.BusList;
             int Count = busLists.Count;
@@ -1203,7 +1204,7 @@ public sealed class FModAudioManager : MonoBehaviour
             {
                 string busName  = RemoveInValidChar(busLists[i].Name);
                 string comma    = (i == Count - 1 ? "" : ",");
-                builder.AppendLine($"   {busName}={i}{comma}");
+                builder.AppendLine($"   {busName}={i+1}{comma}");
             }
 
             builder.AppendLine("}");
@@ -1486,6 +1487,8 @@ public sealed class FModAudioManager : MonoBehaviour
             #region Omit
             List<NPData> list = _EditorSettings.BusList;
             int Count = list.Count;
+
+            builder.AppendLine($"        \"{_BusRootPath}\"{ (Count==0?"":",") }");
             for (int i = 0; i < Count; i++)
             {
                 string comma = (i == Count - 1 ? "" : ",");

@@ -9,7 +9,7 @@ public sealed class TestScript : MonoBehaviour
         FModEventInstance Instance = FModAudioManager.CreateInstance(FModSFXEventType.Player_Hit);
         Instance.SetParameter(
             FModLocalParamType.PlayerHitType,
-            FModParamValueRange.PlayerHitType.Max
+            FModParamLabel.PlayerHitType.MiniNepenthes_Attack
         );
         Instance.Play();
     }

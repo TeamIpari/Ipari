@@ -34,7 +34,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     private const float     _Buoyancy   = .008f;
 
     private Vector3         _startPosition = Vector3.zero;
-    private Vector3         _startRotation = Vector3.zero;
+    private Vector3         _SpinRotDir  = Vector3.zero;
     private Quaternion      _defaultRotation = Quaternion.identity;
     private LandedType      _landedType    = LandedType.None;
 
@@ -84,31 +84,41 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
             Yspeed += accel;
         }
 
-        //최종 적용f
+        /*************************************
+         *  수직 이동 및 회전에 대한 최종 적용...
+         ***/
         Vector3 offset = (Vector3.up * Yspeed);
         platformTr.position += offset;
 
-        Vector3 currEuler = platformTr.transform.eulerAngles;
-        float radian  = Mathf.Atan2( _startRotation.z, _startRotation.x ) + Mathf.Deg2Rad* currEuler.y;
-        float cos     = Mathf.Cos(radian);
-        float sin     = Mathf.Sin(radian);
-
-        Vector3 startRot = new Vector3(cos, 0f, sin) * _startRotation.magnitude;
-        Vector3 rotEuler  = new Vector3(
-            SpinPow * Yspeed * (-startRot.z),
-            currEuler.y,
-            SpinPow * Yspeed * (startRot.x)
-        );
-
-        platformTr.rotation = Quaternion.Euler( rotEuler );
+        Quaternion spinRot = Quaternion.AngleAxis(SpinPow * Yspeed, _SpinRotDir);
+        platformTr.rotation = ( _defaultRotation * spinRot );
         #endregion
     }
 
     public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
     {
+        #region Omit
         _landedType = LandedType.Enter;
         Yspeed = -.1f;
-        _startRotation = (standingTarget.transform.position - transform.position).normalized;
+
+        /**********************************************
+         *  출렁이는 회전방향벡터를 구한다...
+         * ***/
+        Transform platformTr = affectedPlatform.transform;
+        Vector3 currEuler = platformTr.transform.eulerAngles;
+        Vector3 startRotation = (standingTarget.transform.position - transform.position).normalized;
+
+        float radian = Mathf.Atan2(startRotation.z, startRotation.x);
+        float cos = Mathf.Cos(radian);
+        float sin = Mathf.Sin(radian);
+
+        Vector3 startRot = new Vector3(cos, 0f, sin) * startRotation.magnitude;
+        _SpinRotDir = new Vector3(
+            -startRot.z,
+            0f,
+            startRot.x
+        );
+        #endregion
     }
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
