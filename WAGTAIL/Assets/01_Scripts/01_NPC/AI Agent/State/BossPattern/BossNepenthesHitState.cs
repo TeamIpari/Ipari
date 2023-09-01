@@ -4,32 +4,21 @@ using UnityEngine;
 
 public class BossNepenthesHitState : AIHitState
 {
+    //=========================================
+    /////       Property And Fields         /////
+    //=========================================
     float curTimer = 0;
     float delayTimer = 5.0f;
     int nextPhaseHp = 0;
   
+    //=========================================
+    /////       Magic Mathods               /////
+    //=========================================
     public BossNepenthesHitState(AIStateMachine stateMachine) : base(stateMachine)
     {
         nextPhaseHp = stateMachine.GetNextPhaseTargetHp();
     }
 
-
-    public void SetPhaseHp()
-    {
-        Debug.Log($"다음 페이즈 돌입.");
-        if (stateMachine.IsNextTargetPhaseHp())
-        {
-            nextPhaseHp = stateMachine.GetNextPhaseTargetHp();
-            stateMachine.character.CurPhaseHpArray++;
-        }
-        else
-            // 다음 페이즈가 없음.
-            nextPhaseHp = 0;
-    }
-    public void SetNextPhase()
-    {
-        stateMachine.character.SettingPattern(stateMachine.EPattern);
-    }
 
     public override void Enter()
     {
@@ -66,5 +55,24 @@ public class BossNepenthesHitState : AIHitState
         {
             stateMachine.NextPattern();
         }
+    }
+    //===========================================
+    /////           Core Methods            /////
+    //===========================================
+    public void SetPhaseHp()
+    {
+        Debug.Log($"다음 페이즈 돌입.");
+        if (stateMachine.IsNextTargetPhaseHp())
+        {
+            nextPhaseHp = stateMachine.GetNextPhaseTargetHp();
+            stateMachine.character.CurPhaseHpArray++;
+        }
+        else
+            // 다음 페이즈가 없음.
+            nextPhaseHp = 0;
+    }
+    public void SetNextPhase()
+    {
+        stateMachine.character.SettingPattern(stateMachine.EPattern);
     }
 }

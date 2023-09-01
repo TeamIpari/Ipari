@@ -19,6 +19,9 @@ public struct BossNepenthesProfile
 
 public class BossNepenthes : Enemy
 {
+    //==============================================
+    /////       Propertys and Fields            ////
+    //==============================================
     [Header("Bullet Prefab")]
     BossNepenthesProfile BossProfile;
     public GameObject BulletPrefab;
@@ -34,50 +37,25 @@ public class BossNepenthes : Enemy
     [Tooltip("폭탄을 던졌을 때 Player중심으로 ShotArea의 원 범위 안에 랜덤으로 투척")]
     public int ShotArea;
 
-
     public GameObject LeftVine;
     public GameObject RightVine;
 
 
-
-    // Start is called before the first frame update
+    //==========================================
+    /////           Magic Method            ////
+    //==========================================
     void Awake()
     {
         Debug.Log($"{CurPhaseHpArray}");
         SetProfile();
         StateSetting();
-        // list로 설정된 공격 패턴을 입력함.
         SettingPattern(CharacterMovementPattern[CurPhaseHpArray].EPatterns);
-
         AiSM.CurrentState = AiSM.Pattern[0];
-    }
-    public void SetProfile()
-    {
-        BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
-
     }
 
     public override void SetAttackPattern()
     {
         base.SetAttackPattern();
-
-    }
-
-    void StateSetting()
-    {
-        AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
-
-        AiIdle = new BossNepenthesIdleState(AiSM, IdleRate);
-        AiWait = new BossNepenthesWaitState (AiSM, WaitRate);
-        AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
-        AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
-        AiAttack3 = new BossNepenthesAttack3(AiSM, BossProfile, time, ShotCount, ShotArea);
-
-        // 죽는 기능.
-        AiHit = new BossNepenthesHitState(AiSM);
-        AiDie = new BossNepenthesDieState(AiSM);
-
-        
     }
 
     protected override void AddPattern(AIState curPattern)
@@ -90,7 +68,6 @@ public class BossNepenthes : Enemy
         base.SettingPattern(_pattern);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (AiSM != null)
@@ -115,4 +92,26 @@ public class BossNepenthes : Enemy
         }
     }
 
+    // ============================================
+    /////           Core Methods            ///
+    // ============================================
+    void StateSetting()
+    {
+        AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
+
+        AiIdle = new BossNepenthesIdleState(AiSM, IdleRate);
+        AiWait = new BossNepenthesWaitState(AiSM, WaitRate);
+        AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
+        AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
+        AiAttack3 = new BossNepenthesAttack3(AiSM, BossProfile, time, ShotCount, ShotArea);
+
+        // 죽는 기능.
+        AiHit = new BossNepenthesHitState(AiSM);
+        AiDie = new BossNepenthesDieState(AiSM);
+    }
+
+    public void SetProfile()
+    {
+        BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
+    }
 }

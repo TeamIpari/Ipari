@@ -16,6 +16,10 @@ public abstract class AIState
         current = 0;
     }
 
+    //=======================================================
+    /////             Virtual Core Method                 /////
+    //=======================================================
+
     public virtual void SetParent(AIState parent, AIState child )
     {
         child.parent = parent;
@@ -26,6 +30,10 @@ public abstract class AIState
     {
         children.Add(state);
     }
+
+    //=======================================================
+    /////             Abstract Magic Method                 /////
+    //=======================================================
 
     public abstract void Enter();
 

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BossNepenthesDieState : AIDieState
 {
+    //==========================================
+    /////           magic Methods           ////
+    //==========================================
     public BossNepenthesDieState(AIStateMachine stateMachine) : base(stateMachine)
     {
 
