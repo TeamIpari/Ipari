@@ -24,6 +24,10 @@ public class MonsterPattern
 
 public class Character : MonoBehaviour
 {
+
+    //========================================
+    //////      Property And Fields      /////
+    //========================================
     public int HP;
     public int AttackDamage;
 
@@ -60,22 +64,14 @@ public class Character : MonoBehaviour
     public AIWaitState AiWait;
     public AIHitState AiHit;
     public AIDieState AiDie;
+    
+    //=======================================
+    //////       Public Methods          ////
+    //=======================================
 
     public virtual void SetAttackPattern()
     {
 
-    }
-
-    public bool isAttack()
-    {
-        if (AttackTimer < AttackRate)
-        {
-            AttackTimer += Time.deltaTime;
-
-            return false;
-        }
-        // 공격 가능 상태
-        return true;
     }
     public virtual void SettingPattern(MonsterPattern.Pattern[] _pattern)
     {
@@ -97,5 +93,17 @@ public class Character : MonoBehaviour
     }
 
 
+
+    public bool isAttack()
+    {
+        if (AttackTimer < AttackRate)
+        {
+            AttackTimer += Time.deltaTime;
+
+            return false;
+        }
+        // 공격 가능 상태
+        return true;
+    }
     //public AIIdleState AIIdleState;
 }

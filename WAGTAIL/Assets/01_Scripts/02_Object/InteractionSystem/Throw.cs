@@ -1,5 +1,7 @@
+using DG.Tweening;
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Throw : MonoBehaviour, IInteractable
@@ -204,7 +206,7 @@ public class Throw : MonoBehaviour, IInteractable
         if(autoTarget != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
-            Player.Instance.transform.LookAt(autoTarget);
+            Player.Instance.transform.LookAt(new Vector3(autoTarget.position.x, Player.Instance.transform.position.y, autoTarget.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
         yield return new WaitForSeconds(0.2f);

@@ -6,18 +6,22 @@ using UnityEngine;
 
 public class BossRoomFildManager :MonoBehaviour
 {
-    // 기본 인스텐스를 사용
-    private static BossRoomFildManager instance;
-    public static BossRoomFildManager Instance
-    {
-        get { return instance; }
-    }
-
 
     [System.Serializable]
     public class TileMap : SerializableDictionary<Vector2, GameObject >
     {
 
+    }
+
+    //========================================
+    //////      Property And Fields      /////
+    //========================================
+
+    // 기본 인스텐스를 사용
+    private static BossRoomFildManager instance;
+    public static BossRoomFildManager Instance
+    {
+        get { return instance; }
     }
 
     // 생성할 타일을 저장함.
@@ -35,7 +39,9 @@ public class BossRoomFildManager :MonoBehaviour
 
     public Vector3 TargetPos;
 
-    // Start is called before the first frame update
+    //=======================================
+    //////        Magic Methods          ////
+    //=======================================
     void Awake()
     {
         if (instance == null)
@@ -47,6 +53,10 @@ public class BossRoomFildManager :MonoBehaviour
         Initialized();
     }
 
+
+    //======================================
+    /////         Core Methods         /////
+    //======================================
     public void BrokenPlatform(float XPos)
     {
         float X = (XPos - Offset.x ), Y = 0;
@@ -74,8 +84,6 @@ public class BossRoomFildManager :MonoBehaviour
             for (int x = 0; x < XSize; x++)
             {
                 spawnPos.Set(x * StoneXSize, -y * StoneYSize);
-                // GameObject CreateTile = GameObject.Instantiate(Tiles[Random.Range(0, Tiles.Length)], this.transform);
-
                 GameObject CreateTile;
                 if ((x + y) % 2 == 0) CreateTile = GameObject.Instantiate(EvenTile[Random.Range(0, EvenTile.Length)], this.transform);
                 else CreateTile = GameObject.Instantiate(OddTile[Random.Range(0, OddTile.Length)], this.transform);
@@ -93,11 +101,5 @@ public class BossRoomFildManager :MonoBehaviour
         {
             curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

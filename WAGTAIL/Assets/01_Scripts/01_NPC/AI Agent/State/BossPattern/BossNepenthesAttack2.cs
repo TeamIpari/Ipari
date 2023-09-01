@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class BossNepenthesAttack2 : AIAttackState
 {
+
+    //========================================
+    //////      Property And Fields      /////
+    //========================================
     private float curTimer = 0;
     private float changeTimer = 3;
 
@@ -19,7 +23,9 @@ public class BossNepenthesAttack2 : AIAttackState
     private float time;
 
 
-
+    //========================================
+    /////       Magic Methods             ////
+    //========================================
     public BossNepenthesAttack2(AIStateMachine stateMachine, BossNepenthesProfile profile, float time) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
@@ -48,19 +54,6 @@ public class BossNepenthesAttack2 : AIAttackState
     {
         throw new System.NotImplementedException();
     }
-
-    public void ShootDelay()
-    {
-        if (curTimer > DelayTime && !isShoot)
-        {
-            CreateMarker();
-            PositionLuncher();
-            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
-            curTimer = 0;
-            isShoot = true;
-        }
-    }
-    
     protected override void ChangeState()
     {
         if (curTimer > changeTimer && isShoot)
@@ -77,12 +70,27 @@ public class BossNepenthesAttack2 : AIAttackState
         ChangeState();
     }
 
+
+    //==============================================
+    /////             Function methods              ////
+    //==============================================
+    public void ShootDelay()
+    {
+        if (curTimer > DelayTime && !isShoot)
+        {
+            CreateMarker();
+            PositionLuncher();
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
+            curTimer = 0;
+            isShoot = true;
+        }
+    }
+    
     private void CreateMarker()
     {
         target = new Vector3(Player.Instance.transform.position.x,
             Player.Instance.transform.position.y + 0.1f,
             Player.Instance.transform.position.z);
-        //target = BossRoomFildManager.Instance.TargetPos;
         
         GameObject _obj = GameObject.Instantiate(circleObj);
         _obj.transform.localScale = Vector3.one * 3f;
@@ -90,6 +98,7 @@ public class BossNepenthesAttack2 : AIAttackState
         _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
         marker = _obj;
     }
+
     private void PositionLuncher()
     {
         Vector3 pos = CaculateVelocity(target, shootPoint.position, time);

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class AIDieState : AIState
 {
+    //==========================================
+    /////           magic Methods           ////
+    //==========================================
     public AIDieState(AIStateMachine stateMachine) : base(stateMachine)
     {
 
@@ -11,21 +14,17 @@ public class AIDieState : AIState
 
     public override void Enter()
     {
-        //throw new System.NotImplementedException();
     }
 
     public override void Exit()
     {
-        //throw new System.NotImplementedException();
     }
 
     public override void OntriggerEnter(Collider other)
     {
-        //throw new System.NotImplementedException();
     }
 
     public override void Update()
     {
-        //throw new System.NotImplementedException();
     }
 }

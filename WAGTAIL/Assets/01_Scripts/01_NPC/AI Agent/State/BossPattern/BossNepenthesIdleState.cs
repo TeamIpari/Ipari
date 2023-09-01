@@ -5,8 +5,15 @@ using UnityEngine;
 
 public class BossNepenthesIdleState : AIIdleState
 {
+    //===========================================
+    /////       Property And Fields         /////
+    //===========================================
     float waitTime;
     float curTime;
+
+    //=======================================
+    //////       Public Methods          ////
+    //=======================================
     public BossNepenthesIdleState(AIStateMachine stateMachine, float waitTime) : base(stateMachine)
     {
         this.waitTime = waitTime;
