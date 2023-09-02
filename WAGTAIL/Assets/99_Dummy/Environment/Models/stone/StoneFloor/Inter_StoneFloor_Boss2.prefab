@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 4482220269271614357}
   - component: {fileID: 692375679252204592}
   - component: {fileID: 3350439850441603322}
+  - component: {fileID: 4955493653494330189}
+  - component: {fileID: 7514378090702806615}
+  - component: {fileID: 198837561632616347}
   m_Layer: 0
   m_Name: Inter_StoneFloor_Boss2
   m_TagString: Untagged
@@ -84,6 +87,82 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4955493653494330189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855040851701782831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bddf0544d16af64386c99d66d23ab23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartQuat: {x: 0, y: 0, z: 0, w: 1}
+  UpdateQuat: {x: 0, y: 0, z: 0, w: 1}
+  StartPosition: {x: 0, y: 0, z: 0}
+  PlayerRideOn: 0
+  UsedCollision: 0
+  CheckGroundOffset: 0
+  Behaviors:
+  - {fileID: 7514378090702806615}
+--- !u!114 &7514378090702806615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855040851701782831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d946def4fab244ab3805c2981da3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Infos:
+  - Target: {fileID: 8522127501808492158}
+    Material: {fileID: 0}
+    ParamType: 2
+    ParamApplyTiming: 4
+    MaterialIndex: 0
+    ParamName: _fade
+    ParamFloatValue: 1
+    ParamIntValue: 0
+    ParamTexValue: {fileID: 0}
+    ParamColorValue: {r: 0, g: 0, b: 0, a: 0}
+    LerpTimeDiv: 0
+    LeftTime: 0
+    LerpTime: 1
+    StartValue: 0
+    StartColorValue: {r: 0, g: 0, b: 0, a: 0}
+  - Target: {fileID: 8522127501808492158}
+    Material: {fileID: 0}
+    ParamType: 2
+    ParamApplyTiming: 16
+    MaterialIndex: 0
+    ParamName: _fade
+    ParamFloatValue: 0
+    ParamIntValue: 0
+    ParamTexValue: {fileID: 0}
+    ParamColorValue: {r: 0, g: 0, b: 0, a: 0}
+    LerpTimeDiv: 0
+    LeftTime: 0
+    LerpTime: 1
+    StartValue: 0
+    StartColorValue: {r: 0, g: 0, b: 0, a: 0}
+--- !u!65 &198837561632616347
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855040851701782831}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.8747804, y: 0.94727546, z: 2.8747804}
+  m_Center: {x: 0, y: 0.47363773, z: 0}
 --- !u!1 &8522127501808492158
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +174,6 @@ GameObject:
   - component: {fileID: 5325622086293613154}
   - component: {fileID: 7383814077953323863}
   - component: {fileID: 7585722865449255921}
-  - component: {fileID: 8461555749280419054}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -168,17 +246,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8461555749280419054
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8522127501808492158}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}

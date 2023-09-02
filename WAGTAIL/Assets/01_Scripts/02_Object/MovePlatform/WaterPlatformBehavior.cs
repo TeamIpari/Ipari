@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.IO.LowLevel.Unsafe;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 
 /********************************************************
@@ -15,8 +12,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     private enum LandedType
     {
         None,
-        Enter,
-        Shake
+        Enter
     };
 
     //========================================
@@ -33,10 +29,12 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     private const float     _WaterValue = .025f;
     private const float     _Buoyancy   = .008f;
 
-    private Vector3         _startPosition = Vector3.zero;
-    private Vector3         _SpinRotDir  = Vector3.zero;
-    private Quaternion      _defaultRotation = Quaternion.identity;
-    private LandedType      _landedType    = LandedType.None;
+    private Vector3         _SpinRotDir      = Vector3.zero;
+    private float           _lastYEuler      = 0f;
+    private float           _landedRadian    = 0f;
+    private LandedType      _landedType      = LandedType.None;
+    private Quaternion      _defaultQuat     = Quaternion.identity;
+    private Transform       _platformTr;
 
 
 
@@ -45,8 +43,8 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     //=======================================
     public override void BehaviorStart(PlatformObject affectedPlatform)
     {
-        _startPosition = transform.position;
-        _defaultRotation= transform.rotation;
+        _platformTr = affectedPlatform.transform;
+        _defaultQuat= _platformTr.rotation;
         affectedPlatform.CheckGroundOffset = 2f;
     }
 
@@ -55,69 +53,70 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         #region Ommission
         if (_landedType == LandedType.None) return;
 
-        Transform platformTr = affectedPlatform.transform;
+        /**********************************************
+         *  회전방향벡터를 구한다...
+         * ***/
+        Vector3 currEuler = _platformTr.eulerAngles;
 
-        /***********************************
-         * 최초 밟았을 때의 출렁거림 효과
-         ***/
-        if (_landedType == LandedType.Enter)
-        {
-            Yspeed += _Buoyancy;
+        /**Y축 회전이 변화가 없다면 회전방향벡터를 갱신할 필요가 없음..*/
+        if( _lastYEuler!=currEuler.y ){
 
-            //출렁거림 마무리.
-            if ((platformTr.position.y + Yspeed) > _startPosition.y) {
+            _lastYEuler= currEuler.y;
+            float radian = _landedRadian + (Mathf.Deg2Rad * _lastYEuler);
+            float cos = Mathf.Cos(radian);
+            float sin = Mathf.Sin(radian);
 
-                _landedType = LandedType.Shake;
-                Yspeed *= .6f;
-                return;
-            }
+            _SpinRotDir = new Vector3(
+                -sin,
+                0f,
+                cos
+            );
         }
 
-        /***********************************
-         * 밟힌 후 잔여 출렁임 효과
-         ***/
-        else
-        {
-            float y = platformTr.position.y - (_startPosition.y - Yspeed);
-            float accel = -_WaterValue * y;
+        /**************************************
+         *   출렁거리는 연산을 적용한다...
+         * **/
+        float y     = _platformTr.position.y - (affectedPlatform.StartPosition.y - Yspeed);
+        float accel = -_WaterValue * y;
 
-            Yspeed += accel;
-        }
+        Yspeed += accel;
+
 
         /*************************************
          *  수직 이동 및 회전에 대한 최종 적용...
          ***/
         Vector3 offset = (Vector3.up * Yspeed);
-        platformTr.position += offset;
+        _platformTr.position += offset;
 
-        Quaternion spinRot = Quaternion.AngleAxis(SpinPow * Yspeed, _SpinRotDir);
-        platformTr.rotation = ( _defaultRotation * spinRot );
+        Quaternion spinRot    = Quaternion.AngleAxis( (Yspeed * SpinPow), _SpinRotDir);
+        affectedPlatform.UpdateQuat *= spinRot;
         #endregion
     }
 
     public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
     {
         #region Omit
+        /***********************************************
+         *  밟혔을 경우, 밟힌 지점 및 밟힌 상태로 전환한다...
+         * **/
         _landedType = LandedType.Enter;
-        Yspeed = -.1f;
+        Yspeed      = -.1f;
 
-        /**********************************************
-         *  출렁이는 회전방향벡터를 구한다...
-         * ***/
-        Transform platformTr = affectedPlatform.transform;
-        Vector3 currEuler = platformTr.transform.eulerAngles;
-        Vector3 startRotation = (standingTarget.transform.position - transform.position).normalized;
+        Vector3 standingDir = (standingTarget.transform.position - transform.position).normalized;
+        _landedRadian = Mathf.Atan2(standingDir.z, standingDir.x);
 
-        float radian = Mathf.Atan2(startRotation.z, startRotation.x);
+        /**회전방향벡터를 구한다...*/
+        _lastYEuler = _platformTr.transform.eulerAngles.y;
+        float radian = _landedRadian + (Mathf.Deg2Rad * _lastYEuler);
         float cos = Mathf.Cos(radian);
         float sin = Mathf.Sin(radian);
 
-        Vector3 startRot = new Vector3(cos, 0f, sin) * startRotation.magnitude;
         _SpinRotDir = new Vector3(
-            -startRot.z,
+            -sin,
             0f,
-            startRot.x
+            cos
         );
+
         #endregion
     }
 
