@@ -36,9 +36,11 @@ public class InteractionUIManager : MonoBehaviour
 
     private void Update()
     {
+        /*
         if(hasTarget == null)
             CheckDistance();
-        else
+        else*/
+        if(hasTarget != null)
             FadeInteractableIconColor();
 
         if ( _player.isCarry || _player.isPull || _player.isClimbing || _player.isPush)
@@ -54,12 +56,13 @@ public class InteractionUIManager : MonoBehaviour
     //==================================================
     /////               core methods                /////
     //==================================================
+    /*
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, Vector3.one * (OutDistance * 2));
     }
-
-    // ¿øÀÇ ¹üÀ§ ³»·Î ÇÃ·¹ÀÌ¾î°¡ µé¾î¿À¸é Ã¼Å©¸¦ ÇÔ.
+*/
+    // ì›ì˜ ë²”ìœ„ ë‚´ë¡œ í”Œë ˆì´ì–´ê°€ ë“¤ì–´ì˜¤ë©´ ì²´í¬ë¥¼ í•¨.
     private void CheckDistance()
     {
         Collider[] cols = Physics.OverlapBox(transform.position, new Vector3(1, 1, 1) * OutDistance,Quaternion.identity);
@@ -74,17 +77,17 @@ public class InteractionUIManager : MonoBehaviour
         }
     }
 
-    // hasTargetÀ» ¾òÀ¸¸é °Å¸®¸¦ Áö¼ÓÀûÀ¸·Î Ã¼Å©ÇÏ¸é¼­ »öÀ» ¹Ù²ãÁÜ.
+    // hasTargetì„ ì–»ìœ¼ë©´ ê±°ë¦¬ë¥¼ ì§€ì†ì ìœ¼ë¡œ ì²´í¬í•˜ë©´ì„œ ìƒ‰ì„ ë°”ê¿”ì¤Œ.
     private void FadeInteractableIconColor()
     {
-        // A to BÀÇ °Å¸®¸¦ Ã¼Å© 
+        // A to Bì˜ ê±°ë¦¬ë¥¼ ì²´í¬ 
         float distance = Vector3.Distance(this.transform.position, hasTarget.transform.position);
         if(distance > OutDistance + 1)
         {
             hasTarget = null;
             OnActionUI();
         }
-        // ÃÖ´ë °Å¸®·ÎºÎÅÍ ÇöÀç À§Ä¡°¡ ¾ó¸¶³ª ¶³¾îÁ³´ÂÁö Ã¼Å©.
+        // ìµœëŒ€ ê±°ë¦¬ë¡œë¶€í„° í˜„ìž¬ ìœ„ì¹˜ê°€ ì–¼ë§ˆë‚˜ ë–¨ì–´ì¡ŒëŠ”ì§€ ì²´í¬.
         float percent = (OutDistance - distance) / OutDistance;
         foreach(var img in IconImages)
         {
@@ -119,7 +122,16 @@ public class InteractionUIManager : MonoBehaviour
     {
         if (other.transform.CompareTag("Player"))
         {
-
+            hasTarget = other.gameObject.transform;
+            if (!_isActive)
+            {
+                _isActive = true;
+                if (_animator.speed > 0f)
+                {
+                    _animator.SetTrigger(Fadein);
+                }
+                _animator.speed = 1.0f;
+            }
         }
     }
 
@@ -127,7 +139,11 @@ public class InteractionUIManager : MonoBehaviour
     {
         if (other.transform.CompareTag("Player"))
         {
-
+            if (_isActive)
+            {
+                _isActive = false;
+                _animator.SetTrigger(Fadeout);
+            }
         }
     }
 }
