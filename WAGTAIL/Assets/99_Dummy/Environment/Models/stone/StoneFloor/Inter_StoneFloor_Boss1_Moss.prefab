@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 384935927684494527}
   - component: {fileID: 6027923707564218332}
   - component: {fileID: 279917289082041605}
-  - component: {fileID: 9120907942373653195}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -84,20 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &9120907942373653195
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3807002449359178366}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &9053660694319639208
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,9 +95,8 @@ GameObject:
   - component: {fileID: 4702069547457970103}
   - component: {fileID: 7396577580234115965}
   - component: {fileID: 1511429352}
-  - component: {fileID: 1762548513}
-  - component: {fileID: 1126579724}
-  - component: {fileID: 1415968723}
+  - component: {fileID: 776550909360038883}
+  - component: {fileID: 587802200766393001}
   m_Layer: 0
   m_Name: Inter_StoneFloor_Boss1_Moss
   m_TagString: Untagged
@@ -200,45 +184,66 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5060444177187149915, guid: 4398a0002c5166649bca6d7c7edb3ecf, type: 3}
---- !u!64 &1762548513
-MeshCollider:
+--- !u!114 &776550909360038883
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9053660694319639208}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5060444177187149915, guid: 4398a0002c5166649bca6d7c7edb3ecf, type: 3}
---- !u!64 &1126579724
-MeshCollider:
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bddf0544d16af64386c99d66d23ab23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartQuat: {x: 0, y: 0, z: 0, w: 1}
+  UpdateQuat: {x: 0, y: 0, z: 0, w: 1}
+  StartPosition: {x: 0, y: 0, z: 0}
+  PlayerRideOn: 0
+  UsedCollision: 0
+  CheckGroundOffset: 0
+  Behaviors:
+  - {fileID: 587802200766393001}
+--- !u!114 &587802200766393001
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9053660694319639208}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5060444177187149915, guid: 4398a0002c5166649bca6d7c7edb3ecf, type: 3}
---- !u!64 &1415968723
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9053660694319639208}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5060444177187149915, guid: 4398a0002c5166649bca6d7c7edb3ecf, type: 3}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d946def4fab244ab3805c2981da3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Infos:
+  - Target: {fileID: 3807002449359178366}
+    Material: {fileID: 0}
+    ParamType: 2
+    ParamApplyTiming: 16
+    MaterialIndex: 0
+    ParamName: _fade
+    ParamFloatValue: 0
+    ParamIntValue: 0
+    ParamTexValue: {fileID: 0}
+    ParamColorValue: {r: 0, g: 0, b: 0, a: 0}
+    LerpTimeDiv: 0
+    LeftTime: 0
+    LerpTime: 1
+    StartValue: 0
+    StartColorValue: {r: 0, g: 0, b: 0, a: 0}
+  - Target: {fileID: 3807002449359178366}
+    Material: {fileID: 0}
+    ParamType: 2
+    ParamApplyTiming: 4
+    MaterialIndex: 0
+    ParamName: _fade
+    ParamFloatValue: 1
+    ParamIntValue: 0
+    ParamTexValue: {fileID: 0}
+    ParamColorValue: {r: 0, g: 0, b: 0, a: 0}
+    LerpTimeDiv: 0
+    LeftTime: 0
+    LerpTime: 1
+    StartValue: 0
+    StartColorValue: {r: 0, g: 0, b: 0, a: 0}

@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 1553633682132733484}
   - component: {fileID: 2459042428671590793}
   - component: {fileID: 415651982423192899}
+  - component: {fileID: 6786651623943743450}
+  - component: {fileID: 7576763717402748991}
+  - component: {fileID: 5630044281168877496}
   m_Layer: 0
   m_Name: LeafPlatform_leaf
   m_TagString: Untagged
@@ -83,3 +86,52 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6786651623943743450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2216981813785187478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bddf0544d16af64386c99d66d23ab23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartQuat: {x: 0, y: 0, z: 0, w: 1}
+  UpdateQuat: {x: 0, y: 0, z: 0, w: 1}
+  StartPosition: {x: 0, y: 0, z: 0}
+  PlayerRideOn: 0
+  UsedCollision: 0
+  CheckGroundOffset: 0
+  Behaviors:
+  - {fileID: 7576763717402748991}
+  - {fileID: 5630044281168877496}
+--- !u!114 &7576763717402748991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2216981813785187478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43b45c8f7e1cfe048a9e94faf1444333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Yspeed: 0
+  SpinPow: 50
+--- !u!114 &5630044281168877496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2216981813785187478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c95bb0440328e7a4890d5441e82e0492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RotateAtObjectOnPlatform: 0
+  _RotateSpeedRatio: 0.1
