@@ -162,17 +162,17 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
         ApplyAudioPlays(PlatformApplyTiming.BehaviorEnd, changedTarget.transform.position);
     }
 
-    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
         ApplyAudioPlays(PlatformApplyTiming.OnObjectEnter, affectedPlatform.transform.position);
     }
 
-    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
        if(UsedStayBehavior) ApplyAudioPlays(PlatformApplyTiming.OnObjectStay, affectedPlatform.transform.position);
     }
 
-    public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget)
+    public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody )
     {
         ApplyAudioPlays(PlatformApplyTiming.OnObjectExit, affectedPlatform.transform.position);
     }

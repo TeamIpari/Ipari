@@ -22,9 +22,8 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
     [SerializeField] public bool     RotateAtObjectOnPlatform = true;
     [SerializeField] private float   _RotateSpeedRatio        = .1f;
 
-    private Quaternion _updateQuat    = Quaternion.identity;
-    private Vector3    _startCenter   = Vector3.zero;
-    private Vector3 _test;
+    private Quaternion _updateQuat     = Quaternion.identity;
+    private Vector3    _startCenter    = Vector3.zero;
     private float      _centerDistance = 0f;
     private Transform  _platformTr;
 
@@ -45,20 +44,20 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
         if ( (RotateAtObjectOnPlatform && affectedPlatform.ObjectOnPlatform) 
              || RotateAtObjectOnPlatform==false)
         {
-            affectedPlatform.StartQuat *= _updateQuat;
+            affectedPlatform.UpdateQuat *= _updateQuat;
 
             /*****************************************************
              *  중심축의 오프셋이 중심에 없다면 중심점으로 이동시킨다...
              * **/
             Vector3 dir = _platformTr.forward * _centerDistance;
             Vector3 pos = (_startCenter - dir);
-            pos.y = _platformTr.position.y;
-            _platformTr.position = pos;
+            pos.y = affectedPlatform.UpdatePosition.y;
+            affectedPlatform.UpdatePosition = pos;
 
         }
     }
 
-    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
         //계산에 필요한 요소들을 모두 구한다.
         Vector3 platformCenter = affectedPlatform.Collider.bounds.center;
@@ -71,7 +70,12 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
 
         //현재 이 플랫폼을 밟고 있는 대상을 플랫폼과 같이 회전시킨다.
         Vector3 rotVector = new Vector3(cos, 0f, sin) * radius;
-        standingTarget.transform.position = _test = (platformCenter2 + rotVector);
+
+        if(standingBody!=null)
+        {
+            standingTarget.transform.rotation *= Quaternion.AngleAxis((-20f * RotateSpeedRatio), Vector3.up);
+        }
+        else standingTarget.transform.position = (platformCenter2 + rotVector);
     }
 
 }
