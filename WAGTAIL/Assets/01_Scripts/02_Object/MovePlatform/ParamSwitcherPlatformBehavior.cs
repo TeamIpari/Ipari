@@ -497,17 +497,17 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         }
     }
 
-    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
         ApplyParamSwitch(PlatformApplyTiming.OnObjectEnter);
     }
 
-    public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget)
+    public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody)
     {
         ApplyParamSwitch(PlatformApplyTiming.OnObjectExit);
     }
 
-    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
         ApplyParamSwitch(PlatformApplyTiming.OnObjectStay); 
     }

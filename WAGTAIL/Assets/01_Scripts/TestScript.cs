@@ -4,15 +4,19 @@ using UnityEngine;
 
 public sealed class TestScript : MonoBehaviour
 {
+    FModEventInstance _WaterStream;
+
     private void Start()
     {
-        FModEventInstance Instance = FModAudioManager.CreateInstance(FModSFXEventType.Player_Hit);
-        Instance.SetParameter(
-            FModLocalParamType.PlayerHitType,
-            FModParamLabel.PlayerHitType.MiniNepenthes_Attack
-        );
-        Instance.Play();
+        _WaterStream = FModAudioManager.CreateInstance(FModSFXEventType.Water_Stream, transform.position);
+        _WaterStream.Play();
+        _WaterStream.Set3DDistance(1f, 20f);
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * _WaterStream.Max3DDistance);
+    }
 
 }

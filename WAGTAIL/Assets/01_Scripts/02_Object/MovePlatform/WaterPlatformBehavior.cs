@@ -30,6 +30,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     private const float     _Buoyancy   = .008f;
 
     private Vector3         _SpinRotDir      = Vector3.zero;
+    private Vector3         _defaultPos      = Vector3.zero;
     private float           _lastYEuler      = 0f;
     private float           _landedRadian    = 0f;
     private LandedType      _landedType      = LandedType.None;
@@ -44,6 +45,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     public override void BehaviorStart(PlatformObject affectedPlatform)
     {
         _platformTr = affectedPlatform.transform;
+        _defaultPos = affectedPlatform.transform.position;
         _defaultQuat= _platformTr.rotation;
         affectedPlatform.CheckGroundOffset = 2f;
     }
@@ -76,7 +78,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         /**************************************
          *   출렁거리는 연산을 적용한다...
          * **/
-        float y     = _platformTr.position.y - (affectedPlatform.StartPosition.y - Yspeed);
+        float y     = _platformTr.position.y - (_defaultPos.y - Yspeed);
         float accel = -_WaterValue * y;
 
         Yspeed += accel;
@@ -86,14 +88,14 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
          *  수직 이동 및 회전에 대한 최종 적용...
          ***/
         Vector3 offset = (Vector3.up * Yspeed);
-        _platformTr.position += offset;
+        affectedPlatform.UpdatePosition += offset;
 
-        Quaternion spinRot    = Quaternion.AngleAxis( (Yspeed * SpinPow), _SpinRotDir);
-        affectedPlatform.UpdateQuat *= spinRot;
+        Quaternion spinRot = Quaternion.AngleAxis( (Yspeed * SpinPow), _SpinRotDir);
+        affectedPlatform.OffsetQuat *= spinRot;
         #endregion
     }
 
-    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
         #region Omit
         /***********************************************
@@ -120,11 +122,15 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         #endregion
     }
 
-    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
         Vector3 pos = standingTarget.transform.position;
         pos.y = standingPoint.y;
 
-        standingTarget.transform.position = pos;
+        if(standingBody!=null){
+
+            //standingBody.MovePosition(pos);
+        }
+        else standingTarget.transform.position = pos;
     }
 }

@@ -17,8 +17,8 @@ public class ChapterController : MonoBehaviour
             /*******************************************
              *   타이틀 브금 적용...
              * **/
-            FModAudioManager.AutoFadeInOutBGM = true;
-            FModAudioManager.AutoFadeBGMDuration = 2f;
+            FModAudioManager.UsedBGMAutoFade = true;
+            FModAudioManager.BGMAutoFadeDuration = 2f;
             FModAudioManager.SetBusMute(FModBusType.Player, true);
             FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
         }
