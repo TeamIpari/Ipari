@@ -16,7 +16,7 @@ public class CutScene : MonoBehaviour
     public bool ISText;
     public bool isSpeedUp = false;
 
-    [Header("")]
+    [Header("Timer")]
     public float LastTimeLineTime = 5f;
     public float WaitTime = 0;
 
@@ -24,6 +24,7 @@ public class CutScene : MonoBehaviour
 
     private bool IsCutScene;
     private int sceneCount;
+    [SerializeField] private Dialogue dialogue = new Dialogue();
 
     private void Awake()
     {
@@ -41,9 +42,10 @@ public class CutScene : MonoBehaviour
         if (IsIntro)
         {
             PlayCutScene();
-            LoadManager.GetInstance().IO_GetScriptable(SayType);
+            dialogue = LoadManager.GetInstance().IO_GetScriptable(SayType);
             LoadManager.GetInstance().TmpSet(TextViewer);
-            LoadManager.GetInstance().PlayTyping();
+            LoadManager.GetInstance().StartDialogue(dialogue);
+            //LoadManager.GetInstance().PlayTyping();
         }
     }
 
@@ -78,7 +80,7 @@ public class CutScene : MonoBehaviour
                 Player.Instance.playerInput.enabled = false;
                 cutScenes[sceneCount++].gameObject.SetActive(true);
                 if (TextViewer != null)
-                    LoadManager.GetInstance().PlayTyping();
+                    LoadManager.GetInstance().DisplayNextSentence();
             }
         }
 
