@@ -29,10 +29,10 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
         isUsing = false;
     }
 
-    private void Update()
-    {
+    //private void Update()
+    //{
         
-    }
+    //}
 
     public void AnimEvent()
     {

@@ -36,7 +36,7 @@ Transform:
   - {fileID: 5325622086293613154}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!33 &692375679252204592
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -99,10 +99,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bddf0544d16af64386c99d66d23ab23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartQuat: {x: 0, y: 0, z: 0, w: 1}
   UpdateQuat: {x: 0, y: 0, z: 0, w: 1}
-  StartPosition: {x: 0, y: 0, z: 0}
-  PlayerRideOn: 0
+  OffsetQuat: {x: 0, y: 0, z: 0, w: 1}
+  UpdatePosition: {x: 0, y: 0, z: 0}
+  OffsetPosition: {x: 0, y: 0, z: 0}
+  PlayerOnPlatform: 0
   UsedCollision: 0
   CheckGroundOffset: 0
   Behaviors:
@@ -161,8 +162,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.8747804, y: 0.94727546, z: 2.8747804}
-  m_Center: {x: 0, y: 0.47363773, z: 0}
+  m_Size: {x: 3, y: 1, z: 3}
+  m_Center: {x: 0, y: 0.51, z: 0}
 --- !u!1 &8522127501808492158
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using FMOD.Studio;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.InputManagerEntry;
 
 
 public class BossRoomFildManager :MonoBehaviour
@@ -53,17 +54,27 @@ public class BossRoomFildManager :MonoBehaviour
         Initialized();
     }
 
+    //======================================
+    /////           private Methods     /////
+    //======================================
+    private IEnumerator BrokenDelay(float x, float y)
+    {
+        yield return new WaitForSeconds(2.5f);
+        BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
+    }
 
     //======================================
     /////         Core Methods         /////
     //======================================
     public void BrokenPlatform(float XPos)
     {
+        // ³»·Á Âï±â -> 2.5ÃÊ ÈÄ ³»·Á ÂïÀ½.
+        // .Attack Delay = 2.5f
         float X = (XPos - Offset.x ), Y = 0;
         float FindY = Y * (-StoneYSize);
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
-            BossFild[new Vector2(X, FindY)].GetComponentInChildren<IEnviroment>().ExecutionFunction(2.5f);
+            StartCoroutine(BrokenDelay(X, FindY));
             Y++;
             FindY = Y * (-StoneYSize);
         }
