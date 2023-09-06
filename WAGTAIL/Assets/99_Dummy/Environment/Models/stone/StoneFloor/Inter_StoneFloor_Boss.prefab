@@ -94,9 +94,9 @@ GameObject:
   - component: {fileID: 6366157354880615408}
   - component: {fileID: 8067910625221233749}
   - component: {fileID: 5193229530155301023}
-  - component: {fileID: 1926713346}
   - component: {fileID: 1019538451482127013}
   - component: {fileID: 947113621042024447}
+  - component: {fileID: 1659254908}
   m_Layer: 0
   m_Name: Inter_StoneFloor_Boss
   m_TagString: Untagged
@@ -170,20 +170,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1926713346
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5986113821630404938}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5060444177187149915, guid: 4b1d3b09a7b403445b496dc1c7796458, type: 3}
 --- !u!114 &1019538451482127013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,10 +182,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bddf0544d16af64386c99d66d23ab23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartQuat: {x: 0, y: 0, z: 0, w: 1}
   UpdateQuat: {x: 0, y: 0, z: 0, w: 1}
-  StartPosition: {x: 0, y: 0, z: 0}
-  PlayerRideOn: 0
+  OffsetQuat: {x: 0, y: 0, z: 0, w: 1}
+  UpdatePosition: {x: 0, y: 0, z: 0}
+  OffsetPosition: {x: 0, y: 0, z: 0}
+  PlayerOnPlatform: 0
   UsedCollision: 0
   CheckGroundOffset: 0
   Behaviors:
@@ -247,3 +234,16 @@ MonoBehaviour:
     LerpTime: 1
     StartValue: 0
     StartColorValue: {r: 0, g: 0, b: 0, a: 0}
+--- !u!65 &1659254908
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5986113821630404938}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 1, z: 3}
+  m_Center: {x: 0, y: 0.51, z: 0}

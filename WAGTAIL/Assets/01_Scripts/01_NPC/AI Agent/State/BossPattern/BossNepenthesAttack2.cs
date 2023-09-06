@@ -95,7 +95,7 @@ public class BossNepenthesAttack2 : AIAttackState
         GameObject _obj = GameObject.Instantiate(circleObj);
         _obj.transform.localScale = Vector3.one * 3f;
         _obj.transform.position = target;
-        _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
+        _obj.transform.rotation = Quaternion.Euler(-90, 0, 0);
         marker = _obj;
     }
 
