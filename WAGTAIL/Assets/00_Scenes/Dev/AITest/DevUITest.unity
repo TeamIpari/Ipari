@@ -240,7 +240,6 @@ GameObject:
   - component: {fileID: 373861657}
   - component: {fileID: 373861656}
   - component: {fileID: 373861661}
-  - component: {fileID: 373861660}
   - component: {fileID: 373861662}
   - component: {fileID: 373861663}
   m_Layer: 0
@@ -328,20 +327,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &373861660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 373861655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c95bb0440328e7a4890d5441e82e0492, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  RotateAtObjectOnPlatform: 0
-  _RotateSpeedRatio: 0.1
 --- !u!114 &373861661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,7 +347,6 @@ MonoBehaviour:
   UsedCollision: 0
   CheckGroundOffset: 0
   Behaviors:
-  - {fileID: 373861660}
   - {fileID: 373861662}
   - {fileID: 373861663}
 --- !u!114 &373861662
@@ -374,11 +358,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 373861655}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43b45c8f7e1cfe048a9e94faf1444333, type: 3}
+  m_Script: {fileID: 11500000, guid: d81594be7142eaa49a5bb9ae2bc4baad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Yspeed: 0
-  SpinPow: 80
+  Speed: 0.1
+  ShakeDistance: 0.05
+  shakeDelay: 0.1
+  TargetPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &373861663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,19 +374,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 373861655}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7ce257514fa7394eb68518f8d0d2fce, type: 3}
+  m_Script: {fileID: 11500000, guid: c95bb0440328e7a4890d5441e82e0492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UsedStayBehavior: 0
-  Datas:
-  - PlayEvent:
-      Guid:
-        Data1: 1372834114
-        Data2: 1135245776
-        Data3: -1359107406
-        Data4: -1143480114
-      Path: event:/SFX/Boss/Mini Nepenthes/Nepenthes_Dead
-    timing: 4
+  RotateAtObjectOnPlatform: 0
+  _RotateSpeedRatio: 0.1
 --- !u!1 &451477136
 GameObject:
   m_ObjectHideFlags: 0
