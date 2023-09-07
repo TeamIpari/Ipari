@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4955493653494330189}
   - component: {fileID: 7514378090702806615}
   - component: {fileID: 198837561632616347}
+  - component: {fileID: 1880943013}
   m_Layer: 0
   m_Name: Inter_StoneFloor_Boss2
   m_TagString: Untagged
@@ -108,6 +109,7 @@ MonoBehaviour:
   CheckGroundOffset: 0
   Behaviors:
   - {fileID: 7514378090702806615}
+  - {fileID: 1880943013}
 --- !u!114 &7514378090702806615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,6 +166,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3, y: 1, z: 3}
   m_Center: {x: 0, y: 0.51, z: 0}
+--- !u!114 &1880943013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855040851701782831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81594be7142eaa49a5bb9ae2bc4baad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 3
+  ShakeDistance: 0.1
+  shakeDelay: 0.1
+  QuakeRate: 1.5
+  TargetPosition: {x: 0, y: -5, z: 0}
 --- !u!1 &8522127501808492158
 GameObject:
   m_ObjectHideFlags: 0

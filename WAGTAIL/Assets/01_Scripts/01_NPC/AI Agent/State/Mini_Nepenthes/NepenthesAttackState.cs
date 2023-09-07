@@ -6,7 +6,7 @@ using UnityEngine.XR;
 public class NepenthesAttackState : AIAttackState
 {
     float Timer;
-    float DelayTime = 0.25f;
+    float DelayTime = 0.65f;
 
     public NepenthesAttackState(AIStateMachine stateMachine) : base(stateMachine)
     {
