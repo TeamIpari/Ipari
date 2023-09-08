@@ -15,21 +15,31 @@ public class LoadManager : Singleton<LoadManager>
         public int number;
         public int chapter;
         public string sayTarget;
-        public string contents;
+        public string Korean;
+        public string English;
         public bool wait;
 
         public void Init(string[] str)
         {
-            if (str[0] != "")
-                number = int.Parse(str[0]);
-            if (str[1] != "")
-                chapter = int.Parse(str[1]);
-            if (str[2] != "")
-                sayTarget = str[2];
-            if (str[3] != "")
-                wait = int.Parse(str[3]) == 0 ? false : true;
-            if (str[4] != "")
-                contents = str[4];
+            try
+            {
+                if (str[0] != "")
+                    number = int.Parse(str[0]);
+                if (str[1] != "")
+                    chapter = int.Parse(str[1]);
+                if (str[2] != "")
+                    sayTarget = str[2];
+                if (str[3] != "")
+                    wait = int.Parse(str[3]) == 0 ? false : true;
+                if (str[4] != "")
+                    Korean = str[4];
+                if (str[5] != "")
+                    English = str[5];
+            }
+            catch
+            {
+                Debug.Log($"{number} contents is null;");
+            }
         }
     }
     [System.Serializable]
@@ -41,34 +51,32 @@ public class LoadManager : Singleton<LoadManager>
     //public GameObject
     public int ChapterNum = 0;
     public TextMeshProUGUI Tmps;
-    public int TmpNum = 0;
     public ChapterScript Dic_Say;
-    //public List<Scriptable> ChapterSay = new List<Scriptable>();
     public Dialogue dialogue = new Dialogue();
     public bool isSpeedUp = false;
-
-
-    bool isTypingEnd = false;   // 치고 있는 상태인가?
-    public float time = 0;
-    int dialogNum;
-    public float StandardTime;
-    int FastForTime;
+    public float KorTypingRate = 0.1f;
+    public float EngTypingRate = 0.05f;
+    private float typingRate = .1f;
 
     private Queue<string> sentences = new Queue<string>();
     private string sentence;
     private bool bTyping = false;
-    public float typingRate;
 
+    //====================================================
+    /////               magic Methods               /////
+    //====================================================
     protected override void Awake()
     {
         base.Awake();
         IO_GetSayer();
         IO_GetScriptable();
 
-        isTypingEnd = true;
         bTyping = false;
     }
 
+    //====================================================
+    /////               Core Methods                /////
+    //====================================================
     public void IO_GetSayer()
     {
         TextAsset _text = (TextAsset)Resources.Load("subtitleExcelFileCSV");
@@ -79,7 +87,6 @@ public class LoadManager : Singleton<LoadManager>
         while (!endOfFile)
         {
             Scriptable scriptable = new Scriptable();
-
             if (count1 == 0)
             {
                 count1++;
@@ -102,7 +109,6 @@ public class LoadManager : Singleton<LoadManager>
         }
     }
     
-    // 기록한 CSV의 내용을 찾아서 불러옴.
     public Dialogue IO_GetScriptable(int num = 0)
     {
         if (num == 0)
@@ -113,13 +119,9 @@ public class LoadManager : Singleton<LoadManager>
         {
             Dic_Say.TryGetValue(i, out sc);
             if(sc.chapter == num)
-            {
-                temp.Add(sc.contents);
-            }
+                temp.Add(Language(sc));
             else if (sc.chapter > num)
-            {
                 break;
-            }
         }
         dialogue = new Dialogue();
         dialogue.sentences = new string[temp.Count];
@@ -127,16 +129,29 @@ public class LoadManager : Singleton<LoadManager>
         {
             dialogue.sentences[i] = temp[i];
         }
-        dialogNum = 0;
-
         return dialogue;
+    }
+
+    private string Language(Scriptable sc)
+    {
+        switch (UIManager.GetInstance().GetLanguageType)
+        {
+            case LanguageType.KOR:
+                return sc.Korean;
+            case LanguageType.ENG:
+                return sc.English;
+            case LanguageType.JP:
+                break;
+            case LanguageType.CN:
+                break;
+        }
+        throw new System.NotImplementedException();
     }
 
     public void StartDialogue(Dialogue dialogue)
     {
         bTyping = false;
         sentences.Clear();
-
         foreach (string sentence in dialogue.sentences)
         {
             sentences.Enqueue(sentence);
@@ -154,11 +169,27 @@ public class LoadManager : Singleton<LoadManager>
             return;
         }
         if (EndDialogue())
-        {
             return;
-        }
         sentence = sentences.Dequeue();
         StartCoroutine(TypeSentence(sentence));
+    }
+
+    private float GetLanguageRate()
+    {
+        switch (UIManager.GetInstance().GetLanguageType)
+        {
+            case LanguageType.KOR:
+                return KorTypingRate;
+            case LanguageType.ENG:
+                return EngTypingRate;
+            case LanguageType.JP:
+                break;
+            case LanguageType.CN:
+                break;
+            default:
+                break;
+        }
+        throw new System.NotImplementedException();
     }
 
     private IEnumerator TypeSentence(string sentence)
@@ -167,11 +198,14 @@ public class LoadManager : Singleton<LoadManager>
         Tmps.text = string.Empty;
         foreach (char letter in sentence.ToCharArray())
         {
-            Tmps.text += letter;
+            if (letter == '*')
+                Tmps.text += ',';
+            else
+                Tmps.text += letter;
             if (isSpeedUp)
-                yield return new WaitForSeconds(typingRate * 0.5f);      // time setting;
+                yield return new WaitForSeconds(GetLanguageRate() * 0.5f);      // time setting;
             else if (!isSpeedUp)
-                yield return new WaitForSeconds(typingRate);
+                yield return new WaitForSeconds(GetLanguageRate());
         }
         bTyping = false;
     }
@@ -184,62 +218,9 @@ public class LoadManager : Singleton<LoadManager>
         return false;
     }
 
-    public void ResetValue()
-    {
-        TmpNum = 0;
-        dialogNum = 0;
-    }
-
     public void TmpSet(TextMeshProUGUI tmp)
     {
         Tmps = tmp;
         Tmps.text = string.Empty;
     }
-    
-    //public void AddTmp(TextMeshProUGUI tmp)
-    //{
-    //    Tmps = tmp;
-    //}
-
-
-    //private IEnumerator TypingCo(Scriptable sc)
-    //{
-    //    int dialogNum = 0;          // 몇 번째 문장 실행 중.
-    //    int dialogMax = sc.contents.Length - 1;
-    //    isTypingEnd = false;
-    //    while (dialogNum < dialogMax)
-    //    {
-    //        if(time >= 0)
-    //        {
-    //            yield return null;
-    //            time -= Time.deltaTime;
-    //        }
-    //        else
-    //        {
-    //            if (dialogNum > 0 
-    //                && sc.contents[dialogNum - 1].ToString() == ".")
-    //                Tmps.text += "\n";
-    //            Tmps.text += sc.contents[dialogNum].ToString();
-    //            //if (Tmps[TmpNum].text.Length % 26 == 0 )
-    //            //    Tmps[TmpNum].text += "\n";
-
-    //            dialogNum++;
-    //            time = StandardTime;
-    //        }
-    //    }
-    //    if(dialogNum >= dialogMax)
-    //    {
-    //        if(Tmps.Count > 0 && Tmps.Count > TmpNum)
-    //        {
-    //            TmpNum++;
-    //        }
-    //        if(TmpNum >= Tmps.Count)
-    //        {
-    //            TmpNum = 0;
-    //        }
-    //        isTypingEnd = true;
-    //        this.dialogNum++;
-    //        yield break;
-    //    }
-    //}
 }
