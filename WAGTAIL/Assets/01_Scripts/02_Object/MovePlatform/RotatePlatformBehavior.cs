@@ -218,7 +218,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
         if (_state != RotatePlatformState.Rotation) return;
 
         //계산에 필요한 요소들을 모두 구한다.
-        Vector3 platformCenter  = affectedPlatform.Collider.bounds.center;
+        Vector3 platformCenter  = ( affectedPlatform.Collider.bounds.center + RotateCenterOffset );
         Vector3 platformCenter2 = new Vector3(platformCenter.x, standingPoint.y, platformCenter.z);
         Vector3 distance        = (standingPoint - platformCenter2);
         float radius = distance.magnitude;
