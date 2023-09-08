@@ -47,7 +47,6 @@ public class GameUI : MonoBehaviour
         GameManager.GetInstance().Coin = 0;
         GameManager.GetInstance().Flower = 0;
         SceneLoader.GetInstance().LoadScene("Chapter01");
-        LoadManager.GetInstance().ResetValue();
         /*
         GameManager.GetInstance().RestartChapter();
         // 임시 땜빵임 추후에 수정안하면 안됨
