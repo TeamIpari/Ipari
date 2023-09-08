@@ -177,7 +177,7 @@ public class IdleState : State
             //Debug.Log(hitPointNormal);
         }*/
 
-        player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
+        player.controller.Move(currentVelocity * (Time.deltaTime * playerSpeed) + gravityVelocity * Time.deltaTime);
         
         if (velocity.sqrMagnitude > 0)
         {
