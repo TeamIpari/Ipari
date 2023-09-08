@@ -11,6 +11,10 @@ using UnityEditor;
 using UnityEditor.Rendering;
 #endif
 
+/*************************************************************************
+ * 발판의 움직임에 따른 Renderer컴포넌트 머터리얼의 프로퍼티값을 변경하는 컴포넌트.
+ ****/
+[AddComponentMenu("Platform/ParamSwitcherPlatformBehavior")]
 public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
 {
     #region Editor_Extension
@@ -20,7 +24,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
 #if UNITY_EDITOR
     [CanEditMultipleObjects]
     [CustomPropertyDrawer(typeof(ParamSwitcherData), true)]
-    public class ParamSwitcherDataDrawer : PropertyDrawer
+    public sealed class ParamSwitcherDataDrawer : PropertyDrawer
     {
         //======================================
         //////      Private Fields           ///
@@ -185,8 +189,8 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
                 paramTypeRect.y += space;
                 spaceMul++;
 
-                using (var scope = new EditorGUI.IndentLevelScope(1))
-                {
+                using (var scope = new EditorGUI.IndentLevelScope(1)){
+
                     ParamLerpTimeProperty.floatValue = EditorGUI.FloatField(paramTypeRect, "Lerp Time",ParamLerpTimeProperty.floatValue);
                     scope.Dispose();
                 }
@@ -204,7 +208,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
             rect.height = 20f;
             rect.y += ( DefaultSpace + space * spaceMul);
 
-            ApplyTiming typeValue = (ApplyTiming)ParamApplyTimingProperty.intValue;
+            PlatformApplyTiming typeValue = (PlatformApplyTiming)ParamApplyTimingProperty.intValue;
             System.Enum typeResult = EditorGUI.EnumFlagsField(rect, "Apply Timings", typeValue);
             ParamApplyTimingProperty.SetEnumValue(typeResult);
             #endregion
@@ -289,16 +293,6 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         COLOR_LERP
     }
 
-    public enum ApplyTiming : int
-    {
-        None            = 0,
-        BehaviorStart   = 1,
-        BehaviorEnd     = 2,
-        OnObjectEnter   = 4,
-        OnObjectStay    = 8,
-        OnObjectExit    = 16,
-    }
-
     [System.Serializable]
     private class ParamSwitcherData
     {
@@ -320,10 +314,10 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         public float        StartValue;
         public Color        StartColorValue;
 
-        public void SwitchParamValue(ref List<ParamSwitcherData> lerpLists,  ref int lerpCount,  ApplyTiming currTiming=ApplyTiming.None)
+        public void SwitchParamValue(ref List<ParamSwitcherData> lerpLists,  ref int lerpCount,  PlatformApplyTiming currTiming=PlatformApplyTiming.None)
         {
             #region Omit
-            if (currTiming == ApplyTiming.None) return;
+            if (currTiming == PlatformApplyTiming.None) return;
             if (ContainTiming(currTiming) == false) return;
 
             if (Material == null) return;
@@ -426,7 +420,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
             #endregion
         }
 
-        public bool ContainTiming(ApplyTiming checkTiming)
+        public bool ContainTiming(PlatformApplyTiming checkTiming)
         {
             return (ParamApplyTiming & (int)checkTiming) > 0;
         }
@@ -471,7 +465,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
             {
                 //최종 적용.
                 data.Material = renderer.materials[data.MaterialIndex];
-                data.SwitchParamValue(ref _LerpTargets, ref _LerpCount, ApplyTiming.BehaviorStart);
+                data.SwitchParamValue(ref _LerpTargets, ref _LerpCount, PlatformApplyTiming.BehaviorStart);
             }
             else {
 
@@ -486,7 +480,7 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
 
     public override void BehaviorEnd(PlatformObject changedTarget)
     {
-        ApplyParamSwitch(ApplyTiming.BehaviorEnd);
+        ApplyParamSwitch(PlatformApplyTiming.BehaviorEnd);
     }
 
     public override void PhysicsUpdate(PlatformObject affectedPlatform)
@@ -496,33 +490,33 @@ public sealed class ParamSwitcherPlatformBehavior : PlatformBehaviorBase
         for(int i=0; i<_LerpCount; i++)
         {
             //Lerp가 종료되었을 경우...
-            if(_LerpTargets[i].ApplyLerpProgress(ref _LerpTargets, ref _LerpCount ))
-            {
+            if(_LerpTargets[i].ApplyLerpProgress(ref _LerpTargets, ref _LerpCount )){
+
                 i--;
             }
         }
     }
 
-    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
-        ApplyParamSwitch(ApplyTiming.OnObjectEnter);
+        ApplyParamSwitch(PlatformApplyTiming.OnObjectEnter);
     }
 
-    public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget)
+    public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody)
     {
-        ApplyParamSwitch(ApplyTiming.OnObjectExit);
+        ApplyParamSwitch(PlatformApplyTiming.OnObjectExit);
     }
 
-    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
-        ApplyParamSwitch(ApplyTiming.OnObjectStay); 
+        ApplyParamSwitch(PlatformApplyTiming.OnObjectStay); 
     }
 
 
     //============================================
     //////         Utility Methods            /////
     //============================================
-    private void ApplyParamSwitch(ApplyTiming timing)
+    private void ApplyParamSwitch(PlatformApplyTiming timing)
     {
         int Count= Infos.Count;
         for(int i=0; i<Count; i++)

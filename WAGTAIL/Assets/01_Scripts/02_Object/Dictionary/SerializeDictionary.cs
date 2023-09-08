@@ -6,7 +6,6 @@ using System;
 [Serializable]
 public class SerializeDictionary<key, value> : Dictionary<key, value>, ISerializationCallbackReceiver
 {
-
     [SerializeField]
     List<key> keys = new List<key>();
 

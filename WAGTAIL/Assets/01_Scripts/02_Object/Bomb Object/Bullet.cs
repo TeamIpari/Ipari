@@ -4,9 +4,20 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+
+    //================================================
+    /////           propertys and Fields          ////
+    //================================================
     public Rigidbody BulletRigidBody;
     public bool DirectionLine = false;
+    public int Damage; // 임시로 만들어 놓은 폭탄의 데미지.
+    public GameObject HitFX;
 
+
+
+    //===============================================
+    /////           Virtual methods             /////
+    //===============================================
     public virtual void ShotDirection(Vector3 vector3)
     {
 
@@ -15,7 +26,6 @@ public class Bullet : MonoBehaviour
     {
     
     }
-
 
     public virtual void Flying()
     {

@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class BossNepenthesAttack1 : AIAttackState
 {
+
+    //=================================================
+    /////           Property And Fields             ////
+    //=================================================
     private int curAnim = 0;
-
-
     private float curTimer = 0;
     private float changeTimer = 5f;
 
@@ -14,40 +17,38 @@ public class BossNepenthesAttack1 : AIAttackState
     private float showTimer = 0.5f;
 
     private bool on = false;
-    private GameObject tentacle;
     private GameObject dangerousEffect;
     private int count = 0;
 
+    private float DelayTime = 5f;
+    private GameObject LeftVinePrefab;
+    private GameObject RightVinePrefab;
+    private GameObject Vine;
 
-    public BossNepenthesAttack1(AIStateMachine stateMachine) : base(stateMachine)
+
+    //=================================================
+    /////               Magic Methods              /////
+    //=================================================
+    public BossNepenthesAttack1(AIStateMachine stateMachine, GameObject LeftVine, GameObject RightVine) : base(stateMachine)
     {
-        //curTimer = 0;
         this.stateMachine = stateMachine;
-        //this.dangerousEffect = danger;
-        //this.tentacle = tentacle;
+        this.LeftVinePrefab = LeftVine;
+        this.RightVinePrefab = RightVine;
         curAnim = 0;
     }
 
     public override void Enter()
     {
         curTimer = 0;
-        //dangerousEffect.SetActive(true);
-        //dangerousEffect.transform.position 
-        //    = new Vector3
-        //    (Player.Instance.transform.position.x, 
-        //    Player.Instance.transform.position.y + 0.1f, 
-        //    Player.Instance.transform.position.z);
-
-        //tentacle.transform.position = dangerousEffect.transform.position;
-
-        Debug.Log("Start Attack1");
+        ShowVine();
     }
 
 
     public override void Exit()
     {
-        //dangerousEffect.SetActive(false);
-        Debug.Log("End Attack1");
+        //GameObject.Destroy(Vine);
+        // 오브젝트 풀 개념으로 한번의 생성 이후 그 다리만 씀.
+        Vine.SetActive(false);
 
     }
 
@@ -58,66 +59,31 @@ public class BossNepenthesAttack1 : AIAttackState
 
     public override void Update()
     {
-        //curTimer += Time.deltaTime;
-        //switch(curAnim)
-        //{
-        //    case 0:
-        //        BlinkEffect();
-        //        break;
-        //    case 1:
-        //        ShowTentacle();
-        //        break;
-        //    case 2:
-        //        break;
-        //    default:
-        //        break;
-        //}
-        //if(curTimer > changeTimer)
-        //{
-        //    // 공격 기능.
-        //    if (children.Count > 0)
-        //        stateMachine.ChangeState(children[current]);
-        //    else if (parent != null)
-        //        stateMachine.ChangeState(parent);
-        //    else if (stateMachine.pattern.Count > 0)
-        //        stateMachine.NextPattern();
-        //    else
-        //        Debug.Log("연결된 State가 없음.");
-
-        //    curTimer = 0;
-        //}
+        curTimer += Time.deltaTime;
+        if(curTimer > DelayTime)
+            stateMachine.NextPattern();
     }
 
-    private void ShowTentacle()
+    //=================================================
+    /////               Core Methods              /////
+    //=================================================
+    public void ShowVine()
     {
-        tentacle.SetActive(true);
-        tentacle.transform.LookAt(Player.Instance.transform.position);
-        curAnim++;
+        Vector3 spawnPos = BossRoomFildManager.Instance.PlayerOnTilePos;
+        bool isLeft = spawnPos.x < BossRoomFildManager.Instance.XSize / 2;
 
-    }
-
-    // Effect가 점멸하는 기능.
-    private void BlinkEffect()
-    {
-        curShowTimer += Time.deltaTime;
-        if(curShowTimer >= showTimer)
+        // 작을 경우 왼쪽 덩쿨 출력
+        if (Vine == null)
         {
-            if (on)
-            {
-                dangerousEffect.SetActive(false);
-                on = false;
-                count++;
-            }
-            else
-            {
-                dangerousEffect.SetActive(true);
-                on = true;
-            }
-            curShowTimer = 0;
+            Vine = GameObject.Instantiate(isLeft ? RightVinePrefab : LeftVinePrefab, BossRoomFildManager.Instance.transform);
+            Vine.transform.localPosition = new Vector3(spawnPos.x, -1.0f, 1.5f);
         }
-        if(count > 3)
+        else
         {
-            curAnim++;
+            Vine.SetActive(true);
+            Vine.transform.localPosition = new Vector3(spawnPos.x, -1.0f, 1.5f);
         }
+        // 몇 초 후 떨어지게 하기.
+        BossRoomFildManager.Instance.BrokenPlatform(spawnPos.x);
     }
 }

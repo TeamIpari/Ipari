@@ -40,7 +40,8 @@ public class DeathUI : MonoBehaviour
             {
                 if (!_isPlay)
                 {
-                    SoundTest.GetInstance().PlaySound("isDeathUI");
+                    FModAudioManager.PlayOneShotSFX(FModSFXEventType.Death_CutScene);
+                    //SoundTest.GetInstance().PlaySound("isDeathUI");
                     _isPlay = true;
                 }
                 ChangePoint();

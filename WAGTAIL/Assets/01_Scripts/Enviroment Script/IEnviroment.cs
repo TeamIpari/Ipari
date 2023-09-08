@@ -9,4 +9,7 @@ public interface IEnviroment
     public bool IsHit { get; set; }
 
     public bool Interact();
+
+    public void ExecutionFunction(float time);
+
 }

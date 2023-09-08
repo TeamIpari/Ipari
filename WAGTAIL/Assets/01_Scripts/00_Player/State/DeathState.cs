@@ -22,14 +22,15 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
-        player.SoundHandler.SetTrigger("isDeath");
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.GameOver);
+        //player.SoundHandler.SetTrigger("isDeath");
         _isAlive = false;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
         playerSpeed = player.playerSpeed;
 
         player.UIManager.ActiveGameUI(GameUIType.Death, true);
-        player.CameraManager.SwitchCamera(CameraType.Death);
+        //player.CameraManager.SwitchCamera(CameraType.Death);
         _respawnTime = player.respawnTime;
         _currentTime = 0;
 
@@ -54,7 +55,7 @@ public class DeathState : State
         {
             RemoveCheckPoint();
             _currentTime = 0;
-            player.CameraManager.SwitchCamera(CameraType.Main);
+            //player.CameraManager.SwitchCamera(CameraType.Main);
             _isAlive = true;
             //stateMachine.ChangeState(player.idle);
         }

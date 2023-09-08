@@ -8,13 +8,17 @@ public abstract class AIState
     public AIStateMachine stateMachine;
     public AIState parent;
     public List<AIState> children = new List<AIState>();
-    //public GameObject Target;
     public int current;
+
     public AIState(AIStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
         current = 0;
     }
+
+    //=======================================================
+    /////             Virtual Core Method                 /////
+    //=======================================================
 
     public virtual void SetParent(AIState parent, AIState child )
     {
@@ -26,6 +30,10 @@ public abstract class AIState
     {
         children.Add(state);
     }
+
+    //=======================================================
+    /////             Abstract Magic Method                 /////
+    //=======================================================
 
     public abstract void Enter();
 

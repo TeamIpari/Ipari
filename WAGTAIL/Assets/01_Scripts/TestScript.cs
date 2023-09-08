@@ -2,38 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class TestScript : MonoBehaviour, IFModEventFadeComplete
+public sealed class TestScript : MonoBehaviour
 {
-    FModEventInstance TestIns;
-
-    public void OnFModEventComplete(int fadeID, float goalVolume)
-    {
-       
-    }
+    FModEventInstance _WaterStream;
 
     private void Start()
     {
-        FModAudioManager.AutoFadeInOutBGM = true;
-        FModAudioManager.AutoFadeBGMDuration = 10f;
-        FModAudioManager.OnEventFadeComplete += OnFModEventComplete;
+        _WaterStream = FModAudioManager.CreateInstance(FModSFXEventType.Water_Stream, transform.position);
+        _WaterStream.Play();
+        _WaterStream.Set3DDistance(1f, 20f);
     }
 
-    private void Update()
+    private void OnDrawGizmos()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Flowers_Burst);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
-        }
-
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * _WaterStream.Max3DDistance);
     }
+
 }

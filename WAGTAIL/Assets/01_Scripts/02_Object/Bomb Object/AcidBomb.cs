@@ -7,6 +7,9 @@ public class AcidBomb : Bullet
 {
     Vector3 Direction;
 
+    //======================================
+    /////          magic Methods        ////
+    //======================================
     public override void Flying()
     {
         base.Flying();
@@ -35,6 +38,7 @@ public class AcidBomb : Bullet
             this.AddComponent<Rigidbody>();
             BulletRigidBody = GetComponent<Rigidbody>();
         }
+        Damage = Damage == 0 ? 10 : Damage;
     }
 
     // Update is called once per frame
@@ -42,7 +46,6 @@ public class AcidBomb : Bullet
     {
         if (!DirectionLine)
         {
-            Debug.Log("AA");
             BulletRigidBody.velocity = Direction;
         }
     }
@@ -53,21 +56,60 @@ public class AcidBomb : Bullet
         if (other.CompareTag("Player"))
         {
             Debug.Log("맞음");
+            FModAudioManager.PlayOneShotSFX(
+                FModSFXEventType.Player_Hit,
+                FModLocalParamType.PlayerHitType,
+                FModParamLabel.PlayerHitType.MiniNepenthes_Attack,
+                other.transform.position,
+                10f
+            );
             other.GetComponent<Player>().isDead = true;
         }
         // ==========================================================
+        if (other.CompareTag("Platform"))
+        {
+            other.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
+        }
+        BulletHit(other.transform);
         Destroy(this.gameObject);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         // 강띵호가 추가함
-        if(collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag("Player"))
         {
             Debug.Log("맞음");
+            FModAudioManager.PlayOneShotSFX(
+                FModSFXEventType.Player_Hit,
+                FModLocalParamType.PlayerHitType,
+                FModParamLabel.PlayerHitType.MiniNepenthes_Attack,
+                collision.transform.position
+            );
             collision.collider.GetComponent<Player>().isDead = true;
         }
         // ==========================================================
+        if (collision.collider.CompareTag("Platform"))
+        {
+            collision.collider.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
+        }
+        BulletHit(collision.transform);
         Destroy(this.gameObject);
+    }
+
+    //=======================================
+    /////          core Method            ////
+    //=======================================
+    void BulletHit(Transform target)
+    {
+        // 방향 벡터 구하기
+        Vector3 bombPos = target.position - transform.position;
+        float distance = Vector3.Distance(target.position, transform.position);
+        
+
+        GameObject hitFX = GameObject.Instantiate(HitFX);
+
+        hitFX.transform.position = transform.position + bombPos.normalized;
+        Destroy(hitFX, 2f);
     }
 }

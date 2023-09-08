@@ -217,13 +217,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b002c68db0d284d8def109e732be4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Right: {fileID: 1335849410428062528}
+  Light: {fileID: 1335849410428062528}
   IsUpdownMode: 1
   HideNDownTime: 1
   ShowNUpTime: 1
+  VineHitTime: 2.5
   MoveSpeed: 10
+  ShakeSpeed: 0.075
   startPoint: {fileID: 4986022501297864758}
   endPoint: {fileID: 4986022502012957575}
+  _explosionMinForce: 5
+  _explosionMaxForce: 100
+  _explosionForceRadius: 10
+  _fragScaleFactor: 0.01
+  shakeDelay: 0.05
 --- !u!4 &4466854725503198232 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8704505597614915868, guid: a2f91a015c064184c97719fc6c588293,

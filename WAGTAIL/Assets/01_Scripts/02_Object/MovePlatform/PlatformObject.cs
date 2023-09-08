@@ -6,8 +6,9 @@ using UnityEngine;
 
 
 /********************************************************
- * 플레이어가 밟을 수 있는 플랫폼의 기반이 되는 클래스입니다.
+ * 오브젝트들이 밟을 수 있는 플랫폼의 기반이 되는 클래스입니다.
  ****/
+[AddComponentMenu("Platform/PlatformObject")]
 public sealed class PlatformObject : MonoBehaviour, IEnviroment
 {
     private enum PendingKillProgress
@@ -25,20 +26,29 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     public bool     ObjectOnPlatform { get { return (_ObjectOnPlatformCount>0);  } }
     public Collider Collider         { get { return _Collider; } set{ if (value != null) _Collider = value;  }  }
 
-    [SerializeField] public bool PlayerRideOn = false;
+    [HideInInspector] public Quaternion UpdateQuat      = Quaternion.identity;
+    [HideInInspector] public Quaternion OffsetQuat      = Quaternion.identity;
+    [HideInInspector] public Vector3    UpdatePosition  = Vector3.zero;
+    [HideInInspector] public Vector3    OffsetPosition  = Vector3.zero;
+    [SerializeField]  public bool PlayerOnPlatform   = false;
+    [SerializeField]  public bool UsedCollision      = false;
     [HideInInspector] public float CheckGroundOffset = 0f;
-    [SerializeField] private List<PlatformBehaviorBase> Behaviors = new List<PlatformBehaviorBase>();
 
+
+    [SerializeField] private List<PlatformBehaviorBase> Behaviors = new List<PlatformBehaviorBase>();
 
     /**플레이어 관련 클래스 캐싱*/
     private static CharacterController _Controller;
     private StateMachine  _PlayerSM;
-    private Collider      _Collider;
+
+    private int layer = 0;
 
     /**Interactions 관련*/
-    private PendingKillProgress   _PkProgress = PendingKillProgress.NONE;
-    private int                   _CopyCount  = 0;
-    private int                   _ObjectOnPlatformCount = 0;
+    private Transform _Tr;
+    private Collider  _Collider;
+    private PendingKillProgress    _PkProgress = PendingKillProgress.NONE;
+    private int                    _CopyCount  = 0;
+    private int                    _ObjectOnPlatformCount = 0;
     private PlatformBehaviorBase[] _InteractionsCopy;
 
 
@@ -93,25 +103,51 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             _PlayerSM = Player.Instance.movementSM;
         }
 
-        Collider = GetComponent<Collider>();
+        if(Collider==null) Collider = GetComponent<Collider>();
+        _Tr = transform;
         gameObject.tag = "Platform";
+        layer          = ( 1<<gameObject.layer );
+        UpdateQuat      = transform.rotation;
+        UpdatePosition  = transform.position;
 
         //Platform Behavior 초기화 작업...
         RefreshInteractionCopy(true);
 
+        #region Call_BehaviorStart
         _PkProgress = PendingKillProgress.PENDINGKILL_READY;
         for (int i = 0; i < _CopyCount; i++) 
         {
+            /************************************
+             *   배열의 원소가 유효하지 않다면 제거...
+             * ***/
+            if (_InteractionsCopy[i]==null){
+
+                _PkProgress= PendingKillProgress.PENDINGKILL;
+                Behaviors.Remove(_InteractionsCopy[i]);
+                continue;
+            }
+
             _InteractionsCopy[i].BehaviorStart(this);
         } 
         RefreshInteractionCopy(true);
         _PkProgress = PendingKillProgress.NONE;
+        #endregion 
     }
 
     private void FixedUpdate()
     {
+        #region Call_PhysicsUpdate
+        _PkProgress = PendingKillProgress.PENDINGKILL_READY;
+        for (int i = 0; i < _CopyCount; i++)
+        {
+            _InteractionsCopy[i].PhysicsUpdate(this);
+        }
+        RefreshInteractionCopy(true);
+        _PkProgress = PendingKillProgress.NONE;
+        #endregion
+
         //플레이어 적용
-        if (PlayerRideOn)
+        if (PlayerOnPlatform)
         {
             if (_PlayerSM == null) _PlayerSM = Player.Instance.movementSM;
 
@@ -121,57 +157,161 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             bool playerIsJumping = (_PlayerSM.currentState == Player.Instance.jump && _Controller.velocity.y > 0f);
 
             //최졍 적용
-            if (rayCastResult && isSameCollider && !playerIsJumping)
+            if (rayCastResult && isSameCollider && !playerIsJumping && hit.normal.y>0f)
             {
-                //Call OnObjectPlatformStay
+                #region Call_OnObjectPlatformStay
                 _PkProgress = PendingKillProgress.PENDINGKILL_READY;
                 for (int i = 0; i < _CopyCount; i++)
                 {
-                    _InteractionsCopy[i].OnObjectPlatformStay(this, Player.Instance.gameObject, hit.point, hit.normal );
+                    _InteractionsCopy[i].OnObjectPlatformStay(this, Player.Instance.gameObject, null, hit.point, hit.normal );
                 }
                 RefreshInteractionCopy(true);
                 _PkProgress = PendingKillProgress.NONE;
+                #endregion
             }
             else
             {
-                //Call OnObjectPlatformExit
+                #region Call_OnObjectPlatformExit
                 _PkProgress = PendingKillProgress.PENDINGKILL_READY;
                 for (int i = 0; i < _CopyCount; i++)
                 {
-                    _InteractionsCopy[i].OnObjectPlatformExit(this, Player.Instance.gameObject);
+                    _InteractionsCopy[i].OnObjectPlatformExit(this, Player.Instance.gameObject, null);
                 }
                 RefreshInteractionCopy(true);
                 _PkProgress = PendingKillProgress.NONE;
-                PlayerRideOn = false;
+                #endregion
+
+                PlayerOnPlatform = false;
                 _ObjectOnPlatformCount--;
             }
         }
 
-        //Call PhysicsUpdate
-        _PkProgress = PendingKillProgress.PENDINGKILL_READY;
-        for (int i = 0; i < _CopyCount; i++)
-        {
-            _InteractionsCopy[i].PhysicsUpdate(this);
-        }
-        RefreshInteractionCopy(true);
-        _PkProgress = PendingKillProgress.NONE;
+        /**공통 변경사항 적용...*/
+        _Tr.rotation = (UpdateQuat * OffsetQuat);
+        _Tr.position = (UpdatePosition+OffsetPosition);
+        OffsetQuat     = Quaternion.identity;
+        OffsetPosition = Vector3.zero;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        ContactPoint p = collision.GetContact(0);
+        #region Omit
+        if (UsedCollision == false) return;
 
-        if (p.normal.y < 0 && collision.gameObject != Player.Instance.gameObject)
+        /**************************************
+         *  해당 발판위를 밟고 있는지 확인한다...
+         * **/
+        Vector3 normal = Vector3.zero;
+        Vector3 point = Vector3.zero;
+        int Count = collision.contactCount;
+        bool result = false;
+        for(int i=0; i<Count; i++)
         {
-            //OnObjectPlatformEnter
+            ContactPoint p = collision.GetContact(i);
+            normal = p.normal;
+
+            if (normal.y<0f){
+
+                point = p.point;
+                result = true;
+                break;
+            }
+        }
+
+        /**해당 오브젝트가 발판을 밟았을 경우의 처리*/
+        if (result && collision.gameObject != Player.Instance.gameObject)
+        {
+            collision.transform.SetParent(transform, true);
+            #region Call_OnObjectPlatformEnter
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
             for (int i = 0; i < _CopyCount; i++)
             {
-                _InteractionsCopy[i].OnObjectPlatformEnter(this, Player.Instance.gameObject, p.point, p.normal);
+                _InteractionsCopy[i].OnObjectPlatformEnter(this, collision.gameObject, collision.rigidbody, point, normal);
             }
             RefreshInteractionCopy(true);
             _PkProgress = PendingKillProgress.NONE;
+            #endregion
         }
+
+        #endregion
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        #region Omit
+        if (UsedCollision == false) return;
+
+        /**************************************
+         *  해당 발판위를 밟고 있는지 확인한다...
+         * **/
+        Vector3 normal = Vector3.zero;
+        Vector3 point  = Vector3.zero;
+        int Count = collision.contactCount;
+        bool result = false;
+        for (int i = 0; i < Count; i++)
+        {
+            ContactPoint p = collision.GetContact(i);
+            normal = p.normal;
+
+            if (normal.y < 0f){
+
+                point = p.point;
+                result = true;
+                break;
+            }
+        }
+
+        /**해당 오브젝트가 발판을 밟았을 경우의 처리*/
+        if (result && collision.gameObject != Player.Instance.gameObject)
+        {
+            #region Call_OnObjectPlatformStay
+            _PkProgress = PendingKillProgress.PENDINGKILL_READY;
+            for (int i = 0; i < _CopyCount; i++)
+            {
+                _InteractionsCopy[i].OnObjectPlatformStay(this, collision.gameObject, collision.rigidbody, point, normal);
+            }
+            RefreshInteractionCopy(true);
+            _PkProgress = PendingKillProgress.NONE;
+            #endregion
+        }
+        else
+        {
+            /**부모-자식 관계를 해제한다.*/
+            Transform exitTr = collision.transform;
+            if (exitTr.parent == transform) {
+
+                exitTr.parent = null;
+            }
+        }
+
+        #endregion
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        #region Omit
+        if (UsedCollision == false) return;
+
+        /**부모-자식 관계를 해제한다.*/
+        Transform exitTr = collision.transform;
+        if(exitTr.parent == transform){
+
+            exitTr.parent = null;
+        }
+
+        if (collision.gameObject != Player.Instance.gameObject)
+        {
+            #region Call_OnObjectPlatformExit
+            _PkProgress = PendingKillProgress.PENDINGKILL_READY;
+            for (int i = 0; i < _CopyCount; i++)
+            {
+                _InteractionsCopy[i].OnObjectPlatformExit(this, Player.Instance.gameObject, collision.rigidbody);
+            }
+            RefreshInteractionCopy(true);
+            _PkProgress = PendingKillProgress.NONE;
+            #endregion
+        }
+        #endregion
     }
 
 
@@ -181,35 +321,33 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     //=======================================
     public void ExecPlatformEnter(Vector3 point, Vector3 normal)
     {
-        //OnObjectPlatformEnter
+        #region Call_OnObjectPlatformEnter
         _PkProgress = PendingKillProgress.PENDINGKILL_READY;
         for (int i = 0; i < _CopyCount; i++)
         {
-            _InteractionsCopy[i].OnObjectPlatformEnter(this, Player.Instance.gameObject, point, normal);
+            _InteractionsCopy[i].OnObjectPlatformEnter(this, Player.Instance.gameObject, null, point, normal);
         }
         RefreshInteractionCopy(true);
         _PkProgress = PendingKillProgress.NONE;
+        #endregion
     }
 
     public bool GetPlayerFloorinfo(out RaycastHit hit, float downMoveSpeed=0f)
     {
         #region Ommision
-        Vector3 playerPos = _Controller.transform.position;
-        float heightHalf = _Controller.height;
-        float radius = _Controller.radius;
+        float heightHalf       = _Controller.height;
+        float radius           = _Controller.radius;
         float heightHalfOffset = (heightHalf * .5f) - radius;
-        Vector3 center = _Controller.center;
-        Vector3 center1 = playerPos + center + (Vector3.down * heightHalfOffset) + (Vector3.up * (1f+ CheckGroundOffset));
-        Vector3 center2 = playerPos + center + (Vector3.up * heightHalfOffset) + (Vector3.up * (1f+ CheckGroundOffset));
+        Vector3 playerPos      = _Controller.transform.position;
+        Vector3 center         = ( playerPos + _Controller.center );
 
-        return Physics.CapsuleCast(
-            center1,
-            center2,
+        return Physics.SphereCast(
+            center,
             radius,
             Vector3.down,
             out hit,
-            heightHalf * 3f + downMoveSpeed+ CheckGroundOffset,
-            1 << gameObject.layer
+            heightHalf+.1f,
+            layer
         );
         #endregion
     }
@@ -231,7 +369,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     public bool Interact()
     {
         //플레이어가 낙하하여 해당 발판 위쪽에 착지했을 경우
-        if (PlayerRideOn == false && _Controller.velocity.y <= 0f)
+        if (PlayerOnPlatform == false && _Controller.velocity.y <= 0f)
         {
             RaycastHit hit;
             GetPlayerFloorinfo(out hit);
@@ -241,21 +379,28 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
             if (isSameCollider && isLanded)
             {
-                PlayerRideOn = true;
+                PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;
 
-                //OnObjectPlatformEnter
+                #region Call_OnObjectPlatformEnter
                 _PkProgress = PendingKillProgress.PENDINGKILL_READY;
                 for (int i = 0; i < _CopyCount; i++)
                 {
-                    _InteractionsCopy[i].OnObjectPlatformEnter(this, Player.Instance.gameObject, hit.point, hit.normal);
+                    _InteractionsCopy[i].OnObjectPlatformEnter(this, Player.Instance.gameObject, null, hit.point, hit.normal);
                 }
                 RefreshInteractionCopy(true);
                 _PkProgress = PendingKillProgress.NONE;
+                #endregion
+
                 return true;
             }
         }
 
         return false;
+    }
+
+    public void ExecutionFunction(float time)
+    {
+        Debug.Log($"Not Have Function");
     }
 }

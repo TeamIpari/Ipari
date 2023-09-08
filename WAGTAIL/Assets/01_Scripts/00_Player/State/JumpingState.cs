@@ -23,7 +23,8 @@ public class JumpingState : State
     public override void Enter()
     {
         base.Enter();
-        player.SoundHandler.SetTrigger("isJump");
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Player_Jump);
+        //player.SoundHandler.SetTrigger("isJump");
         isGrounded = false;
         jump = false;
         gravityValue = player.gravityValue;
@@ -95,6 +96,8 @@ public class JumpingState : State
                 player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(airVelocity),
                     player.rotationDampTime);
             }
+
+            
         }
     }
 

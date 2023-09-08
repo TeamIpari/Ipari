@@ -9,6 +9,11 @@ public class RotatePlatform : MonoBehaviour, IEnviroment
 
     public bool IsHit { get; set; }
 
+    public void ExecutionFunction(float time)
+    {
+        Debug.Log($"Not Have Function");  
+    }
+
     public bool Interact()
     {
 

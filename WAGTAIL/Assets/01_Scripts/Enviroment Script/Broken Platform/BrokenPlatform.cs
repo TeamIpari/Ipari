@@ -7,19 +7,35 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 {
     private MeshRenderer mesh;
     private Collider col;
-    public GameObject Right;
+    public GameObject Light;
     public bool IsUpdownMode = false;
 
     public float HideNDownTime = 1.0f;
     public float ShowNUpTime = 1.0f;
+    public float VineHitTime = 2.5f;
 
+    private float DelayTime;
     // 위 아래 최종 이동 위치
     public float MoveSpeed = 0.0f;
+    bool shake = false;
+    
+    
+    public float ShakeSpeed = 0.0f;
+
+    // 흔들리고 사라지거나 떨어질 때 원래 위치로 찾아오기 위한 Origin Position;
+    Vector3 startPos;
 
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
-    
 
+    [SerializeField] private float _explosionMinForce = 5;
+    [SerializeField] private float _explosionMaxForce = 100;
+    [SerializeField] private float _explosionForceRadius = 10;
+    [SerializeField] private float _fragScaleFactor = 0.01f;
+
+    float curTime;
+    public float shakeDelay;
+    Vector3[] PosList;
 
     Vector3 localPoint1;
     Vector3 localPoint2;
@@ -30,12 +46,12 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     public bool Interact()
     {
-        IsHit = true;
-        if (!IsUpdownMode)
-            StartCoroutine(HidePlatform());
-        else
-            StartCoroutine(DownPlatform());
-
+        if (BossRoomFildManager.Instance != null)
+        {
+            BossRoomFildManager.Instance.PlayerOnTilePos = this.transform.parent.localPosition;
+        }
+        if (this.enabled)
+            ExecutionFunction(HideNDownTime);
         return false;
     }
 
@@ -59,9 +75,12 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator DownPlatform(bool callBack = false)
     {
-        //mesh.material.color = Color.red;
-        Right.SetActive(true);
-        yield return new WaitForSeconds(HideNDownTime);
+        if (Light != null)
+            Light.SetActive(true);
+
+        shake = true;
+        yield return new WaitForSeconds(DelayTime);
+        shake = false;
 
         while(Mathf.Abs(Vector3.Distance(transform.position, endPoint.transform.position)) > 0.1f )
         {
@@ -74,8 +93,10 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator UpPlatform()
     {
-        Right.SetActive(false);
-        yield return new WaitForSeconds(ShowNUpTime);
+        if (Light != null)
+            Light.SetActive(false);
+
+        yield return new WaitForSeconds(DelayTime);
 
         while (Mathf.Abs(Vector3.Distance(transform.position, startPoint.transform.position)) > 0.1f)
         {
@@ -86,13 +107,31 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     }
 
+
+    // 부숴주는 기능을 추가 예정
     private IEnumerator HidePlatform(bool callBack = false)
     {
-        mesh.material.color = Color.red;
-        yield return new WaitForSeconds(HideNDownTime);
+        if(Light != null)
+            Light.SetActive(true);
 
-        col.enabled = false;
-        mesh.enabled = false;
+        shake = true;
+        yield return new WaitForSeconds(DelayTime);
+        shake = false;
+
+        for (int i = 0; i < this.transform.childCount; i++)
+        {
+            var rigidbody = this.transform.GetChild(i).GetComponent<Rigidbody>();
+            if (rigidbody != null)
+            {
+                rigidbody.useGravity = true;
+                rigidbody.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce),
+                    transform.parent.position, _explosionForceRadius);
+            }
+        }
+        if (col != null)
+            col.enabled = false;
+        if (mesh != null)
+            mesh.enabled = false;
 
         if (!callBack)
             StartCoroutine(ShowPlatform());
@@ -100,10 +139,28 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     private IEnumerator ShowPlatform()
     {
-        mesh.material.color = Color.gray;
+        if (Light != null)
+            Light.SetActive(false);
+
         yield return new WaitForSeconds(ShowNUpTime);
-        col.enabled = true;
-        mesh .enabled = true;
+
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var piece = transform.GetChild(i);
+            if (piece.GetComponent<Rigidbody>() != null)
+            {
+                piece.GetComponent<Rigidbody>().useGravity = false;
+                piece.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                piece.position = PosList[i];
+            }
+        }
+
+        //transform.position = startPos;
+        if (col != null)
+            col.enabled = true;
+        if (mesh != null)
+            mesh.enabled = true;
         IsHit = false;
     }
 
@@ -128,15 +185,48 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     // Start is called before the first frame update
     private void Start()
     {
+        this.tag = "Platform";
+        startPos = transform.position;
         mesh = GetComponent<MeshRenderer>();
         col = GetComponent<Collider>();
+        PosList = new Vector3[transform.childCount];
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var piece = transform.GetChild(i);
+            PosList[i] = piece.position;
+        }
     }
 
-    //// Update is called once per frame
-    //private void Update()
-    //{
-        
-    //}
+    public void ExecutionFunction(float time)
+    {
+        if (IsHit)
+            return;
+        IsHit = true;
+        if (Light != null)
+            Light.SetActive(true);
+        DelayTime = time;
+        if (!IsUpdownMode)
+        {
+            StartCoroutine(HidePlatform());
+        }
+        else
+        {
+            StartCoroutine(DownPlatform());
+        }
+    }
 
-
+    // Update is called once per frame
+    private void Update()
+    {
+        if(shake)
+        {
+            curTime += Time.deltaTime;
+            if(curTime > shakeDelay)
+            {
+                Vector3 pos = startPos + (UnityEngine.Random.insideUnitSphere * ShakeSpeed);
+                transform.position = new Vector3(pos.x, transform.position.y, pos.z);
+                curTime = 0;
+            }
+        }
+    }
 }

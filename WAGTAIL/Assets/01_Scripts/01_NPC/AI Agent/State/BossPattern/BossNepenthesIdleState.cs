@@ -1,23 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BossNepenthesIdleState : AIIdleState
 {
-    public BossNepenthesIdleState(AIStateMachine stateMachine) : base(stateMachine)
+    //===========================================
+    /////       Property And Fields         /////
+    //===========================================
+    float waitTime;
+    float curTime;
+
+    //=======================================
+    //////       Public Methods          ////
+    //=======================================
+    public BossNepenthesIdleState(AIStateMachine stateMachine, float waitTime) : base(stateMachine)
     {
+        this.waitTime = waitTime;
     }
 
     public override void Enter()
     {
         base.Enter();
-        Debug.Log($"Enter {this}");
+        curTime = 0.0f;
+        Debug.Log($"Enter {this.ToString()}");
     }
 
     public override void Update()
     {
         base.Update();
-        stateMachine.NextPattern();
+        curTime += Time.deltaTime;
+        if (stateMachine.character.IsHit)
+        {
+            stateMachine.ChangeState(stateMachine.character.AiHit);
+        }
+        if(stateMachine.character.isDeath)
+        {
+            stateMachine.ChangeState(stateMachine.character.AiDie);
+        }
+        if (curTime > waitTime)
+        {
+            stateMachine.NextPattern();
+            return;
+        }
 
     }
 

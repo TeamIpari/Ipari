@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
-public class Character : MonoBehaviour
+[System.Serializable]
+public class MonsterPattern
 {
     // 공격 패턴
     public enum Pattern
@@ -15,6 +17,17 @@ public class Character : MonoBehaviour
         SPECAIL3,
         DIE,
     }
+    [SerializeField]
+    public Pattern[] EPatterns;
+    public int PhaseHp;
+}
+
+public class Character : MonoBehaviour
+{
+
+    //========================================
+    //////      Property And Fields      /////
+    //========================================
     public int HP;
     public int AttackDamage;
 
@@ -22,10 +35,22 @@ public class Character : MonoBehaviour
 
     public float AttackRange;
     public float AttackRate;
+    public float IdleRate;
     public float WaitRate;
     protected float AttackTimer;
 
-    public Pattern[] CharacterMovementPattern;
+    // 공격을 받은 상태인가?
+    public bool IsHit;
+    // 죽은 상태인가?
+    public bool isDeath;
+
+    public MonsterPattern[] CharacterMovementPattern;
+    // 보여주기용 현재 어떤 패턴이 장착되어 있는지 확인하는 용도.
+    public MonsterPattern.Pattern[] curPattern;
+
+    [Tooltip("체력 이하일 경우 다음 패턴 시작")]
+    public int CurPhaseHpArray = 0;
+    [Tooltip("체력 이하일 경우 다음 패턴 시작")]
 
     public Transform RotatePoint;
 
@@ -37,23 +62,24 @@ public class Character : MonoBehaviour
     public AIAttackState AiAttack;
     public AIMoveState AiMove;
     public AIWaitState AiWait;
+    public AIHitState AiHit;
+    public AIDieState AiDie;
+    
+    //=======================================
+    //////       Public Methods          ////
+    //=======================================
 
     public virtual void SetAttackPattern()
     {
 
     }
-
-    public bool isAttack()
+    public virtual void SettingPattern(MonsterPattern.Pattern[] _pattern)
     {
-        if (AttackTimer < AttackRate)
-        {
-            AttackTimer += Time.deltaTime;
 
-            return false;
-        }
-        // 공격 가능 상태
+    }
+    protected virtual void AddPattern(AIState curPattern)
+    {
 
-        return true;
     }
 
     public virtual void CAttack()
@@ -68,6 +94,16 @@ public class Character : MonoBehaviour
 
 
 
+    public bool isAttack()
+    {
+        if (AttackTimer < AttackRate)
+        {
+            AttackTimer += Time.deltaTime;
 
+            return false;
+        }
+        // 공격 가능 상태
+        return true;
+    }
     //public AIIdleState AIIdleState;
 }

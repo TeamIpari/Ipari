@@ -11,6 +11,9 @@ public class BossNepenthesAttack3 : AIAttackState
     private float changeTimer = 2f;
     private float rad;
     private float time = 2f;
+    private float DelayTime = 0.8f;
+    private bool isShoot = false;
+
     private Transform shootPoint;
     private GameObject AcidBullet;
     private GameObject circleObj;
@@ -18,23 +21,23 @@ public class BossNepenthesAttack3 : AIAttackState
     private List<Vector3> targets = new List<Vector3>();
     private List<GameObject> marker = new List<GameObject>();
 
-    public BossNepenthesAttack3(AIStateMachine stateMachine, GameObject bullet, Transform sp, GameObject obj, float flightTime, int count, float rad) : base(stateMachine)
+    public BossNepenthesAttack3(AIStateMachine stateMachine,BossNepenthesProfile Profile, float flightTime, int count, float rad) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
-        shootPoint = sp;
-        targetCount = count;
-        AcidBullet = bullet;
-        time = flightTime;
+        this.shootPoint = Profile.ShotPosition;
+        this.targetCount = count;
+        this.AcidBullet = Profile.BulletPrefab;
+        this.time = flightTime;
         this.rad = rad;
-        circleObj = obj;
+        this.circleObj = Profile.ShotMarker;
+        this.DelayTime = 0.8f;
     }
 
     public override void Enter()
     {
-        CreateMarker();
-        PositionLuncher();
+        stateMachine.Animator.SetTrigger("isAttack");
         curTimer = 0;
-        Debug.Log("Start Attack3");
+        isShoot = false;
     }
 
     public override void Exit()
@@ -44,55 +47,59 @@ public class BossNepenthesAttack3 : AIAttackState
             GameObject.Destroy(m);
         }
         marker.Clear();
-        Debug.Log("End Attack2");
     }
 
     public override void OntriggerEnter(Collider other)
     {
         throw new System.NotImplementedException();
     }
+    
+    public void ShootDelay()
+    {
+        if (curTimer > DelayTime && !isShoot)
+        {
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
+            CreateMarker();
+            PositionLuncher();
+            curTimer = 0;
+            isShoot = true;
+        }
+    }
+    
+    protected override void ChangeState()
+    {
+        foreach (var m in marker)
+        {
+            m.transform.localScale += Vector3.one * Time.deltaTime / changeTimer;
+        }
+        if (curTimer > changeTimer && isShoot)
+        {
+            base.ChangeState();
+            curTimer = 0;
+        }
+    }
+
 
     public override void Update()
     {
         // Bullet이 충돌할 경우 다음 스테이트로 이동.
         curTimer += Time.deltaTime;
-        Debug.Log(marker.Count);
-        foreach (var m in marker)
-        {
-            Debug.Log(m.transform.localScale);
-            m.transform.localScale += Vector3.one * Time.deltaTime / changeTimer;
-        }
-        if (curTimer > changeTimer)
-        {
-            if (children.Count > 0)
-                stateMachine.ChangeState(children[current]);
-            else if (parent != null)
-                stateMachine.ChangeState(parent);
-            else if (stateMachine.Pattern.Count > 0)
-                stateMachine.NextPattern();
-            else
-                Debug.Log("연결된 State가 없음.");
-
-            curTimer = 0;
-        }
+        ShootDelay();
+        ChangeState();
     }
 
     void CreateMarker()
     {
-        
         targets.Clear();
         // Player 기준 원 범위 서치
         for (int i = 0; i < targetCount; i++)
             targets.Add(Search());
-        Debug.Log(targets.Count);
 
         foreach (var t in targets)
         {
             GameObject _obj = GameObject.Instantiate(circleObj);
-
             _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
             _obj.transform.position = t;
-
             marker.Add(_obj);
         }
     }
@@ -103,32 +110,9 @@ public class BossNepenthesAttack3 : AIAttackState
         {
             Vector3 pos = CaculateVelocity(t, shootPoint.position, time);
             GameObject obj = GameObject.Instantiate(AcidBullet, shootPoint.position, Quaternion.identity);
-            obj.GetComponent<AcidBomb>().ShotDirection(pos);
+            obj.GetComponent<Bullet>().ShotDirection(pos);
         }
     }
-
-    //private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
-    //{
-    //    // define the distance x and y first;
-    //    Vector3 distance = target - origin;
-    //    Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-    //    distanceXZ.y = 0f; // y는 0으로 설정.
-
-    //    // Create a float the represent our distance
-    //    float Sy = distance.y;      // 세로 높이의 거리를 지정.
-    //    float Sxz = distanceXZ.magnitude;
-
-    //    // 속도 추가
-    //    float Vxz = Sxz / time;
-    //    float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-
-    //    // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
-    //    Vector3 result = distanceXZ.normalized;
-    //    result *= Vxz;
-    //    result.y = Vy;
-    //    return result;
-    //}
-
     Vector3 Search()
     {
         // Random.onUnitSphere : 반경 1을 갖는 구의 표면상에서 임의의 지점을 반환함

@@ -11,10 +11,16 @@ public class ChapterController : MonoBehaviour
     {
         if (Type == ChapterType.Title)
         {
-            SoundTest.GetInstance().PlayBGM("isInGame",false);
-            SoundTest.GetInstance().PlayBGM("isTitle", true);
             UIManager.GetInstance().SwitchCanvas(CanvasType.MainMenu);
             UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(true);
+
+            /*******************************************
+             *   타이틀 브금 적용...
+             * **/
+            FModAudioManager.UsedBGMAutoFade = true;
+            FModAudioManager.BGMAutoFadeDuration = 2f;
+            FModAudioManager.SetBusMute(FModBusType.Player, true);
+            FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
         }
 
         if (Type == ChapterType.Chapter01)

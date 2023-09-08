@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEditor.Rendering.PostProcessing;
+using UnityEditor.Rendering;
+using UnityEditor;
+using DG.Tweening;
 
 public class LoadManager : Singleton<LoadManager>
 {
@@ -11,21 +15,31 @@ public class LoadManager : Singleton<LoadManager>
         public int number;
         public int chapter;
         public string sayTarget;
-        public string contents;
+        public string Korean;
+        public string English;
         public bool wait;
 
         public void Init(string[] str)
         {
-            if (str[0] != "")
-                number = int.Parse(str[0]);
-            if (str[1] != "")
-                chapter = int.Parse(str[1]);
-            if (str[2] != "")
-                sayTarget = str[2];
-            if (str[3] != "")
-                wait = int.Parse(str[3]) == 0 ? false : true;
-            if (str[4] != "")
-                contents = str[4];
+            try
+            {
+                if (str[0] != "")
+                    number = int.Parse(str[0]);
+                if (str[1] != "")
+                    chapter = int.Parse(str[1]);
+                if (str[2] != "")
+                    sayTarget = str[2];
+                if (str[3] != "")
+                    wait = int.Parse(str[3]) == 0 ? false : true;
+                if (str[4] != "")
+                    Korean = str[4];
+                if (str[5] != "")
+                    English = str[5];
+            }
+            catch
+            {
+                Debug.Log($"{number} contents is null;");
+            }
         }
     }
     [System.Serializable]
@@ -36,29 +50,33 @@ public class LoadManager : Singleton<LoadManager>
 
     //public GameObject
     public int ChapterNum = 0;
-    public List<TextMeshProUGUI> Tmps;
-    public int TmpNum = 0;
+    public TextMeshProUGUI Tmps;
     public ChapterScript Dic_Say;
-    public List<Scriptable> ChapterSay = new List<Scriptable>();
-
+    public Dialogue dialogue = new Dialogue();
     public bool isSpeedUp = false;
+    public float KorTypingRate = 0.1f;
+    public float EngTypingRate = 0.05f;
+    private float typingRate = .1f;
 
+    private Queue<string> sentences = new Queue<string>();
+    private string sentence;
+    private bool bTyping = false;
 
-    bool isTypingEnd = false;   // 치고 있는 상태인가?
-    public float time = 0;
-    int dialogNum;
-    public float StandardTime;
-    int FastForTime;
-
+    //====================================================
+    /////               magic Methods               /////
+    //====================================================
     protected override void Awake()
     {
         base.Awake();
         IO_GetSayer();
         IO_GetScriptable();
 
-        isTypingEnd = true;
+        bTyping = false;
     }
 
+    //====================================================
+    /////               Core Methods                /////
+    //====================================================
     public void IO_GetSayer()
     {
         TextAsset _text = (TextAsset)Resources.Load("subtitleExcelFileCSV");
@@ -69,7 +87,6 @@ public class LoadManager : Singleton<LoadManager>
         while (!endOfFile)
         {
             Scriptable scriptable = new Scriptable();
-
             if (count1 == 0)
             {
                 count1++;
@@ -92,142 +109,118 @@ public class LoadManager : Singleton<LoadManager>
         }
     }
     
-    public void IO_GetScriptable(int num = 0)
+    public Dialogue IO_GetScriptable(int num = 0)
     {
         if (num == 0)
             num = ChapterNum;
         Scriptable sc;
-        ChapterSay.Clear();
+        List<string> temp = new List<string>();
         for (int i = 0; i < Dic_Say.Count; i++)
         {
             Dic_Say.TryGetValue(i, out sc);
             if(sc.chapter == num)
-            {
-                ChapterSay.Add(sc);
-            }
+                temp.Add(Language(sc));
             else if (sc.chapter > num)
-            {
                 break;
-            }
         }
-        dialogNum = 0;
+        dialogue = new Dialogue();
+        dialogue.sentences = new string[temp.Count];
+        for(int i = 0; i < temp.Count; i++)
+        {
+            dialogue.sentences[i] = temp[i];
+        }
+        return dialogue;
     }
 
-    //private void Update()
-    //{
-    //    //if (Input.GetMouseButtonDown(0) && dialogNum < ChapterSay.Count)
-    //    //{
-    //    //    PlayTyping();
-    //    //}
-    //    //else
-    //    //{
-    //    //    //Tmps[TmpNum]
-    //    //}
-
-    //}
-
-    public bool IsSayEnding()
+    private string Language(Scriptable sc)
     {
-        if (dialogNum < ChapterSay.Count)
-            return false;
-        return true;
-    }
-    public void SearchTypePoint(int num = 0)
-    {
-        IO_GetScriptable(num);
+        switch (UIManager.GetInstance().GetLanguageType)
+        {
+            case LanguageType.KOR:
+                return sc.Korean;
+            case LanguageType.ENG:
+                return sc.English;
+            case LanguageType.JP:
+                break;
+            case LanguageType.CN:
+                break;
+        }
+        throw new System.NotImplementedException();
     }
 
-    public void ResetValue()
+    public void StartDialogue(Dialogue dialogue)
     {
-        TmpNum = 0;
-        dialogNum = 0;
+        bTyping = false;
+        sentences.Clear();
+        foreach (string sentence in dialogue.sentences)
+        {
+            sentences.Enqueue(sentence);
+        }
+        DisplayNextSentence();
+    }
+
+    public void DisplayNextSentence()
+    {
+        if (bTyping)
+        {
+            StopAllCoroutines();
+            Tmps.text = sentence;
+            bTyping = false;
+            return;
+        }
+        if (EndDialogue())
+            return;
+        sentence = sentences.Dequeue();
+        StartCoroutine(TypeSentence(sentence));
+    }
+
+    private float GetLanguageRate()
+    {
+        switch (UIManager.GetInstance().GetLanguageType)
+        {
+            case LanguageType.KOR:
+                return KorTypingRate;
+            case LanguageType.ENG:
+                return EngTypingRate;
+            case LanguageType.JP:
+                break;
+            case LanguageType.CN:
+                break;
+            default:
+                break;
+        }
+        throw new System.NotImplementedException();
+    }
+
+    private IEnumerator TypeSentence(string sentence)
+    {
+        bTyping = true;
+        Tmps.text = string.Empty;
+        foreach (char letter in sentence.ToCharArray())
+        {
+            if (letter == '*')
+                Tmps.text += ',';
+            else
+                Tmps.text += letter;
+            if (isSpeedUp)
+                yield return new WaitForSeconds(GetLanguageRate() * 0.5f);      // time setting;
+            else if (!isSpeedUp)
+                yield return new WaitForSeconds(GetLanguageRate());
+        }
+        bTyping = false;
+    }
+
+    public bool EndDialogue()
+    {
+        if (sentences.Count == 0)
+            return true;
+        //Debug.Log("End of conversation.");
+        return false;
     }
 
     public void TmpSet(TextMeshProUGUI tmp)
     {
-        Tmps.Clear();
-        Tmps.Add(tmp);
-    }
-    
-    public void AddTmp(TextMeshProUGUI tmp)
-    {
-        Tmps.Add(tmp);
-    }
-
-    public void PlayTyping()
-    {
-        if (isTypingEnd)        
-        {
-            if (TmpNum == 0)
-            {
-                Tmps[Tmps.Count - 1].enabled = false;
-            }
-            else
-            {
-                Tmps[TmpNum - 1].enabled = false;
-            }
-            Tmps[TmpNum].enabled = true;
-            Tmps[TmpNum].text = "";
-            Debug.Log("TmpNum = " + TmpNum + "// Dialong = " + dialogNum);
-            if (dialogNum >= ChapterSay.Count)
-                dialogNum = 0;
-            StartCoroutine(TypingCo(ChapterSay[dialogNum]));
-        }
-        else
-        {
-            StopAllCoroutines();
-            Tmps[TmpNum].text = ChapterSay[dialogNum].contents;
-            dialogNum++;
-            isTypingEnd = true;
-            if (Tmps.Count > 0 && Tmps.Count > TmpNum)
-            {
-                TmpNum++;
-            }
-            if (TmpNum >= Tmps.Count)
-            {
-                TmpNum = 0;
-            }
-        }
-    }
-
-    private IEnumerator TypingCo(Scriptable sc)
-    {
-        int dialogNum = 0;          // 몇 번째 문장 실행 중.
-        int dialogMax = sc.contents.Length - 1;
-        isTypingEnd = false;
-        while (dialogNum < dialogMax)
-        {
-            if(time >= 0)
-            {
-                yield return null;
-                time -= Time.deltaTime;
-            }
-            else
-            {
-                if (dialogNum > 0 
-                    && sc.contents[dialogNum - 1].ToString() == ".")
-                    Tmps[TmpNum].text += "\n";
-                Tmps[TmpNum].text += sc.contents[dialogNum].ToString();
-                //if (Tmps[TmpNum].text.Length % 26 == 0 )
-                //    Tmps[TmpNum].text += "\n";
-
-                dialogNum++;
-                time = StandardTime;
-            }
-        }
-        if(dialogNum >= dialogMax)
-        {
-            if(Tmps.Count > 0 && Tmps.Count > TmpNum)
-            {
-                TmpNum++;
-            }
-            if(TmpNum >= Tmps.Count)
-            {
-                TmpNum = 0;
-            }
-            isTypingEnd = true;
-            this.dialogNum++;
-            yield break;
-        }
+        Tmps = tmp;
+        Tmps.text = string.Empty;
     }
 }

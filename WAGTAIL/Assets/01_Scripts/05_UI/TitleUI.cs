@@ -15,7 +15,7 @@ public class TitleUI : MonoBehaviour
 
     public void ButtonSound()
     {
-        SoundTest.GetInstance().PlaySound("isButton");
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.UI_Button);
     }
 
     private void Update()
