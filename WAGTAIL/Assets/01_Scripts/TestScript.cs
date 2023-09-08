@@ -9,8 +9,14 @@ public sealed class TestScript : MonoBehaviour
     private void Start()
     {
         _WaterStream = FModAudioManager.CreateInstance(FModSFXEventType.Water_Stream, transform.position);
-        _WaterStream.Play();
+        _WaterStream.Volume = 10f;
         _WaterStream.Set3DDistance(1f, 20f);
+        _WaterStream.Play();
+    }
+
+    private void OnDestroy()
+    {
+        _WaterStream.Destroy();
     }
 
     private void OnDrawGizmos()

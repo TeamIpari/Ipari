@@ -10,6 +10,7 @@ public enum PlatformApplyTiming : int
     OnObjectEnter = 4,
     OnObjectStay = 8,
     OnObjectExit = 16,
+    PhysicsUpdate = 32
 }
 
 public abstract class PlatformBehaviorBase : MonoBehaviour

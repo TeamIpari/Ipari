@@ -1,12 +1,12 @@
 using FMODUnity;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Rendering;
 #endif
-using UnityEngine;
 
 /******************************************************
  *   발판의 움직임에서 발생하는 소리가 정의된 컴포넌트입니다.
@@ -15,8 +15,8 @@ using UnityEngine;
 public sealed class FModEventPlayBehavior : PlatformBehaviorBase
 {
     #region Editor_Extension
-    /***************************************************
-    *  PlatformAudioPlayData Drawer...
+    /**********************************************************
+    *  PlatformAudioPlayData의 에디터 확장을 위한 private class..
     * ***/
 #if UNITY_EDITOR
     [CanEditMultipleObjects]
@@ -71,15 +71,8 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
             /**********************************************
              *  모든 필드의 SerializedProperty를 가져옵니다...
              * ***/
-            if (ApplyTimingProperty == null){
-
-                ApplyTimingProperty = editorProperty.FindPropertyRelative("timing");
-            }
-
-            if (PlayEventProperty == null){
-
-                PlayEventProperty = editorProperty.FindPropertyRelative("PlayEvent");
-            }
+            ApplyTimingProperty = editorProperty.FindPropertyRelative("timing");
+            PlayEventProperty = editorProperty.FindPropertyRelative("PlayEvent");
             #endregion
         }
 
@@ -105,7 +98,9 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+            GUI_Initialized( property );
             float baseHeight = GetBaseHeight();
+
             if (PlayEventProperty!=null && PlayEventProperty.isExpanded) baseHeight += 80f;
             return baseHeight + (property.isExpanded? 60f:0f);
         }
@@ -134,7 +129,7 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
         public void ApplyPlayEvent(PlatformApplyTiming applyTiming, Vector3 position)
         {
             int timingInt = (int)timing;    
-            if((timingInt &= (int)applyTiming)>0){
+            if( (timingInt &= (int)applyTiming)>0 ){
 
                 FMODUnity.RuntimeManager.PlayOneShot(PlayEvent, position);
             }
@@ -189,6 +184,49 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
         {
             Datas[i].ApplyPlayEvent(timing, position);
         }
+        #endregion
+    }
+
+    public void AddAudioPlayData(FModSFXEventType eventType, PlatformApplyTiming timing)
+    {
+        EventReference newReference = new EventReference 
+        { 
+            Guid = FModReferenceList.Events[(int)eventType] 
+        };
+
+        Datas.Add(new PlatformAudioPlayData { PlayEvent=newReference, timing=timing });
+    }
+
+    public void AddAudioPlayData(FModNoGroupEventType eventType, PlatformApplyTiming timing)
+    {
+        AddAudioPlayData((FModSFXEventType)eventType, timing);
+    }
+
+    public void AddAudioPlayData(FModBGMEventType eventType, PlatformApplyTiming timing)
+    {
+        AddAudioPlayData((FModBGMEventType)eventType, timing);
+    }
+
+    public void RemoveAudioPlayData(FModSFXEventType removeType)
+    {
+        #region Omit
+        FMOD.GUID guid = FModReferenceList.Events[(int)removeType];
+
+        int Count = Datas.Count;
+        for(int i=0; i<Count; i++)
+        {
+            PlatformAudioPlayData data = Datas[i];
+
+            /**동일한 GUID값을 가지는 EventReference를 제거...*/
+            if( data.PlayEvent.Guid.Equals(guid) ){
+
+                Datas.RemoveAt(i);
+                i--;
+                Count--;
+
+            }
+        }
+
         #endregion
     }
 

@@ -30,9 +30,9 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     [HideInInspector] public Quaternion OffsetQuat      = Quaternion.identity;
     [HideInInspector] public Vector3    UpdatePosition  = Vector3.zero;
     [HideInInspector] public Vector3    OffsetPosition  = Vector3.zero;
-    [SerializeField]  public bool PlayerOnPlatform   = false;
-    [SerializeField]  public bool UsedCollision      = false;
-    [HideInInspector] public float CheckGroundOffset = 0f;
+    [SerializeField]  public bool PlayerOnPlatform      = false;
+    [SerializeField]  public bool UsedCollision         = false;
+    [HideInInspector] public float CheckGroundOffset    = 0f;
 
 
     [SerializeField] private List<PlatformBehaviorBase> Behaviors = new List<PlatformBehaviorBase>();
@@ -146,6 +146,12 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         _PkProgress = PendingKillProgress.NONE;
         #endregion
 
+        /**공통 변경사항 적용...*/
+        _Tr.rotation    = (UpdateQuat * OffsetQuat);
+        _Tr.position    = (UpdatePosition + OffsetPosition);
+        OffsetQuat      = Quaternion.identity;
+        OffsetPosition  = Vector3.zero;
+
         //플레이어 적용
         if (PlayerOnPlatform)
         {
@@ -185,12 +191,6 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
                 _ObjectOnPlatformCount--;
             }
         }
-
-        /**공통 변경사항 적용...*/
-        _Tr.rotation = (UpdateQuat * OffsetQuat);
-        _Tr.position = (UpdatePosition+OffsetPosition);
-        OffsetQuat     = Quaternion.identity;
-        OffsetPosition = Vector3.zero;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -374,10 +374,10 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             RaycastHit hit;
             GetPlayerFloorinfo(out hit);
 
-            bool isSameCollider = (hit.collider == Collider);
-            bool isLanded = (hit.normal.y > 0);
+            bool isSameObject   = (hit.transform.gameObject.Equals(gameObject));
+            bool isLanded       = (hit.normal.y > 0);
 
-            if (isSameCollider && isLanded)
+            if (isSameObject&& isLanded)
             {
                 PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;

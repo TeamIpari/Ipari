@@ -19,6 +19,8 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     //////           Property            /////
     //========================================
     [SerializeField] public float Yspeed        = 0f;
+    [SerializeField] public float Rotspeed      = 0f;
+    [SerializeField] public float sinkDepth     = .1f;
     [SerializeField] public float SpinPow       = 80f;
 
 
@@ -36,6 +38,9 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     private LandedType      _landedType      = LandedType.None;
     private Quaternion      _defaultQuat     = Quaternion.identity;
     private Transform       _platformTr;
+
+    float _currY   = 0f;
+    float _currRot = 0f;
 
 
 
@@ -78,10 +83,18 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         /**************************************
          *   Ãâ··°Å¸®´Â ¿¬»êÀ» Àû¿ëÇÑ´Ù...
          * **/
-        float y     = _platformTr.position.y - (_defaultPos.y - Yspeed);
-        float accel = -_WaterValue * y;
 
-        Yspeed += accel;
+        /**YÃà Ãâ··°Å¸²...*/
+        float y       = _currY - ( -Yspeed );
+        float yAccel  = ( -_WaterValue * y );
+        Yspeed += yAccel;
+        _currY += Yspeed;
+
+        /**È¸Àü Ãâ··°Å¸²...*/
+        float rot       = _currRot - ( -Rotspeed );
+        float rotAccel  = ( -_WaterValue * rot );
+        Rotspeed += rotAccel;
+        _currRot += Rotspeed;
 
 
         /*************************************
@@ -90,7 +103,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         Vector3 offset = (Vector3.up * Yspeed);
         affectedPlatform.UpdatePosition += offset;
 
-        Quaternion spinRot = Quaternion.AngleAxis( (Yspeed * SpinPow), _SpinRotDir);
+        Quaternion spinRot = Quaternion.AngleAxis( (Rotspeed * SpinPow), _SpinRotDir);
         affectedPlatform.OffsetQuat *= spinRot;
         #endregion
     }
@@ -102,7 +115,8 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
          *  ¹âÇûÀ» °æ¿ì, ¹âÈù ÁöÁ¡ ¹× ¹âÈù »óÅÂ·Î ÀüÈ¯ÇÑ´Ù...
          * **/
         _landedType = LandedType.Enter;
-        Yspeed      = -.1f;
+        Yspeed      = -sinkDepth;
+        Rotspeed    = -.1f;
 
         Vector3 standingDir = (standingTarget.transform.position - transform.position).normalized;
         _landedRadian = Mathf.Atan2(standingDir.z, standingDir.x);
@@ -124,13 +138,6 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
-        Vector3 pos = standingTarget.transform.position;
-        pos.y = standingPoint.y;
-
-        if(standingBody!=null){
-
-            //standingBody.MovePosition(pos);
-        }
-        else standingTarget.transform.position = pos;
+        standingTarget.transform.position += ( Vector3.up * Yspeed );
     }
 }
