@@ -17,6 +17,7 @@ public class LoadManager : Singleton<LoadManager>
         public string sayTarget;
         public string Korean;
         public string English;
+        public string Japanese;
         public bool wait;
 
         public void Init(string[] str)
@@ -35,6 +36,8 @@ public class LoadManager : Singleton<LoadManager>
                     Korean = str[4];
                 if (str[5] != "")
                     English = str[5];
+                if (str[6] != "")
+                    Japanese = str[6];
             }
             catch
             {
@@ -56,6 +59,8 @@ public class LoadManager : Singleton<LoadManager>
     public bool isSpeedUp = false;
     public float KorTypingRate = 0.1f;
     public float EngTypingRate = 0.05f;
+    public float JpTypingRate = 0.1f;
+    public float CnTypingRate = 0.1f;
     private float typingRate = .1f;
 
     private Queue<string> sentences = new Queue<string>();
@@ -141,7 +146,7 @@ public class LoadManager : Singleton<LoadManager>
             case LanguageType.ENG:
                 return sc.English;
             case LanguageType.JP:
-                break;
+                return sc.Japanese;
             case LanguageType.CN:
                 break;
         }
@@ -183,9 +188,9 @@ public class LoadManager : Singleton<LoadManager>
             case LanguageType.ENG:
                 return EngTypingRate;
             case LanguageType.JP:
-                break;
+                return JpTypingRate;
             case LanguageType.CN:
-                break;
+                return CnTypingRate;
             default:
                 break;
         }
