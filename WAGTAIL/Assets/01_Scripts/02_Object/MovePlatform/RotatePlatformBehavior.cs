@@ -53,9 +53,10 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
 
     [Header("Default settings")] 
     [Space(5f)]
-    [SerializeField] public bool    ApplyRotateAtObjectEnter;
-    [SerializeField] public Vector3 RotateCenterOffset;
-    [SerializeField] public float   RotateAngleUntilStop;
+    [SerializeField] public bool    ApplyRotateAtObjectEnter  = false;
+    [SerializeField] public bool    ApplyStandingObjectRotate = false;
+    [SerializeField] public Vector3 RotateCenterOffset        = Vector3.zero;
+    [SerializeField] public float   RotateAngleUntilStop      = 90f;
 
     [Space(15f)]
 
@@ -77,6 +78,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
     private float               _centerDistance  = 0f;
     private float               _lastRotateAngle = 0f;
     private Transform           _platformTr;
+    private Quaternion          _lastUpdateQuat = Quaternion.identity;
 #if UNITY_EDITOR
     private Collider            _editorCollider;
 #endif
@@ -147,8 +149,8 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
             _lastRotateAngle      = ( RotateAngleUntilStop * deltaAngleRatio );
 
             /**발판이 이 회전량만큼 회전하도록 예약한다...*/
-            Quaternion updateQuat = Quaternion.AngleAxis( _lastRotateAngle, Vector3.up );
-            affectedPlatform.UpdateQuat *= updateQuat;
+            _lastUpdateQuat = Quaternion.AngleAxis( _lastRotateAngle, Vector3.up );
+            affectedPlatform.UpdateQuat *= _lastUpdateQuat;
             
 
             /*****************************************************
@@ -229,6 +231,11 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
         //현재 이 플랫폼을 밟고 있는 대상을 플랫폼과 같이 회전시킨다.
         Vector3 rotVector = new Vector3(cos, 0f, sin) * radius;
         standingTarget.transform.position = (platformCenter2 + rotVector);
+
+        if (ApplyStandingObjectRotate){
+
+            standingTarget.transform.rotation *= _lastUpdateQuat;
+        }
         #endregion
     }
 
