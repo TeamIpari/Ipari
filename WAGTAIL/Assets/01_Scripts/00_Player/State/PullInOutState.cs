@@ -17,7 +17,8 @@ public sealed class PullInOutState : State
 
 
     private Coroutine   _progressCoroutine;
-    private const float _LookAtTime = 0.1f;
+    private const float _LookAtTime  = .1f;
+    private const float _PulledDelay = .12f;
 
 
     //===================================
@@ -30,17 +31,26 @@ public sealed class PullInOutState : State
 
     public override void Enter()
     {
+        base.Enter();
         player.isPull = true;
     }
 
     public override void Exit()
     {
+        base.Exit();
         player.isPull = false;
 
         if (_progressCoroutine != null){
 
             player.StopCoroutine(_progressCoroutine);
         }
+    }
+
+    public override void HandleInput()
+    {
+        base.HandleInput();
+
+        input = pushZAxisAction.ReadValue<Vector2>();
     }
 
 
@@ -68,7 +78,11 @@ public sealed class PullInOutState : State
 
     private IEnumerator PullingProgress()
     {
+        /**animator 갱신...*/
         player.animator.SetTrigger("pulling");
+
+        float length = player.animator.GetCurrentAnimatorStateInfo(0).length;
+        float lenDiv = ( 1f / length );
         float prevSpeed = player.animator.speed;
 
         /****************************************************
@@ -123,16 +137,41 @@ public sealed class PullInOutState : State
         }
         while (currTime<_LookAtTime);
 
-        AnimatorStateInfo state = player.animator.GetCurrentAnimatorStateInfo(0);
-        Debug.Log($"normalizeTime: {state.normalizedTime}/ name: {state.length}");
 
         /***********************************
-         *  애니메이션이 완료될 때까지 대기...
+         *   당기는 방향에 따라 대상을 당긴다.
          * **/
-        while (player.animator.GetCurrentAnimatorStateInfo(0).normalizedTime<1f) yield return null;
+        PulledTarget.Hold(player.gameObject);
+        PulledTarget.Pull(.2f, -forward);
 
-        Debug.Log("좋았어!!");
-        yield break;
+        currTime = 0f;
+
+        while(!Input.GetKeyDown(KeyCode.R) && !PulledTarget.PulledIsCompleted)
+        {
+            float len = input.magnitude;
+
+            if (Vector3.Dot(input, PulledTarget.PullingDir) < 0) continue;
+
+            player.animator.SetFloat("speed", len);
+            PulledTarget.Pull((len * .2f), input);
+
+            yield return null;
+        }
+
+        /**완전히 끝났을 경우...*/
+        if (PulledTarget.PulledIsCompleted){
+
+            player.animator.SetTrigger("pullout");
+            currTime = 0f;
+
+            while ((currTime+=Time.deltaTime)<1f)
+            {
+                player.controller.SimpleMove(-forward*.5f);
+                yield return null;
+            }
+        }
+
+        //player.movementSM.ChangeState(player.idle);
     }
 
     
