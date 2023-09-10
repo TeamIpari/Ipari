@@ -174,10 +174,10 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
             /**회전 중심 오프셋의 위치를 회전에 맞게 갱신한다...*/
             if(offsetDistance>0f)
             {
-                float offsetRadian = Mathf.Atan2(RotateCenterOffset.z, RotateCenterOffset.x);
+                float offsetRadian = Mathf.Atan2(RotateCenterOffset.z, RotateCenterOffset.x) - updateRadian;
                 float offsetCos = Mathf.Cos(offsetRadian);
                 float offsetSin = Mathf.Sin(offsetRadian);
-                RotateCenterOffset = new Vector3(cos, 0f, sin) * offsetDistance;
+                RotateCenterOffset = new Vector3(offsetCos, 0f, offsetSin) * offsetDistance;
             }
 
             dir.Normalize();
