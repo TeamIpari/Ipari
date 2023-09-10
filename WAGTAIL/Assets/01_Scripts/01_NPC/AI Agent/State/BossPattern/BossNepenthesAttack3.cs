@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using IPariUtility;
 
 
 public class BossNepenthesAttack3 : AIAttackState
@@ -108,7 +108,7 @@ public class BossNepenthesAttack3 : AIAttackState
     {
         foreach (var t in targets)
         {
-            Vector3 pos = CaculateVelocity(t, shootPoint.position, time);
+            Vector3 pos = IpariUtility.CaculateVelocity(t, shootPoint.position, time);
             GameObject obj = GameObject.Instantiate(AcidBullet, shootPoint.position, Quaternion.identity);
             obj.GetComponent<Bullet>().ShotDirection(pos);
         }
