@@ -19,7 +19,6 @@ public class MiniNepenthes : Enemy
     [SerializeField] private float m_horizontalViewAngle = 0f;
     [Range(-180f, 180f)]
     [SerializeField] private float m_viewRotateZ = 0f;
-    [SerializeField] private float Movement = 0;
 
     [SerializeField] private LayerMask m_viewTargetMask;
     [SerializeField] private LayerMask m_viewObstacleMask;
