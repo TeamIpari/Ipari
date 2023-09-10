@@ -239,46 +239,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MinnefendesModel (10)
       objectReference: {fileID: 0}
-    - target: {fileID: 3121476331375135536, guid: fd66838e4348ab049b24ab1168bf7cba,
-        type: 3}
-      propertyPath: angle
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121476331375135536, guid: fd66838e4348ab049b24ab1168bf7cba,
-        type: 3}
-      propertyPath: m_bDebugMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121476331375135536, guid: fd66838e4348ab049b24ab1168bf7cba,
-        type: 3}
-      propertyPath: m_viewRadius
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121476331375135536, guid: fd66838e4348ab049b24ab1168bf7cba,
-        type: 3}
-      propertyPath: m_viewRotateZ
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121476331375135536, guid: fd66838e4348ab049b24ab1168bf7cba,
-        type: 3}
-      propertyPath: m_horizontalViewAngle
-      value: 178
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121476331375135536, guid: fd66838e4348ab049b24ab1168bf7cba,
-        type: 3}
-      propertyPath: m_viewTargetMask.m_Bits
-      value: 128
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121476331375135536, guid: fd66838e4348ab049b24ab1168bf7cba,
-        type: 3}
-      propertyPath: m_horizontalViewHalfAngle
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 3121476331375135536, guid: fd66838e4348ab049b24ab1168bf7cba,
-        type: 3}
-      propertyPath: m_viewObstacleMask.m_Bits
-      value: 8063
-      objectReference: {fileID: 0}
     - target: {fileID: 3232194003886354614, guid: fd66838e4348ab049b24ab1168bf7cba,
         type: 3}
       propertyPath: m_RootOrder
@@ -487,8 +447,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c95bb0440328e7a4890d5441e82e0492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotateAtObjectOnPlatform: 0
-  _RotateSpeedRatio: 0.1
+  ApplyRotateAtObjectEnter: 0
+  ApplyStandingObjectRotate: 0
+  RotateCenterOffset: {x: 0, y: 0, z: 0}
+  RotateAngleUntilStop: 90
+  _PauseInterval: 0
+  _PauseDuration: 0
 --- !u!1 &451477136
 GameObject:
   m_ObjectHideFlags: 0
