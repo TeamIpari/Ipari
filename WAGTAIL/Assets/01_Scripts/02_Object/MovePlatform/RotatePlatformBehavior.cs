@@ -56,14 +56,14 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
     [SerializeField] public bool    ApplyRotateAtObjectEnter  = false;
     [SerializeField] public bool    ApplyStandingObjectRotate = false;
     [SerializeField] public Vector3 RotateCenterOffset        = Vector3.zero;
-    [SerializeField] public float   RotateAngleUntilStop      = 90f;
 
     [Space(15f)]
 
     [Header("Pause duration settings")]
     [Space(5f)]
-    [SerializeField] private float _PauseInterval;
-    [SerializeField] public float  _PauseDuration;
+    [SerializeField] public  float RotateAngleUntilStop = 90f;
+    [SerializeField] private float _PauseInterval       = 1.5f;
+    [SerializeField] public  float  _PauseDuration      = 0f;
 
 
 
@@ -127,7 +127,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
     public override void PhysicsUpdate(PlatformObject affectedPlatform)
     {
         #region Omit
-        if (_state==RotatePlatformState.Stop) return;
+        if (_state==RotatePlatformState.Stop || RotateAngleUntilStop==0f) return;
 
         float deltaTime = Time.fixedDeltaTime;
         _currTime += deltaTime;
@@ -135,7 +135,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
         /*********************************
          *  회전 중일 경우...
          ***/
-        if ( RotateAngleUntilStop!=0f && _state == RotatePlatformState.Rotation)
+        if ( _state == RotatePlatformState.Rotation)
         {
             /**회전량이 회전할량에 맞도록 조절.*/
             bool isComplete = (_currTime >= PauseInterval);
@@ -172,8 +172,8 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
             float sin    = Mathf.Sin(radian);
 
             /**회전 중심 오프셋의 위치를 회전에 맞게 갱신한다...*/
-            if(offsetDistance>0f)
-            {
+            if(offsetDistance>0f){
+
                 float offsetRadian = Mathf.Atan2(RotateCenterOffset.z, RotateCenterOffset.x) - updateRadian;
                 float offsetCos = Mathf.Cos(offsetRadian);
                 float offsetSin = Mathf.Sin(offsetRadian);
@@ -246,6 +246,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
+        #region Omit
         if (_editorCollider == null) _editorCollider = GetComponent<Collider>();
 
         if(_editorCollider != null){
@@ -253,6 +254,8 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(_editorCollider.bounds.center+RotateCenterOffset, .2f);
         }
+
+        #endregion
     }
 #endif
 

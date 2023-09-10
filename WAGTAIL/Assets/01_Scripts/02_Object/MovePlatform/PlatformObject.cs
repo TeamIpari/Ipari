@@ -58,20 +58,44 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     //=======================================
     public void AddPlatformBehavior( PlatformBehaviorBase newReaction)
     {
+        #region Omit
         if (Behaviors.Contains(newReaction)) return;
         Behaviors.Add(newReaction);
         newReaction.BehaviorStart(this);
 
         RefreshInteractionCopy(true);
+        #endregion
     }
 
     public void RemovePlatformBehavior( PlatformBehaviorBase removeReaction)
     {
+        #region Omit
         if (!Behaviors.Contains(removeReaction)) return;
         Behaviors.Remove(removeReaction);
         removeReaction.BehaviorEnd(this);
 
         RefreshInteractionCopy(true);
+        #endregion
+    }
+
+    public void RemovePlatformBehaviorByType<T>()
+    {
+        #region Omit
+        System.Type type = typeof(T);
+        bool isChanged = false;
+
+        for (int i = 0; i < _CopyCount; i++)
+        {
+            if (_InteractionsCopy[i].GetType().Equals(type))
+            {
+                Behaviors.RemoveAt(i);
+                isChanged = true;
+            }
+        }
+
+        if(isChanged) RefreshInteractionCopy(true);
+
+        #endregion
     }
 
     public bool IsContainsPlatformBehavior(PlatformBehaviorBase newReaction)
@@ -81,6 +105,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
     public bool IsContainsPlatformBehavior<T>()
     {
+        #region Omit
         System.Type type = typeof(T);
 
         for(int i=0; i<_CopyCount; i++)
@@ -89,6 +114,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         }
 
         return false;
+        #endregion
     }
 
 
