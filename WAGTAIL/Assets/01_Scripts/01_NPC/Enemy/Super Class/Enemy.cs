@@ -62,9 +62,9 @@ public class Enemy : Character
         }
     }
 
-    public override void CAttack()
+    public override void CAttack(Vector3 P)
     {
-        base.CAttack();
+        base.CAttack(P);
     }
 
 }

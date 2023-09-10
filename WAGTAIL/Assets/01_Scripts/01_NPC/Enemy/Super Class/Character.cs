@@ -82,7 +82,7 @@ public class Character : MonoBehaviour
 
     }
 
-    public virtual void CAttack()
+    public virtual void CAttack(Vector3 Pos)
     {
 
     }
@@ -96,6 +96,10 @@ public class Character : MonoBehaviour
 
     public bool isAttack()
     {
+        if (AiSM.Target == null)
+        {
+            return false;
+        }
         if (AttackTimer < AttackRate)
         {
             AttackTimer += Time.deltaTime;

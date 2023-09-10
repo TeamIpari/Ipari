@@ -1,8 +1,9 @@
 using DG.Tweening;
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
+using IPariUtility;
+using static UnityEngine.UI.Image;
 
 public class Throw : MonoBehaviour, IInteractable
 {
@@ -224,7 +225,9 @@ public class Throw : MonoBehaviour, IInteractable
         rigidbody.isKinematic = false;
         GetComponent<Collider>().isTrigger = false;
 
-        rigidbody.velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
+        //rigidbody.velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
+        rigidbody.velocity = IpariUtility.CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
+        Forward = this.transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;
@@ -250,27 +253,27 @@ public class Throw : MonoBehaviour, IInteractable
         autoTarget = _transform;
     }
 
-    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
-    {
-        // define the distance x and y first;
-        Vector3 distance = target - origin;
-        Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-        distanceXZ.y = 0f; // y는 0으로 설정.
-        Forward = origin;
-        // Create a float the represent our distance
-        float Sy = distance.y;      // 세로 높이의 거리를 지정.
-        float Sxz = distanceXZ.magnitude;
+    //private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
+    //{
+    //    // define the distance x and y first;
+    //    Vector3 distance = target - origin;
+    //    Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
+    //    distanceXZ.y = 0f; // y는 0으로 설정.
+    //    Forward = origin;
+    //    // Create a float the represent our distance
+    //    float Sy = distance.y;      // 세로 높이의 거리를 지정.
+    //    float Sxz = distanceXZ.magnitude;
 
-        // 속도 추가
-        float Vxz = Sxz / time;
-        float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
+    //    // 속도 추가
+    //    float Vxz = Sxz / time;
+    //    float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
 
-        // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
-        Vector3 result = distanceXZ.normalized;
-        result *= Vxz;
-        result.y = Vy;
-        return result;
-    }
+    //    // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
+    //    Vector3 result = distanceXZ.normalized;
+    //    result *= Vxz;
+    //    result.y = Vy;
+    //    return result;
+    //}
 
     private void OnCollisionEnter(Collision collision)
     {

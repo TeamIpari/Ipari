@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -101,7 +102,8 @@ public class BossNepenthesAttack2 : AIAttackState
 
     private void PositionLuncher()
     {
-        Vector3 pos = CaculateVelocity(target, shootPoint.position, time);
+        //Vector3 pos = CaculateVelocity(target, shootPoint.position, time);
+        Vector3 pos = IpariUtility.CaculateVelocity(target, shootPoint.position, time);
 
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
         obj.transform.localScale = Vector3.one * 3f;
