@@ -70,7 +70,7 @@ public sealed class MovingPlatformBehavior : PlatformBehaviorBase
         /************************************************
          * 전조현상이 끝나면 첫 위치에서 최종적으로 이동할 위치까지 연산함.
          * **/
-        UnityEngine.Debug.Log($"Move To Words");
+        //UnityEngine.Debug.Log($"Move To Words");
         Vector3 direction = affectedPlatform.UpdatePosition - (_defaultPos + TargetPosition);       // 방향 벡터 결정
         float distance = Vector3.Distance(affectedPlatform.UpdatePosition, (_defaultPos + TargetPosition));
         if(distance > 0.1f)
@@ -85,7 +85,7 @@ public sealed class MovingPlatformBehavior : PlatformBehaviorBase
 
     private void MoveToOriginPlatform(PlatformObject affectedPlatform)
     {
-        UnityEngine.Debug.Log($"Move To Origin");
+        //UnityEngine.Debug.Log($"Move To Origin");
         Vector3 direction = _defaultPos - affectedPlatform.UpdatePosition;       // 방향 벡터 결정
         float distance = Vector3.Distance(affectedPlatform.UpdatePosition, _defaultPos );
         if (distance > 0.1f)
@@ -94,6 +94,8 @@ public sealed class MovingPlatformBehavior : PlatformBehaviorBase
         }
         else
         {
+            affectedPlatform.UpdatePosition = _defaultPos;
+            _isWait = false;
             StartPlatformStateChange(0f);
         }
     }
@@ -155,9 +157,11 @@ public sealed class MovingPlatformBehavior : PlatformBehaviorBase
         /************************************************
          *  플랫폼을 밟으면 밟은 시점에 전조 증상이 발생하게 enumState를 변경. 이후 흔들리는 기능을 넣는다.
          *  **/
-
-        _movingType = MovingType.Enter;         // 전조 증상 발생
-
+        if (!_isWait)
+        {
+            _isWait = true;
+            _movingType = MovingType.Enter;         // 전조 증상 발생
+        }
     }
 
 }

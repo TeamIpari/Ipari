@@ -403,7 +403,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             bool isSameObject   = (hit.transform.gameObject.Equals(gameObject));
             bool isLanded       = (hit.normal.y > 0);
 
-            if (isSameObject&& isLanded)
+            if (isSameObject && isLanded)
             {
                 PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;

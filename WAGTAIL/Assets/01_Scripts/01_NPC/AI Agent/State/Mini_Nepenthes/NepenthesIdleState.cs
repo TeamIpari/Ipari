@@ -143,12 +143,10 @@ public class NepenthesIdleState : AIIdleState
         {
             dot = Vector3.Dot(lookDir, this.dir);
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            Debug.Log($"{angle} : {SearchAngle}");
             float distance = Vector3.Distance(stateMachine.Transform.position, stateMachine.Target.transform.position);
             if (distance > stateMachine.character.AttackRange
                 || angle > SearchAngle)
             {
-                Debug.Log("Call");
                 TargetReset();
                 return;
             }
