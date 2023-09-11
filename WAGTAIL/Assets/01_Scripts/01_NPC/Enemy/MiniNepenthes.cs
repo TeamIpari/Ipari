@@ -122,16 +122,18 @@ public class MiniNepenthes : Enemy
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("AA");
         CharacterController cc = collision.gameObject.GetComponent<CharacterController>();
         if (collision.collider.CompareTag("Player") && cc.velocity.y <= 0)
         {
+            Debug.Log($"Hello1");
             RaycastHit hit;
             GetPlayerFloorInfo(out hit,cc);
             bool isSaameObject = (hit.transform.gameObject.Equals(gameObject));
             bool isLanded = (hit.normal.y > 0);
             if( isSaameObject && isLanded)
             {
-                Debug.Log($"Hellow");
+                Debug.Log($"Hello2");
             }
             collision.collider.GetComponent<Player>().isDead = true;
         }
