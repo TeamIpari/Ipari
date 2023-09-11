@@ -59,22 +59,23 @@ public class SThrow : MonoBehaviour, IInteractable
         }
     }
 
-    public bool Interact(Interactor interactor)
+    public bool Interact(GameObject interactor)
     {
-        if(interactor.player.movementSM.currentState == interactor.player.idle)
+        Player player = interactor.GetComponent<Player>();
+        if(player.movementSM.currentState == player.idle)
         {
             //interactor.player.isSmallThrow = true;
-            interactor.player.isCarry = true;
+            player.isCarry = true;
             Pickup();
 
             return true;
         }
-        else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
+        else if (player.isCarry && player.movementSM.currentState == player.carry)
         {
             //if(interactor.)
             Throwing(interactor);
             //interactor.player.isSmallThrow = false;
-            interactor.player.isCarry = false;
+            player.isCarry = false;
         }
 
 
@@ -97,7 +98,7 @@ public class SThrow : MonoBehaviour, IInteractable
     }
 
 
-    public void Throwing(Interactor interactor)
+    public void Throwing(GameObject interactor)
     {
         // interactionPoint의 Position을 초기상태로 되돌림
         _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;
@@ -116,7 +117,7 @@ public class SThrow : MonoBehaviour, IInteractable
 
         Player.Instance.gameObject.transform.LookAt(nV3);
 
-        _playerForwardTransform = interactor.player.transform.forward;
+        _playerForwardTransform = interactor.transform.forward;
         _playerForwardTransform.x *= _force;
         _playerForwardTransform.y = _yForce * (GetAngle()) ;
         _playerForwardTransform.z *= _force;

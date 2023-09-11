@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 //using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(SoundHandler))]
@@ -37,6 +38,18 @@ public class Player : MonoBehaviour
     public float airControl = 0.5f;
 
     [Header("Interaction")]
+    private readonly Collider[] _colliders = new Collider[3];
+    private int _numFound;
+    private readonly float _interactionPointRadius = 0.5f;
+    public LayerMask interactableMask;
+    public Transform InteractionPoint;
+    public Transform EquipPoint;
+    public Transform ThrowEquipPoint;
+    public Transform LeftHand;
+    public Transform RightHandPoint;
+    public Transform RightHand;
+    
+    [Header("State Check")]
     public bool isIdle = true;
     public bool isClimbing = false;
     public bool isPush = false;
@@ -91,16 +104,8 @@ public class Player : MonoBehaviour
     public Animator animator;
     [HideInInspector]
     public Vector3 playerVelocity;
-    [HideInInspector]
+    //[HideInInspector]
     public GameObject currentInteractable;
-    
-    [Header("Points")]
-    public Transform InteractionPoint;
-    public Transform EquipPoint;
-    public Transform ThrowEquipPoint;
-    public Transform LeftHand;
-    public Transform RightHandPoint;
-    public Transform RightHand;
 
     // ============================================//
     // FX
@@ -119,7 +124,9 @@ public class Player : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + transform.forward);
-
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(InteractionPoint.position, _interactionPointRadius);
     }
 
     private void Awake()
@@ -183,6 +190,8 @@ public class Player : MonoBehaviour
         SoundHandler.Bind("isJump", jumpClip);
         SoundHandler.Bind("isLanding", landingClip);
         SoundHandler.Bind("isDeath", deathClip);
+        
+        interactableMask = LayerMask.GetMask("Interactable");
     }
 
     // Update is called once per frame
@@ -196,6 +205,29 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         movementSM.currentState.PhysicsUpdate();
+    }
+    
+    // (구현해야함) 가장 가까운 collider를 읽어내서 IInteractable을 상속받은 클래스가 있다면 상호작용을 한다.
+    public void Interaction()
+    {
+        if (currentInteractable == null)
+        {
+            _numFound = Physics.OverlapSphereNonAlloc(InteractionPoint.position, _interactionPointRadius, _colliders,
+                interactableMask);
+
+            if (_numFound <= 0) return;
+            var interactable = _colliders[0].GetComponent<IInteractable>();
+
+            if (interactable == null) return;
+            interactable.Interact(gameObject);
+            currentInteractable = _colliders[0].gameObject;
+        }
+
+        else
+        {
+            currentInteractable.GetComponent<IInteractable>().Interact(gameObject);
+            currentInteractable = null;
+        }
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)

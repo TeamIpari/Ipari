@@ -14,7 +14,7 @@ public class EventController : MonoBehaviour, IInteractable
 
     }
 
-    public bool Interact(Interactor interactor)
+    public bool Interact(GameObject interactor)
     {
         if(InteractableEvent.GetPersistentEventCount() > 0)
             InteractableEvent.Invoke();

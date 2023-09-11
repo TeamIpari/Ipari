@@ -44,10 +44,8 @@ public class CarryState : State
     {
         base.HandleInput();
 
-        if (jumpAction.triggered)
-        {
-            jump = true;
-        }
+        if (jumpAction.triggered) jump = true;
+        if (interacAction.triggered) player.Interaction();
 
         carry = player.isCarry;
         input = moveAction.ReadValue<Vector2>();
@@ -72,10 +70,15 @@ public class CarryState : State
             stateMachine.ChangeState(player.drop);
         }
 
-        //if (jump)
-        //{
-        //    stateMachine.ChangeState(player.jump);
-        //}
+        if (jump)
+        {
+            stateMachine.ChangeState(player.jump);
+        }
+
+        if (player.isDead)
+        {
+            stateMachine.ChangeState(player.death);
+        }
     }
 
     public override void PhysicsUpdate()

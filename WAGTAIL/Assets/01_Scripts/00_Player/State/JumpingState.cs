@@ -35,15 +35,23 @@ public class JumpingState : State
         //AnimManager.Instance.AnimFloat("speed");
         player.animator.SetFloat("speed", 0);
         //AnimManager.Instance.AnimTrigger("jump");
-        player.animator.SetTrigger("jump");
+        if(!player.isCarry) player.animator.SetTrigger("jump");
         Jump();
     }
 
     public override void HandleInput()
     {
         base.HandleInput();
-
+        
         dead = player.isDead;
+        if (interacAction.triggered && player.currentInteractable != null)
+        {
+            player.Interaction();
+            player.animator.ResetTrigger("move");
+            player.animator.ResetTrigger("carry");
+            player.animator.ResetTrigger("pickup");
+            player.animator.SetTrigger("drop");
+        }
         input = moveAction.ReadValue<Vector2>();
     }
 

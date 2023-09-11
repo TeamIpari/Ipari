@@ -20,7 +20,7 @@ public class BombObject : MonoBehaviour
     
     // Test property // 
     private float force = 13f;
-    private bool _isStart;
+    [SerializeField] private bool _isStart;
     private bool _isExplosionVFXNotNull;
     private const float PushTime = 0.075f;
 
@@ -32,9 +32,16 @@ public class BombObject : MonoBehaviour
         _baseColor = _color.material.color;
         _currentTime = 0;
         _isStart = false;
-        //StartCoroutine(StartTimeBomb(explosionTime));
     }
-    
+
+    private void Update()
+    {
+        if (_isStart)
+        {
+            StartCoroutine(StartTimeBomb(explosionTime));
+        }
+    }
+
     private IEnumerator StartTimeBomb(float time)
     {
         float currentTime = time;
