@@ -21,6 +21,9 @@ public class BossNepenthesAttack3 : AIAttackState
     private List<Vector3> targets = new List<Vector3>();
     private List<GameObject> marker = new List<GameObject>();
 
+    //====================================================
+    /////               magic Methods               /////
+    //====================================================
     public BossNepenthesAttack3(AIStateMachine stateMachine,BossNepenthesProfile Profile, float flightTime, int count, float rad) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
@@ -32,6 +35,10 @@ public class BossNepenthesAttack3 : AIAttackState
         this.circleObj = Profile.ShotMarker;
         this.DelayTime = 0.8f;
     }
+
+    //====================================================
+    /////                   override                   /////
+    //====================================================
 
     public override void Enter()
     {
@@ -54,17 +61,6 @@ public class BossNepenthesAttack3 : AIAttackState
         throw new System.NotImplementedException();
     }
     
-    public void ShootDelay()
-    {
-        if (curTimer > DelayTime && !isShoot)
-        {
-            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
-            CreateMarker();
-            PositionLuncher();
-            curTimer = 0;
-            isShoot = true;
-        }
-    }
     
     protected override void ChangeState()
     {
@@ -88,6 +84,9 @@ public class BossNepenthesAttack3 : AIAttackState
         ChangeState();
     }
 
+    //====================================================
+    /////                   CoreMethods                 /////
+    //====================================================
     void CreateMarker()
     {
         targets.Clear();
@@ -126,4 +125,15 @@ public class BossNepenthesAttack3 : AIAttackState
         return new Vector3(vec.x, 0.1f, vec.z);
     }
 
+    public void ShootDelay()
+    {
+        if (curTimer > DelayTime && !isShoot)
+        {
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
+            CreateMarker();
+            PositionLuncher();
+            curTimer = 0;
+            isShoot = true;
+        }
+    }
 }
