@@ -5,19 +5,27 @@ using UnityEngine.XR;
 
 public class NepenthesAttackState : AIAttackState
 {
-    float Timer;
-    float DelayTime = 0.25f;
+    private float Timer;
+    private float DelayTime = 0.65f;
+    private Vector3 LockOn;
 
+    //===========================================
+    /////           magic methods           /////
+    //===========================================
     public NepenthesAttackState(AIStateMachine stateMachine) : base(stateMachine)
     {
 
     }
 
+    //===========================================
+    /////               overrides              /////
+    //===========================================
     public override void Enter()
     {
         Timer = 0;
 
         stateMachine.Animator.SetTrigger("isAttack");
+
     }
 
     public override void Exit()
@@ -30,9 +38,30 @@ public class NepenthesAttackState : AIAttackState
         //base.OntriggerEnter(other);
     }
 
-    public bool AttackCheck()
+
+    public override void Update()
     {
-        if(DelayTime > Timer)
+        if (AttackCheck())
+        {
+            LockOn = stateMachine.Target.transform.position;
+            stateMachine.character.AttackTimerReset();
+            stateMachine.character.CAttack(LockOn);
+            stateMachine.character.AiWait.SetNextState(stateMachine.character.AiIdle);
+            stateMachine.ChangeState(stateMachine.character.AiWait);
+        }
+        else
+        {
+            LookatTarget();
+        }
+    }
+
+
+    //===========================================
+    /////           core methods           /////
+    //===========================================
+    private bool AttackCheck()
+    {
+        if (DelayTime > Timer)
         {
             Timer += Time.deltaTime;
             return false;
@@ -40,17 +69,20 @@ public class NepenthesAttackState : AIAttackState
         return true;
 
     }
-
-    public override void Update()
+    private void LookatTarget()
     {
-        //base.Update();
-        if (AttackCheck())
-        {
-            stateMachine.character.AttackTimerReset();
-            stateMachine.character.CAttack();
-            stateMachine.character.AiWait.SetNextState(stateMachine.character.AiIdle);
-            stateMachine.ChangeState(stateMachine.character.AiWait);
-        }
+        Vector3 dir = stateMachine.character.RotatePoint.position - stateMachine.Target.transform.position;
+        dir.y = stateMachine.character.RotatePoint.position.y;
+
+        Quaternion quat = Quaternion.LookRotation(dir.normalized);
+
+        Vector3 temp = quat.eulerAngles;
+        Vector3 temp2 = stateMachine.character.RotatePoint.rotation.eulerAngles;
+
+        stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
+
+        stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
     }
+
 
 }

@@ -10,6 +10,7 @@ public enum PlatformApplyTiming : int
     OnObjectEnter = 4,
     OnObjectStay = 8,
     OnObjectExit = 16,
+    PhysicsUpdate = 32
 }
 
 public abstract class PlatformBehaviorBase : MonoBehaviour
@@ -17,7 +18,7 @@ public abstract class PlatformBehaviorBase : MonoBehaviour
     public virtual void BehaviorStart( PlatformObject affectedPlatform ) { }
     public virtual void BehaviorEnd(PlatformObject changedTarget) { }
     public virtual void PhysicsUpdate( PlatformObject affectedPlatform ) { }
-    public virtual void OnObjectPlatformEnter( PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal) { }
-    public virtual void OnObjectPlatformStay( PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal) { }
-    public virtual void OnObjectPlatformExit( PlatformObject affectedPlatform, GameObject exitTarget) { }
+    public virtual void OnObjectPlatformEnter( PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal) { }
+    public virtual void OnObjectPlatformStay( PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal) { }
+    public virtual void OnObjectPlatformExit( PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody) { }
 }

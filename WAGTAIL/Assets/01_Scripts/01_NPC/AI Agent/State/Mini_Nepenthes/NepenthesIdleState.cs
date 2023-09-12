@@ -2,21 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.XR.Haptics;
+using IPariUtility;
+using UnityEditor.Rendering;
 
 public class NepenthesIdleState : AIIdleState
 {
-    bool isSearch ;
-    public NepenthesIdleState(AIStateMachine stateMachine, int angle) : base(stateMachine)
-    {
+    private bool isSearch ;
+    private float rotateAngle;
+    private float SearchAngle;
 
+    private float dot;
+    private float angle;
+
+    private Vector3 targetPos;
+    private Vector3 dir;
+    private Vector3 lookDir;
+    private Vector3 startEulerAngle;
+    private LayerMask targetMask;
+    private LayerMask passMask;
+
+    private List<Collider> hitedTargetContainer = new List<Collider>();
+    public NepenthesIdleState(AIStateMachine stateMachine, float rotAngle, float SearchAngle, LayerMask TargetMask, LayerMask obstacleMask) : base(stateMachine)
+    {
+        rotateAngle = rotAngle;
+        this.SearchAngle = SearchAngle;
+        targetMask = TargetMask;
+        passMask = obstacleMask;
+        startEulerAngle = stateMachine.Transform.eulerAngles;
     }
 
     public override void Enter()
     {
         base.Enter();
-        //isSearch = Search();
-        //isSearch = false;
+        TargetReset();
     }
 
     public override void Exit()
@@ -29,8 +47,57 @@ public class NepenthesIdleState : AIIdleState
         base.OntriggerEnter(other);
     }
 
+    private Collider[] FindViewTarget()
+    {
+        hitedTargetContainer.Clear();
+
+        Vector3 originPos = stateMachine.Transform.position;
+        Collider[] hitedTargets = Physics.OverlapSphere(originPos, stateMachine.character.AttackRange, targetMask);
+
+        foreach(var hitedTarget in hitedTargets)
+        {
+            targetPos = hitedTarget.transform.position; // 탐색된 오브젝트(Target)의 위치
+            dir = (targetPos - originPos).normalized;   // 탐색을 한 오브젝트의 어디 방향에 타겟이 존재하는지?
+            lookDir = IpariUtility.AngleToDirY(startEulerAngle, rotateAngle);
+
+            // float RotateAngle = vector3.Angle(lookDir, dir)
+            // 아래 두 줄은 위의 코드와 동일하게 작동함. 내부 구현도 동일.
+            dot = Vector3.Dot(lookDir, dir);
+            angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+            if (angle <= SearchAngle)
+            {
+                RaycastHit rayHitedTarget;
+                bool bHit = Physics.Raycast(originPos, dir, out rayHitedTarget, stateMachine.character.AttackRange, passMask);
+                if (bHit)
+                {
+#if UNITY_EDITOR
+                    Debug.DrawLine(originPos, rayHitedTarget.point, Color.yellow);
+#else
+#endif
+                }
+                else
+                {
+                    hitedTargetContainer.Add(hitedTarget);
+                    stateMachine.Target = hitedTarget.gameObject;
+                    isSearch = true;
+#if UNITY_EDITOR
+                    Debug.DrawLine(originPos, targetPos, Color.red);
+#else
+#endif
+                }
+            }
+        }
+        if (hitedTargetContainer.Count > 0)
+        {
+            return hitedTargetContainer.ToArray();
+        }
+        else
+            return null;
+    }
+
     private bool Search()
     {
+
         // 원 범위 내에 플레이어가 들어오면 바라보고 일정 주기가 지나면 Attack
         Collider[] cols = Physics.OverlapSphere(stateMachine.Transform.position, stateMachine.character.AttackRange);
 
@@ -52,35 +119,47 @@ public class NepenthesIdleState : AIIdleState
         }
         return false;
     }
+    private void LookatTarget()
+    {
+        Vector3 dir = stateMachine.character.RotatePoint.position - stateMachine.Target.transform.position;
+        dir.y = stateMachine.character.RotatePoint.position.y;
 
+        Quaternion quat = Quaternion.LookRotation(dir.normalized);
+
+        Vector3 temp = quat.eulerAngles;
+        Vector3 temp2 = stateMachine.character.RotatePoint.rotation.eulerAngles;
+
+        stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
+
+        stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
+
+    }
 
     public override void Update()
     {
         base.Update();
+        //if (angle > SearchAngle)
         if (isSearch)
         {
-            if (Vector3.Distance(stateMachine.Transform.position, stateMachine.Target.transform.position) > stateMachine.character.AttackRange)
+            dot = Vector3.Dot(lookDir, this.dir);
+            angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+            float distance = Vector3.Distance(stateMachine.Transform.position, stateMachine.Target.transform.position);
+            if (distance > stateMachine.character.AttackRange
+                || angle > SearchAngle)
             {
-                isSearch = false;
+                TargetReset();
                 return;
             }
-
-            Vector3 dir = stateMachine.character.RotatePoint.position - stateMachine.Target.transform.position;
-            dir.y = stateMachine.character.RotatePoint.position.y;
-            
-            Quaternion quat = Quaternion.LookRotation(dir.normalized);
-
-            Vector3 temp = quat.eulerAngles;
-            Vector3 temp2 = stateMachine.character.RotatePoint.rotation.eulerAngles;
-
-            stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
-
-            stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
+            LookatTarget();
         }
-        else
-        {
-            Search();
-        }
+        //else
+        FindViewTarget();
+    }
 
+    private void TargetReset()
+    {
+        isSearch = false;
+        stateMachine.Target = null;
+        //angle = 0;
     }
 }

@@ -25,8 +25,11 @@ public sealed class BusSliderUI : MonoBehaviour
         /**초기화 및 bus초기값 적용...*/
         if(_slider = GetComponent<UnityEngine.UI.Slider>())
         {
-            _slider.onValueChanged.AddListener(delegate { ValueChanged(); });
-            FModAudioManager.SetBusVolume( busType, _slider.value );    
+            float busVolume = Mathf.Clamp(FModAudioManager.GetBusVolume(busType), 0f, 1f);
+
+            FModAudioManager.SetBusVolume(busType, busVolume);
+            _slider.value = busVolume;
+            _slider.onValueChanged.AddListener(delegate { ValueChanged(); });  
         }
     }
 
@@ -34,6 +37,5 @@ public sealed class BusSliderUI : MonoBehaviour
     {
         /**슬라이더의 값이 바뀌면 FMod Bus의 볼륨을 바꾼다...*/
         FModAudioManager.SetBusVolume(busType, _slider.value);
-        Debug.Log($"{busType} busVolume: { FModAudioManager.GetBusVolume(busType) }");
     }
 }

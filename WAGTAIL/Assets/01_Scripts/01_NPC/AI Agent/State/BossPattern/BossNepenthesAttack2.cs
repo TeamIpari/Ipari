@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -95,13 +96,14 @@ public class BossNepenthesAttack2 : AIAttackState
         GameObject _obj = GameObject.Instantiate(circleObj);
         _obj.transform.localScale = Vector3.one * 3f;
         _obj.transform.position = target;
-        _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
+        _obj.transform.rotation = Quaternion.Euler(-90, 0, 0);
         marker = _obj;
     }
 
     private void PositionLuncher()
     {
-        Vector3 pos = CaculateVelocity(target, shootPoint.position, time);
+        //Vector3 pos = CaculateVelocity(target, shootPoint.position, time);
+        Vector3 pos = IpariUtility.CaculateVelocity(target, shootPoint.position, time);
 
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
         obj.transform.localScale = Vector3.one * 3f;

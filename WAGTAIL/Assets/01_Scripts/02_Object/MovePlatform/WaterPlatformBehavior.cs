@@ -19,6 +19,8 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     //////           Property            /////
     //========================================
     [SerializeField] public float Yspeed        = 0f;
+    [SerializeField] public float Rotspeed      = 0f;
+    [SerializeField] public float sinkDepth     = .1f;
     [SerializeField] public float SpinPow       = 80f;
 
 
@@ -30,11 +32,15 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     private const float     _Buoyancy   = .008f;
 
     private Vector3         _SpinRotDir      = Vector3.zero;
+    private Vector3         _defaultPos      = Vector3.zero;
     private float           _lastYEuler      = 0f;
     private float           _landedRadian    = 0f;
     private LandedType      _landedType      = LandedType.None;
     private Quaternion      _defaultQuat     = Quaternion.identity;
     private Transform       _platformTr;
+
+    float _currY   = 0f;
+    float _currRot = 0f;
 
 
 
@@ -44,6 +50,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     public override void BehaviorStart(PlatformObject affectedPlatform)
     {
         _platformTr = affectedPlatform.transform;
+        _defaultPos = affectedPlatform.transform.position;
         _defaultQuat= _platformTr.rotation;
         affectedPlatform.CheckGroundOffset = 2f;
     }
@@ -76,31 +83,40 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         /**************************************
          *   출렁거리는 연산을 적용한다...
          * **/
-        float y     = _platformTr.position.y - (affectedPlatform.StartPosition.y - Yspeed);
-        float accel = -_WaterValue * y;
 
-        Yspeed += accel;
+        /**Y축 출렁거림...*/
+        float y       = _currY - ( -Yspeed );
+        float yAccel  = ( -_WaterValue * y );
+        Yspeed += yAccel;
+        _currY += Yspeed;
+
+        /**회전 출렁거림...*/
+        float rot       = _currRot - ( -Rotspeed );
+        float rotAccel  = ( -_WaterValue * rot );
+        Rotspeed += rotAccel;
+        _currRot += Rotspeed;
 
 
         /*************************************
          *  수직 이동 및 회전에 대한 최종 적용...
          ***/
         Vector3 offset = (Vector3.up * Yspeed);
-        _platformTr.position += offset;
+        affectedPlatform.UpdatePosition += offset;
 
-        Quaternion spinRot    = Quaternion.AngleAxis( (Yspeed * SpinPow), _SpinRotDir);
-        affectedPlatform.UpdateQuat *= spinRot;
+        Quaternion spinRot = Quaternion.AngleAxis( (Rotspeed * SpinPow), _SpinRotDir);
+        affectedPlatform.OffsetQuat *= spinRot;
         #endregion
     }
 
-    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
         #region Omit
         /***********************************************
          *  밟혔을 경우, 밟힌 지점 및 밟힌 상태로 전환한다...
          * **/
         _landedType = LandedType.Enter;
-        Yspeed      = -.1f;
+        Yspeed      = -sinkDepth;
+        Rotspeed    = -.1f;
 
         Vector3 standingDir = (standingTarget.transform.position - transform.position).normalized;
         _landedRadian = Mathf.Atan2(standingDir.z, standingDir.x);
@@ -120,11 +136,8 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         #endregion
     }
 
-    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Vector3 standingPoint, Vector3 standingNormal)
+    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
-        Vector3 pos = standingTarget.transform.position;
-        pos.y = standingPoint.y;
-
-        standingTarget.transform.position = pos;
+        standingTarget.transform.position += ( Vector3.up * Yspeed );
     }
 }

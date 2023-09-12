@@ -94,9 +94,10 @@ GameObject:
   - component: {fileID: 8569999082459164690}
   - component: {fileID: 4702069547457970103}
   - component: {fileID: 7396577580234115965}
-  - component: {fileID: 1511429352}
   - component: {fileID: 776550909360038883}
   - component: {fileID: 587802200766393001}
+  - component: {fileID: 1710347675}
+  - component: {fileID: 1539713673}
   m_Layer: 0
   m_Name: Inter_StoneFloor_Boss1_Moss
   m_TagString: Untagged
@@ -170,20 +171,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1511429352
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9053660694319639208}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5060444177187149915, guid: 4398a0002c5166649bca6d7c7edb3ecf, type: 3}
 --- !u!114 &776550909360038883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,14 +183,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bddf0544d16af64386c99d66d23ab23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartQuat: {x: 0, y: 0, z: 0, w: 1}
   UpdateQuat: {x: 0, y: 0, z: 0, w: 1}
-  StartPosition: {x: 0, y: 0, z: 0}
-  PlayerRideOn: 0
+  OffsetQuat: {x: 0, y: 0, z: 0, w: 1}
+  UpdatePosition: {x: 0, y: 0, z: 0}
+  OffsetPosition: {x: 0, y: 0, z: 0}
+  PlayerOnPlatform: 0
   UsedCollision: 0
   CheckGroundOffset: 0
   Behaviors:
   - {fileID: 587802200766393001}
+  - {fileID: 1539713673}
 --- !u!114 &587802200766393001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,21 +209,6 @@ MonoBehaviour:
   - Target: {fileID: 3807002449359178366}
     Material: {fileID: 0}
     ParamType: 2
-    ParamApplyTiming: 16
-    MaterialIndex: 0
-    ParamName: _fade
-    ParamFloatValue: 0
-    ParamIntValue: 0
-    ParamTexValue: {fileID: 0}
-    ParamColorValue: {r: 0, g: 0, b: 0, a: 0}
-    LerpTimeDiv: 0
-    LeftTime: 0
-    LerpTime: 1
-    StartValue: 0
-    StartColorValue: {r: 0, g: 0, b: 0, a: 0}
-  - Target: {fileID: 3807002449359178366}
-    Material: {fileID: 0}
-    ParamType: 2
     ParamApplyTiming: 4
     MaterialIndex: 0
     ParamName: _fade
@@ -247,3 +221,48 @@ MonoBehaviour:
     LerpTime: 1
     StartValue: 0
     StartColorValue: {r: 0, g: 0, b: 0, a: 0}
+  - Target: {fileID: 3807002449359178366}
+    Material: {fileID: 0}
+    ParamType: 2
+    ParamApplyTiming: 16
+    MaterialIndex: 0
+    ParamName: _fade
+    ParamFloatValue: 0
+    ParamIntValue: 0
+    ParamTexValue: {fileID: 0}
+    ParamColorValue: {r: 0, g: 0, b: 0, a: 0}
+    LerpTimeDiv: 0
+    LeftTime: 0
+    LerpTime: 1
+    StartValue: 0
+    StartColorValue: {r: 0, g: 0, b: 0, a: 0}
+--- !u!65 &1710347675
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9053660694319639208}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 1, z: 3}
+  m_Center: {x: 0, y: 0.51, z: 0}
+--- !u!114 &1539713673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9053660694319639208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81594be7142eaa49a5bb9ae2bc4baad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 3
+  ShakeDistance: 0.1
+  shakeDelay: 0.1
+  QuakeRate: 1.5
+  TargetPosition: {x: 0, y: -5, z: 0}

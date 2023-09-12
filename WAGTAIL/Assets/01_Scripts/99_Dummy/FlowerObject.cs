@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Timeline;
+using IPariUtility;
 
 /// <summary>
 /// 터지고 Object를 생성하여 포물선 궤적으로 던져줘야함.
@@ -38,7 +38,7 @@ public class FlowerObject : MonoBehaviour
             _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
             _obj.transform.position = FlowerTransform.position;
             _obj.transform.position += Vector3.up * 1.5f;
-            _obj.AddComponent<Rigidbody>().velocity = CaculateVelocity(t, FlowerTransform.position, FlightTIme);
+            _obj.AddComponent<Rigidbody>().velocity = IpariUtility.CaculateVelocity(t, FlowerTransform.position, FlightTIme);
             _obj.GetComponent<ScoreObject>().SetTime(FlightTIme);
             //marker.Add(_obj);
         }
@@ -52,27 +52,7 @@ public class FlowerObject : MonoBehaviour
         }
         Destroy(this.gameObject);
     }
-    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
-    {
-        // define the distance x and y first;
-        Vector3 distance = target - origin;
-        Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-        distanceXZ.y = 0f; // y는 0으로 설정.
 
-        // Create a float the represent our distance
-        float Sy = distance.y;      // 세로 높이의 거리를 지정.
-        float Sxz = distanceXZ.magnitude;
-
-        // 속도 추가
-        float Vxz = Sxz / time;
-        float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-
-        // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
-        Vector3 result = distanceXZ.normalized;
-        result *= Vxz;
-        result.y = Vy;
-        return result;
-    } 
     private Vector3 Search()
     {
         // Random.onUnitSphere : 반경 1을 갖는 구의 표면상에서 임의의 지점을 반환함

@@ -120,11 +120,11 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
         for (int i = 0; i < this.transform.childCount; i++)
         {
-            var rb = this.transform.GetChild(i).GetComponent<Rigidbody>();
-            if (rb != null)
+            var rigidbody = this.transform.GetChild(i).GetComponent<Rigidbody>();
+            if (rigidbody != null)
             {
-                rb.useGravity = true;
-                rb.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce),
+                rigidbody.useGravity = true;
+                rigidbody.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce),
                     transform.parent.position, _explosionForceRadius);
             }
         }

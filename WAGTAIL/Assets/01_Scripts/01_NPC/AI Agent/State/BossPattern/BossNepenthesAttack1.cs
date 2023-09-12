@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class BossNepenthesAttack1 : AIAttackState
@@ -23,6 +24,7 @@ public class BossNepenthesAttack1 : AIAttackState
     private GameObject LeftVinePrefab;
     private GameObject RightVinePrefab;
     private GameObject Vine;
+
 
     //=================================================
     /////               Magic Methods              /////
@@ -84,5 +86,4 @@ public class BossNepenthesAttack1 : AIAttackState
         // 몇 초 후 떨어지게 하기.
         BossRoomFildManager.Instance.BrokenPlatform(spawnPos.x);
     }
-
 }
