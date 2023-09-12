@@ -12,7 +12,9 @@ public class BossNepenthesAttack4 : AIAttackState
     //====================================================
     private GameObject FruitPrefab;
     private GameObject[] FruitPools;
-    public int aa;
+    private int FruitCount;
+    private float curTimer;
+    
 
     //====================================================
     /////               Magic Methods                    /////
@@ -20,7 +22,7 @@ public class BossNepenthesAttack4 : AIAttackState
     public BossNepenthesAttack4(AIStateMachine stateMachine, GameObject Fruit, int FruitCount) : base(stateMachine)
     {
         this.FruitPrefab = Fruit;
-        aa = FruitCount;
+        this.FruitCount = FruitCount;
         CreateFruits();
     }
 
@@ -47,12 +49,15 @@ public class BossNepenthesAttack4 : AIAttackState
 
     public override void Update()
     {
-        //base.Update();/
+        //base.Update();
+        curTimer += Time.deltaTime;
+        if(curTimer > 3f)   
+            ChangeState();
     }
 
     protected override void ChangeState()
     {
-        //base.ChangeState();
+        base.ChangeState();
     }
 
 
@@ -61,10 +66,10 @@ public class BossNepenthesAttack4 : AIAttackState
     //====================================================
     private void CreateFruits()
     {
-        FruitPools = new GameObject[aa];
+        FruitPools = new GameObject[FruitCount];
 
         // 생성 하는 기능.
-        for(int i = 0; i < aa; i++) 
+        for(int i = 0; i < FruitCount; i++) 
         {
             GameObject obj = GameObject.Instantiate<GameObject>(FruitPrefab);
             obj.transform.position = Vector3.zero;

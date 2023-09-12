@@ -11,7 +11,7 @@ public class BossNepenthesAttack2 : AIAttackState
     //////      Property And Fields      /////
     //========================================
     private float curTimer = 0;
-    private float changeTimer = 3;
+    private float changeTimer = 2;
 
     private Transform shootPoint;
     private GameObject bullet;

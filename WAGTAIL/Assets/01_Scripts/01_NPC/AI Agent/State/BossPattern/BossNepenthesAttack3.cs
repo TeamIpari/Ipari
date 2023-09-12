@@ -97,7 +97,8 @@ public class BossNepenthesAttack3 : AIAttackState
         foreach (var t in targets)
         {
             GameObject _obj = GameObject.Instantiate(circleObj);
-            _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
+            _obj.GetComponentInChildren<Transform>().localScale = Vector3.one * .3f;
+            _obj.transform.rotation = Quaternion.Euler(-90, 0, 0);
             _obj.transform.position = t;
             marker.Add(_obj);
         }
