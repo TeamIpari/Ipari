@@ -17,6 +17,7 @@ public class State
     public InputAction interactionAction;
     public InputAction climbingAction;
     public InputAction jumpAction;
+    public InputAction interacAction;
     public InputAction pushZAxisAction; // »óÇÏ
     public InputAction pushXAxisAction; // ÁÂ¿ì
 
@@ -29,6 +30,7 @@ public class State
         //PlayerInput
         moveAction = player.playerInput.actions["Move"];
         jumpAction = player.playerInput.actions["jump"];
+        interacAction = player.playerInput.actions["Interaction"];
         interactionAction = player.playerInput.actions["Interaction"];
         climbingAction = player.playerInput.actions["Climbing"];
         pushXAxisAction = player.playerInput.actions["MoveXAxis"];

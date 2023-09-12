@@ -15,6 +15,8 @@ public class Interactor : MonoBehaviour
 
     private readonly Collider[] _colliders = new Collider[3];
     [SerializeField] private int _numFound;
+    
+    private Collider _currentInteractable;
 
     private void Start()
     {
@@ -26,6 +28,7 @@ public class Interactor : MonoBehaviour
         interaction();
     } 
 
+    // (구현해야함) 가장 가까운 collider를 읽어내서 IInteractable을 상속받은 클래스가 있다면 상호작용을 한다.
     private void interaction()
     {
         _numFound = Physics.OverlapSphereNonAlloc(_interactionPoint.position, _interactionPointRadius, _colliders,
@@ -37,7 +40,7 @@ public class Interactor : MonoBehaviour
 
             if (interactable != null && Keyboard.current.fKey.wasPressedThisFrame)
             {
-                interactable.Interact(this);
+                interactable.Interact(this.gameObject);
                 player.currentInteractable = _colliders[0].gameObject;
             }
         }
