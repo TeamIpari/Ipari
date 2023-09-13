@@ -30,6 +30,7 @@ public class BossNepenthesWaitState : AIWaitState
 
     public override void Update()
     {
+        base.Update();
         CurTimer += Time.deltaTime;
         if (CurTimer > WaitTimer)
             stateMachine.NextPattern();

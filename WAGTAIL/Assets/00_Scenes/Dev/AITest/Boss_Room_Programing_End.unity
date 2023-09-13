@@ -389,6 +389,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6691858040626408666, guid: 9ea1b446fa02ec04d9b6f92f2511e3cf,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6691858040626408670, guid: 9ea1b446fa02ec04d9b6f92f2511e3cf,
         type: 3}
       propertyPath: m_Name
@@ -21304,6 +21309,12 @@ Transform:
   m_Father: {fileID: 1025732626}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &684379272 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4667427568522446791, guid: 3c1e3ae51c1486443ad7443bc5e0b3a0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1661036413}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &685544631
 GameObject:
   m_ObjectHideFlags: 0
@@ -34492,7 +34503,7 @@ GameObject:
   - component: {fileID: 967987807}
   m_Layer: 0
   m_Name: BossRoomFildManager
-  m_TagString: Untagged
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51036,7 +51047,7 @@ GameObject:
   - component: {fileID: 1223548500}
   m_Layer: 0
   m_Name: BOSS (1)
-  m_TagString: Untagged
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -56682,6 +56693,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Boss
       objectReference: {fileID: 0}
+    - target: {fileID: 4667427568522446791, guid: 3c1e3ae51c1486443ad7443bc5e0b3a0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Boss
+      objectReference: {fileID: 0}
     - target: {fileID: 5444245055144795517, guid: 3c1e3ae51c1486443ad7443bc5e0b3a0,
         type: 3}
       propertyPath: m_RootOrder
@@ -56745,6 +56761,19 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1661036413}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &1661036417
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684379272}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 10, z: 5}
+  m_Center: {x: 0, y: 3, z: 0}
 --- !u!1001 &1664329563
 PrefabInstance:
   m_ObjectHideFlags: 0

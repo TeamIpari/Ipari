@@ -26,7 +26,7 @@ public abstract class AIIdleState : AIState
 
     public override void Update()
     {
-
+        base.Update();
     }
 
 }
