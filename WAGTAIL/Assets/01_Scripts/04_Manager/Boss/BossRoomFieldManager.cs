@@ -42,7 +42,9 @@ public class BossRoomFieldManager :MonoBehaviour
     public Vector3 PlayerOnTilePos
     {
         get { return TargetPos; }
-        set { TargetPos = value; }
+        set { TargetPos = value;
+            Debug.Log($"Pos{TargetPos}");
+        }
     }
 
 

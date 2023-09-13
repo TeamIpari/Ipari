@@ -427,6 +427,15 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
     public void ExecutionFunction(float time)
     {
-        Debug.Log($"Not Have Function");
+        // 무빙 플랫폼 전용인데... 일단 임시
+        #region Call_OnObjectPlatformEnter
+        _PkProgress = PendingKillProgress.PENDINGKILL_READY;
+        for (int i = 0; i < _CopyCount; i++)
+        {
+            _InteractionsCopy[i].OnObjectPlatformEnter(this, Player.Instance.gameObject, null, Vector3.zero, Vector3.zero);
+        }
+        RefreshInteractionCopy(true);
+        _PkProgress = PendingKillProgress.NONE;
+        #endregion
     }
 }

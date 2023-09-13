@@ -60,8 +60,8 @@ public class Throw : MonoBehaviour, IInteractable
         center.name = "Center";
         if (_animator != null)
             rayRange = 1f;
-
     }
+
 
     public bool AnimEvent()
     {
@@ -250,28 +250,6 @@ public class Throw : MonoBehaviour, IInteractable
         autoTarget = _transform;
     }
 
-    //private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
-    //{
-    //    // define the distance x and y first;
-    //    Vector3 distance = target - origin;
-    //    Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-    //    distanceXZ.y = 0f; // y는 0으로 설정.
-    //    Forward = origin;
-    //    // Create a float the represent our distance
-    //    float Sy = distance.y;      // 세로 높이의 거리를 지정.
-    //    float Sxz = distanceXZ.magnitude;
-
-    //    // 속도 추가
-    //    float Vxz = Sxz / time;
-    //    float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-
-    //    // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
-    //    Vector3 result = distanceXZ.normalized;
-    //    result *= Vxz;
-    //    result.y = Vy;
-    //    return result;
-    //}
-
     private void OnCollisionEnter(Collision collision)
     {
         bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
@@ -292,4 +270,11 @@ public class Throw : MonoBehaviour, IInteractable
             rigidbody.velocity += Physics.gravity * .05f;
         }
     }
+
+    // 적을 캐치하는 구문
+    private void Search()
+    {
+
+    }
+
 }
