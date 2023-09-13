@@ -39,6 +39,12 @@ public class BossRoomFildManager :MonoBehaviour
     public TileMap BossFild;
 
     public Vector3 TargetPos;
+    public Vector3 PlayerOnTilePos
+    {
+        get { return TargetPos; }
+        set { TargetPos = value; }
+    }
+
 
     //=======================================
     //////        Magic Methods          ////
@@ -66,6 +72,12 @@ public class BossRoomFildManager :MonoBehaviour
     //======================================
     /////         Core Methods         /////
     //======================================
+
+    public Vector3 GetTilePos(int x, int y)
+    {
+        Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
+        return new Vector3(vec.x, 5f, vec.z);
+    }
     public void BrokenPlatform(float XPos)
     {
         // 내려 찍기 -> 2.5초 후 내려 찍음.
@@ -78,13 +90,6 @@ public class BossRoomFildManager :MonoBehaviour
             Y++;
             FindY = Y * (-StoneYSize);
         }
-    }
-
-    public Vector3 PlayerOnTilePos
-    {
-        get { return TargetPos; }
-        set { TargetPos = value; }
-
     }
 
     public void Initialized()

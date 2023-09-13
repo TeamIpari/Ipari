@@ -69,7 +69,7 @@ public class BombObject : MonoBehaviour
     {
         var tf = transform;
         var size = Physics.OverlapSphereNonAlloc(tf.position, explosionRange, _colliders);
-        Debug.Log(size);
+
         if (size != 0)
         {
             for (var i = 0; i < size; i++)
@@ -87,6 +87,8 @@ public class BombObject : MonoBehaviour
             var exploVFX = Instantiate(explosionVFX, tf.position, tf.rotation);
             Destroy(exploVFX, 3);
         }
+
+        // enable·Î ¹Ù²Ù»ï
         Destroy(gameObject);
 
 
@@ -107,6 +109,18 @@ public class BombObject : MonoBehaviour
         if (other.gameObject.CompareTag("Platform"))
         {
             StartCoroutine(StartTimeBomb(explosionTime));
+        }
+
+        if (other.gameObject.CompareTag("Boss"))
+        {
+            if (_isExplosionVFXNotNull)
+            {
+                var tf = transform;
+                var exploVFX = Instantiate(explosionVFX, tf.position, tf.rotation);
+                Destroy(exploVFX, 3);
+            }
+            // enable·Î ¹Ù²Ù»ï
+            Destroy(gameObject);
         }
     }
 

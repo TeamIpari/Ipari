@@ -40,6 +40,11 @@ public class BossNepenthes : Enemy
     public GameObject LeftVine;
     public GameObject RightVine;
 
+    [Header("Attack4 Parameter")]
+    [Tooltip("ÆøÅº ¿­¸Å")]
+    public int FruitCount;
+    public GameObject Fruit;        
+
 
     //==========================================
     /////           Magic Method            ////
@@ -104,7 +109,7 @@ public class BossNepenthes : Enemy
         AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
         AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
         AiAttack3 = new BossNepenthesAttack3(AiSM, BossProfile, time, ShotCount, ShotArea);
-
+        AiAttack4 = new BossNepenthesAttack4(AiSM, Fruit, FruitCount);
         // Á×´Â ±â´É.
         AiHit = new BossNepenthesHitState(AiSM);
         AiDie = new BossNepenthesDieState(AiSM);
