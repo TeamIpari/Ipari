@@ -87,12 +87,12 @@ public class BossNepenthesAttack4 : AIAttackState
             CreateFruits();
         foreach(var fruit in FruitPools)
         {
-            x = Random.Range(0, BossRoomFildManager.Instance.XSize);
-            z = Random.Range(0, BossRoomFildManager.Instance.YSize);
+            x = Random.Range(0, BossRoomFieldManager.Instance.XSize);
+            z = Random.Range(0, BossRoomFieldManager.Instance.YSize);
 
             fruit.SetActive(true);
             Debug.Log($"x : {x} , z :{z} ");
-            fruit.transform.position = BossRoomFildManager.Instance.GetTilePos(x, z);
+            fruit.transform.position = BossRoomFieldManager.Instance.GetTilePos(x, z);
         }
     }
 

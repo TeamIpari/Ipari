@@ -70,13 +70,13 @@ public class BossNepenthesAttack1 : AIAttackState
     //=================================================
     public void ShowVine()
     {
-        Vector3 spawnPos = BossRoomFildManager.Instance.PlayerOnTilePos;
-        bool isLeft = spawnPos.x < BossRoomFildManager.Instance.XSize / 2;
+        Vector3 spawnPos = BossRoomFieldManager.Instance.PlayerOnTilePos;
+        bool isLeft = spawnPos.x < BossRoomFieldManager.Instance.XSize / 2;
 
         // ÀÛÀ» °æ¿ì ¿ÞÂÊ µ¢Äð Ãâ·Â
         if (Vine == null)
         {
-            Vine = GameObject.Instantiate(isLeft ? RightVinePrefab : LeftVinePrefab, BossRoomFildManager.Instance.transform);
+            Vine = GameObject.Instantiate(isLeft ? RightVinePrefab : LeftVinePrefab, BossRoomFieldManager.Instance.transform);
             Vine.transform.localPosition = new Vector3(spawnPos.x, -1.0f, 1.5f);
         }
         else
@@ -85,6 +85,6 @@ public class BossNepenthesAttack1 : AIAttackState
             Vine.transform.localPosition = new Vector3(spawnPos.x, -1.0f, 1.5f);
         }
         // ¸î ÃÊ ÈÄ ¶³¾îÁö°Ô ÇÏ±â.
-        BossRoomFildManager.Instance.BrokenPlatform(spawnPos.x);
+        BossRoomFieldManager.Instance.BrokenPlatform(spawnPos.x);
     }
 }

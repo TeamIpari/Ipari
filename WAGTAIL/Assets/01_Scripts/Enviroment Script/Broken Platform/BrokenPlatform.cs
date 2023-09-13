@@ -46,9 +46,9 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     public bool Interact()
     {
-        if (BossRoomFildManager.Instance != null)
+        if (BossRoomFieldManager.Instance != null)
         {
-            BossRoomFildManager.Instance.PlayerOnTilePos = this.transform.parent.localPosition;
+            BossRoomFieldManager.Instance.PlayerOnTilePos = this.transform.parent.localPosition;
         }
         if (this.enabled)
             ExecutionFunction(HideNDownTime);

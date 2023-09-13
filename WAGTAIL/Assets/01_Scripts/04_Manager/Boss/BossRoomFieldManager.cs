@@ -5,7 +5,7 @@ using UnityEngine;
 using static UnityEngine.InputManagerEntry;
 
 
-public class BossRoomFildManager :MonoBehaviour
+public class BossRoomFieldManager :MonoBehaviour
 {
 
     [System.Serializable]
@@ -19,8 +19,8 @@ public class BossRoomFildManager :MonoBehaviour
     //========================================
 
     // 기본 인스텐스를 사용
-    private static BossRoomFildManager instance;
-    public static BossRoomFildManager Instance
+    private static BossRoomFieldManager instance;
+    public static BossRoomFieldManager Instance
     {
         get { return instance; }
     }
@@ -106,7 +106,7 @@ public class BossRoomFildManager :MonoBehaviour
 
                 BossFild.Add(spawnPos, CreateTile);
                 CreateTile.transform.localPosition = new Vector3(spawnPos.x, 0, spawnPos.y) + Offset;
-                CreateTile.GetComponentInChildren<BrokenPlatform>().ShakeSpeed = ShakeSpeed;
+                //CreateTile.GetComponentInChildren<BrokenPlatform>().ShakeSpeed = ShakeSpeed;
             }
         }
     }
@@ -115,7 +115,7 @@ public class BossRoomFildManager :MonoBehaviour
     {
         foreach(var curTile in BossFild)
         {
-            curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
+            curTile.Value.gameObject.GetComponentInChildren<PlatformObject>().enabled = false;
         }
     }
 }

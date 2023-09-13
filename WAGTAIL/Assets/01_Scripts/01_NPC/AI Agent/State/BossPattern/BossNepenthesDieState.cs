@@ -16,7 +16,7 @@ public class BossNepenthesDieState : AIDieState
     {
         base.Enter();
         stateMachine.Animator.SetTrigger("isDeath");
-        BossRoomFildManager.Instance.EnableBrokenPlatformComponent();
+        BossRoomFieldManager.Instance.EnableBrokenPlatformComponent();
     }
 
     public override void Exit()
