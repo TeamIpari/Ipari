@@ -115,6 +115,7 @@ public class BombObject : MonoBehaviour
         {
             if (_isExplosionVFXNotNull)
             {
+                other.gameObject.GetComponent<Enemy>().IsHit = true;
                 var tf = transform;
                 var exploVFX = Instantiate(explosionVFX, tf.position, tf.rotation);
                 Destroy(exploVFX, 3);

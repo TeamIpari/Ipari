@@ -66,6 +66,7 @@ public class BossNepenthesAttack2 : AIAttackState
 
     public override void Update()
     {
+        base.Update();
         curTimer += Time.deltaTime;
         ShootDelay();
         ChangeState();

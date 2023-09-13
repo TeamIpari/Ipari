@@ -112,7 +112,8 @@ public class Throw : MonoBehaviour, IInteractable
     {
         if (rigidbody.velocity == Vector3.zero && rigidbody.isKinematic == false )
         {
-            rigidbody.isKinematic = true;
+            //rigidbody.isKinematic = true;
+            ;
         }
     }
 

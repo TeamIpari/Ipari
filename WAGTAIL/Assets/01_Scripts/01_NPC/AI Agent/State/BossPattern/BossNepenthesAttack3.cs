@@ -78,6 +78,7 @@ public class BossNepenthesAttack3 : AIAttackState
 
     public override void Update()
     {
+        base.Update();
         // Bullet이 충돌할 경우 다음 스테이트로 이동.
         curTimer += Time.deltaTime;
         ShootDelay();

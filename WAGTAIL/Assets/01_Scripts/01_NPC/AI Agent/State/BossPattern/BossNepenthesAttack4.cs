@@ -49,7 +49,7 @@ public class BossNepenthesAttack4 : AIAttackState
 
     public override void Update()
     {
-        //base.Update();
+        base.Update();
         curTimer += Time.deltaTime;
         if(curTimer > 3f)   
             ChangeState();
@@ -81,7 +81,10 @@ public class BossNepenthesAttack4 : AIAttackState
     private void FruitSetting()
     {
         // n개의 좌표를 지정하고 해당 좌표에 생성해줌.
+        
         int x, z;
+        if (FruitPools[0] == null)
+            CreateFruits();
         foreach(var fruit in FruitPools)
         {
             x = Random.Range(0, BossRoomFildManager.Instance.XSize);
