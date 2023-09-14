@@ -43,7 +43,7 @@ public class PickUpState : State
             player.animator.SetTrigger("pickup"); // 작은 오브젝트 줍는 애니메이션
             player.animator.SetBool("small", true);
             animStr = "carry";  // 작은 오브젝트 들고 있는 애니메이션
-            pickUpTime = 0.5f;  // 작은 오브젝트 줍는 anim 시간.
+            pickUpTime = 0.9f;  // 작은 오브젝트 줍는 anim 시간.
         }
 
         //pickUpTime = 1.5f;
@@ -60,5 +60,11 @@ public class PickUpState : State
             stateMachine.ChangeState(player.carry);
         }
         timePassed += Time.deltaTime;
+    }
+    
+    public override void Exit()
+    {
+        base.Exit();
+        player.animator.SetBool("small", false);
     }
 }

@@ -25,7 +25,7 @@ public class AIMoveState : AIState
 
     public override void Update()
     {
-        throw new System.NotImplementedException();
+        base.Update();
     }
 
 }

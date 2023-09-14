@@ -69,10 +69,9 @@ public class IdleState : State
     {
         base.HandleInput();
 
-        if(jumpAction.triggered)
-        {
-            jump = true;
-        }
+        if (jumpAction.triggered) jump = true;
+        if (interacAction.triggered) player.Interaction();
+        
 
         climbing = player.isClimbing;
         push = player.isPush;
@@ -177,7 +176,7 @@ public class IdleState : State
             //Debug.Log(hitPointNormal);
         }*/
 
-        player.controller.Move(currentVelocity * Time.deltaTime * playerSpeed + gravityVelocity * Time.deltaTime);
+        player.controller.Move(currentVelocity * (Time.deltaTime * playerSpeed) + gravityVelocity * Time.deltaTime);
         
         if (velocity.sqrMagnitude > 0)
         {
@@ -229,7 +228,7 @@ public class IdleState : State
     {
         jump = true;
     }
-
+    
     private bool IsSliding
     {
         get
@@ -249,5 +248,4 @@ public class IdleState : State
             }
         }
     }
-
 }

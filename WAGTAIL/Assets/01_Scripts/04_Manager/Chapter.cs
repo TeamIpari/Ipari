@@ -5,5 +5,10 @@ using UnityEngine;
 public class Chapter : MonoBehaviour
 {
     public ChapterType ChapterType;
-    // ÃßÈÄ¿¡ CheckPoint¶û Coins List·Î ¸¸µé¾î¾ßÇÔ
+    // ì¶”í›„ì— CheckPointë‘ Coins Listë¡œ ë§Œë“¤ì–´ì•¼í•¨
+    
+    // ìˆ˜ê´‘
+    public int test;
+    // ëµí˜¸
+    public int test2;
 }

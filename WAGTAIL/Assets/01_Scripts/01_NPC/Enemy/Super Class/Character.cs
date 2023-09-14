@@ -15,6 +15,7 @@ public class MonsterPattern
         SPECAIL1,
         SPECAIL2,
         SPECAIL3,
+        SPECAIL4,
         DIE,
     }
     [SerializeField]

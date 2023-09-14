@@ -26,7 +26,7 @@ public abstract class AIAttackState : AIState
 
     public override void Update()
     {
-        throw new System.NotImplementedException();
+
     }
 
     protected virtual void ChangeState()

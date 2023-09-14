@@ -7,6 +7,7 @@ public class Enemy : Character
 
     public AIAttackState AiAttack2;
     public AIAttackState AiAttack3;
+    public AIAttackState AiAttack4;
 
     public override void SetAttackPattern()
     {
@@ -51,6 +52,9 @@ public class Enemy : Character
                     break;
                 case MonsterPattern.Pattern.SPECAIL3:
                     AddPattern(AiAttack3);
+                    break;
+                case MonsterPattern.Pattern.SPECAIL4:
+                    AddPattern(AiAttack4);
                     break;
                 case MonsterPattern.Pattern.DIE:
                     //AddPattern(Die);

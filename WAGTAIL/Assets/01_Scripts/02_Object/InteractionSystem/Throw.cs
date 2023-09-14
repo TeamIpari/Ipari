@@ -68,23 +68,24 @@ public class Throw : MonoBehaviour, IInteractable
         return false;
     }
 
-    public bool Interact(Interactor interactor)
+    public bool Interact(GameObject interactor)
     {
+        var player = interactor.GetComponent<Player>();
         if(_playerEquipPoint.transform.childCount == 0 &&
-            interactor.player.movementSM.currentState == interactor.player.idle)
+            player.movementSM.currentState == player.idle)
         {
             StartCoroutine(Pickup());
             // isCarry를 isThrow로 바꿔줘야함
-            if (_isSmall) interactor.player.isSmallThrow = true;
-            interactor.player.isCarry = true;
+            if (_isSmall) player.isSmallThrow = true;
+            player.isCarry = true;
             
             return true;
         }
 
-        else if (interactor.player.isCarry && interactor.player.movementSM.currentState == interactor.player.carry)
+        else if (player.currentInteractable != null)
         {
             StartCoroutine(Throwing(interactor));
-            interactor.player.isCarry = false;
+            player.isCarry = false;
             return true;
         }
 
@@ -111,7 +112,8 @@ public class Throw : MonoBehaviour, IInteractable
     {
         if (rigidbody.velocity == Vector3.zero && rigidbody.isKinematic == false )
         {
-            rigidbody.isKinematic = true;
+            //rigidbody.isKinematic = true;
+            ;
         }
     }
 
@@ -180,15 +182,9 @@ public class Throw : MonoBehaviour, IInteractable
             transform.transform.position = (BeziurCurve(_value));
             _value += 0.05f;
         }
-
         // Object를 Player의 머리 위로 옮김.
         rigidbody.isKinematic = true;
         rigidbody.useGravity = false;
-
-        // interactionPoint를 머리 위로 옮김
-        _nomalInteractionPoint = _playerInteractionPoint.transform.localPosition;
-        _playerInteractionPoint.transform.localPosition = _playerEquipPoint.transform.localPosition;
-
     }
 
     Vector3 BeziurCurve( float _value)
@@ -202,8 +198,9 @@ public class Throw : MonoBehaviour, IInteractable
         return C;
     }
 
-    IEnumerator Throwing(Interactor interactor)
+    IEnumerator Throwing(GameObject interactor)
     {
+        Player player = interactor.GetComponent<Player>();
         if(autoTarget != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
@@ -226,7 +223,7 @@ public class Throw : MonoBehaviour, IInteractable
         GetComponent<Collider>().isTrigger = false;
 
         //rigidbody.velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
-        rigidbody.velocity = IpariUtility.CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
+        rigidbody.velocity = IpariUtility.CaculateVelocity(player.transform.position + player.transform.forward * _range, this.transform.position, _hight);
         Forward = this.transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
@@ -237,7 +234,7 @@ public class Throw : MonoBehaviour, IInteractable
         // 추가된 스크립트 2023-08-22 강명호
         if(_isSmall)
         {
-            _playerEquipPoint.transform.localPosition = _playerEquipPos;
+            Player.Instance.isSmallThrow = false;
         }
         // ================================
     }
@@ -295,9 +292,4 @@ public class Throw : MonoBehaviour, IInteractable
             rigidbody.velocity += Physics.gravity * .05f;
         }
     }
-
-    private void OnCollisionStay(Collision collision)
-    {
-    }
-
 }

@@ -38,7 +38,7 @@ public class BrokenDoorManager : MonoBehaviour, IInteractable
         }
     }
 
-    public bool Interact(Interactor interactor)
+    public bool Interact(GameObject interactor)
     {
         Boom();
 
