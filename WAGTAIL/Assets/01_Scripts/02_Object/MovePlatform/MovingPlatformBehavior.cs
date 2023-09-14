@@ -161,6 +161,11 @@ public sealed class MovingPlatformBehavior : PlatformBehaviorBase
         {
             _isWait = true;
             _movingType = MovingType.Enter;         // 전조 증상 발생
+
+            if (BossRoomFieldManager.Instance != null)
+            {
+                BossRoomFieldManager.Instance.PlayerOnTilePos = this.transform.localPosition;
+            }
         }
     }
 
