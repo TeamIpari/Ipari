@@ -384,6 +384,7 @@ public struct FModEventInstance
 public interface IFModEventFadeComplete { void OnFModEventComplete(int fadeID, float goalVolume); }
 public delegate void FModEventFadeCompleteNotify( int fadeID, float goalVolume );
 
+[AddComponentMenu("FMOD Studio/FModAudioManager")]
 public sealed class FModAudioManager : MonoBehaviour
 {
     #region Editor_Extension

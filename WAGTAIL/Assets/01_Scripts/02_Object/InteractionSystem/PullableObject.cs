@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 /***********************************************
  *   당겨질 수 있는 로직을 제공하는 컴포넌트입니다...
  * **/
 public class PullableObject : MonoBehaviour
 {
-    public delegate void OnCompleted();
+    [System.Serializable]
+    public sealed class PullCompleteEvent : UnityEvent
+    {
+    }
 
     [System.Serializable]
     private struct BlendShapeData
@@ -28,8 +32,7 @@ public class PullableObject : MonoBehaviour
     [SerializeField] public Animator            Animator;
     [SerializeField] public Vector3             PullingDir;
     [SerializeField] public Transform           MaxLengthPoint;
-
-    public OnCompleted         OnPulledCompleted;
+    [SerializeField] public PullCompleteEvent   OnPullComplete;
 
     [Range(0f, 100f)]
     [SerializeField]
@@ -89,13 +92,15 @@ public class PullableObject : MonoBehaviour
 
     private void Update()
     {
-        if (_pulledAmount <= 0f) return;
+        #region Omit
+        if (_currentPuller==null) return;
 
         float deltaTime         = Time.deltaTime;
         float progressRatio     = (_pulledAmount * _progressDiv);
         float addForce          = (progressRatio>=.6f? (RestoringForce * (progressRatio)) : 0f);
         float restoringForce    = .1f + (RestoringForce * (progressRatio)) + addForce;
-        _pulledAmount           = Mathf.Clamp(_pulledAmount - restoringForce, 0f, 100f);
+        _pulledAmount           = Mathf.Clamp(_pulledAmount, 0f, 100f);
+        progressRatio           = (_pulledAmount * _progressDiv);
 
         /**최종적용*/
         for(int i=0; i<_blendShapeCount; i++) {
@@ -116,16 +121,17 @@ public class PullableObject : MonoBehaviour
             Vector3 holdPos    = defaultPos + (PullingDir * offset);
             Vector3 moveOffset = ( holdPos -_currentPuller.transform.position );
             moveOffset.y = 0f;
-            Player.Instance.controller.Move(moveOffset);
+            Player.Instance.controller.SimpleMove(moveOffset);
         }
 
         /**한계를 넘어서면, 완료 이벤트를 실행한다..*/
-        if( _limitTime>=1f )
+        if( _limitTime>=2f )
         {
+            OnPullComplete?.Invoke();
             PulledIsCompleted = true;
-            OnPulledCompleted?.Invoke();
             UnHold();
         }
+        #endregion
     }
 
 

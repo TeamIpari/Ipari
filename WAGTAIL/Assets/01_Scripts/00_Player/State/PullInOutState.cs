@@ -18,7 +18,7 @@ public sealed class PullInOutState : State
 
     private Coroutine   _progressCoroutine;
     private const float _LookAtTime  = .1f;
-    private const float _PulledDelay = .12f;
+    private const float _PulledDelay = .0f;
 
 
     //===================================
@@ -137,6 +137,8 @@ public sealed class PullInOutState : State
         }
         while (currTime<_LookAtTime);
 
+        bool isPulling = player.animator.GetCurrentAnimatorStateInfo(0).IsName("Player_Pulling");
+
 
         /***********************************
          *   당기는 방향에 따라 대상을 당긴다.
@@ -148,15 +150,38 @@ public sealed class PullInOutState : State
 
         while(!Input.GetKeyDown(KeyCode.R) && !PulledTarget.PulledIsCompleted)
         {
-            float len = input.magnitude;
+            while((currTime-=Time.deltaTime)>0f)
+            {
+                yield return null;
+            }
 
-            if (Vector3.Dot(input, PulledTarget.PullingDir) < 0) continue;
+            Vector2 input = new Vector2
+            {
+                x = Input.GetAxisRaw("Horizontal"),
+                y = Input.GetAxisRaw("Vertical")
+            };
+
+            float len = input.magnitude;
+            //if (Vector3.Dot(input, PulledTarget.PullingDir) < 0)
+            //{
+            //    player.animator.speed = prevSpeed;
+            //    yield return null;
+            //    continue;
+            //}
 
             player.animator.SetFloat("speed", len);
-            PulledTarget.Pull((len * .2f), input);
+
+            if (len > 0)
+            {
+                player.animator.speed = .6f;
+                PulledTarget.Pull((len * .4f), input);
+                currTime = _PulledDelay;
+            }
 
             yield return null;
         }
+
+        player.animator.speed = prevSpeed;
 
         /**완전히 끝났을 경우...*/
         if (PulledTarget.PulledIsCompleted){
@@ -164,9 +189,9 @@ public sealed class PullInOutState : State
             player.animator.SetTrigger("pullout");
             currTime = 0f;
 
-            while ((currTime+=Time.deltaTime)<1f)
+            while ((currTime+=Time.deltaTime)<.5f)
             {
-                player.controller.SimpleMove(-forward*.5f);
+                player.controller.SimpleMove(-forward*2f);
                 yield return null;
             }
         }

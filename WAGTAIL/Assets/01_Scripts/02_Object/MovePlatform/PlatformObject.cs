@@ -30,6 +30,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     [HideInInspector] public Quaternion OffsetQuat      = Quaternion.identity;
     [HideInInspector] public Vector3    UpdatePosition  = Vector3.zero;
     [HideInInspector] public Vector3    OffsetPosition  = Vector3.zero;
+    [HideInInspector] public Vector3    PrevPosition    = Vector3.zero;
     [SerializeField]  public bool PlayerOnPlatform      = false;
     [SerializeField]  public bool UsedCollision         = false;
     [HideInInspector] public float CheckGroundOffset    = 0f;
@@ -45,12 +46,12 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
     /**Interactions 관련*/
     private Transform _Tr;
+    private Rigidbody _body;
     private Collider  _Collider;
     private PendingKillProgress    _PkProgress = PendingKillProgress.NONE;
     private int                    _CopyCount  = 0;
     private int                    _ObjectOnPlatformCount = 0;
     private PlatformBehaviorBase[] _InteractionsCopy;
-
 
 
     //=======================================
@@ -123,16 +124,30 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     //=======================================
     private void Start()
     {
+        #region Omit
         if (_Controller == null)
         {
             _Controller = Player.Instance?.GetComponent<CharacterController>();
             _PlayerSM = Player.Instance.movementSM;
         }
 
+        if(UsedCollision)
+        {
+            _body = GetComponent<Rigidbody>();  
+        }
+
         if(Collider==null) Collider = GetComponent<Collider>();
         _Tr = transform;
-        gameObject.tag = "Platform";
-        layer          = ( 1<<gameObject.layer );
+        gameObject.tag   = "Platform";
+
+        /**적절한 레이어를 세팅한다..*/
+        if ((layer = LayerMask.NameToLayer("Platform")) >= 0){
+
+            gameObject.layer = layer;
+            layer = (1 << layer);
+        }
+        else layer = 0;
+
         UpdateQuat      = transform.rotation;
         UpdatePosition  = transform.position;
 
@@ -157,7 +172,9 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         } 
         RefreshInteractionCopy(true);
         _PkProgress = PendingKillProgress.NONE;
-        #endregion 
+        #endregion
+
+        #endregion
     }
 
     private void FixedUpdate()
@@ -173,8 +190,9 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         #endregion
 
         /**공통 변경사항 적용...*/
-        _Tr.rotation    = (UpdateQuat * OffsetQuat);
-        _Tr.position    = (UpdatePosition + OffsetPosition);
+        PrevPosition = _Tr.position;
+        _Tr.rotation = (UpdateQuat * OffsetQuat);
+        _Tr.position = (UpdatePosition + OffsetPosition);
         OffsetQuat      = Quaternion.identity;
         OffsetPosition  = Vector3.zero;
 
@@ -247,7 +265,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         /**해당 오브젝트가 발판을 밟았을 경우의 처리*/
         if (result && collision.gameObject != Player.Instance.gameObject)
         {
-            collision.transform.SetParent(transform, true);
+            collision.transform.parent = transform;
             #region Call_OnObjectPlatformEnter
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
             for (int i = 0; i < _CopyCount; i++)
@@ -300,14 +318,18 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             _PkProgress = PendingKillProgress.NONE;
             #endregion
         }
-        else
+        else if(collision.gameObject != Player.Instance.gameObject)
         {
-            /**부모-자식 관계를 해제한다.*/
-            Transform exitTr = collision.transform;
-            if (exitTr.parent == transform) {
-
-                exitTr.parent = null;
+            if (collision.transform.parent == transform) collision.transform.parent = null;
+            #region Call_OnObjectPlatformExit
+            _PkProgress = PendingKillProgress.PENDINGKILL_READY;
+            for (int i = 0; i < _CopyCount; i++)
+            {
+                _InteractionsCopy[i].OnObjectPlatformExit(this, Player.Instance.gameObject, collision.rigidbody);
             }
+            RefreshInteractionCopy(true);
+            _PkProgress = PendingKillProgress.NONE;
+            #endregion
         }
 
         #endregion
@@ -318,15 +340,9 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         #region Omit
         if (UsedCollision == false) return;
 
-        /**부모-자식 관계를 해제한다.*/
-        Transform exitTr = collision.transform;
-        if(exitTr.parent == transform){
-
-            exitTr.parent = null;
-        }
-
         if (collision.gameObject != Player.Instance.gameObject)
         {
+            if (collision.transform.parent == transform) collision.transform.parent = null;
             #region Call_OnObjectPlatformExit
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
             for (int i = 0; i < _CopyCount; i++)
