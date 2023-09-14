@@ -139,6 +139,6 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
-        if (standingBody = null) standingTarget.transform.position += ( Vector3.up * Yspeed );
+        //if (standingBody = null) standingTarget.transform.position += ( Vector3.up * Yspeed );
     }
 }

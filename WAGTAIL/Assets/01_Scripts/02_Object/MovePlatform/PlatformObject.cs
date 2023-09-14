@@ -32,7 +32,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     [HideInInspector] public Vector3    OffsetPosition  = Vector3.zero;
     [HideInInspector] public Vector3    PrevPosition    = Vector3.zero;
     [SerializeField]  public bool PlayerOnPlatform      = false;
-    [SerializeField]  public bool UsedCollision         = false;
+    [SerializeField]  public bool UsedCollision         = true;
     [HideInInspector] public float CheckGroundOffset    = 0f;
 
 
@@ -231,6 +231,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
                 _PkProgress = PendingKillProgress.NONE;
                 #endregion
 
+                Player.Instance.transform.parent = null;
                 PlayerOnPlatform = false;
                 _ObjectOnPlatformCount--;
             }
@@ -421,6 +422,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
             if (isSameObject && isLanded)
             {
+                Player.Instance.transform.parent = transform;
                 PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;
 
