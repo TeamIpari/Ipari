@@ -198,6 +198,7 @@ public class Player : MonoBehaviour
         // player singleton 고민.
         if(instance == null)
             instance = this;
+        //transform.parent = null;
     }
 
     private void Start()
