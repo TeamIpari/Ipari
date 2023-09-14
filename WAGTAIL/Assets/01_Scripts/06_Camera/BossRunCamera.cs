@@ -5,35 +5,19 @@ using UnityEngine;
 
 public class BossRunCamera : MonoBehaviour
 {
-    // ¿òÁ÷ÀÌ´Â ÇÃ·§Æû 
-    [SerializeField] private Transform _startPoint;
-    [SerializeField] private Transform _endPoint;
-    [SerializeField] private float _time;
-    
-    private float _currentTime;
-    private bool _isEnd;
-    void Start()
+    private Transform _target;
+    private Transform _cameraTransform;
+    public float calibratedDistance;
+
+    private void Start()
     {
-        _isEnd = false;
-        transform.position = _startPoint.position;
-        _currentTime = 0;
+        _target = Player.Instance.transform;
+        _cameraTransform = GetComponent<Transform>();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        _currentTime += Time.deltaTime;
-
-        if (_currentTime >= _time)
-        {
-            _currentTime = _time;
-            _isEnd = true;
-            
-        }
-        MoveCamera(_currentTime);
-    }
-
-    void MoveCamera(float t)
-    {
-        transform.position = Vector3.Lerp(_startPoint.position, _endPoint.position, t / _time);
+        _cameraTransform.position = new Vector3(
+            _cameraTransform.position.x, _cameraTransform.position.y, _target.position.z - calibratedDistance);
     }
 }
