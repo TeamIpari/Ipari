@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 //using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using UnityEngine.TextCore.Text;
+using IPariUtility;
+using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 [RequireComponent(typeof(SoundHandler))]
 public class Player : MonoBehaviour
@@ -26,6 +30,20 @@ public class Player : MonoBehaviour
     // =======================================
     public float slopeSpeed = 0f;
     public float respawnTime;
+    //========================================
+    //              지훈 추가               //
+    //========================================
+    [Header("Search")]
+    public float rotateAngle;
+    public float SearchAngle;
+    public LayerMask targetMask;
+    [Range(0, 360f)]
+    [SerializeField] private float m_horizontalViewAngle = 0f;
+    [Range(-180f, 180f)]
+    [SerializeField] private float m_viewRotateZ = 0f;
+    private float m_horizontalViewHalfAngle = 0f;
+    //========================================
+
 
     [Header("Animation Smoothing")]
     [Range(0, 1)]
@@ -122,11 +140,28 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward);
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawLine(transform.position, transform.position + transform.forward);
         
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(InteractionPoint.position, _interactionPointRadius);
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawWireSphere(InteractionPoint.position, _interactionPointRadius);
+
+        //======================================
+        //지훈추가
+        //======================================
+        m_horizontalViewHalfAngle = m_horizontalViewAngle * 0.5f;
+
+        Vector3 originPos = transform.position;
+
+        Gizmos.DrawWireSphere(originPos, 3);
+
+        Vector3 horizontalRightDir = IpariUtility.AngleToDirY(transform, -m_horizontalViewHalfAngle + m_viewRotateZ);
+        Vector3 horizontalLeftDir = IpariUtility.AngleToDirY(transform, m_horizontalViewHalfAngle + m_viewRotateZ);
+        Vector3 lookDir = IpariUtility.AngleToDirY(transform, m_viewRotateZ);
+
+        Debug.DrawRay(originPos, horizontalLeftDir * 3, Color.cyan);
+        Debug.DrawRay(originPos, lookDir * 3, Color.green);
+        Debug.DrawRay(originPos, horizontalRightDir * 3, Color.cyan);
     }
 
     private void Awake()
@@ -210,17 +245,27 @@ public class Player : MonoBehaviour
     // (구현해야함) 가장 가까운 collider를 읽어내서 IInteractable을 상속받은 클래스가 있다면 상호작용을 한다.
     public void Interaction()
     {
-        if (currentInteractable == null)
+        //if (currentInteractable == null)
+        //{
+        //    _numFound = Physics.OverlapSphereNonAlloc(InteractionPoint.position, _interactionPointRadius, _colliders,
+        //        interactableMask);
+
+        //    if (_numFound <= 0) return;
+        //    var interactable = _colliders[0].GetComponent<IInteractable>();
+
+        //    if (interactable == null) return;
+        //    interactable.Interact(gameObject);
+        //    currentInteractable = _colliders[0].gameObject;
+        //}
+        if(currentInteractable == null)
         {
-            _numFound = Physics.OverlapSphereNonAlloc(InteractionPoint.position, _interactionPointRadius, _colliders,
-                interactableMask);
-
-            if (_numFound <= 0) return;
-            var interactable = _colliders[0].GetComponent<IInteractable>();
-
-            if (interactable == null) return;
+            GameObject obj = FindViewTarget(transform, 3, targetMask);
+            if (obj == null)  return;
+            var interactable = obj.GetComponent<IInteractable>();
+            if (interactable == null)  return;
             interactable.Interact(gameObject);
-            currentInteractable = _colliders[0].gameObject;
+            currentInteractable = obj;
+
         }
 
         else
@@ -248,5 +293,30 @@ public class Player : MonoBehaviour
         {
 
         }
+    }
+
+    private GameObject FindViewTarget(Transform transform, float SearchRange, LayerMask targetMask)
+    {
+        Vector3 targetPos, dir, lookdir;
+        Vector3 originPos = transform.position;
+        Collider[] hitedTargets = Physics.OverlapSphere(originPos, SearchRange, targetMask);
+
+        float dot, angle;
+
+        foreach(var hitedTarget in hitedTargets)
+        {
+            targetPos = hitedTarget.transform.position;
+            dir = (targetPos - originPos).normalized;
+            lookdir = IpariUtility.AngleToDirY(this.transform.eulerAngles, rotateAngle);
+
+            dot = Vector3.Dot(lookdir, dir);
+            angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+            if(angle <= SearchAngle)
+            {
+                // 타겟이 걸리면 반환.
+                return hitedTarget.gameObject;
+            }
+        }
+        return null;
     }
 }
