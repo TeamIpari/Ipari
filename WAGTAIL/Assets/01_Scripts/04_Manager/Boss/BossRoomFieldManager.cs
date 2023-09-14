@@ -67,7 +67,9 @@ public class BossRoomFieldManager :MonoBehaviour
     private IEnumerator BrokenDelay(float x, float y)
     {
         yield return new WaitForSeconds(2.5f);
-        BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
+        //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
+        BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
+
     }
 
     //======================================
@@ -107,7 +109,7 @@ public class BossRoomFieldManager :MonoBehaviour
 
                 BossFild.Add(spawnPos, CreateTile);
                 CreateTile.transform.localPosition = new Vector3(spawnPos.x, 0, spawnPos.y) + Offset;
-                //CreateTile.GetComponentInChildren<BrokenPlatform>().ShakeSpeed = ShakeSpeed;
+                CreateTile.GetComponentInChildren<BrokenPlatform>().ShakeSpeed = ShakeSpeed;
             }
         }
     }
@@ -116,7 +118,8 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         foreach(var curTile in BossFild)
         {
-            curTile.Value.gameObject.GetComponentInChildren<PlatformObject>().enabled = false;
+            //curTile.Value.gameObject.GetComponentInChildren<PlatformObject>().enabled = false;
+            curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
         }
     }
 }
