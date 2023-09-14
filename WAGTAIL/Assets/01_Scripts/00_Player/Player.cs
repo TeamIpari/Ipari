@@ -33,15 +33,18 @@ public class Player : MonoBehaviour
     //========================================
     //              지훈 추가               //
     //========================================
-    [Header("Search")]
+    [Header("HoldSearch")]
     public float rotateAngle;
-    public float SearchAngle;
-    public LayerMask targetMask;
     [Range(0, 360f)]
     [SerializeField] private float m_horizontalViewAngle = 0f;
     [Range(-180f, 180f)]
     [SerializeField] private float m_viewRotateZ = 0f;
+    public LayerMask holdTargetMask;
+    public LayerMask ThrowTargetMask;
     private float m_horizontalViewHalfAngle = 0f;
+    public float throwRange = 6f;
+    [Header("AutoTarget")]
+    public GameObject Target;
     //========================================
 
 
@@ -142,26 +145,45 @@ public class Player : MonoBehaviour
     {
         //Gizmos.color = Color.red;
         //Gizmos.DrawLine(transform.position, transform.position + transform.forward);
-        
+
         //Gizmos.color = Color.red;
         //Gizmos.DrawWireSphere(InteractionPoint.position, _interactionPointRadius);
 
         //======================================
         //지훈추가
         //======================================
-        m_horizontalViewHalfAngle = m_horizontalViewAngle * 0.5f;
+        if (!isCarry)
+        {
+            m_horizontalViewHalfAngle = m_horizontalViewAngle * 0.5f;
 
-        Vector3 originPos = transform.position;
+            Vector3 originPos = transform.position;
 
-        Gizmos.DrawWireSphere(originPos, 3);
+            Gizmos.DrawWireSphere(originPos, 3);
 
-        Vector3 horizontalRightDir = IpariUtility.AngleToDirY(transform, -m_horizontalViewHalfAngle + m_viewRotateZ);
-        Vector3 horizontalLeftDir = IpariUtility.AngleToDirY(transform, m_horizontalViewHalfAngle + m_viewRotateZ);
-        Vector3 lookDir = IpariUtility.AngleToDirY(transform, m_viewRotateZ);
+            Vector3 horizontalRightDir = IpariUtility.AngleToDirY(transform, -m_horizontalViewHalfAngle + m_viewRotateZ);
+            Vector3 horizontalLeftDir = IpariUtility.AngleToDirY(transform, m_horizontalViewHalfAngle + m_viewRotateZ);
+            Vector3 lookDir = IpariUtility.AngleToDirY(transform, m_viewRotateZ);
 
-        Debug.DrawRay(originPos, horizontalLeftDir * 3, Color.cyan);
-        Debug.DrawRay(originPos, lookDir * 3, Color.green);
-        Debug.DrawRay(originPos, horizontalRightDir * 3, Color.cyan);
+            Debug.DrawRay(originPos, horizontalLeftDir * 3, Color.cyan);
+            Debug.DrawRay(originPos, lookDir * 3, Color.green);
+            Debug.DrawRay(originPos, horizontalRightDir * 3, Color.cyan);
+        }
+        else
+        {
+            m_horizontalViewHalfAngle = m_horizontalViewAngle * 0.5f;
+
+            Vector3 originPos = transform.position;
+
+            Gizmos.DrawWireSphere(originPos, throwRange);
+
+            Vector3 horizontalRightDir = IpariUtility.AngleToDirY(transform, -m_horizontalViewHalfAngle + m_viewRotateZ);
+            Vector3 horizontalLeftDir = IpariUtility.AngleToDirY(transform, m_horizontalViewHalfAngle + m_viewRotateZ);
+            Vector3 lookDir = IpariUtility.AngleToDirY(transform, m_viewRotateZ);
+
+            Debug.DrawRay(originPos, horizontalLeftDir * throwRange, Color.cyan);
+            Debug.DrawRay(originPos, lookDir * throwRange, Color.green);
+            Debug.DrawRay(originPos, horizontalRightDir * throwRange, Color.cyan);
+        }
     }
 
     private void Awake()
@@ -235,6 +257,10 @@ public class Player : MonoBehaviour
         movementSM.currentState.HandleInput();
 
         movementSM.currentState.LogicUpdate();
+        if(isCarry)
+        {
+            EnemySearching();
+        }
     }
 
     private void FixedUpdate()
@@ -259,7 +285,7 @@ public class Player : MonoBehaviour
         //}
         if(currentInteractable == null)
         {
-            GameObject obj = FindViewTarget(transform, 3, targetMask);
+            GameObject obj = FindViewTarget(transform, 3,holdTargetMask);
             if (obj == null)  return;
             var interactable = obj.GetComponent<IInteractable>();
             if (interactable == null)  return;
@@ -295,6 +321,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    //==================================================
+    //                      지훈 추가                   //
+    //          용서가 빠르다는 이야기를 들었습니다.       // 
+    //==================================================
     private GameObject FindViewTarget(Transform transform, float SearchRange, LayerMask targetMask)
     {
         Vector3 targetPos, dir, lookdir;
@@ -311,12 +341,19 @@ public class Player : MonoBehaviour
 
             dot = Vector3.Dot(lookdir, dir);
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            if(angle <= SearchAngle)
+            if(angle <= m_horizontalViewAngle)
             {
                 // 타겟이 걸리면 반환.
                 return hitedTarget.gameObject;
             }
         }
+        // 걸리는게 없나요? 정상입니다.
         return null;
+    }
+
+    private void EnemySearching()
+    {
+        Target = FindViewTarget(transform, throwRange, ThrowTargetMask );
+        
     }
 }
