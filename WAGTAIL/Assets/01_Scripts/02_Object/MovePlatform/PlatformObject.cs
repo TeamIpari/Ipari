@@ -448,7 +448,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         _PkProgress = PendingKillProgress.PENDINGKILL_READY;
         for (int i = 0; i < _CopyCount; i++)
         {
-            _InteractionsCopy[i].OnObjectPlatformEnter(this, Player.Instance.gameObject, null, Vector3.zero, Vector3.zero);
+            _InteractionsCopy[i].OnObjectPlatformEnter(this, null, null, Vector3.zero, Vector3.zero);
         }
         RefreshInteractionCopy(true);
         _PkProgress = PendingKillProgress.NONE;

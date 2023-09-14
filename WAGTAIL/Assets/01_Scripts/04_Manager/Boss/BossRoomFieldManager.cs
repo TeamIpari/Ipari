@@ -1,6 +1,7 @@
 using FMOD.Studio;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using static UnityEngine.InputManagerEntry;
 
@@ -68,7 +69,7 @@ public class BossRoomFieldManager :MonoBehaviour
     private IEnumerator BrokenDelay(float x, float y)
     {
         yield return new WaitForSeconds(2.5f);
-        BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
+        BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
     }
 
     //======================================

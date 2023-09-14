@@ -201,10 +201,10 @@ public class Throw : MonoBehaviour, IInteractable
     IEnumerator Throwing(GameObject interactor)
     {
         Player player = interactor.GetComponent<Player>();
-        if(autoTarget != null)
+        if(player.Target != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
-            Player.Instance.transform.LookAt(new Vector3(autoTarget.position.x, Player.Instance.transform.position.y, autoTarget.position.z));
+            Player.Instance.transform.LookAt(new Vector3(player.Target.transform.position.x, Player.Instance.transform.position.y, player.Target.transform.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
         yield return new WaitForSeconds(0.2f);

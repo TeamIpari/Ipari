@@ -160,7 +160,7 @@ public sealed class MovingPlatformBehavior : PlatformBehaviorBase
         if (!_isWait)
         {
             _isWait = true;
-            _movingType = MovingType.Enter;         // 전조 증상 발생
+            _movingType = standingTarget != null ? MovingType.Enter : MovingType.Down;         // 전조 증상 발생
 
             if (BossRoomFieldManager.Instance != null)
             {
