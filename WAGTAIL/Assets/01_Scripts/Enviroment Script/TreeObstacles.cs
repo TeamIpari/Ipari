@@ -3,27 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(Collider))]
-
 /**********************************************
  *   나무가 쓰러지는 효과가 구현된 컴포넌트입니다.
  * ***/
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Collider))]
+[AddComponentMenu("Triggerable/TreeObstacles")]
 public sealed class TreeObstacles : MonoBehaviour
 {
-    #region Define
-    [System.Serializable]
-    public struct SwitchRange
-    {
-        public Vector3 offset;
-        public Vector3 Scale;
-    }
-    #endregion
-
     //=====================================
     ////      Property And Fields      ////
     //=====================================
-    [SerializeField] public SwitchRange Range = new SwitchRange();
     [SerializeField] public Transform   FallDownDir;
     [SerializeField] public float       FallDownSpeed = 1f;
     [SerializeField] public bool        FallDownUsedCollision = false;
@@ -49,6 +39,7 @@ public sealed class TreeObstacles : MonoBehaviour
     //=====================================
     private void Start()
     {
+        #region Omit
         /**Intialized*/
         _Body = GetComponent<Rigidbody>();
         _Body.useGravity = false;
@@ -58,34 +49,12 @@ public sealed class TreeObstacles : MonoBehaviour
 
         _Collider= GetComponent<Collider>();
         maxRebound = rebound;
-    }
-
-    private void FixedUpdate()
-    {
-        //범위 안에 플레이어가 들어왔는지 체크.
-        if(_IsSwitch==false && TriggerTestPlayer())
-        {
-            _Collider.isTrigger = !FallDownUsedCollision;
-            _Body.isKinematic = false;
-            _IsSwitch = true;
-            _Body.WakeUp();
-            fallDownCoroutine = StartCoroutine(FallDownProgress());
-
-            //Tree Sound 재생...
-            FModAudioManager.PlayOneShotSFX(
-                  FModSFXEventType.Tree_Obstacle,
-                  FModLocalParamType.TreeActionType,
-                  FModParamLabel.TreeActionType.TreeFallDown,
-                  transform.position,
-
-                  -1,
-                  -1
-              );
-        }
+        #endregion
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        #region Omit
         if (other.gameObject.CompareTag("Platform"))
         {
             //have ShatterObject...
@@ -100,11 +69,14 @@ public sealed class TreeObstacles : MonoBehaviour
             //TODO: 파괴된 발판들의 이펙트는, 각 발판의 OnDestory()에서 실행하도록 생각중.
             Destroy(other.gameObject);
         }
+
+        #endregion
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if(_hitColliders.Contains(collision.collider))
+        #region Omit
+        if (_hitColliders.Contains(collision.collider))
         {
             _hitColliders.Remove(collision.collider);
 
@@ -114,10 +86,12 @@ public sealed class TreeObstacles : MonoBehaviour
                 rebound = maxRebound;
             }
         }
+        #endregion
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        #region Omit
         _hitColliders.Add(collision.collider);
 
         if (collision.gameObject.CompareTag("Platform"))
@@ -155,16 +129,15 @@ public sealed class TreeObstacles : MonoBehaviour
             rebound -= maxRebound * ReboundValue;
             if (rebound < 0) rebound = 0;
         }
+        #endregion
     }
 
     private void OnDrawGizmos()
     {
-        Vector3 center = (transform.position + Range.offset);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(center, Range.Scale);
-
+        #region Omit
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, center );
+        Gizmos.DrawLine(transform.position, FallDownDir.position);
+        #endregion
     }
 
 
@@ -172,6 +145,30 @@ public sealed class TreeObstacles : MonoBehaviour
     //=====================================
     ////         Core Methods          ////
     //=====================================
+    public void StartFallDown()
+    {
+        #region Omit
+        if (_IsSwitch) return;
+
+        _Collider.isTrigger = !FallDownUsedCollision;
+        _Body.isKinematic = false;
+        _IsSwitch = true;
+        _Body.WakeUp();
+        fallDownCoroutine = StartCoroutine(FallDownProgress());
+
+        //Tree Sound 재생...
+        FModAudioManager.PlayOneShotSFX(
+              FModSFXEventType.Tree_Obstacle,
+              FModLocalParamType.TreeActionType,
+              FModParamLabel.TreeActionType.TreeFallDown,
+              transform.position,
+
+              -1,
+              -1
+          );
+        #endregion
+    }
+
     private IEnumerator FallDownProgress()
     {
         #region Omission
@@ -308,38 +305,4 @@ public sealed class TreeObstacles : MonoBehaviour
 
         #endregion
     }
-
-    private bool TriggerTestPlayer()
-    {
-        //Player Range
-        CharacterController con = Player.Instance.controller;
-        Vector3 pCenter = con.transform.position + con.center;
-        float pHeight = con.height;
-        float pRadius = con.radius;
-        float pminX = pCenter.x - pRadius;
-        float pmaxX = pCenter.x + pRadius;
-        float pminY = pCenter.y - pHeight * .5f;
-        float pmaxY = pCenter.y + pHeight * .5f;
-        float pminZ = pCenter.z - pRadius;
-        float pmaxZ = pCenter.z + pRadius;
-
-        //Trigger Range
-        Vector3 rangePos = (transform.position + Range.offset);
-        float minX = rangePos.x - Range.Scale.x * .5f;
-        float maxX = rangePos.x + Range.Scale.x * .5f;
-        float minY = rangePos.y - Range.Scale.y * .5f;
-        float maxY = rangePos.y + Range.Scale.y * .5f;
-        float minZ = rangePos.z - Range.Scale.z * .5f;
-        float maxZ = rangePos.z + Range.Scale.z * .5f;
-
-        //Check overlap
-        bool xOvrlap = (pminX <= maxX && pmaxX >= minX);
-        bool yOverlap = (pminY <= maxY && pmaxY >= minY);
-        bool ZOverlap = (pminZ <= maxZ && pmaxZ >= minZ);
-
-        return xOvrlap && yOverlap && ZOverlap;
-    }
-
-
-
 }

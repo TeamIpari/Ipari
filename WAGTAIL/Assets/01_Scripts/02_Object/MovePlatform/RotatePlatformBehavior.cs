@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.Rendering;
 using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
+using UnityEditor.Rendering;
 using static FModEventPlayBehavior;
 using UnityEditor;
 #endif
@@ -79,6 +79,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
     private float               _lastRotateAngle = 0f;
     private Transform           _platformTr;
     private Quaternion          _lastUpdateQuat = Quaternion.identity;
+    private Vector3             _lastUpdateCenter = Vector3.zero;
 #if UNITY_EDITOR
     private Collider            _editorCollider;
 #endif
@@ -90,9 +91,21 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
     //=======================================
     public override void BehaviorStart(PlatformObject affectedPlatform)
     {
+        #region Omit
         Vector3 startCenter   = (affectedPlatform.Collider.bounds.center + RotateCenterOffset);
         _centerDistance       = ( startCenter - affectedPlatform.transform.position).magnitude;
         _platformTr           = affectedPlatform.transform;
+
+        if (PauseInterval <= 0){
+
+            _PauseInterval = 1f;
+        }
+
+        if (PauseDuration <= 0){
+
+            _PauseDuration = 0f;
+        }
+
         _pauseIntervalTimeDiv = ( 1f / PauseInterval );
         _PauseTimeDiv         = ( 1f / PauseDuration );
 
@@ -102,6 +115,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
             _state = RotatePlatformState.Rotation;
             _currTime = 0f;
         }
+        #endregion
     }
 
     public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
@@ -216,6 +230,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
+        return;
         #region Omit
         if (_state != RotatePlatformState.Rotation) return;
 
@@ -230,6 +245,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
 
         //ÇöÀç ÀÌ ÇÃ·§ÆûÀ» ¹â°í ÀÖ´Â ´ë»óÀ» ÇÃ·§Æû°ú °°ÀÌ È¸Àü½ÃÅ²´Ù.
         Vector3 rotVector = new Vector3(cos, 0f, sin) * radius;
+
         standingTarget.transform.position = (platformCenter2 + rotVector);
 
         if (ApplyStandingObjectRotate){

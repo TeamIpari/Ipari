@@ -18,8 +18,9 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     //========================================
     //////           Property            /////
     //========================================
-    [SerializeField] public float Yspeed        = 0f;
-    [SerializeField] public float Rotspeed      = 0f;
+    public float Yspeed        = 0f;
+    public float Rotspeed      = 0f;
+
     [SerializeField] public float sinkDepth     = .1f;
     [SerializeField] public float SpinPow       = 80f;
 
@@ -138,6 +139,6 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
-        standingTarget.transform.position += ( Vector3.up * Yspeed );
+        if (standingBody = null) standingTarget.transform.position += ( Vector3.up * Yspeed );
     }
 }
