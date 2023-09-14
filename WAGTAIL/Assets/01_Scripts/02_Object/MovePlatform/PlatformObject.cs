@@ -210,6 +210,8 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             if (rayCastResult && isSameCollider && !playerIsJumping && hit.normal.y>0f)
             {
                 #region Call_OnObjectPlatformStay
+                if (Player.Instance.transform.parent == null)
+                    Player.Instance.transform.parent = this.transform;
                 _PkProgress = PendingKillProgress.PENDINGKILL_READY;
                 for (int i = 0; i < _CopyCount; i++)
                 {
@@ -422,7 +424,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
             if (isSameObject && isLanded)
             {
-                Player.Instance.transform.parent = transform;
+                //Player.Instance.transform.parent = transform;
                 PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;
 
