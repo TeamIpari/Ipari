@@ -378,7 +378,7 @@ public sealed class RouteMovingPlatformBehavior : PlatformBehaviorBase
     {
         CheckTimingAndExecMoving(PlatformApplyTiming.OnObjectStay);
 
-        if(standingBody==null) standingTarget.transform.position += movOffset;
+        //if(standingBody==null) standingTarget.transform.position += movOffset;
     }
 
     public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody)
