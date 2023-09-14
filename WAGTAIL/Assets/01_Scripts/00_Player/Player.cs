@@ -118,8 +118,7 @@ public class Player : MonoBehaviour
     [HideInInspector] public UIManager UIManager;
     [HideInInspector] public GameManager GameManager;
     [HideInInspector] public CameraManager CameraManager;
-    [HideInInspector] public SoundHandler SoundHandler;
-
+    
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -149,7 +148,6 @@ public class Player : MonoBehaviour
         GameManager = GameManager.GetInstance();
         UIManager = UIManager.GetInstance();
         CameraManager = CameraManager.GetInstance();
-        SoundHandler = GetComponent<SoundHandler>();
         
         // GetComponents
         controller = GetComponent<CharacterController>();
@@ -180,16 +178,6 @@ public class Player : MonoBehaviour
         normalColliderCenter = controller.center;
         normalColliderRadius = controller.radius;
         gravityValue *= gravityMultiplier;
-        
-        // SoundBind
-        SoundHandler.RegisterBool("isWalk");
-        SoundHandler.RegisterTrigger("isJump");
-        SoundHandler.RegisterTrigger("isLanding");
-        SoundHandler.RegisterTrigger("isDeath");
-        SoundHandler.Bind("isWalk", walkClip);
-        SoundHandler.Bind("isJump", jumpClip);
-        SoundHandler.Bind("isLanding", landingClip);
-        SoundHandler.Bind("isDeath", deathClip);
         
         interactableMask = LayerMask.GetMask("Interactable");
     }
@@ -230,6 +218,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         try
