@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
-
+using UnityEngine.XR;
 
 public abstract class AIState
 {
@@ -37,7 +38,13 @@ public abstract class AIState
 
     public abstract void Enter();
 
-    public abstract void Update();
+    public virtual void Update() 
+    { 
+        if(stateMachine.character.IsHit)
+        {
+            stateMachine.ChangeState(stateMachine.character.AiHit);
+        }
+    }
 
     public abstract void Exit();
 

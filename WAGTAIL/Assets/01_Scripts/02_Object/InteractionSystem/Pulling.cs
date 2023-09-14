@@ -35,28 +35,29 @@ public class Pulling : MonoBehaviour, IInteractable
         InitPoint = this.transform.position;    // 자신의 처음 위치 기억.
     }
 
-    public bool Interact(Interactor interactor)
+    public bool Interact(GameObject interactor)
     {
-        if (interactor.player.movementSM.currentState == interactor.player.idle)
+        Player player = interactor.GetComponent<Player>();
+        if (player.movementSM.currentState == player.idle)
         {
-            interactor.player.isPull = true;
+            player.isPull = true;
             if (animator != null)
                 animator.SetTrigger("Start");
             Player.Instance.GetComponent<CharacterController>().enabled = false;
             //Player.Instance.transform.position = _movePos.position;
-            Player.Instance.transform.position = new Vector3(_movePos.position.x, interactor.player.transform.position.y, _movePos.position.z);
+            Player.Instance.transform.position = new Vector3(_movePos.position.x, player.transform.position.y, _movePos.position.z);
             //interactor.transform.LookAt(interactor.transform.position + dir);
             Player.Instance.transform.LookAt(new Vector3(transform.position.x, Player.Instance.transform.position.y, transform.position.z));
 
-            AngleCheck(interactor.player);
+            AngleCheck(player);
             Player.Instance.GetComponent<CharacterController>().enabled = true;
             transform.SetParent(_playerEquipPoint.transform, true);
             return true;
         }
 
-        else if (interactor.player.movementSM.currentState == interactor.player.pull)
+        else if (player.movementSM.currentState == player.pull)
         {
-            interactor.player.isPull = false;
+            player.isPull = false;
             if (animator != null)
                 animator.SetTrigger("Cancel");
             _playerEquipPoint.transform.DetachChildren();

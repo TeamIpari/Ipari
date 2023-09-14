@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using IPariUtility;
+using UnityEngine.InputSystem.XR;
 
 public class MiniNepenthes : Enemy
 {
@@ -19,12 +20,11 @@ public class MiniNepenthes : Enemy
     [SerializeField] private float m_horizontalViewAngle = 0f;
     [Range(-180f, 180f)]
     [SerializeField] private float m_viewRotateZ = 0f;
-    [SerializeField] private float Movement = 0;
 
     [SerializeField] private LayerMask m_viewTargetMask;
     [SerializeField] private LayerMask m_viewObstacleMask;
 
-
+    private int layer = 0;
     private float m_horizontalViewHalfAngle = 0f;
 
     private void Awake()
@@ -74,12 +74,11 @@ public class MiniNepenthes : Enemy
             WaitRate = 1.0f;
         if (base.AttackRange <= 0)
             base.AttackRange = 5.0f;
+        
     }
 
     public override void CAttack(Vector3 Pos)
     {
-        //base.CAttack();
-        //Debug.Log("네펜데스의 공격");
 
         // 방향 벡터를 구하고 해당 방향으로 탄환을 쏨.
         Vector3 PlayerPos = new Vector3(Pos.x, ShotPosition.position.y, Pos.z);
@@ -98,5 +97,45 @@ public class MiniNepenthes : Enemy
         isAttack();
         if (AiSM != null)
             AiSM.CurrentState.Update();
+    }
+
+    bool GetPlayerFloorInfo(out RaycastHit hit, CharacterController cc, float downMovespeed = 0f)
+    {
+        #region Ommision
+        //CharacterController controller = GetComponent<CharacterController>();
+        float heightHalf = cc.height;
+        float radius = cc.radius;
+        float heightHalfOffset = (heightHalf * .5f) - radius;
+        Vector3 playerPos = cc.transform.position;
+        Vector3 center = (playerPos + cc.center);
+
+        return Physics.SphereCast(
+            center,
+            radius,
+            Vector3.down,
+            out hit,
+            heightHalf + .1f,
+            layer
+        );
+        #endregion
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("AA");
+        CharacterController cc = collision.gameObject.GetComponent<CharacterController>();
+        if (collision.collider.CompareTag("Player") && cc.velocity.y <= 0)
+        {
+            Debug.Log($"Hello1");
+            RaycastHit hit;
+            GetPlayerFloorInfo(out hit,cc);
+            bool isSaameObject = (hit.transform.gameObject.Equals(gameObject));
+            bool isLanded = (hit.normal.y > 0);
+            if( isSaameObject && isLanded)
+            {
+                Debug.Log($"Hello2");
+            }
+            collision.collider.GetComponent<Player>().isDead = true;
+        }
     }
 }

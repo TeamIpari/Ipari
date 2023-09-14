@@ -419,7 +419,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             bool isSameObject   = (hit.transform.gameObject.Equals(gameObject));
             bool isLanded       = (hit.normal.y > 0);
 
-            if (isSameObject&& isLanded)
+            if (isSameObject && isLanded)
             {
                 PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;
@@ -443,6 +443,15 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
     public void ExecutionFunction(float time)
     {
-        Debug.Log($"Not Have Function");
+        // ¹«ºù ÇÃ·§Æû Àü¿ëÀÎµ¥... ÀÏ´Ü ÀÓ½Ã
+        #region Call_OnObjectPlatformEnter
+        _PkProgress = PendingKillProgress.PENDINGKILL_READY;
+        for (int i = 0; i < _CopyCount; i++)
+        {
+            _InteractionsCopy[i].OnObjectPlatformEnter(this, Player.Instance.gameObject, null, Vector3.zero, Vector3.zero);
+        }
+        RefreshInteractionCopy(true);
+        _PkProgress = PendingKillProgress.NONE;
+        #endregion
     }
 }

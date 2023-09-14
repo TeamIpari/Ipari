@@ -18,7 +18,9 @@ public class DropState : State
         base.Enter();
 
         timePassed = 0f;
-
+        player.animator.ResetTrigger("move");
+        player.animator.ResetTrigger("carry");
+        player.animator.ResetTrigger("pickup");
         player.animator.SetTrigger("drop");
         // TODO : 물건 내려놓는 시간 애니메이터와 상의 후 정하기
         // !!! dropTime 반드시 수정해야함 !!! 

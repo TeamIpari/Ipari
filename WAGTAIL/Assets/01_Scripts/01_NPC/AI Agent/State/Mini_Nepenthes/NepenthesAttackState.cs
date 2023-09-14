@@ -41,6 +41,7 @@ public class NepenthesAttackState : AIAttackState
 
     public override void Update()
     {
+        base.Update();
         if (AttackCheck())
         {
             LockOn = stateMachine.Target.transform.position;
