@@ -37,8 +37,9 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     private float           _landedRadian    = 0f;
     private LandedType      _landedType      = LandedType.None;
     private Quaternion      _defaultQuat     = Quaternion.identity;
-    private Quaternion     _lastUpdateQuat   = Quaternion.identity;
     private Transform       _platformTr;
+
+    private Vector3 _playerLastEuler = Vector3.zero;
 
     float _currY   = 0f;
     float _currRot = 0f;
@@ -105,8 +106,15 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         affectedPlatform.UpdatePosition += offset;
 
         Quaternion spinRot = Quaternion.AngleAxis( (Rotspeed * SpinPow), _SpinRotDir);
-        _lastUpdateQuat    = Quaternion.AngleAxis( (-Rotspeed * SpinPow), _SpinRotDir);
         affectedPlatform.OffsetQuat *= spinRot;
+
+        /**플레이어의 회전 보정...*/
+        if(affectedPlatform.PlayerOnPlatform){
+
+            Vector3 euler = _playerLastEuler;
+            euler.y = Player.Instance.transform.eulerAngles.y;
+            Player.Instance.transform.rotation = Quaternion.Euler( euler );
+        }
         #endregion
     }
 
@@ -135,6 +143,13 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
             cos
         );
 
+        /************************************
+         *   플레이어의 회전보정을 위한 처리...
+         * ***/
+        if(standingTarget.gameObject==Player.Instance.gameObject) {
+
+            _playerLastEuler = Player.Instance.transform.eulerAngles;
+        }
         #endregion
     }
 }
