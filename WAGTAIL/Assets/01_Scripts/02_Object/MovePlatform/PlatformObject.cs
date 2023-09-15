@@ -591,10 +591,6 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             if (isSameObject && isLanded)
             {
                 /**만약 해당 객체가 부모가 없을 때만 자식으로 넣는다.*/
-                if (Player.Instance.transform.parent == null){
-
-                    Player.Instance.transform.parent = this.transform;
-                }
                 _PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;
 
