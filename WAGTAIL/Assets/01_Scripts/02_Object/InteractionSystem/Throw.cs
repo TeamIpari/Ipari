@@ -223,7 +223,14 @@ public class Throw : MonoBehaviour, IInteractable
         GetComponent<Collider>().isTrigger = false;
 
         //rigidbody.velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
-        rigidbody.velocity = IpariUtility.CaculateVelocity(player.transform.position + player.transform.forward * _range, this.transform.position, _hight);
+        if (player.Target == null)
+            rigidbody.velocity = IpariUtility.CaculateVelocity(player.transform.position + player.transform.forward * _range, this.transform.position, _hight);
+        else if (player.Target != null)
+        {
+            Vector3 vel = IpariUtility.CaculateVelocity(player.Target.transform.position + player.transform.forward * _range, player.transform.position, _hight);
+            Debug.Log(vel);
+            rigidbody.velocity = vel;
+        } 
         Forward = this.transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
