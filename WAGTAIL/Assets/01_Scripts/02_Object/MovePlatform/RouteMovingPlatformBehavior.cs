@@ -12,7 +12,7 @@ using UnityEditor;
 /**********************************************************
  *   발판이 지정한 경로로 이동하는 움직임이 정의된 컴포넌트입니다. 
  * ***/
-[AddComponentMenu("PlatformObject/RouteMovingPlatformBehavior")]
+[AddComponentMenu("Platform/RouteMovingPlatformBehavior")]
 public sealed class RouteMovingPlatformBehavior : PlatformBehaviorBase
 {
     #region Editor_Extension

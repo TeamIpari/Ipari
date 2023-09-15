@@ -57,6 +57,7 @@ public sealed class WaterScript : MonoBehaviour
             for(int i=1; i<_FXCount; i++)
             {
                 _FXInsList[i] = GameObject.Instantiate(_FXInsList[0]);
+                GameObject.DontDestroyOnLoad(_FXInsList[i]);    
             }
             _AliveIndex = (_FXCount-1);
         }
@@ -153,10 +154,12 @@ public sealed class WaterScript : MonoBehaviour
         if (EnterWaterFX != null)
         {
             newWaterFX = Instantiate(EnterWaterFX).GetComponent<ParticleSystem>();
+            GameObject.DontDestroyOnLoad(newWaterFX);
             newWaterFX.transform.localScale = Vector3.one * 5f;
 
             ParticleSystem.MainModule module = newWaterFX.transform.Find("Splash").GetComponent<ParticleSystem>().main;
             module.loop = false;
+            module.stopAction = ParticleSystemStopAction.Callback;
 
             module = newWaterFX.transform.Find("FXprefab_J_WaterMove").Find("FXprefab_J_WaterMove").GetComponent<ParticleSystem>().main;
             module.loop = false;
@@ -172,6 +175,7 @@ public sealed class WaterScript : MonoBehaviour
 
             module = newWaterFX.transform.Find("WaterJump 03").GetComponent<ParticleSystem>().main;
             module.loop = false;
+            
 
             newWaterFX.gameObject.SetActive(false);
             return newWaterFX;
@@ -180,6 +184,6 @@ public sealed class WaterScript : MonoBehaviour
         return null;
         #endregion
     }
-
+    
 
 }

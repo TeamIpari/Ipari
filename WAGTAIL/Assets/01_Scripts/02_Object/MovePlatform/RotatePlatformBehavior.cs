@@ -163,8 +163,9 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
             _lastRotateAngle      = ( RotateAngleUntilStop * deltaAngleRatio );
 
             /**발판이 이 회전량만큼 회전하도록 예약한다...*/
-            _lastUpdateQuat = Quaternion.AngleAxis( _lastRotateAngle, Vector3.up );
-            affectedPlatform.UpdateQuat *= _lastUpdateQuat;
+            _lastUpdateQuat = Quaternion.AngleAxis( -_lastRotateAngle, Vector3.up );
+            Quaternion updateQuat = Quaternion.AngleAxis(_lastRotateAngle, Vector3.up);
+            affectedPlatform.UpdateQuat *= updateQuat;
             
 
             /*****************************************************
@@ -230,8 +231,16 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
-        return;
-        #region Omit
+        if (_state != RotatePlatformState.Rotation) return;
+
+        /**플레이어가 회전하지 않도록 반대로 회전시킨다...*/
+        if (ApplyStandingObjectRotate==false){
+
+            standingTarget.transform.localRotation *= _lastUpdateQuat;
+        }
+
+        #region Drprecated
+        /*
         if (_state != RotatePlatformState.Rotation) return;
 
         //계산에 필요한 요소들을 모두 구한다.
@@ -252,6 +261,7 @@ public sealed class RotatePlatformBehavior : PlatformBehaviorBase
 
             standingTarget.transform.rotation *= _lastUpdateQuat;
         }
+        */
         #endregion
     }
 

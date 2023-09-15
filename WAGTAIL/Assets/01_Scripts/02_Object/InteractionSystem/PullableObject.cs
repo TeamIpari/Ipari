@@ -145,7 +145,7 @@ public class PullableObject : MonoBehaviour
 
     public void RemoveBlendShapeData(int index)
     {
-
+        
     }
 
     public void Hold( GameObject target )
