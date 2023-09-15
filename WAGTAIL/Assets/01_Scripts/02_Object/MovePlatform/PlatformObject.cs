@@ -52,14 +52,13 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
             GUI_ShowUSedCollision();
 
-            GUI_ShowBehaviorList();
-
-            
             /**값이 변경되었다면 갱신한다...*/
-            if(GUI.changed){
+            if (GUI.changed){
 
                 serializedObject.ApplyModifiedProperties();
             }
+
+            base.OnInspectorGUI();
         }
 
 
@@ -120,7 +119,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             #region Omit
             if (BehaviorListProperty == null) return;
 
-            EditorGUILayout.PropertyField(BehaviorListProperty);
+            EditorGUILayout.PropertyField(BehaviorListProperty, true);
 
             #endregion
         }
@@ -167,17 +166,27 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     [HideInInspector] public Vector3    UpdatePosition  = Vector3.zero;
     [HideInInspector] public Vector3    OffsetPosition  = Vector3.zero;
     [HideInInspector] public Vector3    PrevPosition    = Vector3.zero;
-    [SerializeField]  private bool _PlayerOnPlatform    = false;
-    [SerializeField]  public bool UsedCollision         = true;
+    [HideInInspector] public bool       PreventAddChild = false;
+
+    [HideInInspector][SerializeField]  
+    private bool _PlayerOnPlatform = false;
+
+    [HideInInspector][SerializeField]  
+    public bool UsedCollision = true;
+
     [HideInInspector] public float CheckGroundOffset    = 0f;
+    [HideInInspector] public float CheckGroundDownOffset = 0f;
 
 
 
     //==========================================
     //////             Fields               ////
     //==========================================
-    [SerializeField] private List<PlatformBehaviorBase> Behaviors = new List<PlatformBehaviorBase>();
-    [SerializeField] private int _ObjectOnPlatformCount = 0;
+    [SerializeField] 
+    private List<PlatformBehaviorBase> Behaviors = new List<PlatformBehaviorBase>();
+
+    [HideInInspector][SerializeField] 
+    private int _ObjectOnPlatformCount = 0;
 
     private List<GameObject> _ignoreExitList;
     private List<GameObject> _ignoreEnterList;
@@ -291,7 +300,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             {
                 #region Call_OnObjectPlatformStay
                 /**만약 해당 객체가 부모가 없을 때만 자식으로 넣는다.*/
-                if (Player.Instance.transform.parent == null) {
+                if (Player.Instance.transform.parent == null && !PreventAddChild) {
 
                     Player.Instance.transform.parent = this.transform;
                 }
@@ -333,6 +342,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         /***********************************
          *   enter의 처리를 안하는 경우의 처리.
          * ***/
+        bool NoAddParent = false;
         if (_ignoreEnterList != null){
 
             int EnterCount = _ignoreEnterList.Count;
@@ -341,9 +351,9 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
                 /**exit 목록에 존재할 경우, 순서보장을 위해 탈출...*/
                 if (collision.gameObject.Equals(_ignoreEnterList[i])){
 
-                    _onPlatformObjects.Add(collision.gameObject);
                     _ignoreEnterList.RemoveAt(i);
-                    return;
+                    NoAddParent = true;
+                    break;
                 }
             }
         }
@@ -352,10 +362,10 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         /**************************************
          *  해당 발판위를 밟고 있는지 확인한다...
          * **/
-        Vector3 normal = Vector3.zero;
-        Vector3 point = Vector3.zero;
-        int Count = collision.contactCount;
-        bool result = false;
+        Vector3 normal  = Vector3.zero;
+        Vector3 point   = Vector3.zero;
+        int     Count   = collision.contactCount;
+        bool    result  = false;
         for(int i=0; i<Count; i++)
         {
             ContactPoint p = collision.GetContact(i);
@@ -374,7 +384,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         {
             _ObjectOnPlatformCount++;
             _onPlatformObjects.Add(collision.gameObject);
-            collision.transform.parent = transform;
+            if(!NoAddParent && !PreventAddChild) collision.transform.parent = transform;
             #region Call_OnObjectPlatformEnter
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
             for (int i = 0; i < _CopyCount; i++)
@@ -509,9 +519,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             if (objTransform.parent==transform){
 
                 if (gameObject.activeInHierarchy)
-                {
                     objTransform.transform.SetParent(null);
-                }
             }
         }
         #endregion
@@ -557,21 +565,21 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         #endregion
     }
 
-    public bool GetPlayerFloorinfo(out RaycastHit hit, float downMoveSpeed=0f)
+    public bool GetPlayerFloorinfo(out RaycastHit hit)
     {
         #region Ommision
         float heightHalf       = _Controller.height;
         float radius           = _Controller.radius;
         float heightHalfOffset = (heightHalf * .5f) - radius;
         Vector3 playerPos      = _Controller.transform.position;
-        Vector3 center         = ( playerPos + _Controller.center );
+        Vector3 center         = ( playerPos + _Controller.center ) + (Vector3.up*CheckGroundOffset);
 
         return Physics.SphereCast(
             center,
             radius,
             Vector3.down,
             out hit,
-            heightHalf+.1f,
+            heightHalf+.1f+ CheckGroundDownOffset+ CheckGroundOffset,
             layer
         );
         #endregion
