@@ -40,6 +40,11 @@ public class BossRoomFieldManager :MonoBehaviour
     public TileMap BossFild;
 
     public Vector3 TargetPos;
+
+    [Header("CameraShakeValue")]
+    public float ShakePower = 1.5f;
+    public float ShakeTime = 0.25f;
+
     public Vector3 PlayerOnTilePos
     {
         get { return TargetPos; }
@@ -93,6 +98,12 @@ public class BossRoomFieldManager :MonoBehaviour
             Y++;
             FindY = Y * (-StoneYSize);
         }
+        Invoke("CameraShake", 2.5f);
+    }
+    
+    private void CameraShake()
+    {
+        CameraManager.GetInstance().CameraShake(ShakePower, ShakeTime);
     }
 
     public void Initialized()

@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Cinemachine;
+using Unity.VisualScripting;
+using UnityEditor.Timeline;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public enum CameraType
 {
@@ -21,6 +24,9 @@ public class CameraManager : Singleton<CameraManager>
     private List<CameraController> _cameraControllerList;
     private CameraController _currentCamera;
     private CameraController _prevCamera;
+
+    [SerializeField] private GameObject _testCamera;
+    private float shakeTimer = 0;
 
     protected override void Awake()
     {
@@ -94,4 +100,32 @@ public class CameraManager : Singleton<CameraManager>
     {
         return _prevCamera;
     }
+
+    public void CameraShake(float value, float time)
+    {
+        //Debug.Log($"{_currentCamera.name} ");
+        // 없어서 추가함.
+        GameObject obj = GameObject.Find("BossRoomCM");
+        CinemachineVirtualCamera vcam = obj.GetComponent<CinemachineVirtualCamera>();
+        CinemachineBasicMultiChannelPerlin vcamperl = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        
+        vcamperl.m_AmplitudeGain = value;
+        shakeTimer = time;
+        StartCoroutine(Shaking(vcamperl)); ;
+    }
+
+    private IEnumerator Shaking(CinemachineBasicMultiChannelPerlin vcam)
+    {
+
+        while (shakeTimer > 0)
+        {
+            yield return new WaitForSeconds(0.001f);
+            shakeTimer -= Time.deltaTime;
+            if (shakeTimer <= 0f)
+            {
+                vcam.m_AmplitudeGain = 0f;
+            }
+        }
+    }
+
 }
