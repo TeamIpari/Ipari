@@ -32,7 +32,9 @@ public sealed class AnimPlatformBehavior : PlatformBehaviorBase
         {
             _animator.speed = StartSpeed;
         }
-        affectedPlatform.CheckGroundOffset = 5f;
+        //affectedPlatform.CheckGroundOffset = 10f;
+        //affectedPlatform.CheckGroundDownOffset = 10f;
+        affectedPlatform.PreventAddChild = true;
     }
 
     public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody)
@@ -50,16 +52,17 @@ public sealed class AnimPlatformBehavior : PlatformBehaviorBase
 
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
-        standingTarget.transform.position = standingPoint;
+        //standingTarget.transform.position = standingPoint;
     }
 
     private void LateUpdate()
     {
          if(_platformObject==null || _platformObject.PlayerOnPlatform==false) return;
 
-         RaycastHit hit;
+        RaycastHit hit;
         _platformObject.GetPlayerFloorinfo(out hit);
-         Player.Instance.transform.position = hit.point;
+        Debug.Log($"player: {Player.Instance.transform.position}/ hit: {hit.point}");
+        Player.Instance.transform.position = hit.point;
     }
 
 }

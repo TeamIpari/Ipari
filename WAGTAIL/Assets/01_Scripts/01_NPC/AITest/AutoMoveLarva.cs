@@ -123,6 +123,8 @@ public class AutoMoveLarva : MonoBehaviour
 
             /***/
             PlatformObject obj = collision.gameObject.GetComponent<PlatformObject>();
+            if (obj == null) return;
+
             for (int i = 0; i < MPCenter.PlatformEnterCount; i++){
 
                 MPCenter.Larvas[i].transform.parent = collision.transform;

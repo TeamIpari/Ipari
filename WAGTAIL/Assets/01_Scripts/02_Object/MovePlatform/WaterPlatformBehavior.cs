@@ -111,7 +111,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
         /**플레이어의 회전 보정...*/
         if(affectedPlatform.PlayerOnPlatform){
 
-            Vector3 euler = _playerLastEuler;
+            Vector3 euler = Vector3.zero;
             euler.y = Player.Instance.transform.eulerAngles.y;
             Player.Instance.transform.rotation = Quaternion.Euler( euler );
         }
