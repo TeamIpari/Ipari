@@ -33,6 +33,7 @@ public class BossNepenthesAttack4 : AIAttackState
     {
         //base.Enter();
         // 과일 위치 세팅
+        curTimer = 0;
         FruitSetting();
         Debug.Log($"Create Fruit Bomb");
     }
