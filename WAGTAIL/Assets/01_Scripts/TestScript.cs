@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public sealed class TestScript : MonoBehaviour
 {
@@ -44,6 +45,11 @@ public sealed class TestScript : MonoBehaviour
     public void Exitprint()
     {
         Debug.Log("Exitprint");
+    }
+
+    public void MoveScene()
+    {
+        SceneManager.LoadScene("Chapter02");
     }
 
 }

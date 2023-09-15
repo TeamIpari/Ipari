@@ -29,6 +29,8 @@ public class MovePoint : MonoBehaviour
     [HideInInspector] public float CircleSize = 1.0f;
     private int count = 1;
 
+    public int PlatformEnterCount = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -82,7 +84,7 @@ public class MovePoint : MonoBehaviour
                     obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? false: true);
                     obj2.transform.localScale = new Vector3(initPrefabSize, initPrefabSize, initPrefabSize);
                     obj2.transform.position = Objs[ver2 - 1].transform.position;
-                    obj2.transform.parent = this.transform;
+                    //obj2.transform.parent = this.transform;
                     Larvas.Add(obj2);
                 }
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -153,7 +154,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     }
 
     //========================================
-    //////      Property And Fields      /////
+    //////          Property            /////
     //========================================
     public string   EnviromentPrompt { get; }      = string.Empty;
     public bool     IsHit            { get; set; } = false;
@@ -171,8 +172,16 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     [HideInInspector] public float CheckGroundOffset    = 0f;
 
 
+
+    //==========================================
+    //////             Fields               ////
+    //==========================================
     [SerializeField] private List<PlatformBehaviorBase> Behaviors = new List<PlatformBehaviorBase>();
     [SerializeField] private int _ObjectOnPlatformCount = 0;
+
+    private List<GameObject> _ignoreExitList;
+    private List<GameObject> _ignoreEnterList;
+    private List<GameObject> _onPlatformObjects = new List<GameObject>();
 
     /**플레이어 관련 클래스 캐싱*/
     private static CharacterController _Controller;
@@ -188,85 +197,6 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private int                    _CopyCount  = 0;
     private PlatformBehaviorBase[] _InteractionsCopy;
 
-
-    //=======================================
-    //////       Public Methods          ////
-    //=======================================
-    public void AddPlatformBehavior( PlatformBehaviorBase newReaction)
-    {
-        #region Omit
-        if (Behaviors.Contains(newReaction)) return;
-        Behaviors.Add(newReaction);
-        newReaction.BehaviorStart(this);
-
-        RefreshInteractionCopy(true);
-        #endregion
-    }
-
-    public void RemovePlatformBehavior( PlatformBehaviorBase removeReaction)
-    {
-        #region Omit
-        if (!Behaviors.Contains(removeReaction)) return;
-        Behaviors.Remove(removeReaction);
-        removeReaction.BehaviorEnd(this);
-
-        RefreshInteractionCopy(true);
-        #endregion
-    }
-
-    public void RemovePlatformBehaviorByType<T>()
-    {
-        #region Omit
-        System.Type type = typeof(T);
-        bool isChanged = false;
-
-        for (int i = 0; i < _CopyCount; i++)
-        {
-            if (_InteractionsCopy[i].GetType().Equals(type))
-            {
-                Behaviors.RemoveAt(i);
-                isChanged = true;
-            }
-        }
-
-        if(isChanged) RefreshInteractionCopy(true);
-
-        #endregion
-    }
-
-    public PlatformBehaviorBase GetPlatformBehavior<T>()
-    {
-        #region Omit
-        System.Type type = typeof(T);
-
-        for (int i = 0; i < _CopyCount; i++)
-        {
-            if (_InteractionsCopy[i].GetType().Equals(type)) 
-                return _InteractionsCopy[i];
-        }
-
-        return null;
-        #endregion
-    }
-
-    public bool IsContainsPlatformBehavior(PlatformBehaviorBase newReaction)
-    {
-        return Behaviors.Contains(newReaction);
-    }
-
-    public bool IsContainsPlatformBehavior<T>()
-    {
-        #region Omit
-        System.Type type = typeof(T);
-
-        for(int i=0; i<_CopyCount; i++)
-        {
-            if (_InteractionsCopy[i].GetType().Equals(type)) return true;
-        }
-
-        return false;
-        #endregion
-    }
 
 
     //=======================================
@@ -330,7 +260,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private void FixedUpdate()
     {
         #region Call_PhysicsUpdate
-        _PkProgress = PendingKillProgress.PENDINGKILL_READY;
+            _PkProgress = PendingKillProgress.PENDINGKILL_READY;
         for (int i = 0; i < _CopyCount; i++)
         {
             _InteractionsCopy[i].PhysicsUpdate(this);
@@ -352,8 +282,8 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             if (_PlayerSM == null) _PlayerSM = Player.Instance.movementSM;
 
             RaycastHit hit;
-            bool rayCastResult = GetPlayerFloorinfo(out hit);
-            bool isSameCollider = (hit.collider == Collider);
+            bool rayCastResult   = GetPlayerFloorinfo(out hit);
+            bool isSameCollider  = (hit.collider == Collider);
             bool playerIsJumping = (_PlayerSM.currentState == Player.Instance.jump && _Controller.velocity.y > 0f);
 
             //최졍 적용
@@ -387,7 +317,8 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
                 _PkProgress = PendingKillProgress.NONE;
                 #endregion
 
-                Player.Instance.transform.parent = null;
+                _onPlatformObjects.Remove(_Controller.gameObject);
+                _Controller.transform.parent = null;
                 _PlayerOnPlatform = false;
                 _ObjectOnPlatformCount--;
             }
@@ -398,6 +329,25 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     {
         #region Omit
         if (UsedCollision == false) return;
+
+        /***********************************
+         *   enter의 처리를 안하는 경우의 처리.
+         * ***/
+        if (_ignoreEnterList != null){
+
+            int EnterCount = _ignoreEnterList.Count;
+            for (int i = 0; i < EnterCount; i++)
+            {
+                /**exit 목록에 존재할 경우, 순서보장을 위해 탈출...*/
+                if (collision.gameObject.Equals(_ignoreEnterList[i])){
+
+                    _onPlatformObjects.Add(collision.gameObject);
+                    _ignoreEnterList.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+
 
         /**************************************
          *  해당 발판위를 밟고 있는지 확인한다...
@@ -423,6 +373,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         if (result && collision.gameObject != Player.Instance.gameObject)
         {
             _ObjectOnPlatformCount++;
+            _onPlatformObjects.Add(collision.gameObject);
             collision.transform.parent = transform;
             #region Call_OnObjectPlatformEnter
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
@@ -503,12 +454,31 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         #region Omit
         if (UsedCollision == false) return;
 
+        /***********************************
+         *   exit의 처리를 안하는 경우의 처리.
+         * ***/
+        if(_ignoreExitList != null){
+
+            int Count = _ignoreExitList.Count;
+            for(int i=0; i<Count; i++)
+            {
+                /**exit 목록에 존재할 경우, 순서보장을 위해 탈출...*/
+                if (collision.gameObject.Equals(_ignoreExitList[i])){
+
+                    _onPlatformObjects.Remove(collision.gameObject);
+                    _ignoreExitList.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+
         if (collision.gameObject != Player.Instance.gameObject)
         {
             /**부모가 해당 객체일 경우에만 부모에서 해제시킨다.*/
             if (collision.transform.parent == transform){
 
                 collision.transform.parent = null;
+                _onPlatformObjects.Remove(collision.gameObject);
                 _ObjectOnPlatformCount--;
             }
             #region Call_OnObjectPlatformExit
@@ -524,11 +494,56 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         #endregion
     }
 
+    private void OnDestroy()
+    {
+        #region Omit
+
+        /********************************************
+         *   해당 발판을 밟은 오브젝트들을 자식에서 제거한다...
+         * ***/
+        int Count = _onPlatformObjects.Count;
+        for(int i=0; i<Count; i++)
+        {
+            Transform objTransform = _onPlatformObjects[i].transform;
+
+            if (objTransform.parent==transform){
+
+                if (gameObject.activeInHierarchy)
+                {
+                    objTransform.transform.SetParent(null);
+                }
+            }
+        }
+        #endregion
+    }
+
 
 
     //=======================================
     //////        Core Methods           ////
     //=======================================
+    public void IgnoreCollisionExit(GameObject ignoreObj)
+    {
+        #region Omit
+        if (_ignoreExitList == null){
+
+            _ignoreExitList = new List<GameObject>();
+        }
+        _ignoreExitList.Add(ignoreObj);
+        #endregion
+    }
+
+    public void IgnoreCollisionEnter(GameObject ignoreObj)
+    {
+        #region Omit
+        if (_ignoreEnterList == null){
+
+            _ignoreEnterList = new List<GameObject>();
+        }
+        _ignoreEnterList.Add(ignoreObj);
+        #endregion
+    }
+
     public void ExecPlatformEnter(Vector3 point, Vector3 normal)
     {
         #region Call_OnObjectPlatformEnter
@@ -593,6 +608,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
                 /**만약 해당 객체가 부모가 없을 때만 자식으로 넣는다.*/
                 _PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;
+                _onPlatformObjects.Add(_Controller.gameObject);
 
                 #region Call_OnObjectPlatformEnter
                 _PkProgress = PendingKillProgress.PENDINGKILL_READY;
@@ -623,6 +639,82 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         }
         RefreshInteractionCopy(true);
         _PkProgress = PendingKillProgress.NONE;
+        #endregion
+    }
+
+    public void AddPlatformBehavior(PlatformBehaviorBase newReaction)
+    {
+        #region Omit
+        if (Behaviors.Contains(newReaction)) return;
+        Behaviors.Add(newReaction);
+        newReaction.BehaviorStart(this);
+
+        RefreshInteractionCopy(true);
+        #endregion
+    }
+
+    public void RemovePlatformBehavior(PlatformBehaviorBase removeReaction)
+    {
+        #region Omit
+        if (!Behaviors.Contains(removeReaction)) return;
+        Behaviors.Remove(removeReaction);
+        removeReaction.BehaviorEnd(this);
+
+        RefreshInteractionCopy(true);
+        #endregion
+    }
+
+    public void RemovePlatformBehaviorByType<T>()
+    {
+        #region Omit
+        System.Type type = typeof(T);
+        bool isChanged = false;
+
+        for (int i = 0; i < _CopyCount; i++)
+        {
+            if (_InteractionsCopy[i].GetType().Equals(type))
+            {
+                Behaviors.RemoveAt(i);
+                isChanged = true;
+            }
+        }
+
+        if (isChanged) RefreshInteractionCopy(true);
+
+        #endregion
+    }
+
+    public PlatformBehaviorBase GetPlatformBehavior<T>()
+    {
+        #region Omit
+        System.Type type = typeof(T);
+
+        for (int i = 0; i < _CopyCount; i++)
+        {
+            if (_InteractionsCopy[i].GetType().Equals(type))
+                return _InteractionsCopy[i];
+        }
+
+        return null;
+        #endregion
+    }
+
+    public bool IsContainsPlatformBehavior(PlatformBehaviorBase newReaction)
+    {
+        return Behaviors.Contains(newReaction);
+    }
+
+    public bool IsContainsPlatformBehavior<T>()
+    {
+        #region Omit
+        System.Type type = typeof(T);
+
+        for (int i = 0; i < _CopyCount; i++)
+        {
+            if (_InteractionsCopy[i].GetType().Equals(type)) return true;
+        }
+
+        return false;
         #endregion
     }
 }
