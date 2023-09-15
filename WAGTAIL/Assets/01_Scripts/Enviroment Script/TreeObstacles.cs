@@ -1,6 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.Rendering.PostProcessing;
+#endif
 
 
 /**********************************************
@@ -11,13 +17,146 @@ using UnityEngine;
 [AddComponentMenu("Triggerable/TreeObstacles")]
 public sealed class TreeObstacles : MonoBehaviour
 {
+    #region Editor_Extension
+    /***************************************
+     *   에디터 확장을 위한 private class...
+     * ***/
+#if UNITY_EDITOR
+    [CustomEditor(typeof(TreeObstacles))]
+    private sealed class TreeObstaclesEditor : Editor
+    {
+        //==================================
+        /////       Property            ////
+        //==================================
+        private SerializedProperty FallDownDirProperty;
+        private SerializedProperty TreeRootPointProperty;
+        private SerializedProperty InitProperty;
+        private Collider Collider;
+
+
+
+        //===============================================
+        /////      Override and Magic methods        ////
+        //===============================================
+        private void OnEnable()
+        {
+            GUI_Initialized();
+        }
+
+        private void OnSceneGUI()
+        {
+            #region Omit
+            if (FallDownDirProperty == null || TreeRootPointProperty == null) return;
+            serializedObject.Update();
+
+            Vector3 center = Collider.bounds.center;
+            if (InitProperty!=null && !InitProperty.boolValue)
+            {
+                Bounds bounds = Collider.bounds;
+                FallDownDirProperty.vector3Value   = center + (Vector3.forward * 10f);
+                TreeRootPointProperty.vector3Value = center + (Vector3.down * (bounds.extents.y));
+                InitProperty.boolValue = true;
+            }
+
+            /**뿌리지점에 대한 표시...*/
+            using(var scope=new EditorGUI.ChangeCheckScope())
+            {
+                Vector3 point       = FallDownDirProperty.vector3Value;
+                Vector3 treePos     = center;
+                Vector3 dir         = (point - treePos);
+                float dirLen        = dir.magnitude;
+                Quaternion dirQuat  = Quaternion.LookRotation(dir);
+
+                dir.Normalize();
+                Handles.color = Color.yellow;
+                Handles.ScaleSlider(.1f, treePos, dir, dirQuat, dirLen, .5f);
+                point = Handles.PositionHandle(FallDownDirProperty.vector3Value, Quaternion.identity);
+
+                /**값이 바뀌었다면 갱신...*/
+                if (scope.changed){
+                    FallDownDirProperty.vector3Value = point;   
+                }
+            }
+
+            /**뿌리지점에 대한 표시...*/
+            using (var scope = new EditorGUI.ChangeCheckScope())
+            {
+                Vector3 point = Handles.PositionHandle(TreeRootPointProperty.vector3Value, Quaternion.identity);
+                Handles.color = Color.yellow;
+                Handles.RadiusHandle(Quaternion.identity, point, .2f);
+
+                /**값이 바뀌었다면 갱신...*/
+                if (scope.changed){
+
+                    TreeRootPointProperty.vector3Value = point;
+                }
+            }
+
+            /**값이 바뀌었다면 갱신...*/
+            if(GUI.changed){
+
+                serializedObject.ApplyModifiedProperties();
+            }
+            #endregion
+        }
+
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+        }
+
+
+
+        //=====================================
+        /////         GUI methods          ////
+        //=====================================
+        private void GUI_Initialized()
+        {
+            #region Omit
+            /************************************
+             *   모든 프로퍼티들을 초기화한다...
+             * ***/
+            if(FallDownDirProperty==null){
+
+                FallDownDirProperty = serializedObject.FindProperty("FallDownDir");
+            }
+
+            if(TreeRootPointProperty==null){
+
+                TreeRootPointProperty = serializedObject.FindProperty("TreeRootPoint");
+            }
+
+            if(Collider==null){
+
+                TreeObstacles tree = (target as TreeObstacles);
+                if (tree != null) Collider = tree.GetComponent<Collider>();
+            }
+
+            if(InitProperty==null){
+
+                InitProperty = serializedObject.FindProperty("_Init");
+            }
+
+            #endregion
+        }
+
+
+    }
+#endif
+    #endregion
+
+
     //=====================================
     ////      Property And Fields      ////
     //=====================================
-    [SerializeField] public Transform   FallDownDir;
+    [SerializeField] public Vector3     FallDownDir   = Vector3.zero;
+    [SerializeField] public Vector3     TreeRootPoint = Vector3.zero;
     [SerializeField] public float       FallDownSpeed = 1f;
     [SerializeField] public bool        FallDownUsedCollision = false;
     [SerializeField] public float       FallDownTargetAngle = 90f;
+
+    [SerializeField] [HideInInspector]
+    private bool       _Init = false;
 
     private const float ReboundValue = .325f;
     private Rigidbody   _Body;
@@ -132,14 +271,6 @@ public sealed class TreeObstacles : MonoBehaviour
         #endregion
     }
 
-    private void OnDrawGizmos()
-    {
-        #region Omit
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, FallDownDir.position);
-        #endregion
-    }
-
 
 
     //=====================================
@@ -180,34 +311,8 @@ public sealed class TreeObstacles : MonoBehaviour
         Quaternion  startRot    = transform.rotation;
         Vector3     startPos    = transform.position;
 
-        /**나무의 뿌리지점이 될 Point를 얻는다.*/
-        RaycastHit[] hits = null;
-        if (_Collider != null) {
-
-            MeshRenderer filter = GetComponent<MeshRenderer>();
-            Bounds bounds = filter.bounds;
-            hits = Physics.RaycastAll(startPos, -transform.up, bounds.extents.y * bounds.size.y);
-        }
-
-        if (hits!=null)
-        {
-            int Count      = hits.Length;
-            float distance = float.MaxValue;
-            for (int i = 0; i < Count; i++){
-
-                bool isNotGround    = ( hits[i].normal.y < 0 );
-                bool isSameCollider = (hits[i].collider == _Collider);
-                bool isTrigger      = ( hits[i].collider.isTrigger==true);
-
-                if (isNotGround || isSameCollider || isTrigger || distance < hits[i].distance) continue;
-                startPos = hits[i].point;
-                distance = hits[i].distance;
-            }
-           
-        }
-
         /**나무가 쓰러지는 방향을 가지는 회전방향벡터를 구한다.*/
-        Vector3 fallDownDir         = FallDownDir!=null?(FallDownDir.position - transform.position):(transform.right);
+        Vector3 fallDownDir         = (FallDownDir - transform.position);
         float   height              = (transform.position-startPos).magnitude;
         float   radian              = Mathf.Atan2(fallDownDir.z, fallDownDir.x);
         float   cos                 = Mathf.Cos(radian);

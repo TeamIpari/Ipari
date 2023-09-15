@@ -4,6 +4,10 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 
 /********************************************************
  * 오브젝트들이 밟을 수 있는 플랫폼의 기반이 되는 클래스입니다.
@@ -11,6 +15,136 @@ using UnityEngine;
 [AddComponentMenu("Platform/PlatformObject")]
 public sealed class PlatformObject : MonoBehaviour, IEnviroment
 {
+    #region Editor_Extension
+    /**************************************
+     *   에디터 확장을 위한 private class.
+     * ***/
+#if UNITY_EDITOR
+    [CustomEditor(typeof(PlatformObject))]
+    private sealed class PlatformObjectEditor : Editor
+    {
+        //===================================
+        //////        Property          /////
+        //===================================
+        SerializedProperty PlayerRideOnProperty;
+        SerializedProperty OnObjectCountProperty;
+        SerializedProperty BehaviorListProperty;
+        SerializedProperty UsedCollisionProperty;
+
+
+
+        //=======================================
+        /////       Override methods         ////
+        //=======================================
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+
+            /*********************************
+             *   모든 프로퍼티들을 표시한다...
+             * ***/
+            GUI_Initialized();
+
+            GUI_ShowPlayerOnPlatform();
+
+            GUI_ShowObjectOnPlatform();
+
+            GUI_ShowUSedCollision();
+
+            GUI_ShowBehaviorList();
+
+            
+            /**값이 변경되었다면 갱신한다...*/
+            if(GUI.changed){
+
+                serializedObject.ApplyModifiedProperties();
+            }
+        }
+
+
+
+        //========================================
+        //////         GUI methods            ////
+        //========================================
+        private void GUI_Initialized()
+        {
+            #region Omit
+            /*********************************
+             *   모든 프로퍼티들을 초기화한다...
+             * ***/
+            if(PlayerRideOnProperty==null){
+
+                PlayerRideOnProperty = serializedObject.FindProperty("_PlayerOnPlatform");
+            }
+
+            if(OnObjectCountProperty==null){
+
+                OnObjectCountProperty = serializedObject.FindProperty("_ObjectOnPlatformCount");
+            }
+
+            if(BehaviorListProperty==null){
+
+                BehaviorListProperty = serializedObject.FindProperty("Behaviors");
+            }
+
+            if(UsedCollisionProperty==null){
+
+                UsedCollisionProperty = serializedObject.FindProperty("UsedCollision");
+            }
+            #endregion
+        }
+
+        private void GUI_ShowPlayerOnPlatform()
+        {
+            #region Omit
+            if (PlayerRideOnProperty == null) return;
+
+            EditorGUILayout.Toggle("Player OnPlatform", PlayerRideOnProperty.boolValue);
+
+            #endregion
+        }
+
+        private void GUI_ShowObjectOnPlatform()
+        {
+            #region Omit
+            if (OnObjectCountProperty == null) return;
+
+            bool isOverZero = (OnObjectCountProperty.intValue>0);
+            EditorGUILayout.Toggle("Object OnPlatform", isOverZero);
+            #endregion
+        }
+
+        private void GUI_ShowBehaviorList()
+        {
+            #region Omit
+            if (BehaviorListProperty == null) return;
+
+            EditorGUILayout.PropertyField(BehaviorListProperty);
+
+            #endregion
+        }
+
+        private void GUI_ShowUSedCollision()
+        {
+            #region Omit
+            if (UsedCollisionProperty == null) return;
+
+            using (var scope = new EditorGUI.ChangeCheckScope())
+            {
+                bool value = EditorGUILayout.Toggle("Used Collision", UsedCollisionProperty.boolValue);
+
+                /**값이 바뀌었다면 갱신...*/
+                if(scope.changed){
+
+                    UsedCollisionProperty.boolValue = value;    
+                }
+            }
+            #endregion
+        }
+    }
+#endif
+    #endregion
+
     private enum PendingKillProgress
     {
         NONE,
@@ -23,6 +157,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     //========================================
     public string   EnviromentPrompt { get; }      = string.Empty;
     public bool     IsHit            { get; set; } = false;
+    public bool     PlayerOnPlatform { get { return _PlayerOnPlatform; } }
     public bool     ObjectOnPlatform { get { return (_ObjectOnPlatformCount>0);  } }
     public Collider Collider         { get { return _Collider; } set{ if (value != null) _Collider = value;  }  }
 
@@ -31,16 +166,17 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     [HideInInspector] public Vector3    UpdatePosition  = Vector3.zero;
     [HideInInspector] public Vector3    OffsetPosition  = Vector3.zero;
     [HideInInspector] public Vector3    PrevPosition    = Vector3.zero;
-    [SerializeField]  public bool PlayerOnPlatform      = false;
+    [SerializeField]  private bool _PlayerOnPlatform    = false;
     [SerializeField]  public bool UsedCollision         = true;
     [HideInInspector] public float CheckGroundOffset    = 0f;
 
 
     [SerializeField] private List<PlatformBehaviorBase> Behaviors = new List<PlatformBehaviorBase>();
+    [SerializeField] private int _ObjectOnPlatformCount = 0;
 
     /**플레이어 관련 클래스 캐싱*/
     private static CharacterController _Controller;
-    private StateMachine  _PlayerSM;
+    private static StateMachine  _PlayerSM;
 
     private int layer = 0;
 
@@ -50,7 +186,6 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private Collider  _Collider;
     private PendingKillProgress    _PkProgress = PendingKillProgress.NONE;
     private int                    _CopyCount  = 0;
-    private int                    _ObjectOnPlatformCount = 0;
     private PlatformBehaviorBase[] _InteractionsCopy;
 
 
@@ -96,6 +231,21 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
         if(isChanged) RefreshInteractionCopy(true);
 
+        #endregion
+    }
+
+    public PlatformBehaviorBase GetPlatformBehavior<T>()
+    {
+        #region Omit
+        System.Type type = typeof(T);
+
+        for (int i = 0; i < _CopyCount; i++)
+        {
+            if (_InteractionsCopy[i].GetType().Equals(type)) 
+                return _InteractionsCopy[i];
+        }
+
+        return null;
         #endregion
     }
 
@@ -210,8 +360,12 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             if (rayCastResult && isSameCollider && !playerIsJumping && hit.normal.y>0f)
             {
                 #region Call_OnObjectPlatformStay
-                if (Player.Instance.transform.parent == null)
+                /**만약 해당 객체가 부모가 없을 때만 자식으로 넣는다.*/
+                if (Player.Instance.transform.parent == null) {
+
                     Player.Instance.transform.parent = this.transform;
+                }
+
                 _PkProgress = PendingKillProgress.PENDINGKILL_READY;
                 for (int i = 0; i < _CopyCount; i++)
                 {
@@ -234,7 +388,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
                 #endregion
 
                 Player.Instance.transform.parent = null;
-                PlayerOnPlatform = false;
+                _PlayerOnPlatform = false;
                 _ObjectOnPlatformCount--;
             }
         }
@@ -268,6 +422,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         /**해당 오브젝트가 발판을 밟았을 경우의 처리*/
         if (result && collision.gameObject != Player.Instance.gameObject)
         {
+            _ObjectOnPlatformCount++;
             collision.transform.parent = transform;
             #region Call_OnObjectPlatformEnter
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
@@ -323,7 +478,12 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         }
         else if(collision.gameObject != Player.Instance.gameObject)
         {
-            if (collision.transform.parent == transform) collision.transform.parent = null;
+            /**부모가 해당 객체일 경우에만 부모에서 해제시킨다.*/
+            if (collision.transform.parent == transform){
+
+                _ObjectOnPlatformCount--;
+                collision.transform.parent = null;
+            }
             #region Call_OnObjectPlatformExit
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
             for (int i = 0; i < _CopyCount; i++)
@@ -345,7 +505,12 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
         if (collision.gameObject != Player.Instance.gameObject)
         {
-            if (collision.transform.parent == transform) collision.transform.parent = null;
+            /**부모가 해당 객체일 경우에만 부모에서 해제시킨다.*/
+            if (collision.transform.parent == transform){
+
+                collision.transform.parent = null;
+                _ObjectOnPlatformCount--;
+            }
             #region Call_OnObjectPlatformExit
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
             for (int i = 0; i < _CopyCount; i++)
@@ -413,6 +578,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
     public bool Interact()
     {
+        #region Omit
         //플레이어가 낙하하여 해당 발판 위쪽에 착지했을 경우
         if (PlayerOnPlatform == false && _Controller.velocity.y <= 0f)
         {
@@ -424,8 +590,12 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
             if (isSameObject && isLanded)
             {
-                //Player.Instance.transform.parent = transform;
-                PlayerOnPlatform = true;
+                /**만약 해당 객체가 부모가 없을 때만 자식으로 넣는다.*/
+                if (Player.Instance.transform.parent == null){
+
+                    Player.Instance.transform.parent = this.transform;
+                }
+                _PlayerOnPlatform = true;
                 _ObjectOnPlatformCount++;
 
                 #region Call_OnObjectPlatformEnter
@@ -443,6 +613,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         }
 
         return false;
+        #endregion
     }
 
     public void ExecutionFunction(float time)
