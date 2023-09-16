@@ -1,9 +1,7 @@
-using DG.Tweening;
 using System;
 using System.Collections;
 using UnityEngine;
 using IPariUtility;
-using static UnityEngine.UI.Image;
 
 public class Throw : MonoBehaviour, IInteractable
 {
@@ -41,7 +39,7 @@ public class Throw : MonoBehaviour, IInteractable
     [SerializeField] private bool flight = false;
     [SerializeField] private Vector3 Forward;
     [SerializeField] private float speed = 1.0f;
-    private float rayRange = 0.2f;
+    private Vector3 bounceDir;
 
     private void Start()
     {
@@ -51,15 +49,16 @@ public class Throw : MonoBehaviour, IInteractable
          startPos = this.transform.position;
         _animator = GetComponent<Animator>();
         rigidbody = GetComponent<Rigidbody>();
+        BoxCollider box = GetComponent<BoxCollider>();
         rigidbody.useGravity = true;
         spawnPoint = this.transform.position;
 
         center = new GameObject();
-        center.transform.position = this.transform.position + GetComponent<BoxCollider>().center;
+        center.transform.position = this.transform.position + (box == null ? Vector3.zero : box.center);
         center.transform.parent = this.transform;
         center.name = "Center";
-        if (_animator != null)
-            rayRange = 1f;
+        //if (_animator != null)
+        //    rayRange = 1f;
     }
 
 
@@ -257,11 +256,35 @@ public class Throw : MonoBehaviour, IInteractable
         autoTarget = _transform;
     }
 
+    private Vector3 RandomDirection()
+    {
+        // 8방향으로 이동이 가능하게 할 예정.
+        switch (UnityEngine.Random.Range(0, 8))
+        {
+            case 0:
+                return new Vector3(0, 0, 1);
+            case 1:
+                return new Vector3(1, 0, 1);
+            case 2:
+                return new Vector3(0, 0, 1);
+            case 3:
+                return new Vector3(1, 0, -1);
+            case 4:
+                return new Vector3(0, 0, -1);
+            case 5:
+                return new Vector3(-1, 0, -1);
+            case 6:
+                return new Vector3(-1, 0, 0);
+            case 7:
+                return new Vector3(-1, 0, 1);
+        }
+        return Vector3.zero;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
             !collision.gameObject.CompareTag("Player");
-
         if (bTagHit)
         {
             flight = false;
@@ -276,12 +299,11 @@ public class Throw : MonoBehaviour, IInteractable
                rigidbody.freezeRotation = false;
             rigidbody.velocity += Physics.gravity * .05f;
         }
-    }
-
-    // 적을 캐치하는 구문
-    private void Search()
-    {
-
+        if(bounceDir == default)
+        {
+            bounceDir = RandomDirection().normalized;
+            rigidbody.velocity += bounceDir;
+        }
     }
 
 }
