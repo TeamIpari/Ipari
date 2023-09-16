@@ -51,7 +51,6 @@ public class Character : MonoBehaviour
 
     [Tooltip("체력 이하일 경우 다음 패턴 시작")]
     public int CurPhaseHpArray = 0;
-    [Tooltip("체력 이하일 경우 다음 패턴 시작")]
 
     public Transform RotatePoint;
 

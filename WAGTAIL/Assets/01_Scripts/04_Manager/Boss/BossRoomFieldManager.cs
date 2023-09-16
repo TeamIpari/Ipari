@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
+using UnityEngine.Networking;
 using static UnityEngine.InputManagerEntry;
 
 
@@ -44,6 +45,14 @@ public class BossRoomFieldManager :MonoBehaviour
     [Header("CameraShakeValue")]
     public float ShakePower = 1.5f;
     public float ShakeTime = 0.25f;
+    public float ShakeTiming = 2.5f;
+
+    [Header("Shake ReAction Parameter")]
+    public GameObject ReActionObject;
+    private GameObject[] ReActionPools;
+    public float spawnDelay;
+    public int Count;
+    private bool ReAction = false;
 
     public Vector3 PlayerOnTilePos
     {
@@ -64,7 +73,14 @@ public class BossRoomFieldManager :MonoBehaviour
 
         // 돌들을 배치
         Initialized();
+        CreateReActionObject();
     }
+
+
+    //======================================
+    /////         Core Methods         /////
+    //======================================
+
 
     //======================================
     /////           private Methods     /////
@@ -74,36 +90,74 @@ public class BossRoomFieldManager :MonoBehaviour
         yield return new WaitForSeconds(2.5f);
         //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
         BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
+    }
+    private void CreateReActionObject()
+    {
+        ReActionPools = new GameObject[Count];
 
+        // 생성 하는 기능.
+        for (int i = 0; i < Count; i++)
+        {
+            GameObject obj = GameObject.Instantiate<GameObject>(ReActionObject);
+            obj.transform.position = Vector3.zero;
+            ReActionPools[i] = obj;
+            ReActionPools[i].SetActive(false);
+        }
+    }
+
+    private IEnumerator SpawnReActionObject()
+    {
+        int x, z;
+        if (ReActionPools[0] == null)
+            CreateReActionObject();
+        foreach (var fruit in ReActionPools)
+        {
+            x = Random.Range(0, BossRoomFieldManager.Instance.XSize);
+            z = Random.Range(0, BossRoomFieldManager.Instance.YSize);
+
+            fruit.SetActive(true);
+            Debug.Log($"x : {x} , z :{z} ");
+            fruit.transform.position = BossRoomFieldManager.Instance.GetTilePos(x, z);
+            yield return new WaitForSeconds(spawnDelay * 0.001f);
+        }
+
+        yield return null;
+    }
+
+    private void CameraShake()
+    {
+        if (ReAction)
+        {
+            StartCoroutine(SpawnReActionObject());
+            ReAction = false;
+        }
+        CameraManager.GetInstance().CameraShake(ShakePower, ShakeTime);
     }
 
     //======================================
-    /////         Core Methods         /////
+    /////           public Methods     /////
     //======================================
-
     public Vector3 GetTilePos(int x, int y)
     {
         Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
         return new Vector3(vec.x, 5f, vec.z);
     }
-    public void BrokenPlatform(float XPos)
+    public void BrokenPlatform(float XPos, bool ReAction = false)
     {
         // 내려 찍기 -> 2.5초 후 내려 찍음.
         // .Attack Delay = 2.5f
         float X = (XPos - Offset.x ), Y = 0;
         float FindY = Y * (-StoneYSize);
+        
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
             StartCoroutine(BrokenDelay(X, FindY));
             Y++;
             FindY = Y * (-StoneYSize);
         }
-        Invoke("CameraShake", 2.5f);
-    }
-    
-    private void CameraShake()
-    {
-        CameraManager.GetInstance().CameraShake(ShakePower, ShakeTime);
+        this.ReAction = ReAction;
+        
+        Invoke("CameraShake", ShakeTiming);
     }
 
     public void Initialized()

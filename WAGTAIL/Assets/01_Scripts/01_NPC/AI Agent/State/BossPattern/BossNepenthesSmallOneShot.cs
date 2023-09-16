@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 
-public class BossNepenthesAttack4 : AIAttackState
+public class BossNepenthesSmallOneShot : AIAttackState
 {
     // 필요한 데이터 
     // 생성할 갯수
@@ -19,7 +19,7 @@ public class BossNepenthesAttack4 : AIAttackState
     //====================================================
     /////               Magic Methods                    /////
     //====================================================
-    public BossNepenthesAttack4(AIStateMachine stateMachine, GameObject Fruit, int FruitCount) : base(stateMachine)
+    public BossNepenthesSmallOneShot(AIStateMachine stateMachine, GameObject Fruit, int FruitCount) : base(stateMachine)
     {
         this.FruitPrefab = Fruit;
         this.FruitCount = FruitCount;
@@ -68,7 +68,6 @@ public class BossNepenthesAttack4 : AIAttackState
     private void CreateFruits()
     {
         FruitPools = new GameObject[FruitCount];
-
         // 생성 하는 기능.
         for(int i = 0; i < FruitCount; i++) 
         {

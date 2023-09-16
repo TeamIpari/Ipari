@@ -1,40 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 
-public class BossNepenthesAttack1 : AIAttackState
+public class BossNepenthesVineAttack : AIAttackState
 {
 
     //=================================================
     /////           Property And Fields             ////
     //=================================================
-    private int curAnim = 0;
+    //private int curAnim = 0;
     private float curTimer = 0;
-    private float changeTimer = 5f;
+    //private float changeTimer = 5f;
 
-    private float curShowTimer = 0;
-    private float showTimer = 0.5f;
+    //private float curShowTimer = 0;
+    //private float showTimer = 0.5f;
 
-    private bool on = false;
-    private GameObject dangerousEffect;
-    private int count = 0;
+    //private bool on = false;
 
     private float DelayTime = 5f;
-    private GameObject LeftVinePrefab;
-    private GameObject RightVinePrefab;
+    private GameObject VinePrefab;
     private GameObject Vine;
 
 
     //=================================================
     /////               Magic Methods              /////
     //=================================================
-    public BossNepenthesAttack1(AIStateMachine stateMachine, GameObject LeftVine, GameObject RightVine) : base(stateMachine)
+    public BossNepenthesVineAttack(
+        AIStateMachine stateMachine, GameObject Vine) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
-        this.LeftVinePrefab = LeftVine;
-        this.RightVinePrefab = RightVine;
-        curAnim = 0;
+        this.VinePrefab = Vine;
+        //curAnim = 0;
     }
 
     public override void Enter()
@@ -61,8 +57,12 @@ public class BossNepenthesAttack1 : AIAttackState
     {
         base.Update();  
         curTimer += Time.deltaTime;
-        if(curTimer > DelayTime)
-            stateMachine.NextPattern();
+        if (curTimer > DelayTime)
+            ChangeState();
+    }
+    protected override void ChangeState()
+    {
+        base.ChangeState();
     }
 
     //=================================================
@@ -71,20 +71,15 @@ public class BossNepenthesAttack1 : AIAttackState
     public void ShowVine()
     {
         Vector3 spawnPos = BossRoomFieldManager.Instance.PlayerOnTilePos;
-        bool isLeft = spawnPos.x < BossRoomFieldManager.Instance.XSize / 2;
 
         // ÀÛÀ» °æ¿ì ¿ÞÂÊ µ¢Äð Ãâ·Â
         if (Vine == null)
-        {
-            Vine = GameObject.Instantiate(isLeft ? RightVinePrefab : LeftVinePrefab, BossRoomFieldManager.Instance.transform);
-            Vine.transform.localPosition = new Vector3(spawnPos.x, -1.0f, 1.5f);
-        }
+            Vine = GameObject.Instantiate(VinePrefab, BossRoomFieldManager.Instance.transform);
         else
-        {
             Vine.SetActive(true);
-            Vine.transform.localPosition = new Vector3(spawnPos.x, -1.0f, 1.5f);
-        }
+        Vine.transform.localPosition = new Vector3(spawnPos.x, -1.0f, 1.5f);
+
         // ¸î ÃÊ ÈÄ ¶³¾îÁö°Ô ÇÏ±â.
-        BossRoomFieldManager.Instance.BrokenPlatform(spawnPos.x);
+        BossRoomFieldManager.Instance.BrokenPlatform(spawnPos.x, true);
     }
 }

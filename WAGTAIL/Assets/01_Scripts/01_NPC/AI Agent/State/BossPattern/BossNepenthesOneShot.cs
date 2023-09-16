@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class BossNepenthesAttack2 : AIAttackState
+public class BossNepenthesOneShot: AIAttackState
 {
 
     //========================================
@@ -22,18 +22,20 @@ public class BossNepenthesAttack2 : AIAttackState
     private bool isShoot;
     private float DelayTime;
     private float time;
+    private float bombSize;
 
 
     //========================================
     /////       Magic Methods             ////
     //========================================
-    public BossNepenthesAttack2(AIStateMachine stateMachine, BossNepenthesProfile profile, float time) : base(stateMachine)
+    public BossNepenthesOneShot(AIStateMachine stateMachine, BossNepenthesProfile profile, float size,float time) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
         this.circleObj = profile.ShotMarker;
         this.shootPoint = profile.ShotPosition;
         this.bullet = profile.BulletPrefab;
         this.time = time;
+        this.bombSize = size;
         this.DelayTime = 0.8f;
     }
 
@@ -91,12 +93,12 @@ public class BossNepenthesAttack2 : AIAttackState
     private void CreateMarker()
     {
         target = new Vector3(Player.Instance.transform.position.x,
-            Player.Instance.transform.position.y + 0.1f,
+            0.1f,
             Player.Instance.transform.position.z);
         
         GameObject _obj = GameObject.Instantiate(circleObj);
-        _obj.transform.localScale = Vector3.one * 3f;
-        _obj.transform.position = target;
+        _obj.transform.localScale = Vector3.one * bombSize;
+        _obj.transform.position = new Vector3(target.x , 0.1f, target.z);
         _obj.transform.rotation = Quaternion.Euler(-90, 0, 0);
         marker = _obj;
     }
@@ -107,7 +109,7 @@ public class BossNepenthesAttack2 : AIAttackState
         Vector3 pos = IpariUtility.CaculateVelocity(target, shootPoint.position, time);
 
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
-        obj.transform.localScale = Vector3.one * 3f;
+        obj.transform.localScale = Vector3.one * bombSize;
         Debug.Log(obj.GetComponent<Bullet>());
         obj.GetComponent<Bullet>().ShotDirection(pos);
 

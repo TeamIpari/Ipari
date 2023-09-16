@@ -39,7 +39,6 @@ public abstract class AIAttackState : AIState
             stateMachine.NextPattern();
         else
             Debug.Log("연결된 State가 없음.");
-
     }
 
     //protected Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
