@@ -4,7 +4,7 @@ using UnityEngine;
 using IPariUtility;
 
 
-public class BossNepenthesAttack3 : AIAttackState
+public class BossNepenthesSmallShotGun : AIAttackState
 {
     private int targetCount = 0;
     private float curTimer = 0;
@@ -24,7 +24,7 @@ public class BossNepenthesAttack3 : AIAttackState
     //====================================================
     /////               magic Methods               /////
     //====================================================
-    public BossNepenthesAttack3(AIStateMachine stateMachine,BossNepenthesProfile Profile, float flightTime, int count, float rad) : base(stateMachine)
+    public BossNepenthesSmallShotGun(AIStateMachine stateMachine,BossNepenthesProfile Profile, float flightTime, int count, float rad) : base(stateMachine)
     {
         this.stateMachine = stateMachine;
         this.shootPoint = Profile.ShotPosition;

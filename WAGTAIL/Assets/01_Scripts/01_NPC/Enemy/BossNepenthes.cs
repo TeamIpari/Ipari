@@ -28,8 +28,13 @@ public class BossNepenthes : Enemy
     public Transform ShotPosition;
     public GameObject ShotMarker;
 
+    [Header("Attack1 Parameter")]
+    public GameObject VinePrefab;
+
     [Header("Attack2 Parameter")]
-    public float time;
+    public float Time;
+    public float BigSize = 3f;
+    public float SmallSize = 1f;
 
     [Header("Attack3 Parameter")]
     [Tooltip("한번 쏠 때 최대 몇 개를 퍼뜨리는가?")]
@@ -37,14 +42,7 @@ public class BossNepenthes : Enemy
     [Tooltip("폭탄을 던졌을 때 Player중심으로 ShotArea의 원 범위 안에 랜덤으로 투척")]
     public int ShotArea;
 
-    public GameObject LeftVine;
-    public GameObject RightVine;
-
-    [Header("Attack4 Parameter")]
-    [Tooltip("폭탄 열매")]
-    public int FruitCount;
-    public GameObject Fruit;        
-
+    //[Header("Attack4 Parameter")]
 
     //==========================================
     /////           Magic Method            ////
@@ -106,10 +104,10 @@ public class BossNepenthes : Enemy
 
         AiIdle = new BossNepenthesIdleState(AiSM, IdleRate);
         AiWait = new BossNepenthesWaitState(AiSM, WaitRate);
-        AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
-        AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
-        AiAttack3 = new BossNepenthesAttack3(AiSM, BossProfile, time, ShotCount, ShotArea);
-        AiAttack4 = new BossNepenthesAttack4(AiSM, Fruit, FruitCount);
+        AiAttack = new BossNepenthesVineAttack(AiSM, VinePrefab);
+        AiAttack2 = new BossNepenthesOneShot(AiSM, BossProfile, BigSize, Time);
+        AiAttack3 = new BossNepenthesSmallShotGun(AiSM, BossProfile, Time, ShotCount, ShotArea);
+        AiAttack4 = new BossNepenthesOneShot(AiSM, BossProfile, SmallSize, Time);
         // 죽는 기능.
         AiHit = new BossNepenthesHitState(AiSM);
         AiDie = new BossNepenthesDieState(AiSM);
