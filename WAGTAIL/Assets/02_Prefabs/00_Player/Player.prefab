@@ -9536,8 +9536,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a35ab18742638d54087e7313412aa0e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 10
-  jumpHeight: 1
+  playerSpeed: 7
+  jumpHeight: 1.2
   gravityMultiplier: 2
   rotationSpeed: 5
   climbingSpeed: 3.2
@@ -9545,15 +9545,14 @@ MonoBehaviour:
   slopeSpeed: 0
   respawnTime: 1.2
   rotateAngle: 0
-  m_horizontalViewAngle: 0
   m_viewRotateZ: 0
   holdTargetMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   ThrowTargetMask:
     serializedVersion: 2
-    m_Bits: 0
-  throwRange: 6
+    m_Bits: 32768
+  throwRange: 30
   Target: {fileID: 0}
   speedDampTime: 0.1
   velocityDampTime: 0.1

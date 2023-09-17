@@ -107,7 +107,6 @@ public class BossNepenthesOneShot: AIAttackState
     {
         //Vector3 pos = CaculateVelocity(target, shootPoint.position, time);
         Vector3 pos = IpariUtility.CaculateVelocity(target, shootPoint.position, time);
-
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
         obj.transform.localScale = Vector3.one * bombSize;
         Debug.Log(obj.GetComponent<Bullet>());

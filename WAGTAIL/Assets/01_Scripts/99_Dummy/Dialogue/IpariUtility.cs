@@ -26,13 +26,15 @@ namespace IPariUtility
             distanceXZ.y = 0f; // y는 0으로 설정.
                                //Forward = origin;
                                // Create a float the represent our distance
+
+            Debug.Log($"{distance}, {distanceXZ}");
             float Sy = distance.y;      // 세로 높이의 거리를 지정.
             float Sxz = distanceXZ.magnitude;
 
             // 속도 추가
             float Vxz = Sxz / time;
             float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-
+            Debug.Log($"{Sy}, {Sxz}, {Vxz}, {Vy}");
             // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
             Vector3 result = distanceXZ.normalized;
             result *= Vxz;

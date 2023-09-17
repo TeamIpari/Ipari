@@ -6,6 +6,7 @@ using UnityEngine;
 public class AcidBomb : Bullet
 {
     Vector3 Direction;
+    public Vector3 pos;
 
     //======================================
     /////          magic Methods        ////
@@ -17,13 +18,13 @@ public class AcidBomb : Bullet
 
     public override void ShotDirection(Vector3 vector3)
     {
+        pos = vector3;
         DirectionLine = true;
         BulletRigidBody.velocity = vector3;
     }
 
     public override void SetDirection(Vector3 vector3)
     {
-        //base.SetDirection(vector3);
         DirectionLine = false;
         Direction = vector3;
     }

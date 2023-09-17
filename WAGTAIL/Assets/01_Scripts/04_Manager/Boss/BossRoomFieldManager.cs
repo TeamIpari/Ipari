@@ -116,7 +116,6 @@ public class BossRoomFieldManager :MonoBehaviour
             z = Random.Range(0, BossRoomFieldManager.Instance.YSize);
 
             fruit.SetActive(true);
-            Debug.Log($"x : {x} , z :{z} ");
             fruit.transform.position = BossRoomFieldManager.Instance.GetTilePos(x, z);
             yield return new WaitForSeconds(spawnDelay * 0.001f);
         }

@@ -35,8 +35,8 @@ public class Player : MonoBehaviour
     //========================================
     [Header("HoldSearch")]
     public float rotateAngle;
-    [Range(0, 360f)]
-    [SerializeField] private float m_horizontalViewAngle = 0f;
+
+    private const float m_horizontalViewAngle = 120f;
     [Range(-180f, 180f)]
     [SerializeField] private float m_viewRotateZ = 0f;
     public LayerMask holdTargetMask;
