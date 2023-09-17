@@ -1,29 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.InputSystem;
 
 public class IdleState : State
 {
-    private float gravityValue;
-    private bool climbing;
-    private bool push;
-    private bool carry;
-    private bool jump;
-    private bool pull;
-    private bool flight;
-    private bool slide;
-    private bool dead;
-    private Vector3 currentVelocity;
-    private bool isGrounded;
-    private float playerSpeed;
-    private float slopeSpeed;
+    private float _gravityValue;
+    private bool _climbing;
+    private bool _push;
+    private bool _carry;
+    private bool _jump;
+    private bool _pull;
+    private bool _flight;
+    private bool _slide;
+    private bool _dead;
+    private Vector3 _currentVelocity;
+    private bool _isGrounded;
+    private float _playerSpeed;
+    private float _slopeSpeed;
 
-    Vector3 cVelocity;
+    private bool _isSliding;
+    private Vector3 _slopeSlideVelocity;
 
-    private Vector3 hitPointNormal;
+    private Vector3 _cVelocity;
     private GameObject _FXMove;
+
+    // 슬라이딩 관련 변수
+    private Vector3 hitPointNormal;
 
     public IdleState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -36,25 +39,25 @@ public class IdleState : State
         base.Enter();
 
         player.isIdle = true;
-        jump = false;
-        climbing = player.isClimbing;
-        push = player.isPush;
-        pull = player.isPull;
-        carry = player.isCarry;
-        flight = player.isFlight;
-        dead = player.isDead;
+        _jump = false;
+        _climbing = player.isClimbing;
+        _push = player.isPush;
+        _pull = player.isPull;
+        _carry = player.isCarry;
+        _flight = player.isFlight;
+        _dead = player.isDead;
         
         //slide = player.isSlide;
         
         input = Vector2.zero;
         velocity = Vector3.zero;
-        currentVelocity = Vector3.zero;
+        _currentVelocity = Vector3.zero;
         gravityVelocity.y = 0;
 
-        playerSpeed = player.playerSpeed;
-        isGrounded = player.controller.isGrounded;
-        gravityValue = player.gravityValue;
-        slopeSpeed = player.slopeSpeed;
+        _playerSpeed = player.playerSpeed;
+        _isGrounded = player.controller.isGrounded;
+        _gravityValue = player.gravityValue;
+        _slopeSpeed = player.slopeSpeed;
 
         // trigger 초기화
         player.animator.ResetTrigger("flight");
@@ -69,15 +72,15 @@ public class IdleState : State
     {
         base.HandleInput();
 
-        if (jumpAction.triggered) jump = true;
-        if (interacAction.triggered) player.Interaction();
+        if (jumpAction.triggered) _jump = true;
+        if (interactAction.triggered) player.Interaction();
         
 
-        climbing = player.isClimbing;
-        push = player.isPush;
-        carry = player.isCarry;
-        pull = player.isPull;
-        dead = player.isDead;
+        _climbing = player.isClimbing;
+        _push = player.isPush;
+        _carry = player.isCarry;
+        _pull = player.isPull;
+        _dead = player.isDead;
 
         input = moveAction.ReadValue<Vector2>();
         
@@ -109,37 +112,37 @@ public class IdleState : State
         // TODO : animator 적용
         player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
 
-        if (climbing)
+        if (_climbing)
         {
             stateMachine.ChangeState(player.climbing);
         }
 
-        if (carry)
+        if (_carry)
         {
             stateMachine.ChangeState(player.pickup);
         }
 
-        if (push)
+        if (_push)
         {
             stateMachine.ChangeState(player.push);
         }
 
-        if (jump)
+        if (_jump)
         {
             stateMachine.ChangeState(player.jump);
         }
 
-        if (pull)
+        if (_pull)
         {
             stateMachine.ChangeState(player.pull);
         }
 
-        if (flight)
+        if (_flight)
         {
             stateMachine.ChangeState(player.flight);
         }
 
-        if (dead)
+        if (_dead)
         {
             stateMachine.ChangeState(player.death);
         }
@@ -151,37 +154,33 @@ public class IdleState : State
     {
         base.PhysicsUpdate();
         
-        gravityVelocity.y += gravityValue * Time.deltaTime;
-        isGrounded = player.controller.isGrounded;
+        gravityVelocity.y += _gravityValue * Time.deltaTime;
+        _isGrounded = player.controller.isGrounded;
 
         // 바닥과 닿아 있을 때는 중력 적용 X
-        if(isGrounded && gravityVelocity.y < 0 )
+        if(_isGrounded && gravityVelocity.y < 0 )
         {
             gravityVelocity.y = 0f;
         }
 
         else if (player.controller.velocity.y < -0.5f && !IsCheckGrounded())
         {
-            //player.animator.SetTrigger("flight");
-            flight = true;
+            _flight = true;
         }
-
-        currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
-
-        /*
-        if (slide && IsSliding)
-        {
-            currentVelocity = new Vector3(hitPointNormal.x, -hitPointNormal.y, hitPointNormal.z) * slopeSpeed;
-
-            //Debug.Log(hitPointNormal);
-        }*/
-
-        player.controller.Move(currentVelocity * (Time.deltaTime * playerSpeed) + gravityVelocity * Time.deltaTime);
         
+        // Movement Logic
+        velocity = AdjustVelocityToSlope(velocity); // 경사로 내려갈 때 velocity 조정
+        _currentVelocity = Vector3.SmoothDamp(_currentVelocity, velocity, ref _cVelocity, player.velocityDampTime);
+        player.controller.Move(_currentVelocity * (Time.deltaTime * _playerSpeed) + gravityVelocity * Time.deltaTime);
+        
+        // Player Rotation 선형보간
         if (velocity.sqrMagnitude > 0)
         {
-            player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity),
+            var rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity),
                 player.rotationDampTime);
+            rotation.x = 0f;
+            rotation.z = 0f;
+            player.transform.rotation = rotation;
         }
     }
 
@@ -226,7 +225,40 @@ public class IdleState : State
 
     public void Jumping()
     {
-        jump = true;
+        _jump = true;
+    }
+
+    private Vector3 AdjustVelocityToSlope(Vector3 vel)
+    {
+        var ray = new Ray(player.transform.position, Vector3.down);
+        
+        if(Physics.Raycast(ray, out RaycastHit hitInfo, 0.2f))
+        {
+            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+            var adjustedVelocity = slopeRotation * vel;
+
+            if (adjustedVelocity.y < 0)
+            {
+                return adjustedVelocity;
+            }
+        }
+        return vel;
+    }
+    
+    private void SetSlopeSlideVelocity()
+    {
+        if (Physics.Raycast(player.transform.position + Vector3.up, Vector3.down, out RaycastHit hitInfo, 5f))
+        {
+            var angle = Vector3.Angle(hitInfo.normal, Vector3.up);
+            
+            if(angle >= player.controller.slopeLimit)
+            {
+                _slopeSlideVelocity = Vector3.ProjectOnPlane(new Vector3(0, _gravityValue * Time.deltaTime,0), hitInfo.normal);
+                return;
+            }
+        }
+        
+        _slopeSlideVelocity = Vector3.zero;
     }
     
     private bool IsSliding

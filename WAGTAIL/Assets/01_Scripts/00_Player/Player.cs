@@ -1,23 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditorInternal;
-//using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
-using UnityEngine.TextCore.Text;
 using IPariUtility;
-using System;
-using System.Runtime.InteropServices.WindowsRuntime;
+using UnityEngine.Serialization;
 
-[RequireComponent(typeof(SoundHandler))]
 public class Player : MonoBehaviour
 {
     static Player instance;
     public static Player Instance { get { return instance; } }  
 
     [Header("Controls")]
+    //==================================
+    // 1. Player에 있는 수치값들은 특수한 이유가 없으면 상수로 선언해야함.
+    //==================================
     public float playerSpeed = 15.0f;
     // 점프 사용할지 말지 몰라서 일단 기입만 해둠
     // =======================================
@@ -36,11 +32,11 @@ public class Player : MonoBehaviour
     [Header("HoldSearch")]
     public float rotateAngle;
 
-    private const float m_horizontalViewAngle = 120f;
+    private const float HorizontalViewAngle = 120f;
     [Range(-180f, 180f)]
     [SerializeField] private float m_viewRotateZ = 0f;
-    public LayerMask holdTargetMask;
-    public LayerMask ThrowTargetMask;
+    [HideInInspector] public LayerMask holdTargetMask;
+    [HideInInspector] public LayerMask throwTargetMask;
     private float m_horizontalViewHalfAngle = 0f;
     public float throwRange = 6f;
     [Header("AutoTarget")]
@@ -59,10 +55,7 @@ public class Player : MonoBehaviour
     public float airControl = 0.5f;
 
     [Header("Interaction")]
-    private readonly Collider[] _colliders = new Collider[3];
     private int _numFound;
-    private readonly float _interactionPointRadius = 0.5f;
-    public LayerMask interactableMask;
     public Transform InteractionPoint;
     public Transform EquipPoint;
     public Transform ThrowEquipPoint;
@@ -72,22 +65,16 @@ public class Player : MonoBehaviour
     
     [Header("State Check")]
     public bool isIdle = true;
-    public bool isClimbing = false;
-    public bool isPush = false;
+    public bool isClimbing = false; // 없어질것
+    public bool isPush = false; // 없어질것
     public bool isCarry = false;
     public bool isFlight = false;
     public bool isDead = false;
-    public bool isSmallThrow = false;
+    public bool isSmallThrow = false; // 없어질것
     // 당기는데, 원점으로부터 멀어지면 멀어질 수록 최대 도달점과 비교하여
     // 퍼센테이지로 이동속도를 줄임.
     public bool isPull = false;
     //public bool isSlide = true;
-    
-    [Header("Sound")]
-    [SerializeField] private AudioClip walkClip;
-    [SerializeField] private AudioClip jumpClip;
-    [SerializeField] private AudioClip landingClip;
-    [SerializeField] private AudioClip deathClip;
     
     //============================================//
     // State
@@ -96,8 +83,8 @@ public class Player : MonoBehaviour
     public JumpingState jump;
     public FlightState flight;
     public LandingState landing;
-    public PushState push;
-    public ClimbingState climbing;
+    public PushState push; // 없어질것 
+    public ClimbingState climbing; // 없어질것
     public CarryState carry;
     public PickUpState pickup;
     public DropState drop;
@@ -142,18 +129,9 @@ public class Player : MonoBehaviour
     
     private void OnDrawGizmos()
     {
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawLine(transform.position, transform.position + transform.forward);
-
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawWireSphere(InteractionPoint.position, _interactionPointRadius);
-
-        //======================================
-        //지훈추가
-        //======================================
         if (!isCarry)
         {
-            m_horizontalViewHalfAngle = m_horizontalViewAngle * 0.5f;
+            m_horizontalViewHalfAngle = HorizontalViewAngle * 0.5f;
 
             Vector3 originPos = transform.position;
 
@@ -167,9 +145,10 @@ public class Player : MonoBehaviour
             Debug.DrawRay(originPos, lookDir * 3, Color.green);
             Debug.DrawRay(originPos, horizontalRightDir * 3, Color.cyan);
         }
+        
         else
         {
-            m_horizontalViewHalfAngle = m_horizontalViewAngle * 0.5f;
+            m_horizontalViewHalfAngle = HorizontalViewAngle * 0.5f;
 
             Vector3 originPos = transform.position;
 
@@ -187,17 +166,8 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        // FindObjectOfType<Player>() 사용 비권장
-
-        // 유니티 최신 버전에서 추가된 API
-        // FindAnyObjectByType<Player>(); 
-        // FindFirstObjectByType<Player>();
-        
-
-        // player singleton 고민.
         if(instance == null)
             instance = this;
-        //transform.parent = null;
     }
 
     private void Start()
@@ -236,8 +206,9 @@ public class Player : MonoBehaviour
         normalColliderCenter = controller.center;
         normalColliderRadius = controller.radius;
         gravityValue *= gravityMultiplier;
-        
-        interactableMask = LayerMask.GetMask("Interactable");
+
+        holdTargetMask = LayerMask.GetMask("Interactable");
+        throwTargetMask = LayerMask.GetMask("Enemies");
     }
 
     // Update is called once per frame
@@ -246,6 +217,8 @@ public class Player : MonoBehaviour
         movementSM.currentState.HandleInput();
 
         movementSM.currentState.LogicUpdate();
+        
+        // 이거 그냥 Carry State or Throw State 에 넣으면 되는거 아닌가?
         if(isCarry)
         {
             EnemySearching();
@@ -260,6 +233,7 @@ public class Player : MonoBehaviour
     // (구현해야함) 가장 가까운 collider를 읽어내서 IInteractable을 상속받은 클래스가 있다면 상호작용을 한다.
     public void Interaction()
     {
+        #region LegacyCode
         //if (currentInteractable == null)
         //{
         //    _numFound = Physics.OverlapSphereNonAlloc(InteractionPoint.position, _interactionPointRadius, _colliders,
@@ -272,6 +246,7 @@ public class Player : MonoBehaviour
         //    interactable.Interact(gameObject);
         //    currentInteractable = _colliders[0].gameObject;
         //}
+        #endregion
         if(currentInteractable == null)
         {
             GameObject obj = FindViewTarget(transform, 3,holdTargetMask);
@@ -317,7 +292,7 @@ public class Player : MonoBehaviour
     //==================================================
     private GameObject FindViewTarget(Transform transform, float SearchRange, LayerMask targetMask)
     {
-        Vector3 targetPos, dir, lookdir;
+        Vector3 targetPos, dir, lookDir;
         Vector3 originPos = transform.position;
         Collider[] hitedTargets = Physics.OverlapSphere(originPos, SearchRange, targetMask);
 
@@ -327,11 +302,11 @@ public class Player : MonoBehaviour
         {
             targetPos = hitedTarget.transform.position;
             dir = (targetPos - originPos).normalized;
-            lookdir = IpariUtility.AngleToDirY(this.transform.eulerAngles, rotateAngle);
+            lookDir = IpariUtility.AngleToDirY(this.transform.eulerAngles, rotateAngle);
 
-            dot = Vector3.Dot(lookdir, dir);
+            dot = Vector3.Dot(lookDir, dir);
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            if(angle <= m_horizontalViewAngle)
+            if (angle <= HorizontalViewAngle)
             {
                 // 타겟이 걸리면 반환.
                 return hitedTarget.gameObject;
@@ -343,7 +318,6 @@ public class Player : MonoBehaviour
 
     private void EnemySearching()
     {
-        Target = FindViewTarget(transform, throwRange, ThrowTargetMask );
-        
+        Target = FindViewTarget(transform, throwRange, throwTargetMask );
     }
 }

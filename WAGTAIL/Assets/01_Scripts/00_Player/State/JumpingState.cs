@@ -44,7 +44,7 @@ public class JumpingState : State
         base.HandleInput();
         
         dead = player.isDead;
-        if (interacAction.triggered && player.currentInteractable != null)
+        if (interactAction.triggered && player.currentInteractable != null)
         {
             player.Interaction();
             player.animator.ResetTrigger("move");

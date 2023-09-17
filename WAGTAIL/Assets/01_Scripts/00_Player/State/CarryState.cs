@@ -45,7 +45,7 @@ public class CarryState : State
         base.HandleInput();
 
         if (jumpAction.triggered) jump = true;
-        if (interacAction.triggered) player.Interaction();
+        if (interactAction.triggered) player.Interaction();
 
         carry = player.isCarry;
         input = moveAction.ReadValue<Vector2>();
