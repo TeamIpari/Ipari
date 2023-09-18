@@ -17,7 +17,7 @@ public class AIPatrolState : AIState
     private float searchDistance = 0;
     public AIPatrolState(AIStateMachine stateMachine, float searchDistance) : base(stateMachine)
     {
-        this.stateMachine = stateMachine;
+        this.AISM = stateMachine;
         this.searchDistance = searchDistance;
     }
     public override void SetChildren(AIState _state)
@@ -62,17 +62,17 @@ public class AIPatrolState : AIState
         {
             if (currentTime > changeTime)
             {
-                if (children.Count > 0)
+                if (Children.Count > 0)
                 {
                     //if (children.Count <= current)
                     //{
                     //    Debug.Log("Out of range");
                     //    current -= 1;
                     //}
-                    stateMachine.ChangeState(children[current]);
+                    AISM.ChangeState(Children[Current]);
                 }
                 else
-                    stateMachine.ChangeState(parent);
+                    AISM.ChangeState(Parent);
             }
         }
         catch
@@ -85,15 +85,15 @@ public class AIPatrolState : AIState
     private void Search()
     {
         Collider[] cols =
-            Physics.OverlapSphere(stateMachine.Transform.position, searchDistance, LayerMask.GetMask("Player"));
+            Physics.OverlapSphere(AISM.Transform.position, searchDistance, LayerMask.GetMask("Player"));
         // Player가 체크 되었는가?
         foreach(var c in cols)
         {
             if (c.gameObject.CompareTag("Player"))
             {
-                parent.current++;   // 다음 State 진행
-                stateMachine.SetTarget(c.gameObject);
-                stateMachine.ChangeState(parent);
+                Parent.Current++;   // 다음 State 진행
+                AISM.SetTarget(c.gameObject);
+                AISM.ChangeState(Parent);
             }
         }
     }

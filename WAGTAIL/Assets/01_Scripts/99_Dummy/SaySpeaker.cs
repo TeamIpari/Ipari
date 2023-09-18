@@ -14,7 +14,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
     public int SayType = 1;     // 어떤 말을 뱉을 것인지 대상마다 다름.
     public TextMeshProUGUI TextViewer;      // 필수
     public CutScene CutScenePlayer;         // 있으면 재생.
-    public Dialogue dialogue;
+    public Dialogue Dialogue;
 
 
     private void Start()
@@ -51,11 +51,11 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
             QuestIcon.GetComponent<Animator>().SetTrigger("Interactable");
         yield return new WaitForSeconds(1.0f);
         IsSaying = true;
-        dialogue = LoadManager.GetInstance().IO_GetScriptable(SayType);
+        Dialogue = LoadManager.GetInstance().IO_GetScriptable(SayType);
         IsSay = true;
         SpeakBalloon.SetActive(true);
         LoadManager.GetInstance().TmpSet(TextViewer);
-        LoadManager.GetInstance().StartDialogue(dialogue);
+        LoadManager.GetInstance().StartDialogue(Dialogue);
     }
 
     public void PlaySay()

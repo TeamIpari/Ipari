@@ -11,11 +11,11 @@ public class BossNepenthesSmallShotGun : AIAttackState
     private float changeTimer = 2f;
     private float rad;
     private float time = 2f;
-    private float DelayTime = 0.8f;
+    private float delayTime = 0.8f;
     private bool isShoot = false;
 
     private Transform shootPoint;
-    private GameObject AcidBullet;
+    private GameObject acidBullet;
     private GameObject circleObj;
 
     private List<Vector3> targets = new List<Vector3>();
@@ -26,14 +26,14 @@ public class BossNepenthesSmallShotGun : AIAttackState
     //====================================================
     public BossNepenthesSmallShotGun(AIStateMachine stateMachine,BossNepenthesProfile Profile, float flightTime, int count, float rad) : base(stateMachine)
     {
-        this.stateMachine = stateMachine;
+        this.AISM = stateMachine;
         this.shootPoint = Profile.ShotPosition;
         this.targetCount = count;
-        this.AcidBullet = Profile.BulletPrefab;
+        this.acidBullet = Profile.BulletPrefab;
         this.time = flightTime;
         this.rad = rad;
         this.circleObj = Profile.ShotMarker;
-        this.DelayTime = 0.8f;
+        this.delayTime = 0.8f;
     }
 
     //====================================================
@@ -42,7 +42,7 @@ public class BossNepenthesSmallShotGun : AIAttackState
 
     public override void Enter()
     {
-        stateMachine.Animator.SetTrigger("isAttack");
+        AISM.Animator.SetTrigger("isAttack");
         curTimer = 0;
         isShoot = false;
     }
@@ -110,7 +110,7 @@ public class BossNepenthesSmallShotGun : AIAttackState
         foreach (var t in targets)
         {
             Vector3 pos = IpariUtility.CaculateVelocity(t, shootPoint.position, time);
-            GameObject obj = GameObject.Instantiate(AcidBullet, shootPoint.position, Quaternion.identity);
+            GameObject obj = GameObject.Instantiate(acidBullet, shootPoint.position, Quaternion.identity);
             obj.GetComponent<Bullet>().ShotDirection(pos);
         }
     }
@@ -129,7 +129,7 @@ public class BossNepenthesSmallShotGun : AIAttackState
 
     public void ShootDelay()
     {
-        if (curTimer > DelayTime && !isShoot)
+        if (curTimer > delayTime && !isShoot)
         {
             FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
             CreateMarker();

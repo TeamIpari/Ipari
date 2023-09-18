@@ -10,19 +10,19 @@ public class BossNepenthesSmallOneShot : AIAttackState
     //====================================================
     /////               Properties                    /////
     //====================================================
-    private GameObject FruitPrefab;
-    private GameObject[] FruitPools;
-    private int FruitCount;
+    private GameObject fruitPrefab;
+    private GameObject[] fruitPools;
+    private int fruitCount;
     private float curTimer;
     
 
     //====================================================
     /////               Magic Methods                    /////
     //====================================================
-    public BossNepenthesSmallOneShot(AIStateMachine stateMachine, GameObject Fruit, int FruitCount) : base(stateMachine)
+    public BossNepenthesSmallOneShot(AIStateMachine stateMachine, GameObject fruit, int fruitCount) : base(stateMachine)
     {
-        this.FruitPrefab = Fruit;
-        this.FruitCount = FruitCount;
+        this.fruitPrefab = fruit;
+        this.fruitCount = fruitCount;
         CreateFruits();
     }
 
@@ -67,14 +67,14 @@ public class BossNepenthesSmallOneShot : AIAttackState
     //====================================================
     private void CreateFruits()
     {
-        FruitPools = new GameObject[FruitCount];
+        fruitPools = new GameObject[fruitCount];
         // 생성 하는 기능.
-        for(int i = 0; i < FruitCount; i++) 
+        for(int i = 0; i < fruitCount; i++) 
         {
-            GameObject obj = GameObject.Instantiate<GameObject>(FruitPrefab);
+            GameObject obj = GameObject.Instantiate<GameObject>(fruitPrefab);
             obj.transform.position = Vector3.zero;
-            FruitPools[i] = obj;
-            FruitPools[i].SetActive(false);
+            fruitPools[i] = obj;
+            fruitPools[i].SetActive(false);
         }
     }
     
@@ -83,9 +83,9 @@ public class BossNepenthesSmallOneShot : AIAttackState
         // n개의 좌표를 지정하고 해당 좌표에 생성해줌.
         
         int x, z;
-        if (FruitPools[0] == null)
+        if (fruitPools[0] == null)
             CreateFruits();
-        foreach(var fruit in FruitPools)
+        foreach(var fruit in fruitPools)
         {
             x = Random.Range(0, BossRoomFieldManager.Instance.XSize);
             z = Random.Range(0, BossRoomFieldManager.Instance.YSize);

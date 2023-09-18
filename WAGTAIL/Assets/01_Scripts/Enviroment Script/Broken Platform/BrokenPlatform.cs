@@ -14,16 +14,16 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     public float ShowNUpTime = 1.0f;
     public float VineHitTime = 2.5f;
 
-    private float DelayTime;
+    private float delayTime;
     // 위 아래 최종 이동 위치
     public float MoveSpeed = 0.0f;
-    bool shake = false;
+    private bool shake = false;
     
     
     public float ShakeSpeed = 0.0f;
 
     // 흔들리고 사라지거나 떨어질 때 원래 위치로 찾아오기 위한 Origin Position;
-    Vector3 startPos;
+    private Vector3 startPos;
 
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
@@ -35,10 +35,10 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     float curTime;
     public float shakeDelay;
-    Vector3[] PosList;
+    private Vector3[] PosList;
 
-    Vector3 localPoint1;
-    Vector3 localPoint2;
+    private Vector3 localPoint1;
+    private Vector3 localPoint2;
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
@@ -79,7 +79,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             Light.SetActive(true);
 
         shake = true;
-        yield return new WaitForSeconds(DelayTime);
+        yield return new WaitForSeconds(delayTime);
         shake = false;
 
         while(Mathf.Abs(Vector3.Distance(transform.position, endPoint.transform.position)) > 0.1f )
@@ -96,7 +96,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         if (Light != null)
             Light.SetActive(false);
 
-        yield return new WaitForSeconds(DelayTime);
+        yield return new WaitForSeconds(delayTime);
 
         while (Mathf.Abs(Vector3.Distance(transform.position, startPoint.transform.position)) > 0.1f)
         {
@@ -115,7 +115,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             Light.SetActive(true);
 
         shake = true;
-        yield return new WaitForSeconds(DelayTime);
+        yield return new WaitForSeconds(delayTime);
         shake = false;
 
         for (int i = 0; i < this.transform.childCount; i++)
@@ -204,7 +204,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         IsHit = true;
         if (Light != null)
             Light.SetActive(true);
-        DelayTime = time;
+        delayTime = time;
         if (!IsUpdownMode)
         {
             StartCoroutine(HidePlatform());

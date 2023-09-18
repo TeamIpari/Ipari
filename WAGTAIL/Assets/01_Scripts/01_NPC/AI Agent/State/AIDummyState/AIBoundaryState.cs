@@ -18,7 +18,7 @@ public class AIBoundaryState : AIState
 
     public AIBoundaryState(AIStateMachine stateMachine, float comeDistance, float runDistance) : base(stateMachine)
     {
-        this.stateMachine = stateMachine;
+        this.AISM = stateMachine;
         this.comeDistance = comeDistance;
         this.runDistance = runDistance;
     }
@@ -64,7 +64,7 @@ public class AIBoundaryState : AIState
         //{
         //    stateMachine.Transform.LookAt(stateMachine.Target.transform);
         //}
-        if(stateMachine.Target)
+        if(AISM.Target)
         {
             //stateMachine.Transform.LookAt(stateMachine.Target.transform);
         }
@@ -75,19 +75,19 @@ public class AIBoundaryState : AIState
     private void Search()
     {
         float distance = Mathf.Abs(
-            Vector3.Distance(stateMachine.Transform.position,
-            stateMachine.Target.transform.position));
+            Vector3.Distance(AISM.Transform.position,
+            AISM.Target.transform.position));
         if (distance > comeDistance)
         {
             // Player가 범위를 벗어남.
-            stateMachine.SetTarget(null);
-            parent.current--;
+            AISM.SetTarget(null);
+            Parent.Current--;
             //stateMachine.pause = true;
-            stateMachine.ChangeState(parent);
+            AISM.ChangeState(Parent);
         }
         else if(distance < runDistance)
         {
-            stateMachine.ChangeState(children[current]);
+            AISM.ChangeState(Children[Current]);
         }
     }
 
@@ -98,12 +98,12 @@ public class AIBoundaryState : AIState
         {
             if (currentTime > changeTime)
             {
-                if (children.Count > 0)
+                if (Children.Count > 0)
                 {
-                    stateMachine.ChangeState(children[current]);
+                    AISM.ChangeState(Children[Current]);
                 }
                 else
-                    stateMachine.ChangeState(parent);
+                    AISM.ChangeState(Parent);
             }
         }
         catch
