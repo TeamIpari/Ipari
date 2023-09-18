@@ -50,7 +50,20 @@ public class Character : MonoBehaviour
     public MonsterPattern.Pattern[] CurPattern;
 
     [Tooltip("체력 이하일 경우 다음 패턴 시작")]
-    public int CurPhaseHpArray = 0;
+    private int CurPhaseHpArray = 0;
+
+    public int GetCurPhaseHpArray
+    {
+        get
+        {
+            return CurPhaseHpArray;
+        }
+        set
+        {
+            CurPhaseHpArray = value;
+        }
+
+    }
 
     public Transform RotatePoint;
 

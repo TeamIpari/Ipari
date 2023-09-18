@@ -69,17 +69,17 @@ public class AIStateMachine
         Target = obj;
     }
 
-    public MonsterPattern.Pattern[] EPattern { get { return character.CharacterMovementPattern[character.CurPhaseHpArray].EPatterns; }}
+    public MonsterPattern.Pattern[] EPattern { get { return character.CharacterMovementPattern[character.GetCurPhaseHpArray].EPatterns; }}
 
     public bool IsNextTargetPhaseHp()
     {
-        return character.CurPhaseHpArray < character.CharacterMovementPattern.Length - 1;
+        return character.GetCurPhaseHpArray < character.CharacterMovementPattern.Length - 1;
     }
 
     public int GetNextPhaseTargetHp()
     {
         cur = 0;
-        return character.CharacterMovementPattern[character.CurPhaseHpArray].PhaseHp;
+        return character.CharacterMovementPattern[character.GetCurPhaseHpArray].PhaseHp;
 
     }
 

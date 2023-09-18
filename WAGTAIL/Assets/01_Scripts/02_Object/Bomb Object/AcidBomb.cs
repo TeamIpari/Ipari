@@ -102,13 +102,13 @@ public class AcidBomb : Bullet
     void BulletHit(Transform target)
     {
         // 방향 벡터 구하기
-        Vector3 bombPos = target.position - transform.position;
-        float distance = Vector3.Distance(target.position, transform.position);
+        //Vector3 bombPos = target.position - transform.position;
+        //float distance = Vector3.Distance(target.position, transform.position);
         
 
         GameObject hitFX = GameObject.Instantiate(HitFX);
 
-        hitFX.transform.position = transform.position + bombPos.normalized;
+        hitFX.transform.position = transform.position/* + bombPos.normalized*/;
         Destroy(hitFX, 2f);
     }
 }
