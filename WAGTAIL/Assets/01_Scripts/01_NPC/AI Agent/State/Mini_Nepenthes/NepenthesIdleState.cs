@@ -9,7 +9,7 @@ public class NepenthesIdleState : AIIdleState
 {
     private bool isSearch ;
     private float rotateAngle;
-    private float SearchAngle;
+    private float searchAngle;
 
     private float dot;
     private float angle;
@@ -25,7 +25,7 @@ public class NepenthesIdleState : AIIdleState
     public NepenthesIdleState(AIStateMachine stateMachine, float rotAngle, float searchAngle, LayerMask targetMask, LayerMask obstacleMask) : base(stateMachine)
     {
         rotateAngle = rotAngle;
-        this.SearchAngle = searchAngle;
+        this.searchAngle = searchAngle;
         this.targetMask = targetMask;
         passMask = obstacleMask;
         startEulerAngle = stateMachine.Transform.eulerAngles;
@@ -64,7 +64,7 @@ public class NepenthesIdleState : AIIdleState
             // 아래 두 줄은 위의 코드와 동일하게 작동함. 내부 구현도 동일.
             dot = Vector3.Dot(lookDir, dir);
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            if (angle <= SearchAngle)
+            if (angle <= searchAngle)
             {
                 RaycastHit rayHitedTarget;
                 bool bHit = Physics.Raycast(originPos, dir, out rayHitedTarget, AISM.character.AttackRange, passMask);
@@ -145,7 +145,7 @@ public class NepenthesIdleState : AIIdleState
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
             float distance = Vector3.Distance(AISM.Transform.position, AISM.Target.transform.position);
             if (distance > AISM.character.AttackRange
-                || angle > SearchAngle)
+                || angle > searchAngle)
             {
                 TargetReset();
                 return;
