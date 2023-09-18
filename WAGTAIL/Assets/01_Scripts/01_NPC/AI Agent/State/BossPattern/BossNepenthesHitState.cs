@@ -65,7 +65,7 @@ public class BossNepenthesHitState : AIHitState
         if (AISM.IsNextTargetPhaseHp())
         {
             nextPhaseHp = AISM.GetNextPhaseTargetHp();
-            AISM.character.CurPhaseHpArray++;
+            AISM.character.GetCurPhaseHpArray++;
         }
         else
             // 다음 페이즈가 없음.

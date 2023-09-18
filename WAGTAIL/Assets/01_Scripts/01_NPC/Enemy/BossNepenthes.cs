@@ -27,14 +27,15 @@ public class BossNepenthes : Enemy
     public GameObject BulletPrefab;
     public Transform ShotPosition;
     public GameObject ShotMarker;
+    public GameObject MiniShotMarker;
 
     [Header("Attack1 Parameter")]
     public GameObject VinePrefab;
 
     [Header("Attack2 Parameter")]
-    public float Time;
-    public float BigSize = 3f;
-    public float SmallSize = 1f;
+    private const float flyTime = 2f;
+    private const float bigSize = 3f;
+    private  const float SmallSize = 1f;
 
     [Header("Attack3 Parameter")]
     [Tooltip("한번 쏠 때 최대 몇 개를 퍼뜨리는가?")]
@@ -49,10 +50,9 @@ public class BossNepenthes : Enemy
     //==========================================
     void Awake()
     {
-        Debug.Log($"{CurPhaseHpArray}");
-        SetProfile();
+        SetProfile(ShotMarker);
         StateSetting();
-        SettingPattern(CharacterMovementPattern[CurPhaseHpArray].EPatterns);
+        SettingPattern(CharacterMovementPattern[GetCurPhaseHpArray].EPatterns);
         AiSM.CurrentState = AiSM.Pattern[0];
     }
 
@@ -105,15 +105,16 @@ public class BossNepenthes : Enemy
         AiIdle = new BossNepenthesIdleState(AiSM, IdleRate);
         AiWait = new BossNepenthesWaitState(AiSM, WaitRate);
         AiAttack = new BossNepenthesVineAttack(AiSM, VinePrefab);
-        AiAttack2 = new BossNepenthesOneShot(AiSM, BossProfile, BigSize, Time);
-        AiAttack3 = new BossNepenthesSmallShotGun(AiSM, BossProfile, Time, ShotCount, ShotArea);
-        AiAttack4 = new BossNepenthesOneShot(AiSM, BossProfile, SmallSize, Time);
+        AiAttack2 = new BossNepenthesOneShot(AiSM, BossProfile, bigSize, flyTime);
+        SetProfile(MiniShotMarker);
+        AiAttack3 = new BossNepenthesSmallShotGun(AiSM, BossProfile, flyTime, ShotCount, ShotArea);
+        AiAttack4 = new BossNepenthesOneShot(AiSM, BossProfile, SmallSize, flyTime);
         // 죽는 기능.
         AiHit = new BossNepenthesHitState(AiSM);
         AiDie = new BossNepenthesDieState(AiSM);
     }
 
-    public void SetProfile()
+    public void SetProfile(GameObject ShotMarker)
     {
         BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
     }
