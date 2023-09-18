@@ -7,9 +7,9 @@ public class BossNepenthesWaitState : AIWaitState
     private float CurTimer = 0;
     private float WaitTimer = 0;
 
-    public BossNepenthesWaitState(AIStateMachine stateMachine, float WaitRate) : base(stateMachine)
+    public BossNepenthesWaitState(AIStateMachine stateMachine, float waitRate) : base(stateMachine)
     {
-        WaitTimer = WaitRate;
+        WaitTimer = waitRate;
     }
 
     public override void Enter()
@@ -33,6 +33,6 @@ public class BossNepenthesWaitState : AIWaitState
         base.Update();
         CurTimer += Time.deltaTime;
         if (CurTimer > WaitTimer)
-            stateMachine.NextPattern();
+            AISM.NextPattern();
     }
 }

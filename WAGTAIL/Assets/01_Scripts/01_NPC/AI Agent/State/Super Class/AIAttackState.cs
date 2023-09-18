@@ -31,12 +31,12 @@ public abstract class AIAttackState : AIState
 
     protected virtual void ChangeState()
     {
-        if (children.Count > 0)
-            stateMachine.ChangeState(children[current]);
-        else if (parent != null)
-            stateMachine.ChangeState(parent);
-        else if (stateMachine.Pattern.Count > 0)
-            stateMachine.NextPattern();
+        if (Children.Count > 0)
+            AISM.ChangeState(Children[Current]);
+        else if (Parent != null)
+            AISM.ChangeState(Parent);
+        else if (AISM.Pattern.Count > 0)
+            AISM.NextPattern();
         else
             Debug.Log("연결된 State가 없음.");
     }

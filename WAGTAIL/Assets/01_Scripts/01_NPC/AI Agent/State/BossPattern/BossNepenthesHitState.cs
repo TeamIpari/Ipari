@@ -24,10 +24,10 @@ public class BossNepenthesHitState : AIHitState
     {
         base.Enter();
         // 맞는 상태임을 인지
-        stateMachine.Animator.SetTrigger("IsHit");
-        if (stateMachine.character.IsHit)
-            stateMachine.character.HP -= 10;
-        if(stateMachine.character.HP <= nextPhaseHp)
+        AISM.Animator.SetTrigger("IsHit");
+        if (AISM.character.IsHit)
+            AISM.character.HP -= 10;
+        if(AISM.character.HP <= nextPhaseHp)
         {
             // 다음 패턴
             SetPhaseHp();
@@ -39,21 +39,21 @@ public class BossNepenthesHitState : AIHitState
     public override void Exit()
     {
         base.Exit();
-        stateMachine.character.IsHit = false;
+        AISM.character.IsHit = false;
     }
 
     public override void Update()
     {
         base.Update();
         curTimer += Time.deltaTime;
-        if(stateMachine.character.HP <= 0)
+        if(AISM.character.HP <= 0)
         {
             // 체력이 0 이하일 경우 Death를 바로 출력.
-            stateMachine.ChangeState(stateMachine.character.AiDie);
+            AISM.ChangeState(AISM.character.AiDie);
         }
         if(curTimer > delayTimer)
         {
-            stateMachine.NextPattern();
+            AISM.NextPattern();
         }
     }
     //===========================================
@@ -62,10 +62,10 @@ public class BossNepenthesHitState : AIHitState
     public void SetPhaseHp()
     {
         Debug.Log($"다음 페이즈 돌입.");
-        if (stateMachine.IsNextTargetPhaseHp())
+        if (AISM.IsNextTargetPhaseHp())
         {
-            nextPhaseHp = stateMachine.GetNextPhaseTargetHp();
-            stateMachine.character.CurPhaseHpArray++;
+            nextPhaseHp = AISM.GetNextPhaseTargetHp();
+            AISM.character.CurPhaseHpArray++;
         }
         else
             // 다음 페이즈가 없음.
@@ -73,6 +73,6 @@ public class BossNepenthesHitState : AIHitState
     }
     public void SetNextPhase()
     {
-        stateMachine.character.SettingPattern(stateMachine.EPattern);
+        AISM.character.SettingPattern(AISM.EPattern);
     }
 }

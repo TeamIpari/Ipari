@@ -26,7 +26,7 @@ public class Enemy : Character
         {
             Debug.LogWarning("보스의 공격 패턴이 지정되지 않았습니다.");
         }
-        this.curPattern = _pattern;
+        this.CurPattern = _pattern;
         AiSM.ClearPattern();
 
         for (int i = 0; i < _pattern.Length; i++)

@@ -20,7 +20,7 @@ public class BossNepenthesOneShot: AIAttackState
     private GameObject marker;
 
     private bool isShoot;
-    private float DelayTime;
+    private float delayTime;
     private float time;
     private float bombSize;
 
@@ -30,19 +30,19 @@ public class BossNepenthesOneShot: AIAttackState
     //========================================
     public BossNepenthesOneShot(AIStateMachine stateMachine, BossNepenthesProfile profile, float size,float time) : base(stateMachine)
     {
-        this.stateMachine = stateMachine;
+        this.AISM = stateMachine;
         this.circleObj = profile.ShotMarker;
         this.shootPoint = profile.ShotPosition;
         this.bullet = profile.BulletPrefab;
         this.time = time;
         this.bombSize = size;
-        this.DelayTime = 0.8f;
+        this.delayTime = 0.8f;
     }
 
     public override void Enter()
     {
         // Å¸°Ù ¼³Á¤.
-        stateMachine.Animator.SetTrigger("isAttack");
+        AISM.Animator.SetTrigger("isAttack");
         isShoot = false;
         curTimer = 0;
     }
@@ -80,7 +80,7 @@ public class BossNepenthesOneShot: AIAttackState
     //==============================================
     public void ShootDelay()
     {
-        if (curTimer > DelayTime && !isShoot)
+        if (curTimer > delayTime && !isShoot)
         {
             CreateMarker();
             PositionLuncher();

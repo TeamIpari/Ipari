@@ -66,9 +66,9 @@ public class BossNepenthes : Enemy
         base.AddPattern(curPattern);
     }
 
-    public override void SettingPattern(MonsterPattern.Pattern[] _pattern)
+    public override void SettingPattern(MonsterPattern.Pattern[] pattern)
     {
-        base.SettingPattern(_pattern);
+        base.SettingPattern(pattern);
     }
 
     void Update()

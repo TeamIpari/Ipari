@@ -6,15 +6,15 @@ using UnityEngine.XR;
 
 public abstract class AIState
 {
-    public AIStateMachine stateMachine;
-    public AIState parent;
-    public List<AIState> children = new List<AIState>();
-    public int current;
+    public AIStateMachine AISM;
+    public AIState Parent;
+    public List<AIState> Children = new List<AIState>();
+    public int Current;
 
     public AIState(AIStateMachine stateMachine)
     {
-        this.stateMachine = stateMachine;
-        current = 0;
+        this.AISM = stateMachine;
+        Current = 0;
     }
 
     //=======================================================
@@ -23,13 +23,13 @@ public abstract class AIState
 
     public virtual void SetParent(AIState parent, AIState child )
     {
-        child.parent = parent;
+        child.Parent = parent;
         
     }
 
     public virtual void SetChildren(AIState state)
     {
-        children.Add(state);
+        Children.Add(state);
     }
 
     //=======================================================
@@ -40,9 +40,9 @@ public abstract class AIState
 
     public virtual void Update() 
     { 
-        if(stateMachine.character.IsHit)
+        if(AISM.character.IsHit)
         {
-            stateMachine.ChangeState(stateMachine.character.AiHit);
+            AISM.ChangeState(AISM.character.AiHit);
         }
     }
 

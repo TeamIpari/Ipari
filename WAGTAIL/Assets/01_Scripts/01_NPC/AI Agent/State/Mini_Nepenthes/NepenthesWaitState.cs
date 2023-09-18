@@ -16,7 +16,7 @@ public class NepenthesWaitState : AIWaitState
         base.Enter();
         CurTimer = 0;
         if (NextState == null)
-            NextState = stateMachine.character.AiIdle;
+            NextState = AISM.character.AiIdle;
     }
 
     public override void Exit()
@@ -36,6 +36,6 @@ public class NepenthesWaitState : AIWaitState
             CurTimer += Time.deltaTime;
         }
         else
-            stateMachine.ChangeState(NextState);
+            AISM.ChangeState(NextState);
     }
 }

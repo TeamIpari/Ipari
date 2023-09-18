@@ -7,9 +7,9 @@ using TMPro;
 public class CutScene : MonoBehaviour
 {
     public GameObject CutSceneBackGround;
-    public PlayableDirector[] cutScenes;
+    public PlayableDirector[] CutScenes;
     public TextMeshProUGUI TextViewer;
-    public Transform[] cuts;
+    public Transform[] Cuts;
 
     public bool IsIntro;
     public int SayType;
@@ -22,15 +22,15 @@ public class CutScene : MonoBehaviour
 
     private float colorValue = 255;
 
-    private bool IsCutScene;
+    private bool isCutScene;
     private int sceneCount;
     [SerializeField] private Dialogue dialogue = new Dialogue();
 
     private void Awake()
     {
-        cutScenes = CutSceneBackGround.GetComponentsInChildren<PlayableDirector>();
+        CutScenes = CutSceneBackGround.GetComponentsInChildren<PlayableDirector>();
         HideCutScenes();
-        IsCutScene = true;
+        isCutScene = true;
         sceneCount = 0;
         colorValue = 255;
         colorCurve = -51f;
@@ -62,11 +62,11 @@ public class CutScene : MonoBehaviour
     private void SceneChange()
     {
         bool bInputNextKey = Input.GetKeyDown(KeyCode.F);
-        bool bSceneState = sceneCount > 0 && cutScenes[sceneCount - 1].state == PlayState.Paused;
+        bool bSceneState = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
 
         if(bInputNextKey || bSceneState)
         {
-            if (sceneCount >= cutScenes.Length && cutScenes[sceneCount - 1].state == PlayState.Paused)
+            if (sceneCount >= CutScenes.Length && CutScenes[sceneCount - 1].state == PlayState.Paused)
             {
                 Player.Instance.playerInput.enabled = true;
                 HideCutScenes();
@@ -75,17 +75,17 @@ public class CutScene : MonoBehaviour
                 FModAudioManager.SetBusMute(FModBusType.Player, false);
                 FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
             }
-            else if (sceneCount < cutScenes.Length)
+            else if (sceneCount < CutScenes.Length)
             {
                 Player.Instance.playerInput.enabled = false;
-                cutScenes[sceneCount++].gameObject.SetActive(true);
+                CutScenes[sceneCount++].gameObject.SetActive(true);
                 if (TextViewer != null)
                     LoadManager.GetInstance().DisplayNextSentence();
             }
         }
 
         // 글자를 점점 사라지게 하는 기능.
-        if (sceneCount >= cutScenes.Length)
+        if (sceneCount >= CutScenes.Length)
         {
             if (WaitTime > WaitTimer)
                 WaitTimer  += Time.deltaTime;
@@ -100,7 +100,7 @@ public class CutScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(IsCutScene)
+        if(isCutScene)
         {
             DoubleSpeed();
             SceneChange();
@@ -109,9 +109,9 @@ public class CutScene : MonoBehaviour
 
     public void PlayCutScene()
     {
-        IsCutScene = true;
+        isCutScene = true;
         CutSceneBackGround.gameObject.SetActive(true);
-        cutScenes[sceneCount++].gameObject.SetActive(true);
+        CutScenes[sceneCount++].gameObject.SetActive(true);
         Player.Instance.playerInput.enabled = false;
         if (TextViewer != null)
             TextViewer.gameObject.SetActive(true);
@@ -119,12 +119,12 @@ public class CutScene : MonoBehaviour
 
     private void HideCutScenes()
     {
-        for (int i = 0; i < cutScenes.Length; i++)
+        for (int i = 0; i < CutScenes.Length; i++)
         {
-            cutScenes[i].gameObject.SetActive(false);
+            CutScenes[i].gameObject.SetActive(false);
         }
         Time.timeScale = 1f;
-        IsCutScene = false;
+        isCutScene = false;
         sceneCount = 0;
         CutSceneBackGround.gameObject.SetActive(false);
         if (TextViewer != null)

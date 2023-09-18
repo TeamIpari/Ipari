@@ -49,10 +49,10 @@ public class BossRoomFieldManager :MonoBehaviour
 
     [Header("Shake ReAction Parameter")]
     public GameObject ReActionObject;
-    private GameObject[] ReActionPools;
+    private GameObject[] reActionPools;
     public float spawnDelay;
     public int Count;
-    private bool ReAction = false;
+    private bool reAction = false;
 
     public Vector3 PlayerOnTilePos
     {
@@ -93,24 +93,24 @@ public class BossRoomFieldManager :MonoBehaviour
     }
     private void CreateReActionObject()
     {
-        ReActionPools = new GameObject[Count];
+        reActionPools = new GameObject[Count];
 
         // 생성 하는 기능.
         for (int i = 0; i < Count; i++)
         {
             GameObject obj = GameObject.Instantiate<GameObject>(ReActionObject);
             obj.transform.position = Vector3.zero;
-            ReActionPools[i] = obj;
-            ReActionPools[i].SetActive(false);
+            reActionPools[i] = obj;
+            reActionPools[i].SetActive(false);
         }
     }
 
     private IEnumerator SpawnReActionObject()
     {
         int x, z;
-        if (ReActionPools[0] == null)
+        if (reActionPools[0] == null)
             CreateReActionObject();
-        foreach (var fruit in ReActionPools)
+        foreach (var fruit in reActionPools)
         {
             x = Random.Range(0, BossRoomFieldManager.Instance.XSize);
             z = Random.Range(0, BossRoomFieldManager.Instance.YSize);
@@ -125,10 +125,10 @@ public class BossRoomFieldManager :MonoBehaviour
 
     private void CameraShake()
     {
-        if (ReAction)
+        if (reAction)
         {
             StartCoroutine(SpawnReActionObject());
-            ReAction = false;
+            reAction = false;
         }
         CameraManager.GetInstance().CameraShake(ShakePower, ShakeTime);
     }
@@ -141,11 +141,11 @@ public class BossRoomFieldManager :MonoBehaviour
         Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
         return new Vector3(vec.x, 5f, vec.z);
     }
-    public void BrokenPlatform(float XPos, bool ReAction = false)
+    public void BrokenPlatform(float xPos, bool reAction = false)
     {
         // 내려 찍기 -> 2.5초 후 내려 찍음.
         // .Attack Delay = 2.5f
-        float X = (XPos - Offset.x ), Y = 0;
+        float X = (xPos - Offset.x ), Y = 0;
         float FindY = Y * (-StoneYSize);
         
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
@@ -154,7 +154,7 @@ public class BossRoomFieldManager :MonoBehaviour
             Y++;
             FindY = Y * (-StoneYSize);
         }
-        this.ReAction = ReAction;
+        this.reAction = reAction;
         
         Invoke("CameraShake", ShakeTiming);
     }
