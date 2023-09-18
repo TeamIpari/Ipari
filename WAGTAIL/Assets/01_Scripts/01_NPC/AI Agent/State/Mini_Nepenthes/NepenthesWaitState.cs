@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class NepenthesWaitState : AIWaitState
 {
-    private float CurTimer = 0;
-    private float WaitTimer = 0;
-    public NepenthesWaitState(AIStateMachine stateMachine, float WaitRate) : base(stateMachine)
+    private float curTimer = 0;
+    private float waitTimer = 0;
+    public NepenthesWaitState(AIStateMachine stateMachine, float waitRate) : base(stateMachine)
     {
-        WaitTimer = WaitRate;
+        waitTimer = waitRate;
     }
 
     public override void Enter()
     {
         base.Enter();
-        CurTimer = 0;
+        curTimer = 0;
         if (NextState == null)
             NextState = AISM.character.AiIdle;
     }
@@ -31,9 +31,9 @@ public class NepenthesWaitState : AIWaitState
 
     public override void Update()
     {
-        if (CurTimer < WaitTimer)
+        if (curTimer < waitTimer)
         {
-            CurTimer += Time.deltaTime;
+            curTimer += Time.deltaTime;
         }
         else
             AISM.ChangeState(NextState);

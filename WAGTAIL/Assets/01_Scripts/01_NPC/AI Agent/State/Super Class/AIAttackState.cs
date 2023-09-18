@@ -26,7 +26,8 @@ public abstract class AIAttackState : AIState
 
     public override void Update()
     {
-
+        if (AISM.character.IsHit)
+            AISM.ChangeState(AISM.character.AiHit);
     }
 
     protected virtual void ChangeState()

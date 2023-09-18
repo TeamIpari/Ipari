@@ -13,7 +13,7 @@ public class MiniNepenthes : Enemy
     public float ShotSpeed;
     public int Angle;
 
-    [SerializeField] private bool DebugMode = false;
+    [SerializeField] private bool debugMode = false;
 
     [Header("View Config")]
     [Range(0f, 360f)]
@@ -35,7 +35,7 @@ public class MiniNepenthes : Enemy
 
     private void OnDrawGizmos()
     {
-        if (DebugMode)
+        if (debugMode)
         {
             horizontalViewHalfAngle = horizontalViewAngle * 0.5f;
 
