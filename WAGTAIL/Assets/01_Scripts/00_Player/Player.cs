@@ -59,9 +59,6 @@ public class Player : MonoBehaviour
     public Transform InteractionPoint;
     public Transform EquipPoint;
     public Transform ThrowEquipPoint;
-    public Transform LeftHand;
-    public Transform RightHandPoint;
-    public Transform RightHand;
     
     [Header("State Check")]
     public bool isIdle = true;
@@ -286,10 +283,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    //==================================================
-    //                      지훈 추가                   //
-    //          용서가 빠르다는 이야기를 들었습니다.       // 
-    //==================================================
     private GameObject FindViewTarget(Transform transform, float SearchRange, LayerMask targetMask)
     {
         Vector3 targetPos, dir, lookDir;
