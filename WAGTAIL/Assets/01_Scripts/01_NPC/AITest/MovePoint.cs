@@ -15,7 +15,7 @@ public class MovePoint : MonoBehaviour
     public List<GameObject> Objs;
     public List<GameObject> Larvas;
     public Vector3 Offset = new Vector3(0, 0, 0);
-    public float Caculate;  // defualt 6.25f -> 4.75f
+    public const float Caculate = 4;  // defualt 6.25f -> 4.75f
     public float InitPrefabSize = 1.0f;
 
     public int CreatePoint;
