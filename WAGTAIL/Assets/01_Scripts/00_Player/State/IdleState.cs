@@ -6,14 +6,6 @@ using UnityEngine.InputSystem;
 public class IdleState : State
 {
     private float _gravityValue;
-    private bool _climbing;
-    private bool _push;
-    private bool _carry;
-    private bool _jump;
-    private bool _pull;
-    private bool _flight;
-    private bool _slide;
-    private bool _dead;
     private Vector3 _currentVelocity;
     private bool _isGrounded;
     private float _playerSpeed;
@@ -39,15 +31,7 @@ public class IdleState : State
         base.Enter();
 
         player.isIdle = true;
-        _jump = false;
-        _climbing = player.isClimbing;
-        _push = player.isPush;
-        _pull = player.isPull;
-        _carry = player.isCarry;
-        _flight = player.isFlight;
-        _dead = player.isDead;
-        
-        //slide = player.isSlide;
+        player.isJump = false;
         
         input = Vector2.zero;
         velocity = Vector3.zero;
@@ -72,16 +56,9 @@ public class IdleState : State
     {
         base.HandleInput();
 
-        if (jumpAction.triggered) _jump = true;
+        if (jumpAction.triggered) player.isJump = true;
         if (interactAction.triggered) player.Interaction();
         
-
-        _climbing = player.isClimbing;
-        _push = player.isPush;
-        _carry = player.isCarry;
-        _pull = player.isPull;
-        _dead = player.isDead;
-
         input = moveAction.ReadValue<Vector2>();
         
         // FX
@@ -90,17 +67,15 @@ public class IdleState : State
         if(input.x != 0 || input.y != 0)
         {
             _FXMove.SetActive(true);
-            //player.SoundHandler.SetBool("isWalk",true);
         }
 
         if(input.x == 0 && input.y == 0)
         {
             _FXMove.SetActive(false);
-            //player.SoundHandler.SetBool("isWalk",false);
         }
         // ========================================================
+        
         velocity = new Vector3(input.x, 0, input.y);
-
         velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
         velocity.y = 0f;
     }
@@ -112,22 +87,7 @@ public class IdleState : State
         // TODO : animator 적용
         player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
 
-        if (_climbing)
-        {
-            stateMachine.ChangeState(player.climbing);
-        }
-
-        if (_carry)
-        {
-            stateMachine.ChangeState(player.pickup);
-        }
-
-        if (_push)
-        {
-            stateMachine.ChangeState(player.push);
-        }
-
-        if (_jump)
+        if (player.isJump)
         {
             stateMachine.ChangeState(player.jump);
         }

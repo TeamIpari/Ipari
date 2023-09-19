@@ -62,14 +62,11 @@ public class Player : MonoBehaviour
     
     [Header("State Check")]
     public bool isIdle = true;
-    public bool isClimbing = false; // 없어질것
-    public bool isPush = false; // 없어질것
+    public bool isJump = false;
+    public bool isPickup = false;
     public bool isCarry = false;
     public bool isFlight = false;
     public bool isDead = false;
-    public bool isSmallThrow = false; // 없어질것
-    // 당기는데, 원점으로부터 멀어지면 멀어질 수록 최대 도달점과 비교하여
-    // 퍼센테이지로 이동속도를 줄임.
     public bool isPull = false;
     //public bool isSlide = true;
     
@@ -255,7 +252,6 @@ public class Player : MonoBehaviour
             if (interactable == null)  return;
             interactable.Interact(gameObject);
             currentInteractable = obj;
-
         }
 
         else
@@ -311,7 +307,7 @@ public class Player : MonoBehaviour
         // 걸리는게 없나요? 정상입니다.
         return null;
     }
-
+    
     private void EnemySearching()
     {
         Target = FindViewTarget(transform, throwRange, throwTargetMask );
