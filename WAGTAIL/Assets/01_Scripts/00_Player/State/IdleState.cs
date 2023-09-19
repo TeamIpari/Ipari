@@ -209,7 +209,7 @@ public class IdleState : State
         }
     }
 
-
+    // 바닥 체크
     private bool IsCheckGrounded()
     {
         //if (isGrounded) return true;
@@ -227,7 +227,8 @@ public class IdleState : State
     {
         _jump = true;
     }
-
+    
+    // 경사로 내려갈 때 velocity 조정
     private Vector3 AdjustVelocityToSlope(Vector3 vel)
     {
         var ray = new Ray(player.transform.position, Vector3.down);
@@ -245,6 +246,7 @@ public class IdleState : State
         return vel;
     }
     
+    // 슬라이딩 로직
     private void SetSlopeSlideVelocity()
     {
         if (Physics.Raycast(player.transform.position + Vector3.up, Vector3.down, out RaycastHit hitInfo, 5f))
@@ -259,25 +261,5 @@ public class IdleState : State
         }
         
         _slopeSlideVelocity = Vector3.zero;
-    }
-    
-    private bool IsSliding
-    {
-        get
-        {
-            Debug.DrawRay(player.transform.position, Vector3.down, Color.red);
-            if (player.controller.isGrounded 
-                && Physics.Raycast(player.transform.position, 
-                Vector3.down, out RaycastHit slopeHit, 2f, LayerMask.GetMask("Platform"))
-                )
-            {   
-                hitPointNormal = slopeHit.normal;
-                return Vector3.Angle(hitPointNormal, Vector3.up) > player.controller.slopeLimit;
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 }

@@ -8,8 +8,8 @@ public class State
     protected Player player;
     protected StateMachine stateMachine;
 
-    protected Vector3 gravityVelocity;
-    protected Vector3 velocity;
+    public Vector3 gravityVelocity;
+    public Vector3 velocity;
     protected Vector2 input;
     
     protected readonly InputAction moveAction;
