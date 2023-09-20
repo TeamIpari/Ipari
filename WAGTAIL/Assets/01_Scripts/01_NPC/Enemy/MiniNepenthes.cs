@@ -16,10 +16,8 @@ public class MiniNepenthes : Enemy
     [SerializeField] private bool debugMode = false;
 
     [Header("View Config")]
-    [Range(0f, 360f)]
-    [SerializeField] private float horizontalViewAngle = 0f;
-    [Range(-180f, 180f)]
-    [SerializeField] private float viewRotateZ = 0f;
+    private const float horizontalViewAngle = 180f;
+    private const float viewRotateZ = 0f;
 
     [SerializeField] private LayerMask viewTargetMask;
     [SerializeField] private LayerMask viewObstacleMask;
