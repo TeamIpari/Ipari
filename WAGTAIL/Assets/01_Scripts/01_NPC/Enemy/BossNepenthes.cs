@@ -30,6 +30,8 @@ public class BossNepenthes : Enemy
     public GameObject MiniShotMarker;
 
     [Header("Attack1 Parameter")]
+    public GameObject LeftVine;
+    public GameObject RightVine;
     public GameObject VinePrefab;
 
     [Header("Attack2 Parameter")]
@@ -104,7 +106,7 @@ public class BossNepenthes : Enemy
 
         AiIdle = new BossNepenthesIdleState(AiSM, IdleRate);
         AiWait = new BossNepenthesWaitState(AiSM, WaitRate);
-        AiAttack = new BossNepenthesVineAttack(AiSM, VinePrefab);
+        AiAttack = new BossNepenthesVineAttack(AiSM, LeftVine, RightVine);
         AiAttack2 = new BossNepenthesOneShot(AiSM, BossProfile, bigSize, flyTime);
         SetProfile(MiniShotMarker);
         AiAttack3 = new BossNepenthesSmallShotGun(AiSM, BossProfile, flyTime, ShotCount, ShotArea);
