@@ -43,7 +43,7 @@ public class InteractionUIManager : MonoBehaviour
         if(hasTarget != null)
             FadeInteractableIconColor();
 
-        if ( _player.isCarry || _player.isPull || _player.isClimbing || _player.isPush)
+        if ( _player.isCarry || _player.isPull )
         {
             if(_isActive)
             {

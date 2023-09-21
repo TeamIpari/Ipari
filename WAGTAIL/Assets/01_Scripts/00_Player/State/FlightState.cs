@@ -107,6 +107,7 @@ public class FlightState : State
     public override void Exit()
     {
         base.Exit();
+        player.isFlight = false;
     }
     
     public void Jumping()

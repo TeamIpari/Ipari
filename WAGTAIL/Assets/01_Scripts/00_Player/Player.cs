@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 public class Player : MonoBehaviour
 {
     static Player instance;
-    public static Player Instance { get { return instance; } }  
+    public static Player Instance { get { return instance; } } 
 
     [Header("Controls")]
     //==================================
@@ -40,7 +40,7 @@ public class Player : MonoBehaviour
     private float m_horizontalViewHalfAngle = 0f;
     public float throwRange = 6f;
     [Header("AutoTarget")]
-    public GameObject Target;
+    public GameObject target;
     //========================================
 
 
@@ -65,6 +65,7 @@ public class Player : MonoBehaviour
     public bool isJump = false;
     public bool isPickup = false;
     public bool isCarry = false;
+    public bool isThrow = false;
     public bool isFlight = false;
     public bool isDead = false;
     public bool isPull = false;
@@ -77,8 +78,6 @@ public class Player : MonoBehaviour
     public JumpingState jump;
     public FlightState flight;
     public LandingState landing;
-    public PushState push; // 없어질것 
-    public ClimbingState climbing; // 없어질것
     public CarryState carry;
     public PickUpState pickup;
     public DropState drop;
@@ -186,8 +185,6 @@ public class Player : MonoBehaviour
         jump = new JumpingState(this, movementSM);
         flight = new FlightState(this, movementSM);
         landing = new LandingState(this, movementSM);
-        climbing = new ClimbingState(this, movementSM);
-        push = new PushState(this, movementSM);
         carry = new CarryState(this, movementSM);
         pickup = new PickUpState(this, movementSM);
         drop = new DropState(this, movementSM);
@@ -310,6 +307,6 @@ public class Player : MonoBehaviour
     
     private void EnemySearching()
     {
-        Target = FindViewTarget(transform, throwRange, throwTargetMask );
+        target = FindViewTarget(transform, throwRange, throwTargetMask );
     }
 }

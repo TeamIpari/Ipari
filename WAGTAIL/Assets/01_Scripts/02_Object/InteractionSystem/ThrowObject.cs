@@ -171,13 +171,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
         PhysicsCheck = true;
         if(_animator == null)
             flight = true;
-
-        // 추가된 스크립트 2023-08-22 강명호
-        if(isSmall)
-        {
-            Player.Instance.isSmallThrow = false;
-        }
-        // ================================
     }
     
     private Vector3 BezierCurve(Vector3 startPos, Vector3 endPos, Vector3 height, float value)

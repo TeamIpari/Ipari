@@ -5,20 +5,8 @@ using UnityEngine.InputSystem;
 
 public class IdleState : State
 {
-    private float _gravityValue;
-    private Vector3 _currentVelocity;
-    private bool _isGrounded;
-    private float _playerSpeed;
-    private float _slopeSpeed;
-
-    private bool _isSliding;
     private Vector3 _slopeSlideVelocity;
-
-    private Vector3 _cVelocity;
     private GameObject _FXMove;
-
-    // 슬라이딩 관련 변수
-    private Vector3 hitPointNormal;
 
     public IdleState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -31,22 +19,12 @@ public class IdleState : State
         base.Enter();
 
         player.isIdle = true;
-        player.isJump = false;
-        
         input = Vector2.zero;
         velocity = Vector3.zero;
-        _currentVelocity = Vector3.zero;
+        currentVelocity = Vector3.zero;
         gravityVelocity.y = 0;
-
-        _playerSpeed = player.playerSpeed;
-        _isGrounded = player.controller.isGrounded;
-        _gravityValue = player.gravityValue;
-        _slopeSpeed = player.slopeSpeed;
-
-        // trigger 초기화
-        player.animator.ResetTrigger("flight");
-
-
+        
+        player.animator.SetTrigger(Move);
         // FX
         // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
         _FXMove = player.MoveFX;
@@ -58,51 +36,38 @@ public class IdleState : State
 
         if (jumpAction.triggered) player.isJump = true;
         if (interactAction.triggered) player.Interaction();
-        
-        input = moveAction.ReadValue<Vector2>();
-        
-        // FX
-        // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
-        // ========================================================
-        if(input.x != 0 || input.y != 0)
-        {
-            _FXMove.SetActive(true);
-        }
+        GetMoveInput();
 
-        if(input.x == 0 && input.y == 0)
-        {
-            _FXMove.SetActive(false);
-        }
-        // ========================================================
-        
-        velocity = new Vector3(input.x, 0, input.y);
-        velocity = velocity.x * player.cameraTransform.right.normalized + velocity.z * player.cameraTransform.forward.normalized;
-        velocity.y = 0f;
+        _FXMove.SetActive(input != Vector2.zero);
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
-        // TODO : animator 적용
-        player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
+        
+        player.animator.SetFloat(Speed, input.magnitude, player.speedDampTime, Time.deltaTime);
 
         if (player.isJump)
         {
             stateMachine.ChangeState(player.jump);
         }
 
-        if (_pull)
+        if (player.isPickup)
+        {
+            stateMachine.ChangeState(player.pickup);
+        }
+
+        if (player.isPull)
         {
             stateMachine.ChangeState(player.pull);
         }
 
-        if (_flight)
+        if (player.isFlight)
         {
             stateMachine.ChangeState(player.flight);
         }
 
-        if (_dead)
+        if (player.isDead)
         {
             stateMachine.ChangeState(player.death);
         }
@@ -111,57 +76,24 @@ public class IdleState : State
     }
 
     public override void PhysicsUpdate()
-    {
+    { 
         base.PhysicsUpdate();
         
-        gravityVelocity.y += _gravityValue * Time.deltaTime;
-        _isGrounded = player.controller.isGrounded;
-
-        // 바닥과 닿아 있을 때는 중력 적용 X
-        if(_isGrounded && gravityVelocity.y < 0 )
-        {
-            gravityVelocity.y = 0f;
-        }
-
-        else if (player.controller.velocity.y < -0.5f && !IsCheckGrounded())
-        {
-            _flight = true;
-        }
-        
-        // Movement Logic
-        velocity = AdjustVelocityToSlope(velocity); // 경사로 내려갈 때 velocity 조정
-        _currentVelocity = Vector3.SmoothDamp(_currentVelocity, velocity, ref _cVelocity, player.velocityDampTime);
-        player.controller.Move(_currentVelocity * (Time.deltaTime * _playerSpeed) + gravityVelocity * Time.deltaTime);
-        
-        // Player Rotation 선형보간
-        if (velocity.sqrMagnitude > 0)
-        {
-            var rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(velocity),
-                player.rotationDampTime);
-            rotation.x = 0f;
-            rotation.z = 0f;
-            player.transform.rotation = rotation;
-        }
+        Movement(player.playerSpeed);
     }
 
     public override void Exit()
     {
         base.Exit();
-
-        player.isIdle = false;
+        
         gravityVelocity.y = 0f;
         player.playerVelocity = new Vector3(input.x, 0, input.y);
-        // FX
-        // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
-        // ========================================================
+        
         _FXMove.SetActive(false);
         FModAudioManager.PlayOneShotSFX(
             FModSFXEventType.Player_Walk,
             player.transform.position
         );
-
-        //player.SoundHandler.SetBool("isWalk",false);
-        // ========================================================
 
         if (velocity.sqrMagnitude > 0)
         {
@@ -169,41 +101,9 @@ public class IdleState : State
         }
     }
 
-    // 바닥 체크
-    private bool IsCheckGrounded()
-    {
-        //if (isGrounded) return true;
-
-        var ray = new Ray(player.transform.position + Vector3.up * 0.1f, Vector3.down);
-
-        var maxDistance = 1.5f;
-        
-        Debug.DrawRay(player.transform.position + Vector3.up * 0.1f, Vector3.down * maxDistance);
-
-        return Physics.Raycast(ray, maxDistance);
-    }
-
     public void Jumping()
     {
-        _jump = true;
-    }
-    
-    // 경사로 내려갈 때 velocity 조정
-    private Vector3 AdjustVelocityToSlope(Vector3 vel)
-    {
-        var ray = new Ray(player.transform.position, Vector3.down);
-        
-        if(Physics.Raycast(ray, out RaycastHit hitInfo, 0.2f))
-        {
-            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-            var adjustedVelocity = slopeRotation * vel;
-
-            if (adjustedVelocity.y < 0)
-            {
-                return adjustedVelocity;
-            }
-        }
-        return vel;
+        player.isJump = true;
     }
     
     // 슬라이딩 로직
@@ -215,7 +115,7 @@ public class IdleState : State
             
             if(angle >= player.controller.slopeLimit)
             {
-                _slopeSlideVelocity = Vector3.ProjectOnPlane(new Vector3(0, _gravityValue * Time.deltaTime,0), hitInfo.normal);
+                _slopeSlideVelocity = Vector3.ProjectOnPlane(new Vector3(0, player.gravityValue * Time.deltaTime,0), hitInfo.normal);
                 return;
             }
         }
