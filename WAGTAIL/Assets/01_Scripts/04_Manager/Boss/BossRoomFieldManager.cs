@@ -85,12 +85,18 @@ public class BossRoomFieldManager :MonoBehaviour
     //======================================
     /////           private Methods     /////
     //======================================
-    private IEnumerator BrokenDelay(float x, float y)
+    private IEnumerator BrokenDelayCo(float x, float y)
     {
         yield return new WaitForSeconds(2.5f);
         //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
         BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
     }
+
+    private void BrokenDelay(float x, float y)
+    {
+        BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
+    }
+
     private void CreateReActionObject()
     {
         reActionPools = new GameObject[Count];
@@ -150,7 +156,8 @@ public class BossRoomFieldManager :MonoBehaviour
         
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
-            StartCoroutine(BrokenDelay(X, FindY));
+            StartCoroutine(BrokenDelayCo(X, FindY));
+            //BrokenDelay(X, FindY);
             Y++;
             FindY = Y * (-StoneYSize);
         }
