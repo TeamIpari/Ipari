@@ -65,7 +65,7 @@ public class ClimbingState : State
     {
         base.LogicUpdate();
 
-
+        /*
         if (jump)
         {
             player.isClimbing = false;
@@ -81,7 +81,7 @@ public class ClimbingState : State
         if (!_isTop || !(input.y > 0)) return;
         
         player.isClimbing = false;
-        stateMachine.ChangeState(player.idle);
+        stateMachine.ChangeState(player.idle);*/
     }
 
     // ReSharper disable Unity.PerformanceAnalysis

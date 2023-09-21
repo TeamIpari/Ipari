@@ -33,7 +33,6 @@ public class PushState : State
         velocity = Vector3.zero;
         currentVelocity = Vector3.zero;
         gravityVelocity.y = 0;
-        push = player.isPush;
 
         // ========================================= //
         // TODO : 끄는 물체 만큼 collider 크기 조정 해줘야함
@@ -63,8 +62,7 @@ public class PushState : State
     public override void HandleInput()
     {
         base.HandleInput();
-
-        push = player.isPush;
+        
 
         if (player.transform.eulerAngles.y == 90 || player.transform.eulerAngles.y == 270)
         {

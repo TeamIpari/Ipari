@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class FlightState : State
 {
-    private float gravityValue;
-    private bool jump;
-    private bool dead;
-    private bool isGrounded;
-    private float playerSpeed;
-    private Vector3 airVelocity;
-    private Vector3 cVelocity;
+    private float _gravityValue;
+    private bool _jump;
+    private bool _dead;
+    private bool _isGrounded;
+    private float _playerSpeed;
+    private Vector3 _airVelocity;
+    private Vector3 _cVelocity;
     
     public FlightState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -22,12 +22,12 @@ public class FlightState : State
     {
         base.Enter();
 
-        isGrounded = false;
-        jump = false;
+        _isGrounded = false;
+        _jump = false;
 
-        playerSpeed = player.playerSpeed;
-        isGrounded = player.controller.isGrounded;
-        gravityValue = player.gravityValue;
+        _playerSpeed = player.playerSpeed;
+        _isGrounded = player.controller.isGrounded;
+        _gravityValue = player.gravityValue;
         gravityVelocity.y = 0;
         
         player.animator.SetFloat("speed", 0);
@@ -40,10 +40,10 @@ public class FlightState : State
 
         if (jumpAction.triggered)
         {
-            jump = true;
+            _jump = true;
         }
 
-        dead = player.isDead;
+        _dead = player.isDead;
         input = moveAction.ReadValue<Vector2>();
         velocity = new Vector3(input.x, 0, input.y);
 
@@ -56,17 +56,17 @@ public class FlightState : State
     {
         base.LogicUpdate();
 
-        if (dead)
+        if (_dead)
         {
             stateMachine.ChangeState(player.death);
         }
 
-        if (jump)
+        if (_jump)
         {
             stateMachine.ChangeState(player.jump);
         }
         
-        else if (isGrounded)
+        else if (_isGrounded)
         {
             stateMachine.ChangeState(player.landing);
         }
@@ -76,28 +76,28 @@ public class FlightState : State
     {
         base.PhysicsUpdate();
 
-        if (!isGrounded)
+        if (!_isGrounded)
         {
             velocity = player.playerVelocity;
-            airVelocity = new Vector3(input.x, 0, input.y);
+            _airVelocity = new Vector3(input.x, 0, input.y);
             
             velocity = velocity.x * player.cameraTransform.right.normalized + 
                        velocity.z * player.cameraTransform.forward.normalized;
             velocity.y = 0f;
 
-            airVelocity = airVelocity.x * player.cameraTransform.right.normalized +
-                          airVelocity.z * player.cameraTransform.forward.normalized;
-            airVelocity.y = 0;
+            _airVelocity = _airVelocity.x * player.cameraTransform.right.normalized +
+                          _airVelocity.z * player.cameraTransform.forward.normalized;
+            _airVelocity.y = 0;
 
             player.controller.Move(gravityVelocity * Time.deltaTime + 
-                                   (airVelocity * player.airControl + velocity * (1 - player.airControl)) * playerSpeed * Time.deltaTime);
+                                   (_airVelocity * player.airControl + velocity * (1 - player.airControl)) * _playerSpeed * Time.deltaTime);
 
-            gravityVelocity.y += gravityValue * Time.deltaTime;
-            isGrounded = player.controller.isGrounded;
+            gravityVelocity.y += _gravityValue * Time.deltaTime;
+            _isGrounded = player.controller.isGrounded;
 
-            if (airVelocity.sqrMagnitude > 0)
+            if (_airVelocity.sqrMagnitude > 0)
             {
-                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(airVelocity),
+                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(_airVelocity),
                     player.rotationDampTime);
             }
         }
@@ -107,10 +107,11 @@ public class FlightState : State
     public override void Exit()
     {
         base.Exit();
+        player.isFlight = false;
     }
     
     public void Jumping()
     {
-        jump = true;
+        _jump = true;
     }
 }

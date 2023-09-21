@@ -23,7 +23,6 @@ public class DeathState : State
     {
         base.Enter();
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.GameOver);
-        //player.SoundHandler.SetTrigger("isDeath");
         _isAlive = false;
         isGrounded = player.controller.isGrounded;
         gravityValue = player.gravityValue;
@@ -95,12 +94,9 @@ public class DeathState : State
     {
         base.Exit();
         player.isCarry = false;
-        player.isClimbing = false;
         player.isFlight = false;
         player.isIdle = false;
         player.isPull = false;
-        player.isPush = false;
-        player.isSmallThrow = false;
         player.isDead = false;
         _isAlive = false;
         _currentTime = 0;

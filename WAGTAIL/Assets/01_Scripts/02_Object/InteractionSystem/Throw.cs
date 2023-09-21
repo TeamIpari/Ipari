@@ -75,8 +75,7 @@ public class Throw : MonoBehaviour, IInteractable
         {
             StartCoroutine(Pickup());
             // isCarry를 isThrow로 바꿔줘야함
-            if (_isSmall) player.isSmallThrow = true;
-            player.isCarry = true;
+            player.isPickup = true;
             
             return true;
         }
@@ -200,10 +199,10 @@ public class Throw : MonoBehaviour, IInteractable
     IEnumerator Throwing(GameObject interactor)
     {
         Player player = interactor.GetComponent<Player>();
-        if(player.Target != null)
+        if(player.target != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
-            Player.Instance.transform.LookAt(new Vector3(player.Target.transform.position.x, Player.Instance.transform.position.y, player.Target.transform.position.z));
+            Player.Instance.transform.LookAt(new Vector3(player.target.transform.position.x, Player.Instance.transform.position.y, player.target.transform.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
         yield return new WaitForSeconds(0.2f);
@@ -222,11 +221,11 @@ public class Throw : MonoBehaviour, IInteractable
         GetComponent<Collider>().isTrigger = false;
 
         //rigidbody.velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
-        if (player.Target == null)
+        if (player.target == null)
             rigidbody.velocity = IpariUtility.CaculateVelocity(player.transform.position + player.transform.forward * _range, this.transform.position, _hight);
-        else if (player.Target != null)
+        else if (player.target != null)
         {
-            Vector3 vel = IpariUtility.CaculateVelocity(player.Target.transform.position + player.transform.forward * _range, player.transform.position, _hight);
+            Vector3 vel = IpariUtility.CaculateVelocity(player.target.transform.position + player.transform.forward * _range, player.transform.position, _hight);
             Debug.Log(vel);
             rigidbody.velocity = vel;
         } 
@@ -236,13 +235,6 @@ public class Throw : MonoBehaviour, IInteractable
         PhysicsCheck = true;
         if(_animator == null)
             flight = true;
-
-        // 추가된 스크립트 2023-08-22 강명호
-        if(_isSmall)
-        {
-            Player.Instance.isSmallThrow = false;
-        }
-        // ================================
     }
 
     public void ResetPoint()
