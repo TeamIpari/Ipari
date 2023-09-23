@@ -8,19 +8,20 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private MeshRenderer mesh;
     private Collider col;
     public GameObject Light;
+    [SerializeField] private GameObject _interactionVFX;
     public bool IsUpdownMode = false;
 
-    public float HideNDownTime = 1.0f;
-    public float ShowNUpTime = 1.0f;
-    public float VineHitTime = 2.5f;
+    public const float HideNDownTime = 1.0f;
+    public const float ShowNUpTime = 2.0f;
+    public const float VineHitTime = 2.5f;
 
     private float delayTime;
     // 위 아래 최종 이동 위치
-    public float MoveSpeed = 0.0f;
+    public const float MoveSpeed = 10f;
     private bool shake = false;
     
     
-    public float ShakeSpeed = 0.0f;
+    public float ShakeSpeed = 0.1f;
 
     // 흔들리고 사라지거나 떨어질 때 원래 위치로 찾아오기 위한 Origin Position;
     private Vector3 startPos;
@@ -28,17 +29,14 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
 
-    [SerializeField] private float _explosionMinForce = 5;
-    [SerializeField] private float _explosionMaxForce = 100;
-    [SerializeField] private float _explosionForceRadius = 10;
-    [SerializeField] private float _fragScaleFactor = 0.01f;
+    [SerializeField] private const float _explosionMinForce = 5;
+    [SerializeField] private const float _explosionMaxForce = 100;
+    [SerializeField] private const float _explosionForceRadius = 10;
+    [SerializeField] private const float _fragScaleFactor = 0.1f;
 
     float curTime;
     public float shakeDelay;
     private Vector3[] PosList;
-
-    private Vector3 localPoint1;
-    private Vector3 localPoint2;
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
@@ -202,17 +200,29 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         if (IsHit)
             return;
         IsHit = true;
-        if (Light != null)
-            Light.SetActive(true);
-        delayTime = time;
-        if (!IsUpdownMode)
+        SpawnVFX();
+        //if (Light != null)
+        //    Light.SetActive(true);
+        //delayTime = time;
+        //if (!IsUpdownMode)
+        //{
+        //    StartCoroutine(HidePlatform());
+        //}
+        //else
+        //{
+        //    StartCoroutine(DownPlatform());
+        //}
+    }
+    private void SpawnVFX()
+    {
+        if (_interactionVFX != null)
         {
-            StartCoroutine(HidePlatform());
+            GameObject exploVFX = Instantiate(_interactionVFX, gameObject.transform.position + Vector3.up * 0f, gameObject.transform.rotation);
+            Destroy(exploVFX, 2);
         }
+
         else
-        {
-            StartCoroutine(DownPlatform());
-        }
+            Debug.LogWarning("InteractionVFX was missing!");
     }
 
     // Update is called once per frame

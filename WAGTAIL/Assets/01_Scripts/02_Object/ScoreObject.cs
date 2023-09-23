@@ -31,7 +31,6 @@ public class ScoreObject : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         isMagnet = false;
         fromCoinFlower = true;
-        //Height = Height == 0 ? 1 : Height;
         // 추후에 밑에 주석 풀어줘야함 안하면 죽음
         // 배치를 위한 Dummy Mesh이므로 Coin 모델링 또는 FX완성 되면 반드시 주석을 풀어줘야함
         //GetComponent<MeshRenderer>().enabled = false;
@@ -68,7 +67,6 @@ public class ScoreObject : MonoBehaviour
             float distance = Vector3.Distance(Player.Instance.transform.position, transform.position);
             float magentDistance = (10 / distance) * 1.25f;
             _rigidbody.velocity = directionToMagnet * magentDistance;
-            //transform.position += TargetVector(Player.Instance.transform.position, transform.position);
         }
     }
 
