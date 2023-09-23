@@ -39,7 +39,7 @@ public class FlowerObject : MonoBehaviour
             _obj.transform.position = FlowerTransform.position;
             _obj.transform.position += Vector3.up * 1.5f;
             _obj.AddComponent<Rigidbody>().velocity = IpariUtility.CaculateVelocity(t, FlowerTransform.position, FlightTIme);
-            _obj.GetComponent<ScoreObject>().SetTime(FlightTIme);
+            _obj.GetComponent<ScoreObject>().SetTime(FlightTIme, 2);
             //marker.Add(_obj);
         }
 
