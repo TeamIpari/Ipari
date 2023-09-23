@@ -2,6 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using IPariUtility;
+using DG.Tweening;
+using UnityEditor.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class ScoreObject : MonoBehaviour
 {
@@ -13,7 +17,12 @@ public class ScoreObject : MonoBehaviour
     private float magnetSpeed = 1.1f;
     private float delayTime;      // 지연 시간.
     private float curtime;        // 경과 시간.
-    [SerializeField] private Vector3 Speed;
+    private bool fromCoinFlower = true;
+    //[SerializeField] private Vector3 Speed;
+    [Tooltip("체공시간(실제 체공시간 = 체공시간 / div")]
+    private const float Height= 1.7f;
+    private const float FlightDiv =4.0f; 
+
 
     public ScoreType scoreType;
     private void Start()
@@ -21,6 +30,8 @@ public class ScoreObject : MonoBehaviour
         _gameManager = GameManager.GetInstance();
         _rigidbody = GetComponent<Rigidbody>();
         isMagnet = false;
+        fromCoinFlower = true;
+        //Height = Height == 0 ? 1 : Height;
         // 추후에 밑에 주석 풀어줘야함 안하면 죽음
         // 배치를 위한 Dummy Mesh이므로 Coin 모델링 또는 FX완성 되면 반드시 주석을 풀어줘야함
         //GetComponent<MeshRenderer>().enabled = false;
@@ -36,11 +47,16 @@ public class ScoreObject : MonoBehaviour
             }
             else
             {
-                // Destroy(_rigidbody);
                 // 자석
                 _rigidbody.velocity = Vector3.zero;
                 _rigidbody.useGravity = false;  
-                isMagnet = true;
+                if(fromCoinFlower)
+                    isMagnet = true;
+                else if(!fromCoinFlower)
+                {
+                    SpawnVFX();
+                    gameObject.SetActive(false);
+                }
                 curtime = 0;
             }    
         }
@@ -55,23 +71,25 @@ public class ScoreObject : MonoBehaviour
             //transform.position += TargetVector(Player.Instance.transform.position, transform.position);
         }
     }
-    
 
-    private Vector3 TargetVector(Vector3 target, Vector3 origin)
+    // method명 임시.
+    private bool isHit()
     {
-        Vector3 distance = target - origin;
-        Speed += distance.normalized * 0.5f * Time.deltaTime;
-
-
-
-
-        return Speed;
-
+        if (!isMagnet)
+        {
+            SetTime(Height, FlightDiv);
+            gameObject.AddComponent<Rigidbody>();
+            _rigidbody = gameObject.GetComponent<Rigidbody>();
+            _rigidbody.velocity = IpariUtility.CaculateVelocity(this.transform.position, this.transform.position, Height);
+            fromCoinFlower = false;
+            return false;
+        }
+        return true;
     }
 
-    public void SetTime(float time)
+    public void SetTime(float time, float div)
     {
-        delayTime = time / 2;
+        delayTime = time / div;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -82,19 +100,28 @@ public class ScoreObject : MonoBehaviour
         {
             case ScoreType.Coin:
                 _gameManager.Coin += 1;
-                FModAudioManager.PlayOneShotSFX(FModSFXEventType.Get_Bead);
+                if(isHit())
+                {
+                    SpawnVFX();
+                    gameObject.SetActive(false);
+
+                }
+                else
+                {
+                    FModAudioManager.PlayOneShotSFX(FModSFXEventType.Get_Bead);
+                }
                 //SoundTest.GetInstance().PlaySound("isCoinInteract");
                 break;
             case ScoreType.Flower:
                 _gameManager.Flower += 1;
                 FModAudioManager.PlayOneShotSFX(FModSFXEventType.Get_Flower);
+                SpawnVFX();
+                gameObject.SetActive(false);
                 //SoundTest.GetInstance().PlaySound("isFlowerInteract");
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        SpawnVFX();
-        gameObject.SetActive(false);
     }
 
     private void SpawnVFX()
