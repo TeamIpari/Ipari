@@ -147,13 +147,13 @@ public class BossRoomFieldManager :MonoBehaviour
         Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
         return new Vector3(vec.x, 5f, vec.z);
     }
-    public void BrokenPlatform(float xPos, bool reAction = false)
+    public void BreakingPlatform(float xPos, bool reAction = false)
     {
         // 내려 찍기 -> 2.5초 후 내려 찍음.
         // .Attack Delay = 2.5f
         float X = (xPos - Offset.x ), Y = 0;
         float FindY = Y * (-StoneYSize);
-        
+
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
             StartCoroutine(BrokenDelayCo(X, FindY));

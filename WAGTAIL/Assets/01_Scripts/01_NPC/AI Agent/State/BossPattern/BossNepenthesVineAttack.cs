@@ -38,6 +38,7 @@ public class BossNepenthesVineAttack : AIAttackState
     private float delayTime = 5f;
     private float attackPoint = 0;
     private bool isLeft = false;
+    private bool isThread = false;
 
     //================================================
     // Unity Property
@@ -75,7 +76,6 @@ public class BossNepenthesVineAttack : AIAttackState
         myState = VineState.STATE_MOVE;
         vineAnim = vine.GetComponent<Animator>();
         vineAnim.SetTrigger("isReady");
-        myThread = new Thread(new ThreadStart(ThreadFunction));
 
     }
 
@@ -110,8 +110,14 @@ public class BossNepenthesVineAttack : AIAttackState
                 {
                     //// 공격하게 함.
                     //// 바로 공격
-                    vineAnim.SetTrigger("isAttack");
-                    myThread.Start();
+                    if (!isThread)
+                    {
+                        isThread = true;
+                        vineAnim.SetTrigger("isAttack");
+                        myThread = new Thread(new ThreadStart(ThreadFunction));
+                        myThread.Start();
+
+                    }
                     //eStateChange();
                     //Invoke(A);
                 }
@@ -119,6 +125,7 @@ public class BossNepenthesVineAttack : AIAttackState
             case VineState.STATE_ORIGINBACK:
                 {
                     GotoMoveOrigin();
+                    isThread = false;
                 }
                 break;
             default:
@@ -149,7 +156,7 @@ public class BossNepenthesVineAttack : AIAttackState
 
     private void VineAttack()
     {
-        BossRoomFieldManager.Instance.BrokenPlatform(attackPoint, true);
+        BossRoomFieldManager.Instance.BreakingPlatform(attackPoint, true);
     }
 
     private void GotoMoveOrigin()
@@ -199,7 +206,7 @@ public class BossNepenthesVineAttack : AIAttackState
 
 
         // 몇 초 후 떨어지게 하기.
-        //BossRoomFieldManager.Instance.BrokenPlatform(spawnPos.x, true);
+        BossRoomFieldManager.Instance.BreakingPlatform(spawnPos.x, true);
         spawnPos = BossRoomFieldManager.Instance.transform.position + new Vector3(spawnPos.x, vine.transform.position.y + 3.0f, vine.transform.position.z);
     }
 }
