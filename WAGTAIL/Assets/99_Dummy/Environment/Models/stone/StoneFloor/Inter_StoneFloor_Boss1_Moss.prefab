@@ -188,12 +188,15 @@ MonoBehaviour:
   UpdatePosition: {x: 0, y: 0, z: 0}
   OffsetPosition: {x: 0, y: 0, z: 0}
   PrevPosition: {x: 0, y: 0, z: 0}
-  PlayerOnPlatform: 0
+  PreventAddChild: 0
+  _PlayerOnPlatform: 0
   UsedCollision: 0
   CheckGroundOffset: 0
+  CheckGroundDownOffset: 0
   Behaviors:
   - {fileID: 587802200766393001}
   - {fileID: 1539713673}
+  _ObjectOnPlatformCount: 0
 --- !u!114 &587802200766393001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +222,7 @@ MonoBehaviour:
     ParamColorValue: {r: 0, g: 0, b: 0, a: 0}
     LerpTimeDiv: 0
     LeftTime: 0
-    LerpTime: 1
+    LerpTime: 0.1
     StartValue: 0
     StartColorValue: {r: 0, g: 0, b: 0, a: 0}
   - Target: {fileID: 3807002449359178366}
