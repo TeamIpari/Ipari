@@ -37,7 +37,13 @@ public class JumpingState : State
             player.Interaction();
             player.animator.SetTrigger(Throw);
         }
-        input = moveAction.ReadValue<Vector2>();
+        GetMoveInput();
+        _airVelocity = new Vector3(input.x, 0, input.y);
+        var temp = player.cameraTransform.forward;
+        temp.y = 0f;
+        _airVelocity = _airVelocity.x * player.cameraTransform.right.normalized +
+                       _airVelocity.z * temp.normalized;
+        _airVelocity.y = 0;
     }
 
     public override void LogicUpdate()
@@ -67,17 +73,6 @@ public class JumpingState : State
 
         if (!_isGrounded)
         {
-            velocity = player.playerVelocity;
-            _airVelocity = new Vector3(input.x, 0, input.y);
-            
-            velocity = velocity.x * player.cameraTransform.right.normalized + 
-                velocity.z * player.cameraTransform.forward.normalized;
-            velocity.y = 0f;
-
-            _airVelocity = _airVelocity.x * player.cameraTransform.right.normalized +
-                _airVelocity.z * player.cameraTransform.forward.normalized;
-            _airVelocity.y = 0;
-
             player.controller.Move(gravityVelocity * Time.deltaTime + 
                 (_airVelocity * player.airControl + velocity * (1 - player.airControl)) * (player.playerSpeed * Time.deltaTime));
 
@@ -89,8 +84,6 @@ public class JumpingState : State
                 player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(_airVelocity),
                     player.rotationDampTime);
             }
-
-            
         }
     }
 
