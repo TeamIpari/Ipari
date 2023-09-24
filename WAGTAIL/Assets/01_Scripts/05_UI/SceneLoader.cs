@@ -97,7 +97,7 @@ public class SceneLoader : Singleton<SceneLoader>
                 //CameraManager.GetInstance().CameraSetting();
             }
 
-            if(_loadSceneName == "Chapter02")
+            if(_loadSceneName == "Chapter02_JKH")
             {
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
             }

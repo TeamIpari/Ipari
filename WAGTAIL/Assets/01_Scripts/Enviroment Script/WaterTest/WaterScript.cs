@@ -94,9 +94,8 @@ public sealed class WaterScript : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         /*PlayerMask만 체크하여 이동을 시킴.*/
-        if(other.gameObject.CompareTag( "Player")){
-
-            Debug.Log("AA");
+        if(other.gameObject.CompareTag( "Player"))
+        {
             _player.movementSM.currentState.gravityVelocity += WaterDir * WaterForce;
         }
     }
