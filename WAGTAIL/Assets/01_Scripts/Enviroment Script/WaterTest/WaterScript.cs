@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 /************************************************
  *  물에 물체가 입수했을 때를 처리하는 컴포넌트입니다.
@@ -41,9 +42,11 @@ public sealed class WaterScript : MonoBehaviour
         #region Omit
         _player = Player.Instance;
         _playerDefaultJumPow = _player.jumpHeight;
+        gameObject.layer = LayerMask.NameToLayer("Water");
         Collider collider= GetComponent<Collider>();
         if(collider!=null)
         {
+            collider.isTrigger = true;   
             Bounds bounds= collider.bounds;
             _waterHeight = bounds.center.y + (bounds.extents.y * bounds.size.y);
         }
@@ -87,7 +90,6 @@ public sealed class WaterScript : MonoBehaviour
         else return;
 
         /**입수가 가능한 오브젝트들에게 공통적으로 실행.*/
-        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Enter_Water);
         PlayWaterFX(other);
     }
 
@@ -96,8 +98,7 @@ public sealed class WaterScript : MonoBehaviour
         /*PlayerMask만 체크하여 이동을 시킴.*/
         if(other.gameObject.CompareTag( "Player")){
 
-            Debug.Log("AA");
-            _player.movementSM.currentState.gravityVelocity += WaterDir * WaterForce;
+            _player.controller.Move(WaterDir * WaterForce);
         }
     }
 
@@ -106,8 +107,6 @@ public sealed class WaterScript : MonoBehaviour
         if (other.gameObject.CompareTag("Player")/* && _player.movementSM.currentState.Equals(_player.jump)*/){
 
             _player.jumpHeight = _playerDefaultJumPow;
-            _player.movementSM.currentState.gravityVelocity.x = 0;
-            _player.movementSM.currentState.gravityVelocity.z = 0;
         }
         else return;
 
@@ -134,19 +133,29 @@ public sealed class WaterScript : MonoBehaviour
         #endregion
     }
 
-    private void PlayWaterFX(Collider collider)
+    private void PlayWaterFX(Collider other)
     {
         #region Omit
-        if(EnterWaterFX!=null)
-        {
-            ParticleSystem system = GetWaterFX();
-            system.gameObject.SetActive(true);
-            
-            Vector3 pos = collider.transform.position;
-            pos.y = _waterHeight;
-            system.transform.position = pos;
-            system.Play();
+        RaycastHit result;
+        if (Physics.Raycast((other.transform.position + Vector3.up * 10f),
+                            Vector3.down,
+                            out result,
+                            15f,
+                            1 << LayerMask.NameToLayer("Water")))
 
+        {
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Enter_Water);
+
+            if (EnterWaterFX != null)
+            {
+                ParticleSystem system = GetWaterFX();
+                system.gameObject.SetActive(true);
+
+                Vector3 pos = result.point;
+                system.transform.position = pos;
+                system.Play();
+
+            }
         }
         #endregion
     }
