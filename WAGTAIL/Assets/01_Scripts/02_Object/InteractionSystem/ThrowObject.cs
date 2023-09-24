@@ -25,6 +25,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Transform _transform;
     private Collider _collider;
     private Rigidbody _rigidbody;
+    private GameObject _center;
+    private Vector3 _bounceDir;
     
     // Properties for Bezier Curve
     private Vector3 _startPos;
@@ -77,8 +79,44 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerEquipPos = _playerEquipPoint.transform;
         _playerHead = _player.Head;
         _playerHeadPos = _playerHead.transform;
+        
+        
+        _center = new GameObject();
+        _center.transform.position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center);
+        _center.transform.parent = _transform;
+        _center.name = "Center";
+    }
+
+    private void FixedUpdate()
+    {
+        PhysicsChecking();
     }
     
+    private void OnCollisionEnter(Collision collision)
+    {
+        bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
+                       !collision.gameObject.CompareTag("Player");
+        if (bTagHit)
+        {
+            flight = false;
+            PhysicsCheck = false;
+            _rigidbody.useGravity = true;
+            if (_animator != null)
+            {
+                _animator.SetTrigger("Grounded");
+                _rigidbody.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+            }
+            else
+                _rigidbody.freezeRotation = false;
+            _rigidbody.velocity += Physics.gravity * .05f;
+        }
+        if(_bounceDir == default)
+        {
+            _bounceDir = RandomDirection().normalized;
+            _rigidbody.velocity += _bounceDir;
+        }
+    }
+
     //=================================================================
     //                      Interface Methods
     //=================================================================
@@ -165,7 +203,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             _animator.SetTrigger("Flight");
 
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
-        //_rigidbody.useGravity = true;
+        _rigidbody.useGravity = true;
         _rigidbody.freezeRotation = false;
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _rigidbody.isKinematic = false;
@@ -187,6 +225,19 @@ public class ThrowObject : MonoBehaviour, IInteractable
             flight = true;
     }
     
+    private void PhysicsChecking()
+    {
+        if (PhysicsCheck)
+        {
+            _rigidbody.velocity += Physics.gravity * .05f;
+        }
+        
+        if (flight)
+        {
+            transform.RotateAround(_center.transform.position, Forward, (1.0f * Time.deltaTime));
+        }
+    }
+    
     private Vector3 BezierCurve(Vector3 startPos, Vector3 endPos, Vector3 height, float value)
     {
         var a = Vector3.Lerp(startPos, height, value);
@@ -198,38 +249,28 @@ public class ThrowObject : MonoBehaviour, IInteractable
         return c;
     }
     
-    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
+    private Vector3 RandomDirection()
     {
-        // define the distance x and y first;
-        Vector3 distance = target - origin;
-        Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-        distanceXZ.y = 0f; // y는 0으로 설정.
-        Forward = origin;
-        // Create a float the represent our distance
-        float Sy = distance.y;      // 세로 높이의 거리를 지정.
-        float Sxz = distanceXZ.magnitude;
-
-        // 속도 추가
-        float Vxz = Sxz / time;
-        float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-
-        // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
-        Vector3 result = distanceXZ.normalized;
-        result *= Vxz;
-        result.y = Vy;
-        return result;
-    }
-    
-    private void PhyscisChecking()
-    {
-        if (PhysicsCheck)
+        // 8방향으로 이동이 가능하게 할 예정.
+        switch (UnityEngine.Random.Range(0, 8))
         {
-            _rigidbody.velocity += Physics.gravity * .05f;
+            case 0:
+                return new Vector3(0, 0, 1);
+            case 1:
+                return new Vector3(1, 0, 1);
+            case 2:
+                return new Vector3(0, 0, 1);
+            case 3:
+                return new Vector3(1, 0, -1);
+            case 4:
+                return new Vector3(0, 0, -1);
+            case 5:
+                return new Vector3(-1, 0, -1);
+            case 6:
+                return new Vector3(-1, 0, 0);
+            case 7:
+                return new Vector3(-1, 0, 1);
         }
-    }
-    
-    public void SetAutoTarget(Transform _transform = null)
-    {
-        autoTarget = _transform;
+        return Vector3.zero;
     }
 }
