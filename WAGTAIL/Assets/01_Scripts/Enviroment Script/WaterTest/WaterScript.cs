@@ -72,15 +72,17 @@ public sealed class WaterScript : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         /**물에 입수한 대상이 플레이어일 경우...*/
-        if (other.gameObject.CompareTag("Player") && _player.movementSM.currentState.Equals(_player.jump))
+        if (other.gameObject.CompareTag("Player")/* && _player.movementSM.currentState.Equals(_player.jump)*/)
         {
             if(JumpPowRedution) Player.Instance.jumpHeight = 0.2f;
         }
         else if (other.gameObject.CompareTag("Platform"))
         {
+
         }
         else if (LayerMask.NameToLayer("Interactable") == other.gameObject.layer)
         {
+
         }
         else return;
 
@@ -94,15 +96,18 @@ public sealed class WaterScript : MonoBehaviour
         /*PlayerMask만 체크하여 이동을 시킴.*/
         if(other.gameObject.CompareTag( "Player")){
 
-           _player.controller.Move( WaterDir * WaterForce ); 
+            Debug.Log("AA");
+            _player.movementSM.currentState.gravityVelocity += WaterDir * WaterForce;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") && _player.movementSM.currentState.Equals(_player.jump)){
+        if (other.gameObject.CompareTag("Player")/* && _player.movementSM.currentState.Equals(_player.jump)*/){
 
             _player.jumpHeight = _playerDefaultJumPow;
+            _player.movementSM.currentState.gravityVelocity.x = 0;
+            _player.movementSM.currentState.gravityVelocity.z = 0;
         }
         else return;
 
