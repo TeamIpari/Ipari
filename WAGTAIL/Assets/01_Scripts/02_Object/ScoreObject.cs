@@ -71,7 +71,7 @@ public class ScoreObject : MonoBehaviour
     }
 
     // method∏Ì ¿”Ω√.
-    private bool isHit()
+    private bool GetHit()
     {
         if (!isMagnet)
         {
@@ -93,12 +93,12 @@ public class ScoreObject : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        
+        GetComponent<SphereCollider>().enabled = false;
         switch (scoreType)
         {
             case ScoreType.Coin:
                 _gameManager.Coin += 1;
-                if(isHit())
+                if(GetHit())
                 {
                     SpawnVFX();
                     gameObject.SetActive(false);
