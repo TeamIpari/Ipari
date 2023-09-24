@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.iOS;
+using IPariUtility;
 
 //=================================================
 // 플레이어가 들고 던질 수 있는 오브젝트의 기반이 되는 클래스.
@@ -39,11 +39,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Transform _playerInteractionPos;
     private GameObject _playerEquipPoint;
     private Transform _playerEquipPos;
+    private GameObject _playerHead;
+    private Transform _playerHeadPos;
     
     // DelayTime Properties
     private const float LerpTime = 2f;
-    private const float PickUpDelayTime = 0.75f;
-    private const float PickUpTime = 12f;
+    private const float PickUpDelayTime = 0.3f;
+    private const float PickUpTime = 2.5f;
 
     //=================================================================
     //                    Test Properties                    
@@ -73,6 +75,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerInteractionPos = _playerInteractionPoint.transform;
         _playerEquipPoint = _player.ThrowEquipPoint.gameObject;
         _playerEquipPos = _playerEquipPoint.transform;
+        _playerHead = _player.Head;
+        _playerHeadPos = _playerHead.transform;
     }
     
     //=================================================================
@@ -80,18 +84,17 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //=================================================================
     public bool Interact(GameObject interactor)
     {
-        var player = interactor.GetComponent<Player>();
-        
-        if (player.currentInteractable == null)
+      
+        if (_player.currentInteractable == null)
         {
             StartCoroutine(PickUp(LerpTime, PickUpTime));
-            player.isCarry = true;
+            _player.isCarry = true;
         }
         
         else
         {
             StartCoroutine(Throwing(interactor));
-            player.isCarry = false;
+            _player.isCarry = false;
             return true;
         }
 
@@ -108,9 +111,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //=================================================================
     private IEnumerator PickUp(float lerpTime, float pickUpTime)
     {
+        _player.isPickup = true;
         // Object가 손에 붙어서 움직이지 않도록 설정
-        _collider.isTrigger = true;
         _rigidbody.useGravity = false;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.freezeRotation = true;
+        _rigidbody.isKinematic = true;
+        _collider.isTrigger = true;
         
         var pos = _transform.position;
         var currentTime = 0.0f;
@@ -122,7 +129,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
             currentTime += 0.1f;
             yield return new WaitForSeconds(0.0025f);
         }
-        _transform.SetParent(_playerEquipPoint.transform);
         yield return new WaitForSeconds(PickUpDelayTime);
         
         // BezierCurve를 위한 3개의 점 구하기 StartPos, Height, EndPos
@@ -140,11 +146,14 @@ public class ThrowObject : MonoBehaviour, IInteractable
             currentTime += 0.1f;
             yield return new WaitForSeconds(0.0025f);
         }
+        _transform.SetParent(_playerHead.transform);
     }
 
     private IEnumerator Throwing(GameObject interactor)
     {
-        Player player = interactor.GetComponent<Player>();
+        // Object 종속을 풀어줌
+        _transform.SetParent(null);
+        
         if(autoTarget != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
@@ -155,17 +164,22 @@ public class ThrowObject : MonoBehaviour, IInteractable
         if (_animator != null)
             _animator.SetTrigger("Flight");
 
-        // Object 종속을 풀어줌
-        _playerEquipPoint.transform.DetachChildren();
-
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
-        _rigidbody.useGravity = true;
+        //_rigidbody.useGravity = true;
         _rigidbody.freezeRotation = false;
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _rigidbody.isKinematic = false;
         _collider.isTrigger = false;
 
-        _rigidbody.velocity = CaculateVelocity(player.transform.position + player.transform.forward * _range, this.transform.position, _hight);
+        if (_player.target == null)
+            _rigidbody.velocity = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * _range, this.transform.position, _hight);
+        else if (_player.target != null)
+        {
+            Vector3 vel = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * _range, _player.transform.position, _hight);
+            Debug.Log(vel);
+            _rigidbody.velocity = vel;
+        } 
+        Forward = transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;

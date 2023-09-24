@@ -32,7 +32,8 @@ public class PullOutState : State
 
         if (timePassed > dropTime)
         {
-            player.animator.SetTrigger("move");
+            player.currentInteractable = null;
+            player.animator.SetTrigger(Move);
             stateMachine.ChangeState(player.idle);
         }
         timePassed += Time.deltaTime;

@@ -1,11 +1,6 @@
-using FMOD.Studio;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Timeline.Actions;
 using UnityEngine;
-using UnityEngine.Networking;
-using static UnityEngine.InputManagerEntry;
-
 
 public class BossRoomFieldManager :MonoBehaviour
 {

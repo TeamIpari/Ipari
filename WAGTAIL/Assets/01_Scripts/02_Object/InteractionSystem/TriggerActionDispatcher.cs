@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using FMOD.Studio;
-using UnityEditor.MPE;
 using System;
 
 #if UNITY_EDITOR

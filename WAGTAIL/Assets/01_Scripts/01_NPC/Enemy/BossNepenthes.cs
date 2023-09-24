@@ -37,7 +37,7 @@ public class BossNepenthes : Enemy
     [Header("Attack2 Parameter")]
     private const float flyTime = 2f;
     private const float bigSize = 3f;
-    private  const float SmallSize = 1f;
+    private const float SmallSize = 1f;
 
     [Header("Attack3 Parameter")]
     [Tooltip("한번 쏠 때 최대 몇 개를 퍼뜨리는가?")]
