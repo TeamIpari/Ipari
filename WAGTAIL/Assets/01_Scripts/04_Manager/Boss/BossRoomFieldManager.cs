@@ -23,6 +23,7 @@ public class BossRoomFieldManager :MonoBehaviour
     }
 
     // 생성할 타일을 저장함.
+    [SerializeField] private GameObject _interactionVFX;
     public GameObject[] Tiles;
     public GameObject[] OddTile;
     public GameObject[] EvenTile;
@@ -84,8 +85,21 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         yield return new WaitForSeconds(2.5f);
         //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
-        BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
+
+        GameObject obj = GameObject.Instantiate<GameObject>(_interactionVFX, BossFild[new Vector2(x, y)].transform.position, Quaternion.identity);
     }
+    private void SpawnVFX()
+    {
+        if (_interactionVFX != null)
+        {
+            GameObject exploVFX = Instantiate(_interactionVFX, gameObject.transform.position + Vector3.up * 0f, gameObject.transform.rotation);
+            Destroy(exploVFX, 2);
+        }
+
+        else
+            Debug.LogWarning("InteractionVFX was missing!");
+    }
+
 
     private void BrokenDelay(float x, float y)
     {
