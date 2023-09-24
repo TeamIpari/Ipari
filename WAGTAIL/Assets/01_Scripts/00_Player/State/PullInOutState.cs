@@ -80,26 +80,27 @@ public sealed class PullInOutState : State
     {
         /**animator 갱신...*/
         player.animator.SetTrigger("pulling");
+        player.animator.SetFloat("speed", 0f);
 
         float length = player.animator.GetCurrentAnimatorStateInfo(0).length;
-        float lenDiv = ( 1f / length );
+        float lenDiv = (1f / length);
         float prevSpeed = player.animator.speed;
 
         /****************************************************
          *   당길 위치를 바라보는데 필요한 모든 요소들을 구한다...
          * **/
-        Transform playerTr   = player.transform;
-        Vector3 holdingPoint = PulledTarget.HoldingPoint.position;
-        Vector3 playerPos    = playerTr.position;
-        Vector3 forward      = playerTr.forward;
+        Transform playerTr = player.transform;
+        Vector3 holdingPoint = PulledTarget.transform.position;
+        Vector3 playerPos = playerTr.position;
+        Vector3 forward = playerTr.forward;
 
-        Vector3    targetDistance = (holdingPoint - playerPos);
-        Vector3    targetDir      = targetDistance.normalized;
-        Quaternion startRot       = playerTr.rotation;
+        Vector3 targetDistance = (holdingPoint - playerPos);
+        Vector3 targetDir = targetDistance.normalized;
+        Quaternion startRot = playerTr.rotation;
 
         float movDistance = targetDistance.magnitude;
 
-        Vector3 lookTarget = -PulledTarget.PullingDir;
+        Vector3 lookTarget = Vector3.forward;
         Vector3 currForward = playerTr.forward;
         Vector3 cross = Vector3.Cross(lookTarget, currForward);
         float dirInput = Vector3.Dot(cross, Vector3.up);
@@ -116,88 +117,89 @@ public sealed class PullInOutState : State
          *  지정한 위치를 바라본다...
          * **/
         float progressRatio = 0f;
-        float currTime      = 0f;
-        float goalTimeDiv   = ( 1f / _LookAtTime );
+        float currTime = 0f;
+        float goalTimeDiv = (1f / _LookAtTime);
 
         do
         {
             float deltaTime = Time.deltaTime;
             currTime += deltaTime;
-            progressRatio = Mathf.Clamp(( currTime * goalTimeDiv ), 0f, 1f);
+            progressRatio = Mathf.Clamp((currTime * goalTimeDiv), 0f, 1f);
 
-            Quaternion rotQuat = Quaternion.AngleAxis(degree*progressRatio, Vector3.up);
-            Vector3 movDelta   = targetDir * ( movDistance * progressRatio );
+            Quaternion rotQuat = Quaternion.AngleAxis(degree * progressRatio, Vector3.up);
+            Vector3 movDelta = targetDir * (movDistance * progressRatio);
             movDelta.y = 0f;
 
             /**최종적용*/
-            playerTr.rotation  = (startRot * rotQuat);
-            playerTr.position  = (playerPos + movDelta);
-
+            playerTr.rotation = (startRot * rotQuat);
+            playerTr.position = (playerPos + movDelta);
             yield return null;
         }
-        while (currTime<_LookAtTime);
+        while (currTime < _LookAtTime);
 
-        bool isPulling = player.animator.GetCurrentAnimatorStateInfo(0).IsName("Player_Pulling");
+        #region Deprecated
+        //    currTime = 1f;
+        //    while ((currTime -= Time.deltaTime) >= 0) yield return null;
 
+        //    /***********************************
+        //     *   당기는 방향에 따라 대상을 당긴다.
+        //     * **/
+        //    PulledTarget.Hold(player.gameObject);
+        //    PulledTarget.Pull(.2f, -forward);
 
-        /***********************************
-         *   당기는 방향에 따라 대상을 당긴다.
-         * **/
-        PulledTarget.Hold(player.gameObject);
-        PulledTarget.Pull(.2f, -forward);
+        //    currTime = 0f;
 
-        currTime = 0f;
+        //    while(!Input.GetKeyDown(KeyCode.R) && !PulledTarget.PulledIsCompleted)
+        //    {
+        //        Vector2 input = new Vector2
+        //        {
+        //            x = Input.GetAxisRaw("Horizontal"),
+        //            y = Input.GetAxisRaw("Vertical")
+        //        };
 
-        while(!Input.GetKeyDown(KeyCode.R) && !PulledTarget.PulledIsCompleted)
-        {
-            while((currTime-=Time.deltaTime)>0f)
-            {
-                yield return null;
-            }
+        //        float len = input.magnitude;
+        //        //if (Vector3.Dot(input, PulledTarget.PullingDir) < 0)
+        //        //{
+        //        //    player.animator.speed = prevSpeed;
+        //        //    yield return null;
+        //        //    continue;
+        //        //}
 
-            Vector2 input = new Vector2
-            {
-                x = Input.GetAxisRaw("Horizontal"),
-                y = Input.GetAxisRaw("Vertical")
-            };
+        //        player.animator.SetFloat("speed", len);
 
-            float len = input.magnitude;
-            //if (Vector3.Dot(input, PulledTarget.PullingDir) < 0)
-            //{
-            //    player.animator.speed = prevSpeed;
-            //    yield return null;
-            //    continue;
-            //}
+        //        if (len > 0)
+        //        {
+        //            player.animator.speed = .6f;
+        //            PulledTarget.Pull((len * .2f), input);
+        //            currTime = _PulledDelay;
+        //        }
 
-            player.animator.SetFloat("speed", len);
+        //        yield return null;
+        //    }
 
-            if (len > 0)
-            {
-                player.animator.speed = .6f;
-                PulledTarget.Pull((len * .4f), input);
-                currTime = _PulledDelay;
-            }
+        //    player.animator.speed = prevSpeed;
 
-            yield return null;
-        }
+        //    /**완전히 끝났을 경우...*/
+        //    if (PulledTarget.PulledIsCompleted){
 
-        player.animator.speed = prevSpeed;
+        //        player.animator.SetTrigger("pullout");
+        //        currTime = 0f;
 
-        /**완전히 끝났을 경우...*/
-        if (PulledTarget.PulledIsCompleted){
+        //        while ((currTime+=Time.deltaTime)<.5f)
+        //        {
+        //            player.controller.SimpleMove(-forward*2f);
+        //            yield return null;
+        //        }
 
-            player.animator.SetTrigger("pullout");
-            currTime = 0f;
+        //        currTime = 1.2f;
+        //        while ((currTime -= Time.deltaTime) >= 0) yield return null;
+        //    }
 
-            while ((currTime+=Time.deltaTime)<.5f)
-            {
-                player.controller.SimpleMove(-forward*2f);
-                yield return null;
-            }
-        }
-
-        //player.movementSM.ChangeState(player.idle);
+        //    player.isPull = false;
+        //    player.animator.SetTrigger("pullout");
+        //    player.animator.SetTrigger("idle");
+        //    player.movementSM.ChangeState(player.idle);
+        //}
+        #endregion
     }
-
-    
 }

@@ -61,8 +61,12 @@ public sealed class AnimPlatformBehavior : PlatformBehaviorBase
 
         RaycastHit hit;
         _platformObject.GetPlayerFloorinfo(out hit);
-        Debug.Log($"player: {Player.Instance.transform.position}/ hit: {hit.point}");
         Player.Instance.transform.position = hit.point;
+    }
+
+    private void OnDrawGizmos()
+    {
+        
     }
 
 }
