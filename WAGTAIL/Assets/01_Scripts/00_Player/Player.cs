@@ -53,9 +53,10 @@ public class Player : MonoBehaviour
     public float rotationDampTime = 0.2f;
     [Range(0, 1)]
     public float airControl = 0.5f;
-
-    [Header("Interaction")]
+    
     private int _numFound;
+    [Header("Interaction")]
+    public GameObject Head;
     public Transform InteractionPoint;
     public Transform EquipPoint;
     public Transform ThrowEquipPoint;

@@ -21,6 +21,7 @@ public class PickUpState : State
         _timePassed = 0f;
         _pickUpTime = 0.5f;
         player.animator.SetFloat(Speed, 0);
+        player.animator.SetLayerWeight(1,1f);
         player.animator.SetTrigger(PickUp);
     }
 

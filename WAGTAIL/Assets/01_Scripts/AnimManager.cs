@@ -4,9 +4,41 @@ using UnityEditor;
 using UnityEngine;
 
 
-public class AnimManager
-    : MonoBehaviour
+public class AnimManager : MonoBehaviour
 {
+    private Animator _animator;
+
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+    }
+    public void EndLayer()
+    {
+        StartCoroutine(WeightLerp());
+    }
+
+    public void SetLayer()
+    {
+        _animator.SetLayerWeight(1, 1f);
+    }
+
+    private IEnumerator WeightLerp()
+    {
+        float time = 0f;
+        float duration = 0.1f;
+        float start = 1f;
+        float end = 0f;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            _animator.SetLayerWeight(1, Mathf.Lerp(start, end, t));
+            yield return null;
+        }
+    }
+    
+    
+    /*
     private static AnimManager instance;
     public static AnimManager Instance { get { return instance; } }
 
@@ -42,5 +74,6 @@ public class AnimManager
         catch
         {
         }
-    }
+    }*/
+    
 }

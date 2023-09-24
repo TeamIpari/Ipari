@@ -1,13 +1,7 @@
-using Cinemachine.Utility;
-using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Xml.XPath;
-using Unity.VisualScripting;
-using UnityEditor.AssetImporters;
-using UnityEditor.Timeline;
 using UnityEngine;
 
 public class BossNepenthesVineAttack : AIAttackState

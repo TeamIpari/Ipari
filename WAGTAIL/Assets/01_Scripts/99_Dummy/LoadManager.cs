@@ -2,10 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEditor.Rendering.PostProcessing;
-using UnityEditor.Rendering;
-using UnityEditor;
-using DG.Tweening;
 
 public class LoadManager : Singleton<LoadManager>
 {
