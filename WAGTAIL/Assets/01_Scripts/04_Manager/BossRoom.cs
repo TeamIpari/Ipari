@@ -6,12 +6,13 @@ using UnityEngine;
 public class BossRoom : MonoBehaviour
 {
     public ChapterType NextChapter;
+    public string NextChapterName;
 
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.P))
         {
-            SceneLoader.GetInstance().LoadScene(NextChapter.ToString());
+            SceneLoader.GetInstance().LoadScene(NextChapterName);
         }
     }
 
@@ -19,7 +20,7 @@ public class BossRoom : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SceneLoader.GetInstance().LoadScene(NextChapter.ToString());
+            SceneLoader.GetInstance().LoadScene(NextChapterName);
         }
     }
 }
