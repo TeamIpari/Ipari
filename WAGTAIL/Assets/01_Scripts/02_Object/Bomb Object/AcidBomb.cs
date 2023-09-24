@@ -88,6 +88,7 @@ public class AcidBomb : Bullet
             collision.collider.GetComponent<Player>().isDead = true;
         }
         // ==========================================================
+        // 부서지는거 해결하려면 여기.
         if (collision.collider.CompareTag("Platform"))
         {
             collision.collider.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
