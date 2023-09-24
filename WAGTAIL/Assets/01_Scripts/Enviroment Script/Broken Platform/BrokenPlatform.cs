@@ -8,7 +8,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private MeshRenderer mesh;
     private Collider col;
     public GameObject Light;
-    [SerializeField] private GameObject _interactionVFX;
     public bool IsUpdownMode = false;
 
     public const float HideNDownTime = 1.0f;
@@ -200,31 +199,18 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         if (IsHit)
             return;
         IsHit = true;
-        SpawnVFX();
-        //if (Light != null)
-        //    Light.SetActive(true);
-        //delayTime = time;
-        //if (!IsUpdownMode)
-        //{
-        //    StartCoroutine(HidePlatform());
-        //}
-        //else
-        //{
-        //    StartCoroutine(DownPlatform());
-        //}
-    }
-    private void SpawnVFX()
-    {
-        if (_interactionVFX != null)
+        if (Light != null)
+            Light.SetActive(true);
+        delayTime = time;
+        if (!IsUpdownMode)
         {
-            GameObject exploVFX = Instantiate(_interactionVFX, gameObject.transform.position + Vector3.up * 0f, gameObject.transform.rotation);
-            Destroy(exploVFX, 2);
+            StartCoroutine(HidePlatform());
         }
-
         else
-            Debug.LogWarning("InteractionVFX was missing!");
+        {
+            StartCoroutine(DownPlatform());
+        }
     }
-
     // Update is called once per frame
     private void Update()
     {
