@@ -33,13 +33,13 @@ public class BossNepenthesHitState : AIHitState
             SetPhaseHp();
             SetNextPhase();
         }
+        AISM.character.IsHit = false;
         curTimer = 0;
     }
 
     public override void Exit()
     {
         base.Exit();
-        AISM.character.IsHit = false;
     }
 
     public override void Update()

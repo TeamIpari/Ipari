@@ -26,6 +26,8 @@ public class AIHitState : AIState
 
     public override void Update()
     {
+        if (AISM.character.IsHit)
+            AISM.ChangeState(AISM.character.AiHit);
         //throw new System.NotImplementedException();
     }
 }
