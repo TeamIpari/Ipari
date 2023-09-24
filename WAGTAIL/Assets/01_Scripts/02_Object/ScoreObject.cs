@@ -1,11 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using IPariUtility;
-using DG.Tweening;
-using UnityEditor.Rendering;
-using UnityEngine.Rendering.Universal;
 
 public class ScoreObject : MonoBehaviour
 {

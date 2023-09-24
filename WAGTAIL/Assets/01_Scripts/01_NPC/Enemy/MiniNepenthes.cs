@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using IPariUtility;
-using UnityEngine.InputSystem.XR;
 
 public class MiniNepenthes : Enemy
 {

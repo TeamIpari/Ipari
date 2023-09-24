@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 /************************************************
  *  물에 물체가 입수했을 때를 처리하는 컴포넌트입니다.
