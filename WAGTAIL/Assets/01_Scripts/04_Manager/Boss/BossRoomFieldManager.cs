@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.ProBuilder.Actions;
 using UnityEngine;
 
 public class BossRoomFieldManager :MonoBehaviour
@@ -198,7 +199,8 @@ public class BossRoomFieldManager :MonoBehaviour
         foreach(var curTile in BossFild)
         {
             //curTile.Value.gameObject.GetComponentInChildren<PlatformObject>().enabled = false;
-            curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
+            //curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
+            curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().HideOnly(false);
         }
     }
 }

@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using IPariUtility;
 using UnityEngine;
 
 public class TrampolinePlatformBehaviour : PlatformBehaviorBase
@@ -33,7 +32,8 @@ public class TrampolinePlatformBehaviour : PlatformBehaviorBase
 
     public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody)
     {
-        if (parentMushroom != null)
+        //Debug.Log($"{exitTarget.name}");
+        if (parentMushroom != null && exitTarget.CompareTag("Player")) 
         {
             parentMushroom.ChangeMushroom();
             parentMushroom.isMush = true;
@@ -43,29 +43,19 @@ public class TrampolinePlatformBehaviour : PlatformBehaviorBase
     public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
     {
         #region Omit
-        // 여기서 시작
-        // 밟았을 때 튀어 오르기.
 
-        //Player.Instance.jumpHeight = JumpHeight;
-        //#region 협의 후 변경할 예정.
-        //if (Player.Instance.movementSM.currentState == Player.Instance.idle)
-        //{
-        //    Player.Instance.idle.Jumping();
-        //}
-        //else if (Player.Instance.movementSM.currentState == Player.Instance.flight)
-        //{
-        //    Player.Instance.flight.Jumping();
-        //}
-        //else if (Player.Instance.movementSM.currentState == Player.Instance.jump)
-        //{
-        //    Player.Instance.jump.Jumping();
-        //}
-        //#endregion
-        Debug.Log($"Hit");
-        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Mushroom_Jump);
-        Player.Instance.animator.SetTrigger("flight");
-        Player.Instance.movementSM.currentState.gravityVelocity.y = 0;
-        Player.Instance.movementSM.currentState.gravityVelocity.y += Mathf.Sqrt(JumpHeight * -3.0f * Player.Instance.gravityValue);
+        if (standingBody == null)
+        {
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Mushroom_Jump);
+            Player.Instance.animator.SetTrigger("flight");
+            Player.Instance.movementSM.currentState.gravityVelocity.y = 0;
+            Player.Instance.movementSM.currentState.gravityVelocity.y += Mathf.Sqrt(JumpHeight * -3.0f * Player.Instance.gravityValue);
+        }
+        else
+        {
+            Debug.Log(affectedPlatform.name);
+            standingBody.velocity = IpariUtility.CaculateVelocity(affectedPlatform.transform.position + IpariUtility.RandomDirection() * 4f, standingPoint, 2f);
+        }
 
         #endregion
     }

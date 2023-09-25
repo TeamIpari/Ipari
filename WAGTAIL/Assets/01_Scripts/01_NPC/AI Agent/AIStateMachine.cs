@@ -53,15 +53,16 @@ public class AIStateMachine
     public void ChangeState(AIState newState)
     {
         CurrentState.Exit();
-        if (CurrentState != newState)
-        {
-            CurrentState = newState != null ? newState : CurrentState;
-            CurrentState.Enter();
-        }
-        else
-        {
-            //Debug.Log("같은 State를 호출함.");
-        }
+
+        CurrentState = newState != null ? newState : CurrentState;
+        CurrentState.Enter();
+        //if (CurrentState != newState)
+        //{
+        //}
+        //else
+        //{
+        //    //Debug.Log("같은 State를 호출함.");
+        //}
     }
 
     public void SetTarget(GameObject obj)
