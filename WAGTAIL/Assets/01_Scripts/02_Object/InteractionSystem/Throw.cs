@@ -52,6 +52,7 @@ public class Throw : MonoBehaviour, IInteractable
         BoxCollider box = GetComponent<BoxCollider>();
         rigidbody.useGravity = true;
         spawnPoint = this.transform.position;
+        rigidbody.drag = GetComponent<BombObject>() == null ? Mathf.Infinity : 0;
 
         center = new GameObject();
         center.transform.position = this.transform.position + (box == null ? Vector3.zero : box.center);
@@ -111,7 +112,7 @@ public class Throw : MonoBehaviour, IInteractable
         if (rigidbody.velocity == Vector3.zero && rigidbody.isKinematic == false )
         {
             //rigidbody.isKinematic = true;
-            ;
+            rigidbody.drag = GetComponent<BombObject>() == null ? Mathf.Infinity : 0;
         }
     }
 
@@ -170,6 +171,7 @@ public class Throw : MonoBehaviour, IInteractable
         else
             yield return new WaitForSeconds(0.75f);
         // ==============================
+        rigidbody.drag = 0;
 
         if (_animator != null)
             _animator.SetTrigger("Caught");

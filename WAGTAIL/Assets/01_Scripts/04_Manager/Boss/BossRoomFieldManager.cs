@@ -45,7 +45,9 @@ public class BossRoomFieldManager :MonoBehaviour
 
     [Header("Shake ReAction Parameter")]
     public GameObject ReActionObject;
+    
     private GameObject[] reActionPools;
+    [SerializeField] private Deathzone deathZone; 
     public float spawnDelay;
     public int Count;
     private bool reAction = false;
@@ -202,5 +204,6 @@ public class BossRoomFieldManager :MonoBehaviour
             //curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
             curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().HideOnly(false);
         }
+        deathZone.gameObject.SetActive(false);
     }
 }

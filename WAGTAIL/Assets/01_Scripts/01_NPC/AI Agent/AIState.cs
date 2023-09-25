@@ -10,6 +10,7 @@ public abstract class AIState
     public AIState Parent;
     public List<AIState> Children = new List<AIState>();
     public int Current;
+    protected float curTimer = 0;
 
     public AIState(AIStateMachine stateMachine)
     {

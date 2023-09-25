@@ -28,7 +28,6 @@ public class BossNepenthesVineAttack : AIAttackState
     //=================================================
     // data type Property
     //=================================================
-    private float curTimer = 0;
     private float delayTime = 5f;
     private float attackPoint = 0;
     private bool isLeft = false;
@@ -91,6 +90,7 @@ public class BossNepenthesVineAttack : AIAttackState
     public override void Update()
     {
         base.Update();
+        if (Player.Instance.isDead == true) return;
         switch (myState)
         {
             case VineState.STATE_NONE:

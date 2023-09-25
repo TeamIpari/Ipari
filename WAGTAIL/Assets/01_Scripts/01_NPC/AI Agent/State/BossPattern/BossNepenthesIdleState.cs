@@ -9,7 +9,6 @@ public class BossNepenthesIdleState : AIIdleState
     /////       Property And Fields         /////
     //===========================================
     float waitTime;
-    float curTime;
 
     //=======================================
     //////       Public Methods          ////
@@ -22,14 +21,15 @@ public class BossNepenthesIdleState : AIIdleState
     public override void Enter()
     {
         base.Enter();
-        curTime = 0.0f;
+        curTimer = 0.0f;
         Debug.Log($"Enter {this.ToString()}");
     }
 
     public override void Update()
     {
         base.Update();
-        curTime += Time.deltaTime;
+        if (Player.Instance.isDead == true) return;
+        curTimer += Time.deltaTime;
         if (AISM.character.IsHit)
         {
             AISM.ChangeState(AISM.character.AiHit);
@@ -38,7 +38,7 @@ public class BossNepenthesIdleState : AIIdleState
         {
             AISM.ChangeState(AISM.character.AiDie);
         }
-        if (curTime > waitTime)
+        if (curTimer > waitTime)
         {
             AISM.NextPattern();
             return;

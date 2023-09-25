@@ -10,7 +10,6 @@ public class BossNepenthesOneShot: AIAttackState
     //========================================
     //////      Property And Fields      /////
     //========================================
-    private float curTimer = 0;
     private float changeTimer = 2;
 
     private Transform shootPoint;
@@ -69,6 +68,7 @@ public class BossNepenthesOneShot: AIAttackState
     public override void Update()
     {
         base.Update();
+        if (Player.Instance.isDead == true) return;
         curTimer += Time.deltaTime;
         ShootDelay();
         ChangeState();

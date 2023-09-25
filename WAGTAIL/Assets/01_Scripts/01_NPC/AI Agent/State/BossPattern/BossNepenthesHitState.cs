@@ -7,7 +7,6 @@ public class BossNepenthesHitState : AIHitState
     //=========================================
     /////       Property And Fields         /////
     //=========================================
-    float curTimer = 0;
     float delayTimer = 5.0f;
     int nextPhaseHp = 0;
   

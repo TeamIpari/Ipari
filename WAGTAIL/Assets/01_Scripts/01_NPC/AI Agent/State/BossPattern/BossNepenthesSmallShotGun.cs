@@ -7,7 +7,6 @@ using IPariUtility;
 public class BossNepenthesSmallShotGun : AIAttackState
 {
     private int targetCount = 0;
-    private float curTimer = 0;
     private float changeTimer = 2f;
     private float rad;
     private float time = 2f;
@@ -79,6 +78,7 @@ public class BossNepenthesSmallShotGun : AIAttackState
     public override void Update()
     {
         base.Update();
+        if (Player.Instance.isDead == true) return;
         // Bullet이 충돌할 경우 다음 스테이트로 이동.
         curTimer += Time.deltaTime;
         ShootDelay();
