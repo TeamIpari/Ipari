@@ -47,7 +47,6 @@ public class InteractionUIManager : MonoBehaviour
         if(hasTarget == null)
             CheckDistance();
         else*/
-        if(target) TrackUI();
         
         if(hasTarget != null)
             FadeInteractableIconColor();
