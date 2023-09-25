@@ -33,7 +33,7 @@ public class TrampolinePlatformBehaviour : PlatformBehaviorBase
     public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody)
     {
         //Debug.Log($"{exitTarget.name}");
-        if (parentMushroom != null && exitTarget.CompareTag("Player")) 
+        if (parentMushroom != null) 
         {
             parentMushroom.ChangeMushroom();
             parentMushroom.isMush = true;
