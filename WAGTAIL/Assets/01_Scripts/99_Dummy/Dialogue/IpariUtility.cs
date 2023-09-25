@@ -26,20 +26,48 @@ namespace IPariUtility
             distanceXZ.y = 0f; // y는 0으로 설정.
                                //Forward = origin;
                                // Create a float the represent our distance
-
-            Debug.Log($"{distance}, {distanceXZ}");
             float Sy = distance.y;      // 세로 높이의 거리를 지정.
             float Sxz = distanceXZ.magnitude;
 
             // 속도 추가
             float Vxz = Sxz / time;
             float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-            Debug.Log($"{Sy}, {Sxz}, {Vxz}, {Vy}");
             // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
             Vector3 result = distanceXZ.normalized;
             result *= Vxz;
             result.y = Vy;
             return result;
+        }
+
+        /// <summary>
+        /// 8방향을 랜덤으로 출력, Vector3.normalized;
+        /// </summary>
+        /// <returns></returns>
+        internal static Vector3 RandomDirection()
+        {
+            Vector3 Direction = Vector3.zero;
+            // 8방향으로 이동이 가능하게 할 예정.
+            switch (UnityEngine.Random.Range(0, 8))
+            {
+                case 0:
+                    Direction = new Vector3(0, 0, 1); break;
+                case 1:
+                    Direction = new Vector3(1, 0, 1); break;
+                case 2:
+                    Direction = new Vector3(0, 0, 1); break;
+                case 3:
+                    Direction = new Vector3(1, 0, -1); break;
+                case 4:
+                    Direction = new Vector3(0, 0, -1); break;
+                case 5:
+                    Direction = new Vector3(-1, 0, -1); break;
+                case 6:
+                    Direction = new Vector3(-1, 0, 0); break;
+                case 7:
+                    Direction = new Vector3(-1, 0, 1); break;
+            }
+            Debug.Log(Direction);
+            return Direction.normalized;
         }
 
         /// <summary>
