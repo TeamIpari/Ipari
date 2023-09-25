@@ -44,6 +44,10 @@ public class BossNepenthes : Enemy
     public int ShotCount = 0;
     [Tooltip("폭탄을 던졌을 때 Player중심으로 ShotArea의 원 범위 안에 랜덤으로 투척")]
     public int ShotArea;
+    
+    [Header("Next Chapter")]
+    [Tooltip("보스가 죽었을 때 갈 다음 씬 이름")]
+    public string nextChapterName;
 
     //[Header("Attack4 Parameter")]
 
@@ -119,5 +123,10 @@ public class BossNepenthes : Enemy
     public void SetProfile(GameObject ShotMarker)
     {
         BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
+    }
+    
+    public void GoNextChapter()
+    {
+        SceneLoader.GetInstance().LoadScene(nextChapterName);
     }
 }
