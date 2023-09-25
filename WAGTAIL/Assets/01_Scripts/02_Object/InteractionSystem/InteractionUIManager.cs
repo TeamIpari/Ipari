@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using UnityEngine.ProBuilder;
+using System.Linq;
 
 public class InteractionUIManager : MonoBehaviour
 {
@@ -25,13 +27,16 @@ public class InteractionUIManager : MonoBehaviour
     [SerializeField] private Color32 DefualtColor;
     [SerializeField] private Color32 TargetColor;
     [SerializeField] private Image[] IconImages;
-    
+    [SerializeField] private Material material;
+    Renderer parentMat;
+
     private void Start()
     {
         _player = Player.Instance;
         _isActive = false;
         _animator = GetComponentInChildren<Animator>();
         _animator.speed = 0f;
+        parentMat = GetComponentInParent<Renderer>();
     }
 
     private void Update()
@@ -113,6 +118,26 @@ public class InteractionUIManager : MonoBehaviour
         }
     }
 
+    private void AddParentMaterials()
+    {
+        int i = 0;
+        Material[] materials = new Material[parentMat.materials.Length + 1];
+        for (i = 0; i < parentMat.materials.Length; i++)
+            materials[i] = parentMat.materials[i];
+        materials[i] = material;
+
+        parentMat.materials = materials;
+    }
+
+    private void SubtractParentMaterials()
+    {
+        int i = 0;
+        Material[] materials = new Material[parentMat.materials.Length - 1];
+        for (i = 0; i < parentMat.materials.Length - 1; i++)
+            materials[i] = parentMat.materials[i];
+
+        parentMat.materials = materials;
+    }
 
     //==================================================
     /////
@@ -132,6 +157,7 @@ public class InteractionUIManager : MonoBehaviour
                 }
                 _animator.speed = 1.0f;
             }
+            AddParentMaterials();
         }
     }
 
@@ -144,6 +170,7 @@ public class InteractionUIManager : MonoBehaviour
                 _isActive = false;
                 _animator.SetTrigger(Fadeout);
             }
+            SubtractParentMaterials();
         }
     }
 }
