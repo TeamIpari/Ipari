@@ -25,6 +25,8 @@ public class InteractionUIManager : MonoBehaviour
     [SerializeField] private Color32 DefualtColor;
     [SerializeField] private Color32 TargetColor;
     [SerializeField] private Image[] IconImages;
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private Transform target;
     
     private void Start()
     {
@@ -40,6 +42,8 @@ public class InteractionUIManager : MonoBehaviour
         if(hasTarget == null)
             CheckDistance();
         else*/
+        if(target) TrackUI();
+        
         if(hasTarget != null)
             FadeInteractableIconColor();
 
@@ -93,6 +97,11 @@ public class InteractionUIManager : MonoBehaviour
         {
             img.color = Color32.Lerp(DefualtColor, TargetColor, percent);
         }
+    }
+
+    private void TrackUI()
+    {
+        transform.position = playerCamera.WorldToScreenPoint(target.position);
     }
 
     private void OnActionUI()

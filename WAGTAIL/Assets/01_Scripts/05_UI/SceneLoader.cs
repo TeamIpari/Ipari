@@ -101,8 +101,13 @@ public class SceneLoader : Singleton<SceneLoader>
             {
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
             }
+            
+            if(_loadSceneName == "Boss_Room_Programing_End")
+            {
+                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+            }
 
-            if (_loadSceneName == "BossRoom")
+            if (_loadSceneName == "EndCredits")
             {
                 GameManager.GetInstance().Test();
                 UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
