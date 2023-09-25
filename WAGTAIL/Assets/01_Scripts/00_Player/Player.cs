@@ -212,9 +212,10 @@ public class Player : MonoBehaviour
         movementSM.currentState.HandleInput();
 
         movementSM.currentState.LogicUpdate();
-        
+
+        //Debug.Log(isCarry);
         // 이거 그냥 Carry State or Throw State 에 넣으면 되는거 아닌가?
-        if(isCarry)
+        if(isPickup)
         {
             EnemySearching();
         }

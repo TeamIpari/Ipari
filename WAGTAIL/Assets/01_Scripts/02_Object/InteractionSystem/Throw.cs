@@ -248,30 +248,6 @@ public class Throw : MonoBehaviour, IInteractable
         autoTarget = _transform;
     }
 
-    private Vector3 RandomDirection()
-    {
-        // 8방향으로 이동이 가능하게 할 예정.
-        switch (UnityEngine.Random.Range(0, 8))
-        {
-            case 0:
-                return new Vector3(0, 0, 1);
-            case 1:
-                return new Vector3(1, 0, 1);
-            case 2:
-                return new Vector3(0, 0, 1);
-            case 3:
-                return new Vector3(1, 0, -1);
-            case 4:
-                return new Vector3(0, 0, -1);
-            case 5:
-                return new Vector3(-1, 0, -1);
-            case 6:
-                return new Vector3(-1, 0, 0);
-            case 7:
-                return new Vector3(-1, 0, 1);
-        }
-        return Vector3.zero;
-    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -293,7 +269,7 @@ public class Throw : MonoBehaviour, IInteractable
         }
         if(bounceDir == default)
         {
-            bounceDir = RandomDirection().normalized;
+            bounceDir = IpariUtility.RandomDirection();
             rigidbody.velocity += bounceDir;
         }
     }
