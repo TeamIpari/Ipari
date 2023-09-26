@@ -4,6 +4,7 @@ using UnityEngine;
 public class AcidBomb : Bullet
 {
     private Vector3 direction;
+    private GameObject bombMarker;
 
     //======================================
     /////          magic Methods        ////
@@ -89,7 +90,8 @@ public class AcidBomb : Bullet
         // 부서지는거 해결하려면 여기.
         if (collision.collider.CompareTag("Platform"))
         {
-            collision.collider.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
+            DestroyPlatform(collision);
+            //collision.collider.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
         }
         BulletHit(collision.transform);
         Destroy(this.gameObject);
@@ -109,5 +111,15 @@ public class AcidBomb : Bullet
 
         hitFX.transform.position = transform.position/* + bombPos.normalized*/;
         Destroy(hitFX, 2f);
+    }
+
+    void DestroyPlatform(Collision cols)
+    {
+        // 마커를 기준으로 원 범위로 오브젝트를 체크.
+    }
+
+    public void SetMarker(GameObject marker)
+    {
+        this.bombMarker = marker;
     }
 }
