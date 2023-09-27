@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class BrokenPlatform : MonoBehaviour, IEnviroment
 {
     private MeshRenderer mesh;
@@ -28,7 +27,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
 
-    [SerializeField] private const float _explosionMinForce = 5;
+    [SerializeField] private const float _explosionMinForce = 50;
     [SerializeField] private const float _explosionMaxForce = 100;
     [SerializeField] private const float _explosionForceRadius = 10;
     [SerializeField] private const float _fragScaleFactor = 0.1f;
@@ -121,8 +120,12 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             if (rigidbody != null)
             {
                 rigidbody.useGravity = true;
-                rigidbody.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce),
-                    transform.parent.position, _explosionForceRadius);
+                rigidbody.isKinematic = false;
+                // 리지드 바디에 벨로시티를 부가함.
+                rigidbody.velocity = ExplosionVelocity(rigidbody);
+                rigidbody.gameObject.layer = LayerMask.NameToLayer("Pass");
+                //rigidbody.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce),
+                //    new Vector3(transform.parent.position.x, transform.parent.position.y - 2f, transform.parent.position.z), _explosionForceRadius);
             }
         }
         if (col != null)
@@ -134,6 +137,18 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             StartCoroutine(ShowPlatform());
     }
 
+    private Vector3 ExplosionVelocity(Rigidbody rigid)
+    {
+        // 현재 포지션에서 y값이 n만큼 내려간 위치에서 조각마다의 방향 벡터를 구함.
+        Vector3 direction = rigid.gameObject.transform.position - (transform.position /*- Vector3.up * 1.5f*/);
+
+        // 방향 벡터를 구함.
+        direction.Normalize();
+
+
+        return direction * 1.5f;
+    }
+
     private IEnumerator ShowPlatform()
     {
         if (Light != null)
@@ -141,6 +156,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
         yield return new WaitForSeconds(ShowNUpTime);
 
+        Vector3 v = new Vector3(-90, 0, 0);
 
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -149,6 +165,10 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             {
                 piece.GetComponent<Rigidbody>().useGravity = false;
                 piece.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                piece.GetComponent<Rigidbody>().isKinematic = true;
+                piece.gameObject.layer = LayerMask.NameToLayer("Defualt");
+
+                piece.rotation = Quaternion.Euler(v);
                 piece.position = PosList[i];
             }
         }

@@ -40,7 +40,7 @@ public class BossRoomFieldManager :MonoBehaviour
 
     [Header("CameraShakeValue")]
     public float ShakePower = 1.5f;
-    public float ShakeTime = 0.25f;
+    public float ShakeTime = 0.18f;
     public float ShakeTiming = 2.5f;
 
     [Header("Shake ReAction Parameter")]
@@ -125,15 +125,18 @@ public class BossRoomFieldManager :MonoBehaviour
     private IEnumerator SpawnReActionObject()
     {
         int x, z;
+
+        yield return new WaitForSeconds(2.5f);
         if (reActionPools[0] == null)
             CreateReActionObject();
+        
         foreach (var fruit in reActionPools)
         {
-            x = Random.Range(0, BossRoomFieldManager.Instance.XSize);
-            z = Random.Range(0, BossRoomFieldManager.Instance.YSize);
+            x = Random.Range(1, XSize - 1);
+            z = Random.Range(1, YSize - 1);
 
             fruit.SetActive(true);
-            fruit.transform.position = BossRoomFieldManager.Instance.GetTilePos(x, z);
+            fruit.transform.position = GetTilePos(x, z);
             yield return new WaitForSeconds(spawnDelay * 0.001f);
         }
 
@@ -142,11 +145,6 @@ public class BossRoomFieldManager :MonoBehaviour
 
     private void CameraShake()
     {
-        if (reAction)
-        {
-            StartCoroutine(SpawnReActionObject());
-            reAction = false;
-        }
         CameraManager.GetInstance().CameraShake(ShakePower, ShakeTime);
     }
 
@@ -156,7 +154,7 @@ public class BossRoomFieldManager :MonoBehaviour
     public Vector3 GetTilePos(int x, int y)
     {
         Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
-        return new Vector3(vec.x, 5f, vec.z);
+        return new Vector3(vec.x, 13f, vec.z);
     }
     public void BreakingPlatform(float xPos, bool reAction = false)
     {
@@ -175,6 +173,11 @@ public class BossRoomFieldManager :MonoBehaviour
         this.reAction = reAction;
         
         Invoke("CameraShake", ShakeTiming);
+        if (reAction)
+        {
+            StartCoroutine(SpawnReActionObject());
+            reAction = false;
+        }
     }
 
     public void Initialized()

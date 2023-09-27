@@ -163,7 +163,7 @@ public class Throw : MonoBehaviour, IInteractable
         rigidbody.useGravity = false;
         rigidbody.velocity = Vector3.zero;
         rigidbody.freezeRotation = true;
-        rigidbody.isKinematic = true;
+        //rigidbody.isKinematic = true;
         GetComponent<Collider>().isTrigger = true;
         // 추가된 스크립트 2023-08-22 강명호
         if (_isSmall)
@@ -183,7 +183,7 @@ public class Throw : MonoBehaviour, IInteractable
             _value += 0.05f;
         }
         // Object를 Player의 머리 위로 옮김.
-        rigidbody.isKinematic = true;
+        //rigidbody.isKinematic = true;
         rigidbody.useGravity = false;
     }
 
@@ -219,7 +219,7 @@ public class Throw : MonoBehaviour, IInteractable
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
         rigidbody.freezeRotation = false;
         rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        rigidbody.isKinematic = false;
+        //rigidbody.isKinematic = false;
         GetComponent<Collider>().isTrigger = false;
 
         //rigidbody.velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);

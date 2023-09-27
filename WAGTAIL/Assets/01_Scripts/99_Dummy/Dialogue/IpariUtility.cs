@@ -66,7 +66,7 @@ namespace IPariUtility
                 case 7:
                     Direction = new Vector3(-1, 0, 1); break;
             }
-            Debug.Log(Direction);
+            //Debug.Log(Direction);
             return Direction.normalized;
         }
 
