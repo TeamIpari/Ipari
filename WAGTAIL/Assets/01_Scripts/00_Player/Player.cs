@@ -274,6 +274,10 @@ public class Player : MonoBehaviour
             {
                 transform.SetParent(null);
             }
+            //if(hit.gameObject.CompareTag("Interactable"))
+            //{
+            //    Debug.Log($"{controller.velocity}");
+            //}
         }
         catch
         {
