@@ -27,6 +27,10 @@ public class Bullet : MonoBehaviour
     
     }
 
+    public virtual void SetMarker(GameObject marker)
+    {
+
+    }
     public virtual void Flying()
     {
 

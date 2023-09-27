@@ -107,11 +107,14 @@ public class BossNepenthesSmallShotGun : AIAttackState
 
     private void PositionLuncher()
     {
+        int cur = 0;
         foreach (var t in targets)
         {
             Vector3 pos = IpariUtility.CaculateVelocity(t, shootPoint.position, time);
             GameObject obj = GameObject.Instantiate(acidBullet, shootPoint.position, Quaternion.identity);
             obj.GetComponent<Bullet>().ShotDirection(pos);
+            obj.GetComponent<Bullet>().SetMarker(marker[cur]);
+            cur++;
         }
     }
     Vector3 Search()

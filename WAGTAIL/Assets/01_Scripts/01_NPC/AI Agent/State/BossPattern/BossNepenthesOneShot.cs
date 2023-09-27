@@ -42,6 +42,7 @@ public class BossNepenthesOneShot: AIAttackState
     {
         // Å¸°Ù ¼³Á¤.
         AISM.Animator.SetTrigger("isAttack");
+        
         isShoot = false;
         curTimer = 0;
     }
@@ -111,6 +112,7 @@ public class BossNepenthesOneShot: AIAttackState
         obj.transform.localScale = Vector3.one * bombSize;
         Debug.Log(obj.GetComponent<Bullet>());
         obj.GetComponent<Bullet>().ShotDirection(pos);
+        obj.GetComponent<Bullet>().SetMarker(marker);
 
     }
 
