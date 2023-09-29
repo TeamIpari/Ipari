@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /************************************************
- *  ¹°¿¡ ¹°Ã¼°¡ ÀÔ¼öÇßÀ» ¶§¸¦ Ã³¸®ÇÏ´Â ÄÄÆ÷³ÍÆ®ÀÔ´Ï´Ù.
+ *  ë¬¼ì— ë¬¼ì²´ê°€ ì…ìˆ˜í–ˆì„ ë•Œë¥¼ ì²˜ë¦¬í•˜ëŠ” ì»´í¬ë„ŒíŠ¸ì…ë‹ˆë‹¤.
  * ***/
 public sealed class WaterScript : MonoBehaviour
 {
@@ -24,7 +24,7 @@ public sealed class WaterScript : MonoBehaviour
     private float                 _playerDefaultJumPow = 0f;
     private float                 _waterHeight = 0f;
 
-    /**Effect pool °ü·Ã*/
+    /**Effect pool ê´€ë ¨*/
     private static ParticleSystem[] _FXInsList;
     private static int _AliveIndex = 0;
     private const int _FXCount = 10;
@@ -41,14 +41,16 @@ public sealed class WaterScript : MonoBehaviour
         #region Omit
         _player = Player.Instance;
         _playerDefaultJumPow = _player.jumpHeight;
+        gameObject.layer = LayerMask.NameToLayer("Water");
         Collider collider= GetComponent<Collider>();
         if(collider!=null)
         {
+            collider.isTrigger = true;   
             Bounds bounds= collider.bounds;
             _waterHeight = bounds.center.y + (bounds.extents.y * bounds.size.y);
         }
 
-        /**Particle ÃÊ±âÈ­..*/
+        /**Particle ì´ˆê¸°í™”..*/
         if(_FXInsList==null && EnterWaterFX!=null)
         {
             _FXInsList = new ParticleSystem[_FXCount];
@@ -71,42 +73,43 @@ public sealed class WaterScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        /**¹°¿¡ ÀÔ¼öÇÑ ´ë»óÀÌ ÇÃ·¹ÀÌ¾îÀÏ °æ¿ì...*/
-        if (other.gameObject.CompareTag("Player") && _player.movementSM.currentState.Equals(_player.jump))
+        /**ë¬¼ì— ì…ìˆ˜í•œ ëŒ€ìƒì´ í”Œë ˆì´ì–´ì¼ ê²½ìš°...*/
+        if (other.gameObject.CompareTag("Player")/* && _player.movementSM.currentState.Equals(_player.jump)*/)
         {
             if(JumpPowRedution) Player.Instance.jumpHeight = 0.2f;
         }
         else if (other.gameObject.CompareTag("Platform"))
         {
+
         }
         else if (LayerMask.NameToLayer("Interactable") == other.gameObject.layer)
         {
+
         }
         else return;
 
-        /**ÀÔ¼ö°¡ °¡´ÉÇÑ ¿ÀºêÁ§Æ®µé¿¡°Ô °øÅëÀûÀ¸·Î ½ÇÇà.*/
-        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Enter_Water);
+        /**ì…ìˆ˜ê°€ ê°€ëŠ¥í•œ ì˜¤ë¸Œì íŠ¸ë“¤ì—ê²Œ ê³µí†µì ìœ¼ë¡œ ì‹¤í–‰.*/
         PlayWaterFX(other);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        /*PlayerMask¸¸ Ã¼Å©ÇÏ¿© ÀÌµ¿À» ½ÃÅ´.*/
+        /*PlayerMaskë§Œ ì²´í¬í•˜ì—¬ ì´ë™ì„ ì‹œí‚´.*/
         if(other.gameObject.CompareTag( "Player")){
 
-           _player.controller.Move( WaterDir * WaterForce ); 
+            _player.controller.Move(WaterDir * WaterForce);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") && _player.movementSM.currentState.Equals(_player.jump)){
+        if (other.gameObject.CompareTag("Player")/* && _player.movementSM.currentState.Equals(_player.jump)*/){
 
             _player.jumpHeight = _playerDefaultJumPow;
         }
         else return;
 
-        /**ÀÔ¼ö°¡ °¡´ÉÇÑ ¿ÀºêÁ§Æ®µé¿¡°Ô °øÅëÀûÀ¸·Î ½ÇÇà.*/
+        /**ì…ìˆ˜ê°€ ê°€ëŠ¥í•œ ì˜¤ë¸Œì íŠ¸ë“¤ì—ê²Œ ê³µí†µì ìœ¼ë¡œ ì‹¤í–‰.*/
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Enter_Water);
         PlayWaterFX(other);
     }
@@ -129,19 +132,29 @@ public sealed class WaterScript : MonoBehaviour
         #endregion
     }
 
-    private void PlayWaterFX(Collider collider)
+    private void PlayWaterFX(Collider other)
     {
         #region Omit
-        if(EnterWaterFX!=null)
-        {
-            ParticleSystem system = GetWaterFX();
-            system.gameObject.SetActive(true);
-            
-            Vector3 pos = collider.transform.position;
-            pos.y = _waterHeight;
-            system.transform.position = pos;
-            system.Play();
+        RaycastHit result;
+        if (Physics.Raycast((other.transform.position + Vector3.up * 10f),
+                            Vector3.down,
+                            out result,
+                            15f,
+                            1 << LayerMask.NameToLayer("Water")))
 
+        {
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Enter_Water);
+
+            if (EnterWaterFX != null)
+            {
+                ParticleSystem system = GetWaterFX();
+                system.gameObject.SetActive(true);
+
+                Vector3 pos = result.point;
+                system.transform.position = pos;
+                system.Play();
+
+            }
         }
         #endregion
     }

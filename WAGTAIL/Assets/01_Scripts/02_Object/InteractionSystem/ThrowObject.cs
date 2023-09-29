@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.iOS;
+using IPariUtility;
 
 //=================================================
 // 플레이어가 들고 던질 수 있는 오브젝트의 기반이 되는 클래스.
@@ -25,6 +25,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Transform _transform;
     private Collider _collider;
     private Rigidbody _rigidbody;
+    private GameObject _center;
+    private Vector3 _bounceDir;
     
     // Properties for Bezier Curve
     private Vector3 _startPos;
@@ -39,11 +41,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Transform _playerInteractionPos;
     private GameObject _playerEquipPoint;
     private Transform _playerEquipPos;
+    private GameObject _playerHead;
+    private Transform _playerHeadPos;
     
     // DelayTime Properties
     private const float LerpTime = 2f;
-    private const float PickUpDelayTime = 0.75f;
-    private const float PickUpTime = 12f;
+    private const float PickUpDelayTime = 0.3f;
+    private const float PickUpTime = 2.5f;
 
     //=================================================================
     //                    Test Properties                    
@@ -73,25 +77,62 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerInteractionPos = _playerInteractionPoint.transform;
         _playerEquipPoint = _player.ThrowEquipPoint.gameObject;
         _playerEquipPos = _playerEquipPoint.transform;
+        _playerHead = _player.Head;
+        _playerHeadPos = _playerHead.transform;
+        
+        
+        _center = new GameObject();
+        _center.transform.position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center);
+        _center.transform.parent = _transform;
+        _center.name = "Center";
+    }
+
+    private void FixedUpdate()
+    {
+        PhysicsChecking();
     }
     
+    private void OnCollisionEnter(Collision collision)
+    {
+        bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
+                       !collision.gameObject.CompareTag("Player");
+        if (bTagHit)
+        {
+            flight = false;
+            PhysicsCheck = false;
+            _rigidbody.useGravity = true;
+            if (_animator != null)
+            {
+                _animator.SetTrigger("Grounded");
+                _rigidbody.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+            }
+            else
+                _rigidbody.freezeRotation = false;
+            _rigidbody.velocity += Physics.gravity * .05f;
+        }
+        if(_bounceDir == default)
+        {
+            _bounceDir = RandomDirection().normalized;
+            _rigidbody.velocity += _bounceDir;
+        }
+    }
+
     //=================================================================
     //                      Interface Methods
     //=================================================================
     public bool Interact(GameObject interactor)
     {
-        var player = interactor.GetComponent<Player>();
-        
-        if (player.currentInteractable == null)
+      
+        if (_player.currentInteractable == null)
         {
             StartCoroutine(PickUp(LerpTime, PickUpTime));
-            player.isCarry = true;
+            _player.isCarry = true;
         }
         
         else
         {
             StartCoroutine(Throwing(interactor));
-            player.isCarry = false;
+            _player.isCarry = false;
             return true;
         }
 
@@ -108,9 +149,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //=================================================================
     private IEnumerator PickUp(float lerpTime, float pickUpTime)
     {
+        _player.isPickup = true;
         // Object가 손에 붙어서 움직이지 않도록 설정
-        _collider.isTrigger = true;
         _rigidbody.useGravity = false;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.freezeRotation = true;
+        _rigidbody.isKinematic = true;
+        _collider.isTrigger = true;
         
         var pos = _transform.position;
         var currentTime = 0.0f;
@@ -122,7 +167,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
             currentTime += 0.1f;
             yield return new WaitForSeconds(0.0025f);
         }
-        _transform.SetParent(_playerEquipPoint.transform);
         yield return new WaitForSeconds(PickUpDelayTime);
         
         // BezierCurve를 위한 3개의 점 구하기 StartPos, Height, EndPos
@@ -140,11 +184,14 @@ public class ThrowObject : MonoBehaviour, IInteractable
             currentTime += 0.1f;
             yield return new WaitForSeconds(0.0025f);
         }
+        _transform.SetParent(_playerHead.transform);
     }
 
     private IEnumerator Throwing(GameObject interactor)
     {
-        Player player = interactor.GetComponent<Player>();
+        // Object 종속을 풀어줌
+        _transform.SetParent(null);
+        
         if(autoTarget != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
@@ -155,9 +202,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
         if (_animator != null)
             _animator.SetTrigger("Flight");
 
-        // Object 종속을 풀어줌
-        _playerEquipPoint.transform.DetachChildren();
-
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
         _rigidbody.useGravity = true;
         _rigidbody.freezeRotation = false;
@@ -165,19 +209,33 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _rigidbody.isKinematic = false;
         _collider.isTrigger = false;
 
-        _rigidbody.velocity = CaculateVelocity(player.transform.position + player.transform.forward * _range, this.transform.position, _hight);
+        if (_player.target == null)
+            _rigidbody.velocity = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * _range, this.transform.position, _hight);
+        else if (_player.target != null)
+        {
+            Vector3 vel = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * _range, _player.transform.position, _hight);
+            Debug.Log(vel);
+            _rigidbody.velocity = vel;
+        } 
+        Forward = transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;
         if(_animator == null)
             flight = true;
-
-        // 추가된 스크립트 2023-08-22 강명호
-        if(isSmall)
+    }
+    
+    private void PhysicsChecking()
+    {
+        if (PhysicsCheck)
         {
-            Player.Instance.isSmallThrow = false;
+            _rigidbody.velocity += Physics.gravity * .05f;
         }
-        // ================================
+        
+        if (flight)
+        {
+            transform.RotateAround(_center.transform.position, Forward, (1.0f * Time.deltaTime));
+        }
     }
     
     private Vector3 BezierCurve(Vector3 startPos, Vector3 endPos, Vector3 height, float value)
@@ -191,38 +249,28 @@ public class ThrowObject : MonoBehaviour, IInteractable
         return c;
     }
     
-    private Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
+    private Vector3 RandomDirection()
     {
-        // define the distance x and y first;
-        Vector3 distance = target - origin;
-        Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-        distanceXZ.y = 0f; // y는 0으로 설정.
-        Forward = origin;
-        // Create a float the represent our distance
-        float Sy = distance.y;      // 세로 높이의 거리를 지정.
-        float Sxz = distanceXZ.magnitude;
-
-        // 속도 추가
-        float Vxz = Sxz / time;
-        float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-
-        // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
-        Vector3 result = distanceXZ.normalized;
-        result *= Vxz;
-        result.y = Vy;
-        return result;
-    }
-    
-    private void PhyscisChecking()
-    {
-        if (PhysicsCheck)
+        // 8방향으로 이동이 가능하게 할 예정.
+        switch (UnityEngine.Random.Range(0, 8))
         {
-            _rigidbody.velocity += Physics.gravity * .05f;
+            case 0:
+                return new Vector3(0, 0, 1);
+            case 1:
+                return new Vector3(1, 0, 1);
+            case 2:
+                return new Vector3(0, 0, 1);
+            case 3:
+                return new Vector3(1, 0, -1);
+            case 4:
+                return new Vector3(0, 0, -1);
+            case 5:
+                return new Vector3(-1, 0, -1);
+            case 6:
+                return new Vector3(-1, 0, 0);
+            case 7:
+                return new Vector3(-1, 0, 1);
         }
-    }
-    
-    public void SetAutoTarget(Transform _transform = null)
-    {
-        autoTarget = _transform;
+        return Vector3.zero;
     }
 }

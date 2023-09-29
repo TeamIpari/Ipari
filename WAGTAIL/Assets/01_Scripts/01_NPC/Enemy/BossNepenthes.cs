@@ -27,34 +27,38 @@ public class BossNepenthes : Enemy
     public GameObject BulletPrefab;
     public Transform ShotPosition;
     public GameObject ShotMarker;
+    public GameObject MiniShotMarker;
+
+    [Header("Attack1 Parameter")]
+    public GameObject LeftVine;
+    public GameObject RightVine;
+    public GameObject VinePrefab;
 
     [Header("Attack2 Parameter")]
-    public float time;
+    private const float flyTime = 2f;
+    private const float bigSize = 3f;
+    private const float SmallSize = 1f;
 
     [Header("Attack3 Parameter")]
     [Tooltip("한번 쏠 때 최대 몇 개를 퍼뜨리는가?")]
     public int ShotCount = 0;
     [Tooltip("폭탄을 던졌을 때 Player중심으로 ShotArea의 원 범위 안에 랜덤으로 투척")]
     public int ShotArea;
+    
+    [Header("Next Chapter")]
+    [Tooltip("보스가 죽었을 때 갈 다음 씬 이름")]
+    public string nextChapterName;
 
-    public GameObject LeftVine;
-    public GameObject RightVine;
-
-    [Header("Attack4 Parameter")]
-    [Tooltip("폭탄 열매")]
-    public int FruitCount;
-    public GameObject Fruit;        
-
+    //[Header("Attack4 Parameter")]
 
     //==========================================
     /////           Magic Method            ////
     //==========================================
     void Awake()
     {
-        Debug.Log($"{CurPhaseHpArray}");
-        SetProfile();
+        SetProfile(ShotMarker);
         StateSetting();
-        SettingPattern(CharacterMovementPattern[CurPhaseHpArray].EPatterns);
+        SettingPattern(CharacterMovementPattern[GetCurPhaseHpArray].EPatterns);
         AiSM.CurrentState = AiSM.Pattern[0];
     }
 
@@ -68,9 +72,9 @@ public class BossNepenthes : Enemy
         base.AddPattern(curPattern);
     }
 
-    public override void SettingPattern(MonsterPattern.Pattern[] _pattern)
+    public override void SettingPattern(MonsterPattern.Pattern[] pattern)
     {
-        base.SettingPattern(_pattern);
+        base.SettingPattern(pattern);
     }
 
     void Update()
@@ -106,17 +110,23 @@ public class BossNepenthes : Enemy
 
         AiIdle = new BossNepenthesIdleState(AiSM, IdleRate);
         AiWait = new BossNepenthesWaitState(AiSM, WaitRate);
-        AiAttack = new BossNepenthesAttack1(AiSM, LeftVine, RightVine);
-        AiAttack2 = new BossNepenthesAttack2(AiSM, BossProfile, time);
-        AiAttack3 = new BossNepenthesAttack3(AiSM, BossProfile, time, ShotCount, ShotArea);
-        AiAttack4 = new BossNepenthesAttack4(AiSM, Fruit, FruitCount);
+        AiAttack = new BossNepenthesVineAttack(AiSM, LeftVine, RightVine);
+        AiAttack2 = new BossNepenthesOneShot(AiSM, BossProfile, bigSize, flyTime);
+        SetProfile(MiniShotMarker);
+        AiAttack3 = new BossNepenthesSmallShotGun(AiSM, BossProfile, flyTime, ShotCount, ShotArea);
+        AiAttack4 = new BossNepenthesOneShot(AiSM, BossProfile, SmallSize, flyTime);
         // 죽는 기능.
         AiHit = new BossNepenthesHitState(AiSM);
         AiDie = new BossNepenthesDieState(AiSM);
     }
 
-    public void SetProfile()
+    public void SetProfile(GameObject ShotMarker)
     {
         BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
+    }
+    
+    public void GoNextChapter()
+    {
+        SceneLoader.GetInstance().LoadScene(nextChapterName);
     }
 }

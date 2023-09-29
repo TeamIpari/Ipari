@@ -16,6 +16,7 @@ public class BombObject : MonoBehaviour
     private Renderer _color;
     private float _currentTime;
     private CharacterController _cc;
+    private Rigidbody _rb;
     private Vector3 _vDir;
     
     // Test property // 
@@ -31,6 +32,7 @@ public class BombObject : MonoBehaviour
         _color = GetComponent<Renderer>();
         _baseColor = _color.material.color;
         _currentTime = 0;
+        _rb = GetComponent<Rigidbody>();
         _isStart = false;
     }
 
@@ -40,6 +42,9 @@ public class BombObject : MonoBehaviour
         {
             StartCoroutine(StartTimeBomb(explosionTime));
         }
+        if (_rb.velocity.y == 0f)
+            _rb.velocity = Vector3.zero;
+
     }
 
     private IEnumerator StartTimeBomb(float time)

@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using IPariUtility;
-using UnityEngine.InputSystem.XR;
 
 public class MiniNepenthes : Enemy
 {
@@ -11,41 +7,39 @@ public class MiniNepenthes : Enemy
     public Bullet BulletPrefab;
     public Transform ShotPosition;
     public float ShotSpeed;
-    public int angle;
+    public int Angle;
 
-    [SerializeField] private bool m_bDebugMode = false;
+    [SerializeField] private bool debugMode = false;
 
     [Header("View Config")]
-    [Range(0f, 360f)]
-    [SerializeField] private float m_horizontalViewAngle = 0f;
-    [Range(-180f, 180f)]
-    [SerializeField] private float m_viewRotateZ = 0f;
+    private const float horizontalViewAngle = 180f;
+    private const float viewRotateZ = 0f;
 
-    [SerializeField] private LayerMask m_viewTargetMask;
-    [SerializeField] private LayerMask m_viewObstacleMask;
+    [SerializeField] private LayerMask viewTargetMask;
+    [SerializeField] private LayerMask viewObstacleMask;
 
     private int layer = 0;
-    private float m_horizontalViewHalfAngle = 0f;
+    private float horizontalViewHalfAngle = 0f;
 
     private void Awake()
     {
-        m_horizontalViewHalfAngle = m_horizontalViewAngle * 0.5f;
+        horizontalViewHalfAngle = horizontalViewAngle * 0.5f;
     }
 
 
     private void OnDrawGizmos()
     {
-        if (m_bDebugMode)
+        if (debugMode)
         {
-            m_horizontalViewHalfAngle = m_horizontalViewAngle * 0.5f;
+            horizontalViewHalfAngle = horizontalViewAngle * 0.5f;
 
             Vector3 originPos = transform.position;
 
             Gizmos.DrawWireSphere(originPos, AttackRange);
 
-            Vector3 horizontalRightDir = IpariUtility.AngleToDirY(transform,-m_horizontalViewHalfAngle + m_viewRotateZ);
-            Vector3 horizontalLeftDir = IpariUtility.AngleToDirY(transform, m_horizontalViewHalfAngle + m_viewRotateZ);
-            Vector3 lookDir = IpariUtility.AngleToDirY(transform, m_viewRotateZ);
+            Vector3 horizontalRightDir = IpariUtility.AngleToDirY(transform,-horizontalViewHalfAngle + viewRotateZ);
+            Vector3 horizontalLeftDir = IpariUtility.AngleToDirY(transform, horizontalViewHalfAngle + viewRotateZ);
+            Vector3 lookDir = IpariUtility.AngleToDirY(transform, viewRotateZ);
 
             Debug.DrawRay(originPos, horizontalLeftDir * AttackRange, Color.cyan);
             Debug.DrawRay(originPos, lookDir * AttackRange, Color.green);
@@ -60,7 +54,7 @@ public class MiniNepenthes : Enemy
     {
         AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
 
-        AiIdle = new NepenthesIdleState(AiSM, m_viewRotateZ, m_horizontalViewHalfAngle, m_viewTargetMask,m_viewObstacleMask);
+        AiIdle = new NepenthesIdleState(AiSM, viewRotateZ, horizontalViewHalfAngle, viewTargetMask,viewObstacleMask);
         AiAttack = new NepenthesAttackState(AiSM);
         SetAttackPattern();
         AiWait = new NepenthesWaitState(AiSM, WaitRate);

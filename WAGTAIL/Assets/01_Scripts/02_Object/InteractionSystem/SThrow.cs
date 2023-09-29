@@ -42,9 +42,6 @@ public class SThrow : MonoBehaviour, IInteractable
         //_playerForwardTransform = Player.Instance
         startPos = Player.Instance.transform;
         flying = false;
-        _playerEquipPoint = Player.Instance.RightHandPoint.gameObject;
-        _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
-        _playerRightHand = Player.Instance.RightHand.gameObject;
     }
 
     private void Update()

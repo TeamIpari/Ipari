@@ -9,7 +9,7 @@ public class NepenthesIdleState : AIIdleState
 {
     private bool isSearch ;
     private float rotateAngle;
-    private float SearchAngle;
+    private float searchAngle;
 
     private float dot;
     private float angle;
@@ -22,11 +22,11 @@ public class NepenthesIdleState : AIIdleState
     private LayerMask passMask;
 
     private List<Collider> hitedTargetContainer = new List<Collider>();
-    public NepenthesIdleState(AIStateMachine stateMachine, float rotAngle, float SearchAngle, LayerMask TargetMask, LayerMask obstacleMask) : base(stateMachine)
+    public NepenthesIdleState(AIStateMachine stateMachine, float rotAngle, float searchAngle, LayerMask targetMask, LayerMask obstacleMask) : base(stateMachine)
     {
         rotateAngle = rotAngle;
-        this.SearchAngle = SearchAngle;
-        targetMask = TargetMask;
+        this.searchAngle = searchAngle;
+        this.targetMask = targetMask;
         passMask = obstacleMask;
         startEulerAngle = stateMachine.Transform.eulerAngles;
     }
@@ -51,8 +51,8 @@ public class NepenthesIdleState : AIIdleState
     {
         hitedTargetContainer.Clear();
 
-        Vector3 originPos = stateMachine.Transform.position;
-        Collider[] hitedTargets = Physics.OverlapSphere(originPos, stateMachine.character.AttackRange, targetMask);
+        Vector3 originPos = AISM.Transform.position;
+        Collider[] hitedTargets = Physics.OverlapSphere(originPos, AISM.character.AttackRange, targetMask);
 
         foreach(var hitedTarget in hitedTargets)
         {
@@ -64,10 +64,10 @@ public class NepenthesIdleState : AIIdleState
             // 아래 두 줄은 위의 코드와 동일하게 작동함. 내부 구현도 동일.
             dot = Vector3.Dot(lookDir, dir);
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            if (angle <= SearchAngle)
+            if (angle <= searchAngle)
             {
                 RaycastHit rayHitedTarget;
-                bool bHit = Physics.Raycast(originPos, dir, out rayHitedTarget, stateMachine.character.AttackRange, passMask);
+                bool bHit = Physics.Raycast(originPos, dir, out rayHitedTarget, AISM.character.AttackRange, passMask);
                 if (bHit)
                 {
 #if UNITY_EDITOR
@@ -78,7 +78,7 @@ public class NepenthesIdleState : AIIdleState
                 else
                 {
                     hitedTargetContainer.Add(hitedTarget);
-                    stateMachine.Target = hitedTarget.gameObject;
+                    AISM.Target = hitedTarget.gameObject;
                     isSearch = true;
 #if UNITY_EDITOR
                     Debug.DrawLine(originPos, targetPos, Color.red);
@@ -99,7 +99,7 @@ public class NepenthesIdleState : AIIdleState
     {
 
         // 원 범위 내에 플레이어가 들어오면 바라보고 일정 주기가 지나면 Attack
-        Collider[] cols = Physics.OverlapSphere(stateMachine.Transform.position, stateMachine.character.AttackRange);
+        Collider[] cols = Physics.OverlapSphere(AISM.Transform.position, AISM.character.AttackRange);
 
 
         // Layer가 Player인 캐릭터를 서치 
@@ -107,11 +107,11 @@ public class NepenthesIdleState : AIIdleState
         {
             for (int i = 0; i < cols.Length; i++)
             {
-                float targetRadian = Vector3.Dot(stateMachine.Transform.forward, (cols[i].transform.position - stateMachine.Transform.position).normalized);
+                float targetRadian = Vector3.Dot(AISM.Transform.forward, (cols[i].transform.position - AISM.Transform.position).normalized);
 
                 if ( cols[i].CompareTag("Player"))
                 {
-                    stateMachine.Target = cols[i].gameObject;
+                    AISM.Target = cols[i].gameObject;
                     isSearch = true;
                     return true;
                 }
@@ -121,17 +121,17 @@ public class NepenthesIdleState : AIIdleState
     }
     private void LookatTarget()
     {
-        Vector3 dir = stateMachine.character.RotatePoint.position - stateMachine.Target.transform.position;
-        dir.y = stateMachine.character.RotatePoint.position.y;
+        Vector3 dir = AISM.character.RotatePoint.position - AISM.Target.transform.position;
+        dir.y = AISM.character.RotatePoint.position.y;
 
         Quaternion quat = Quaternion.LookRotation(dir.normalized);
 
         Vector3 temp = quat.eulerAngles;
-        Vector3 temp2 = stateMachine.character.RotatePoint.rotation.eulerAngles;
+        Vector3 temp2 = AISM.character.RotatePoint.rotation.eulerAngles;
 
-        stateMachine.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
+        AISM.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
 
-        stateMachine.ChangeState(stateMachine.character.isAttack() ? stateMachine.character.AiAttack : stateMachine.CurrentState);
+        AISM.ChangeState(AISM.character.isAttack() ? AISM.character.AiAttack : AISM.CurrentState);
 
     }
 
@@ -143,9 +143,9 @@ public class NepenthesIdleState : AIIdleState
         {
             dot = Vector3.Dot(lookDir, this.dir);
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            float distance = Vector3.Distance(stateMachine.Transform.position, stateMachine.Target.transform.position);
-            if (distance > stateMachine.character.AttackRange
-                || angle > SearchAngle)
+            float distance = Vector3.Distance(AISM.Transform.position, AISM.Target.transform.position);
+            if (distance > AISM.character.AttackRange
+                || angle > searchAngle)
             {
                 TargetReset();
                 return;
@@ -159,7 +159,7 @@ public class NepenthesIdleState : AIIdleState
     private void TargetReset()
     {
         isSearch = false;
-        stateMachine.Target = null;
+        AISM.Target = null;
         //angle = 0;
     }
 }

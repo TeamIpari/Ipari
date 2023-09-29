@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class BossNepenthesDieState : AIDieState
 {
+
+    //==========================================
+    /////        properties Methods         ////
+    //==========================================
+    private float curTimer;
+    private float brokenTime;
+    private bool oneChance;
     //==========================================
     /////           magic Methods           ////
     //==========================================
@@ -15,8 +22,10 @@ public class BossNepenthesDieState : AIDieState
     public override void Enter()
     {
         base.Enter();
-        stateMachine.Animator.SetTrigger("isDeath");
-        BossRoomFieldManager.Instance.EnableBrokenPlatformComponent();
+        AISM.Animator.SetTrigger("isDeath");
+        curTimer = 0;
+        brokenTime = 3.2f;
+        oneChance = false;
     }
 
     public override void Exit()
@@ -32,5 +41,11 @@ public class BossNepenthesDieState : AIDieState
     public override void Update()
     {
         base.Update();
+        curTimer += Time.deltaTime;
+        if(curTimer > brokenTime && !oneChance)
+        {
+            BossRoomFieldManager.Instance.EnableBrokenPlatformComponent();
+            oneChance = true;
+        }
     }
 }

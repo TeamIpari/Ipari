@@ -8,21 +8,23 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Monstera
-  m_Shader: {fileID: -6465566751694194690, guid: ddc6fd8399971874d862d64484afb0eb,
+  m_Shader: {fileID: -6465566751694194690, guid: 3f2027abf7199f04cab03be86d7a6dc7,
     type: 3}
-  m_ValidKeywords:
-  - _ALPHATEST_ON
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2450
-  stringTagMap:
-    RenderType: TransparentCutout
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_b5f3bf913a484b468c308a00739752dd:
+        m_Texture: {fileID: 2800000, guid: e5146ef0094d1194e8d13f55bbbe716d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _AO_Tex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -65,6 +67,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Emission_map:
+        m_Texture: {fileID: 2800000, guid: a32b3280e5b06704fbbb151e475f8832, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoliageTex:
@@ -129,6 +135,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - Vector1_0d65c55493f8400987f05a652008025d: 0.2
+    - Vector1_7822dd6f30dd4f548d4220de7854de7e: 1
+    - Vector1_c757b884625e4ed788ab2dc9baeacd70: 0.3
+    - Vector1_dcd6fb2993dc494b9898e8ff54ffee00: 0.2
+    - Vector1_f20a8422b91f4118b3a0871b5c71763d: 0
     - _AlphaClip: 1
     - _AlphaCutoff: 0.5
     - _Bend_Strength: 4.48
@@ -137,8 +148,10 @@ Material:
     - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _ColorOpacity: 0
     - _Cull: 0
     - _Cutoff: 0.5
+    - _Darken_Opacity: 0.539
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -152,6 +165,7 @@ Material:
     - _NoiseScale: 0.17
     - _NormalInfluence: -0.83
     - _NormalStrength: 0.22
+    - _Normal_Strength: 0.4
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueControl: 0
@@ -174,17 +188,23 @@ Material:
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
+    - Color_7c8773ac703143ca996f120b117c8013: {r: 0.086863644, g: 0.3018868, b: 0.16234976,
+        a: 0}
+    - Color_c8f27e1b70544bc99b4cd796a4f63591: {r: 0.094117604, g: 0.14117646, b: 0.007843138,
+        a: 0}
     - _AlbedoTint: {r: 1, g: 1, b: 1, a: 0}
     - _BaseColor: {r: 0.46478555, g: 0.6603774, b: 0.4516732, a: 1}
     - _Basecolor: {r: 1, g: 1, b: 1, a: 0}
     - _Color: {r: 0.28450498, g: 0.4716981, b: 0.26922393, a: 1}
     - _ColorChageAdd: {r: 0, g: 0, b: 0, a: 0}
     - _ColorChange: {r: 0.5686275, g: 0.49159688, b: 0.35686275, a: 0}
+    - _Darken: {r: 0, g: 0.3962264, b: 0.2931638, a: 0.4745098}
     - _Direction_1: {r: 0.48, g: 0.36, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SSSColor: {r: 1, g: 1, b: 1, a: 0}
     - _SSS_Color: {r: 0.6833785, g: 1, b: 0.3066038, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _emssion_strength_color: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &8160588775117583541
 MonoBehaviour:

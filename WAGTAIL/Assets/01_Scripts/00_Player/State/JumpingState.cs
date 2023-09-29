@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class JumpingState : State
 {
-    bool isGrounded;
-
-    bool jump;
-    private bool dead;
-    float gravityValue;
-    float jumpHeight;
-    float playerSpeed;
-
-    Vector3 airVelocity;
+    private bool _isGrounded;
+    private bool _jump;
+    private Vector3 _airVelocity;
 
     public JumpingState(Player player, StateMachine stateMachine) : base(player, stateMachine)
     {
@@ -25,16 +19,11 @@ public class JumpingState : State
         base.Enter();
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Player_Jump);
         //player.SoundHandler.SetTrigger("isJump");
-        isGrounded = false;
-        jump = false;
-        gravityValue = player.gravityValue;
-        jumpHeight = player.jumpHeight;
-        playerSpeed = player.playerSpeed;
+        _isGrounded = false;
+        _jump = false;
         gravityVelocity.y = 0;
 
-        //AnimManager.Instance.AnimFloat("speed");
-        player.animator.SetFloat("speed", 0);
-        //AnimManager.Instance.AnimTrigger("jump");
+        player.animator.SetFloat(Speed, 0);
         if(!player.isCarry) player.animator.SetTrigger("jump");
         Jump();
     }
@@ -43,33 +32,35 @@ public class JumpingState : State
     {
         base.HandleInput();
         
-        dead = player.isDead;
-        if (interacAction.triggered && player.currentInteractable != null)
+        if (interactAction.triggered && player.currentInteractable != null)
         {
             player.Interaction();
-            player.animator.ResetTrigger("move");
-            player.animator.ResetTrigger("carry");
-            player.animator.ResetTrigger("pickup");
-            player.animator.SetTrigger("drop");
+            player.animator.SetTrigger(Throw);
         }
-        input = moveAction.ReadValue<Vector2>();
+        GetMoveInput();
+        _airVelocity = new Vector3(input.x, 0, input.y);
+        var temp = player.cameraTransform.forward;
+        temp.y = 0f;
+        _airVelocity = _airVelocity.x * player.cameraTransform.right.normalized +
+                       _airVelocity.z * temp.normalized;
+        _airVelocity.y = 0;
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
 
-        if (dead)
+        if (player.isDead)
         {
             stateMachine.ChangeState(player.death);
         }
         
-        if (jump)
+        if (_jump)
         {
             stateMachine.ChangeState(player.jump);
         }
         
-        else if (isGrounded) 
+        else if (_isGrounded) 
         {
             //stateMachine.ChangeState(player.idle);
             stateMachine.ChangeState(player.landing);
@@ -80,48 +71,36 @@ public class JumpingState : State
     {
         base.PhysicsUpdate();
 
-        if (!isGrounded)
+        if (!_isGrounded)
         {
-            velocity = player.playerVelocity;
-            airVelocity = new Vector3(input.x, 0, input.y);
-            
-            velocity = velocity.x * player.cameraTransform.right.normalized + 
-                velocity.z * player.cameraTransform.forward.normalized;
-            velocity.y = 0f;
-
-            airVelocity = airVelocity.x * player.cameraTransform.right.normalized +
-                airVelocity.z * player.cameraTransform.forward.normalized;
-            airVelocity.y = 0;
-
             player.controller.Move(gravityVelocity * Time.deltaTime + 
-                (airVelocity * player.airControl + velocity * (1 - player.airControl)) * playerSpeed * Time.deltaTime);
+                (_airVelocity * player.airControl + velocity * (1 - player.airControl)) * (player.playerSpeed * Time.deltaTime));
 
-            gravityVelocity.y += gravityValue * Time.deltaTime;
-            isGrounded = player.controller.isGrounded;
+            gravityVelocity.y += player.gravityValue * Time.deltaTime;
+            _isGrounded = player.controller.isGrounded;
 
-            if (airVelocity.sqrMagnitude > 0)
+            if (_airVelocity.sqrMagnitude > 0)
             {
-                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(airVelocity),
+                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.LookRotation(_airVelocity),
                     player.rotationDampTime);
             }
-
-            
         }
     }
 
     public override void Exit()
     {
         base.Exit();
+        player.isJump = false;
     }
 
     void Jump()
     {
-        gravityVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+        gravityVelocity.y += Mathf.Sqrt(player.jumpHeight * -3.0f * player.gravityValue);
     }
 
     public void Jumping()
     {
-        jump = true;
+        _jump = true;
     }
 
 }

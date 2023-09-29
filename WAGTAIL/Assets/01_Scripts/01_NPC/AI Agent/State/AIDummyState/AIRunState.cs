@@ -15,7 +15,7 @@ public class AIRunState : AIState
 
     public AIRunState (AIStateMachine stateMachine, float runDistance, float moveSpeed) : base(stateMachine)
     {
-        this.stateMachine = stateMachine;
+        this.AISM = stateMachine;
         this.runDistance = runDistance + 2;
         this.moveSpeed = moveSpeed;
         if(this.moveSpeed <= 0)
@@ -72,8 +72,8 @@ public class AIRunState : AIState
     /// </summary>
     private void SetPoint()
     {
-        destination = new Vector3(stateMachine.Transform.position.x - stateMachine.Target.transform.position.x, 0f,
-            stateMachine.Transform.position.z - stateMachine.Target.transform.position.z).normalized;
+        destination = new Vector3(AISM.Transform.position.x - AISM.Target.transform.position.x, 0f,
+            AISM.Transform.position.z - AISM.Target.transform.position.z).normalized;
     }
 
     /// <summary>
@@ -89,13 +89,13 @@ public class AIRunState : AIState
         // Ray로 갈 수 있는 방향인지 체크
         if (!isMovingPoint)
         {
-            stateMachine.Transform.position
-            = Vector3.MoveTowards(stateMachine.Transform.position, stateMachine.Transform.position + destination, moveSpeed * Time.deltaTime);
+            AISM.Transform.position
+            = Vector3.MoveTowards(AISM.Transform.position, AISM.Transform.position + destination, moveSpeed * Time.deltaTime);
         }
         else if (isMovingPoint)
         {
-            stateMachine.Transform.position = Vector3.MoveTowards(stateMachine.Transform.position, vecRallyPoint, moveSpeed * Time.deltaTime);
-            if (Vector3.Distance(stateMachine.Transform.position, vecRallyPoint) < .1f)
+            AISM.Transform.position = Vector3.MoveTowards(AISM.Transform.position, vecRallyPoint, moveSpeed * Time.deltaTime);
+            if (Vector3.Distance(AISM.Transform.position, vecRallyPoint) < .1f)
                 isMovingPoint = false;
         }
     }
@@ -106,9 +106,9 @@ public class AIRunState : AIState
     private void Rotate()
     {
         if (!isMovingPoint)
-            stateMachine.Transform.LookAt(stateMachine.Transform.position + destination);
+            AISM.Transform.LookAt(AISM.Transform.position + destination);
         else if (isMovingPoint)
-            stateMachine.Transform.LookAt(vecRallyPoint);
+            AISM.Transform.LookAt(vecRallyPoint);
     }
 
 
@@ -137,10 +137,10 @@ public class AIRunState : AIState
     {
         if(!isFlight)
         {
-            Vector3 targetPos = stateMachine.Transform.position + (stateMachine.Transform.forward * 2f);
-            targetPos -= stateMachine.Transform.up;
-            Vector3 pos = CaculeateVelocity(targetPos, stateMachine.Transform.position , 1f);
-            stateMachine.Physics.velocity = pos;
+            Vector3 targetPos = AISM.Transform.position + (AISM.Transform.forward * 2f);
+            targetPos -= AISM.Transform.up;
+            Vector3 pos = CaculeateVelocity(targetPos, AISM.Transform.position , 1f);
+            AISM.Physics.velocity = pos;
             isFlight = true;
         }
     }
@@ -150,16 +150,16 @@ public class AIRunState : AIState
         if (isFlight)
         {
             //Debug.Log("init" + stateMachine.Physics.velocity);
-            stateMachine.Physics.velocity = Vector3.zero;
+            AISM.Physics.velocity = Vector3.zero;
             isFlight = false;
         }
     }
 
     private void RayFloorCheck()
     {
-        if (Physics.Raycast(stateMachine.Transform.position + (stateMachine.Transform.forward * .5f), -stateMachine.Transform.up, out hit, 1.1f))
+        if (Physics.Raycast(AISM.Transform.position + (AISM.Transform.forward * .5f), -AISM.Transform.up, out hit, 1.1f))
         {
-            Debug.DrawRay(stateMachine.Transform.position + (stateMachine.Transform.forward * 1f), -stateMachine.Transform.up * 1f, Color.red);
+            Debug.DrawRay(AISM.Transform.position + (AISM.Transform.forward * 1f), -AISM.Transform.up * 1f, Color.red);
 
             InitializeVelocity();
             Movement();
@@ -167,7 +167,7 @@ public class AIRunState : AIState
         }
         else
         {
-            Debug.DrawRay(stateMachine.Transform.position + (stateMachine.Transform.forward * 1f), -stateMachine.Transform.up * 1f, Color.blue);
+            Debug.DrawRay(AISM.Transform.position + (AISM.Transform.forward * 1f), -AISM.Transform.up * 1f, Color.blue);
 
             JumpDown();
         }
@@ -176,8 +176,8 @@ public class AIRunState : AIState
 
     private void RayWallCheck()
     {
-        Debug.DrawRay(stateMachine.Transform.position, stateMachine.Transform.forward, Color.red);
-        if (Physics.Raycast(stateMachine.Transform.position, stateMachine.Transform.forward, out hit, 1f))
+        Debug.DrawRay(AISM.Transform.position, AISM.Transform.forward, Color.red);
+        if (Physics.Raycast(AISM.Transform.position, AISM.Transform.forward, out hit, 1f))
         {
             isMovingPoint = true;
             // 랠리 포인트 설정. 
@@ -211,7 +211,7 @@ public class AIRunState : AIState
         //Debug.DrawRay(stateMachine.Transform.position + destination, reflectVec * 2f, Color.green);
         #endregion
         // 입사각
-        Vector3 incidentVec = hit.transform.position - stateMachine.Transform.position;
+        Vector3 incidentVec = hit.transform.position - AISM.Transform.position;
 
         // 충돌한 면의 벡터
         Vector3 collisionVec = hit.transform.position;
@@ -235,7 +235,7 @@ public class AIRunState : AIState
         //Debug.DrawRay(stateMachine.Transform.position + destination, reflectVector * 2f, Color.green);
 
 
-        return stateMachine.Transform.position + destination + reflectVector * 2.5f;
+        return AISM.Transform.position + destination + reflectVector * 2.5f;
 
 
     }
@@ -243,11 +243,11 @@ public class AIRunState : AIState
     private void Search()
     {
         float distance = Mathf.Abs(
-            Vector3.Distance(stateMachine.Transform.position,
-            stateMachine.Target.transform.position));
+            Vector3.Distance(AISM.Transform.position,
+            AISM.Target.transform.position));
         if (distance > runDistance)
         {
-            stateMachine.ChangeState(parent);
+            AISM.ChangeState(Parent);
         }
     }
 }

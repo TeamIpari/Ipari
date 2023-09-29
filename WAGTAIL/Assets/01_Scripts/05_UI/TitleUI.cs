@@ -28,7 +28,7 @@ public class TitleUI : MonoBehaviour
 
     public void GameStart()
     {
-        SceneLoader.GetInstance().LoadScene("Chapter01");
+        SceneLoader.GetInstance().LoadScene("Chapter01_Heejin4");
     }
 
     public void GameEnd()

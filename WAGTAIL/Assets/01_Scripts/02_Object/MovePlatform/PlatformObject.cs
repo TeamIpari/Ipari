@@ -206,6 +206,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private int                    _CopyCount  = 0;
     private PlatformBehaviorBase[] _InteractionsCopy;
 
+    private static Scene currScene;
 
 
     //=======================================
@@ -214,6 +215,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private void Start()
     {
         #region Omit
+        currScene = SceneManager.GetActiveScene();
         if (_Controller == null)
         {
             _Controller = Player.Instance?.GetComponent<CharacterController>();
@@ -495,7 +497,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             _PkProgress = PendingKillProgress.PENDINGKILL_READY;
             for (int i = 0; i < _CopyCount; i++)
             {
-                _InteractionsCopy[i].OnObjectPlatformExit(this, Player.Instance.gameObject, collision.rigidbody);
+                _InteractionsCopy[i].OnObjectPlatformExit(this, collision.gameObject, collision.rigidbody);
             }
             RefreshInteractionCopy(true);
             _PkProgress = PendingKillProgress.NONE;
@@ -511,6 +513,18 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
         /********************************************
          *   해당 발판을 밟은 오브젝트들을 자식에서 제거한다...
          * ***/
+
+        /**씬 이동중에는 적용하지 않는다.*/
+        int SceneCount = SceneManager.sceneCount;
+        int loadedCount = 0;
+        for(int i=0;i<SceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if(scene.isLoaded) loadedCount++;
+        }
+        if (loadedCount == 0) return;
+
+        /**발판을 밟은 모든 자식들을 자식에서 제거한다.*/
         int Count = _onPlatformObjects.Count;
         for(int i=0; i<Count; i++)
         {
@@ -518,8 +532,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
 
             if (objTransform.parent==transform){
 
-                if (gameObject.activeInHierarchy)
-                    objTransform.transform.SetParent(null);
+                objTransform.transform.SetParent(null);
             }
         }
         #endregion

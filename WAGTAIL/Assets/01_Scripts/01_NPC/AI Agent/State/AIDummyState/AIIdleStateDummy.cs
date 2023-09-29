@@ -23,7 +23,7 @@ public class AIIdleStateDummy : AIState
 
     public AIIdleStateDummy (AIStateMachine stateMachine, float moveTime,float SearchDistance) : base(stateMachine)
     {
-        this.stateMachine = stateMachine;
+        this.AISM = stateMachine;
         this.movingTime = moveTime;
         this.searchDistance = SearchDistance;
     }
@@ -54,7 +54,7 @@ public class AIIdleStateDummy : AIState
 
     public override void Update()
     {
-        if(current == 0)
+        if(Current == 0)
         {
             // 이동 시간 결정
             CheckMoveTime();
@@ -70,12 +70,12 @@ public class AIIdleStateDummy : AIState
 
     private void ChangeState()
     {
-        if (children.Count > 0)
+        if (Children.Count > 0)
         {
-            stateMachine.ChangeState(children[current]);
+            AISM.ChangeState(Children[Current]);
         }
         else
-            stateMachine.ChangeState(parent);
+            AISM.ChangeState(Parent);
     }
 
     private void CheckMoveTime()
@@ -85,14 +85,14 @@ public class AIIdleStateDummy : AIState
         {
             if (currentTime > movingTime)
             {
-                if (children.Count > 0)
+                if (Children.Count > 0)
                 {
-                    stateMachine.ChangeState(children[current]);
+                    AISM.ChangeState(Children[Current]);
                 }
-                else if (parent != null)
-                    stateMachine.ChangeState(parent);
-                else if (stateMachine.Pattern.Count > 0)
-                    stateMachine.NextPattern();
+                else if (Parent != null)
+                    AISM.ChangeState(Parent);
+                else if (AISM.Pattern.Count > 0)
+                    AISM.NextPattern();
                 else
                      ;
                 currentTime = 0;
@@ -107,15 +107,15 @@ public class AIIdleStateDummy : AIState
     private void SearchTarget()
     {
         Collider[] cols =
-            Physics.OverlapSphere(stateMachine.Transform.position, searchDistance, LayerMask.GetMask("Player"));
+            Physics.OverlapSphere(AISM.Transform.position, searchDistance, LayerMask.GetMask("Player"));
         // Player가 체크 되었는가?
         foreach (var c in cols)
         {
             if (c.gameObject.CompareTag("Player"))
             {
-                current++;   // 다음 State 진행
-                stateMachine.SetTarget(c.gameObject);
-                stateMachine.ChangeState(children[current]);
+                Current++;   // 다음 State 진행
+                AISM.SetTarget(c.gameObject);
+                AISM.ChangeState(Children[Current]);
             }
         }
     }

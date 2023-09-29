@@ -1,10 +1,6 @@
-using FMOD.Studio;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Timeline.Actions;
+using UnityEditor.ProBuilder.Actions;
 using UnityEngine;
-using static UnityEngine.InputManagerEntry;
-
 
 public class BossRoomFieldManager :MonoBehaviour
 {
@@ -27,6 +23,7 @@ public class BossRoomFieldManager :MonoBehaviour
     }
 
     // 생성할 타일을 저장함.
+    [SerializeField] private GameObject _interactionVFX;
     public GameObject[] Tiles;
     public GameObject[] OddTile;
     public GameObject[] EvenTile;
@@ -43,7 +40,17 @@ public class BossRoomFieldManager :MonoBehaviour
 
     [Header("CameraShakeValue")]
     public float ShakePower = 1.5f;
-    public float ShakeTime = 0.25f;
+    public float ShakeTime = 0.18f;
+    public float ShakeTiming = 2.5f;
+
+    [Header("Shake ReAction Parameter")]
+    public GameObject ReActionObject;
+    
+    private GameObject[] reActionPools;
+    [SerializeField] private Deathzone deathZone; 
+    public float spawnDelay;
+    public int Count;
+    private bool reAction = false;
 
     public Vector3 PlayerOnTilePos
     {
@@ -64,46 +71,113 @@ public class BossRoomFieldManager :MonoBehaviour
 
         // 돌들을 배치
         Initialized();
+        CreateReActionObject();
     }
 
-    //======================================
-    /////           private Methods     /////
-    //======================================
-    private IEnumerator BrokenDelay(float x, float y)
-    {
-        yield return new WaitForSeconds(2.5f);
-        //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
-        BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
-
-    }
 
     //======================================
     /////         Core Methods         /////
     //======================================
 
-    public Vector3 GetTilePos(int x, int y)
+
+    //======================================
+    /////           private Methods     /////
+    //======================================
+    private IEnumerator BrokenDelayCo(float x, float y)
     {
-        Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
-        return new Vector3(vec.x, 5f, vec.z);
+        yield return new WaitForSeconds(2.5f);
+        //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
+
+        GameObject obj = GameObject.Instantiate<GameObject>(_interactionVFX, BossFild[new Vector2(x, y)].transform.position, Quaternion.identity);
     }
-    public void BrokenPlatform(float XPos)
+    private void SpawnVFX()
     {
-        // 내려 찍기 -> 2.5초 후 내려 찍음.
-        // .Attack Delay = 2.5f
-        float X = (XPos - Offset.x ), Y = 0;
-        float FindY = Y * (-StoneYSize);
-        while (BossFild.ContainsKey(new Vector2(X, FindY)))
+        if (_interactionVFX != null)
         {
-            StartCoroutine(BrokenDelay(X, FindY));
-            Y++;
-            FindY = Y * (-StoneYSize);
+            GameObject exploVFX = Instantiate(_interactionVFX, gameObject.transform.position + Vector3.up * 0f, gameObject.transform.rotation);
+            Destroy(exploVFX, 2);
         }
-        Invoke("CameraShake", 2.5f);
+
+        else
+            Debug.LogWarning("InteractionVFX was missing!");
     }
-    
+
+
+    private void BrokenDelay(float x, float y)
+    {
+        BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
+    }
+
+    private void CreateReActionObject()
+    {
+        reActionPools = new GameObject[Count];
+
+        // 생성 하는 기능.
+        for (int i = 0; i < Count; i++)
+        {
+            GameObject obj = GameObject.Instantiate<GameObject>(ReActionObject);
+            obj.transform.position = Vector3.zero;
+            reActionPools[i] = obj;
+            reActionPools[i].SetActive(false);
+        }
+    }
+
+    private IEnumerator SpawnReActionObject()
+    {
+        int x, z;
+
+        yield return new WaitForSeconds(2.5f);
+        if (reActionPools[0] == null)
+            CreateReActionObject();
+        
+        foreach (var fruit in reActionPools)
+        {
+            x = Random.Range(1, XSize - 1);
+            z = Random.Range(1, YSize - 1);
+
+            fruit.SetActive(true);
+            fruit.transform.position = GetTilePos(x, z);
+            yield return new WaitForSeconds(spawnDelay * 0.001f);
+        }
+
+        yield return null;
+    }
+
     private void CameraShake()
     {
         CameraManager.GetInstance().CameraShake(ShakePower, ShakeTime);
+    }
+
+    //======================================
+    /////           public Methods     /////
+    //======================================
+    public Vector3 GetTilePos(int x, int y)
+    {
+        Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
+        return new Vector3(vec.x, 13f, vec.z);
+    }
+    public void BreakingPlatform(float xPos, bool reAction = false)
+    {
+        // 내려 찍기 -> 2.5초 후 내려 찍음.
+        // .Attack Delay = 2.5f
+        float X = (xPos - Offset.x ), Y = 0;
+        float FindY = Y * (-StoneYSize);
+
+        while (BossFild.ContainsKey(new Vector2(X, FindY)))
+        {
+            StartCoroutine(BrokenDelayCo(X, FindY));
+            //BrokenDelay(X, FindY);
+            Y++;
+            FindY = Y * (-StoneYSize);
+        }
+        this.reAction = reAction;
+        
+        Invoke("CameraShake", ShakeTiming);
+        if (reAction)
+        {
+            StartCoroutine(SpawnReActionObject());
+            reAction = false;
+        }
     }
 
     public void Initialized()
@@ -130,7 +204,9 @@ public class BossRoomFieldManager :MonoBehaviour
         foreach(var curTile in BossFild)
         {
             //curTile.Value.gameObject.GetComponentInChildren<PlatformObject>().enabled = false;
-            curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
+            //curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
+            curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().HideOnly(false);
         }
+        deathZone.gameObject.SetActive(false);
     }
 }

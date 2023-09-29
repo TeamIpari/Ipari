@@ -53,15 +53,16 @@ public class AIStateMachine
     public void ChangeState(AIState newState)
     {
         CurrentState.Exit();
-        if (CurrentState != newState)
-        {
-            CurrentState = newState != null ? newState : CurrentState;
-            CurrentState.Enter();
-        }
-        else
-        {
-            //Debug.Log("같은 State를 호출함.");
-        }
+
+        CurrentState = newState != null ? newState : CurrentState;
+        CurrentState.Enter();
+        //if (CurrentState != newState)
+        //{
+        //}
+        //else
+        //{
+        //    //Debug.Log("같은 State를 호출함.");
+        //}
     }
 
     public void SetTarget(GameObject obj)
@@ -69,17 +70,17 @@ public class AIStateMachine
         Target = obj;
     }
 
-    public MonsterPattern.Pattern[] EPattern { get { return character.CharacterMovementPattern[character.CurPhaseHpArray].EPatterns; }}
+    public MonsterPattern.Pattern[] EPattern { get { return character.CharacterMovementPattern[character.GetCurPhaseHpArray].EPatterns; }}
 
     public bool IsNextTargetPhaseHp()
     {
-        return character.CurPhaseHpArray < character.CharacterMovementPattern.Length - 1;
+        return character.GetCurPhaseHpArray < character.CharacterMovementPattern.Length - 1;
     }
 
     public int GetNextPhaseTargetHp()
     {
         cur = 0;
-        return character.CharacterMovementPattern[character.CurPhaseHpArray].PhaseHp;
+        return character.CharacterMovementPattern[character.GetCurPhaseHpArray].PhaseHp;
 
     }
 

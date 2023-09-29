@@ -13,7 +13,7 @@ public class AILineMove : AIState
     private int cur = 0;
     public AILineMove(AIStateMachine stateMachine, Transform[] points) : base(stateMachine)
     {
-        this.stateMachine = stateMachine;
+        this.AISM = stateMachine;
         movingPoint = points;
         if(movingPoint.Length < 1)
         {
@@ -49,12 +49,12 @@ public class AILineMove : AIState
     {
         if (Move())
         {
-            if (children.Count > 0)
-                stateMachine.ChangeState(children[current]);
-            else if (parent != null)
-                stateMachine.ChangeState(parent);
-            else if (stateMachine.Pattern.Count > 0)
-                stateMachine.NextPattern();
+            if (Children.Count > 0)
+                AISM.ChangeState(Children[Current]);
+            else if (Parent != null)
+                AISM.ChangeState(Parent);
+            else if (AISM.Pattern.Count > 0)
+                AISM.NextPattern();
             else
                 Debug.Log("연결되어있지 않음.");
 
@@ -65,13 +65,13 @@ public class AILineMove : AIState
     // 목표 지점으로 이동하는 스크립트.
     private bool Move()
     {
-        if (Vector3.Distance(stateMachine.Transform.position, movingPoint[cur].position) <= 0.1)
+        if (Vector3.Distance(AISM.Transform.position, movingPoint[cur].position) <= 0.1)
         {
-            stateMachine.Transform.position = movingPoint[cur].position;
+            AISM.Transform.position = movingPoint[cur].position;
             return true;
         }
-        stateMachine.Transform.position
-            = Vector3.MoveTowards(stateMachine.Transform.position, movingPoint[cur].position, 5f * Time.deltaTime);
+        AISM.Transform.position
+            = Vector3.MoveTowards(AISM.Transform.position, movingPoint[cur].position, 5f * Time.deltaTime);
         return false;
         //Debug.Log(movingPoint[cur].name);
         //Debug.Log(movingPoint[cur].position);

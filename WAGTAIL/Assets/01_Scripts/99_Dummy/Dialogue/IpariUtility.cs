@@ -32,12 +32,42 @@ namespace IPariUtility
             // 속도 추가
             float Vxz = Sxz / time;
             float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
-
             // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
             Vector3 result = distanceXZ.normalized;
             result *= Vxz;
             result.y = Vy;
             return result;
+        }
+
+        /// <summary>
+        /// 8방향을 랜덤으로 출력, Vector3.normalized;
+        /// </summary>
+        /// <returns></returns>
+        internal static Vector3 RandomDirection()
+        {
+            Vector3 Direction = Vector3.zero;
+            // 8방향으로 이동이 가능하게 할 예정.
+            switch (UnityEngine.Random.Range(0, 8))
+            {
+                case 0:
+                    Direction = new Vector3(0, 0, 1); break;
+                case 1:
+                    Direction = new Vector3(1, 0, 1); break;
+                case 2:
+                    Direction = new Vector3(0, 0, 1); break;
+                case 3:
+                    Direction = new Vector3(1, 0, -1); break;
+                case 4:
+                    Direction = new Vector3(0, 0, -1); break;
+                case 5:
+                    Direction = new Vector3(-1, 0, -1); break;
+                case 6:
+                    Direction = new Vector3(-1, 0, 0); break;
+                case 7:
+                    Direction = new Vector3(-1, 0, 1); break;
+            }
+            //Debug.Log(Direction);
+            return Direction.normalized;
         }
 
         /// <summary>

@@ -13,8 +13,8 @@ public class FlowerObject : MonoBehaviour
 {
     public GameObject CoinPrefab;
     public Transform FlowerTransform;
-    public List<Vector3> targets;
-    public float pointRadian = 3f;        // 초기 값 3;
+    public List<Vector3> Targets;
+    public float PointRadian = 3f;        // 초기 값 3;
     public int InitCount = 5;
     public float FlightTIme = 2;
     public bool IsDance = false;
@@ -29,9 +29,9 @@ public class FlowerObject : MonoBehaviour
     public void CreatePoint()
     {
         for(int i = 0; i < InitCount; i++)
-            targets.Add(Search());
+            Targets.Add(Search());
         
-        foreach(var t in targets)
+        foreach(var t in Targets)
         {
             GameObject _obj = GameObject.Instantiate(CoinPrefab);
 
@@ -39,7 +39,7 @@ public class FlowerObject : MonoBehaviour
             _obj.transform.position = FlowerTransform.position;
             _obj.transform.position += Vector3.up * 1.5f;
             _obj.AddComponent<Rigidbody>().velocity = IpariUtility.CaculateVelocity(t, FlowerTransform.position, FlightTIme);
-            _obj.GetComponent<ScoreObject>().SetTime(FlightTIme);
+            _obj.GetComponent<ScoreObject>().SetTime(FlightTIme, 2);
             //marker.Add(_obj);
         }
 
@@ -60,7 +60,7 @@ public class FlowerObject : MonoBehaviour
         getPoint.y = 0.1f;
 
         // 0.0f 부터 지정한 반지름의 길이 사이의 랜덤 값을 산출함.
-        float r = Random.Range(0.0f, pointRadian);
+        float r = Random.Range(0.0f, PointRadian);
         Vector3 vec = (getPoint * r) + FlowerTransform.position;
 
         return new Vector3(vec.x, 0.1f, vec.z);

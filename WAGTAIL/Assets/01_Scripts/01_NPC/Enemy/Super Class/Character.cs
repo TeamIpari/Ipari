@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 [System.Serializable]
 public class MonsterPattern
@@ -47,11 +46,23 @@ public class Character : MonoBehaviour
 
     public MonsterPattern[] CharacterMovementPattern;
     // 보여주기용 현재 어떤 패턴이 장착되어 있는지 확인하는 용도.
-    public MonsterPattern.Pattern[] curPattern;
+    public MonsterPattern.Pattern[] CurPattern;
 
     [Tooltip("체력 이하일 경우 다음 패턴 시작")]
-    public int CurPhaseHpArray = 0;
-    [Tooltip("체력 이하일 경우 다음 패턴 시작")]
+    private int CurPhaseHpArray = 0;
+
+    public int GetCurPhaseHpArray
+    {
+        get
+        {
+            return CurPhaseHpArray;
+        }
+        set
+        {
+            CurPhaseHpArray = value;
+        }
+
+    }
 
     public Transform RotatePoint;
 
@@ -74,7 +85,7 @@ public class Character : MonoBehaviour
     {
 
     }
-    public virtual void SettingPattern(MonsterPattern.Pattern[] _pattern)
+    public virtual void SettingPattern(MonsterPattern.Pattern[] pattern)
     {
 
     }
@@ -83,7 +94,7 @@ public class Character : MonoBehaviour
 
     }
 
-    public virtual void CAttack(Vector3 Pos)
+    public virtual void CAttack(Vector3 pos)
     {
 
     }

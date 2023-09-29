@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class BrokenPlatform : MonoBehaviour, IEnviroment
 {
     private MeshRenderer mesh;
@@ -10,35 +9,32 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     public GameObject Light;
     public bool IsUpdownMode = false;
 
-    public float HideNDownTime = 1.0f;
-    public float ShowNUpTime = 1.0f;
-    public float VineHitTime = 2.5f;
+    public const float HideNDownTime = 1.0f;
+    public const float ShowNUpTime = 2.0f;
+    public const float VineHitTime = 2.5f;
 
-    private float DelayTime;
+    private float delayTime;
     // 위 아래 최종 이동 위치
-    public float MoveSpeed = 0.0f;
-    bool shake = false;
+    public const float MoveSpeed = 10f;
+    private bool shake = false;
     
     
-    public float ShakeSpeed = 0.0f;
+    public float ShakeSpeed = 0.1f;
 
     // 흔들리고 사라지거나 떨어질 때 원래 위치로 찾아오기 위한 Origin Position;
-    Vector3 startPos;
+    private Vector3 startPos;
 
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
 
-    [SerializeField] private float _explosionMinForce = 5;
-    [SerializeField] private float _explosionMaxForce = 100;
-    [SerializeField] private float _explosionForceRadius = 10;
-    [SerializeField] private float _fragScaleFactor = 0.01f;
+    [SerializeField] private const float _explosionMinForce = 50;
+    [SerializeField] private const float _explosionMaxForce = 100;
+    [SerializeField] private const float _explosionForceRadius = 10;
+    [SerializeField] private const float _fragScaleFactor = 0.1f;
 
     float curTime;
     public float shakeDelay;
-    Vector3[] PosList;
-
-    Vector3 localPoint1;
-    Vector3 localPoint2;
+    private Vector3[] PosList;
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
@@ -79,7 +75,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             Light.SetActive(true);
 
         shake = true;
-        yield return new WaitForSeconds(DelayTime);
+        yield return new WaitForSeconds(delayTime);
         shake = false;
 
         while(Mathf.Abs(Vector3.Distance(transform.position, endPoint.transform.position)) > 0.1f )
@@ -96,7 +92,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         if (Light != null)
             Light.SetActive(false);
 
-        yield return new WaitForSeconds(DelayTime);
+        yield return new WaitForSeconds(delayTime);
 
         while (Mathf.Abs(Vector3.Distance(transform.position, startPoint.transform.position)) > 0.1f)
         {
@@ -115,7 +111,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             Light.SetActive(true);
 
         shake = true;
-        yield return new WaitForSeconds(DelayTime);
+        yield return new WaitForSeconds(delayTime);
         shake = false;
 
         for (int i = 0; i < this.transform.childCount; i++)
@@ -124,8 +120,12 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             if (rigidbody != null)
             {
                 rigidbody.useGravity = true;
-                rigidbody.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce),
-                    transform.parent.position, _explosionForceRadius);
+                rigidbody.isKinematic = false;
+                // 리지드 바디에 벨로시티를 부가함.
+                rigidbody.velocity = ExplosionVelocity(rigidbody);
+                rigidbody.gameObject.layer = LayerMask.NameToLayer("Pass");
+                //rigidbody.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce),
+                //    new Vector3(transform.parent.position.x, transform.parent.position.y - 2f, transform.parent.position.z), _explosionForceRadius);
             }
         }
         if (col != null)
@@ -137,6 +137,18 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             StartCoroutine(ShowPlatform());
     }
 
+    private Vector3 ExplosionVelocity(Rigidbody rigid)
+    {
+        // 현재 포지션에서 y값이 n만큼 내려간 위치에서 조각마다의 방향 벡터를 구함.
+        Vector3 direction = rigid.gameObject.transform.position - (transform.position /*- Vector3.up * 1.5f*/);
+
+        // 방향 벡터를 구함.
+        direction.Normalize();
+
+
+        return direction * 1.5f;
+    }
+
     private IEnumerator ShowPlatform()
     {
         if (Light != null)
@@ -144,6 +156,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
         yield return new WaitForSeconds(ShowNUpTime);
 
+        Vector3 v = new Vector3(-90, 0, 0);
 
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -152,6 +165,10 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             {
                 piece.GetComponent<Rigidbody>().useGravity = false;
                 piece.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                piece.GetComponent<Rigidbody>().isKinematic = true;
+                piece.gameObject.layer = LayerMask.NameToLayer("Defualt");
+
+                piece.rotation = Quaternion.Euler(v);
                 piece.position = PosList[i];
             }
         }
@@ -204,7 +221,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         IsHit = true;
         if (Light != null)
             Light.SetActive(true);
-        DelayTime = time;
+        delayTime = time;
         if (!IsUpdownMode)
         {
             StartCoroutine(HidePlatform());
@@ -214,7 +231,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             StartCoroutine(DownPlatform());
         }
     }
-
     // Update is called once per frame
     private void Update()
     {
