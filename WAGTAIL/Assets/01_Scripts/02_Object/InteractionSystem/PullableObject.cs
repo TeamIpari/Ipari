@@ -554,9 +554,6 @@ public sealed class PullableObject : MonoBehaviour
     private float       _fullyExtendedLen = -1f;
     private float       _fullyExtendedDiv  = -1f;
     private float       _boneCountDiv      = 1f;
-    private float       _prevExtendedRatio = 0f;
-
-    private static readonly Vector3 _gravity = new Vector3(0.05f, -9.811f, .05f);
 
 
     //===========================================
@@ -625,59 +622,14 @@ public sealed class PullableObject : MonoBehaviour
 
     private void Update()
     {
-        /***************************************
-         *   잡은 오브젝트가 존재할 경우의 처리...
-         * ***/
-        if (GrabTarget != null && _dataCount >= 2)
+        if (_dataCount < 2) return;
+
+        /**당겨지고 있을 때의 처리...*/
+        if(UpdatePulling()==false)
         {
-            ref BoneData rootData       = ref _datas[0];
-            ref BoneData rootDirData    = ref _datas[1];
-            ref BoneData middleData     = ref _datas[Mathf.RoundToInt((_dataCount - 1) * .5f)];
-            ref BoneData lastData       = ref _datas[_dataCount - 2];
-            ref BoneData lastDirData    = ref _datas[_dataCount - 1];
-
-            /**각 본들이 목표로 할 대상까지의 방향을 정한다....*/
-            Transform targetTr = GrabTarget.transform;
-            Vector3 rootDir = (rootDirData.Tr.position - rootData.Tr.position).normalized;
-            Vector3 targetDir = (targetTr.position - rootData.Tr.position);
-
-            float targetLength = targetDir.magnitude;
-            float extendedRatio = (targetLength * _fullyExtendedDiv);
-
-            targetDir.Normalize();
-
-            float rotExtendedRatio = Mathf.Clamp(extendedRatio, 0f, 1f);
-
-            bool isFullyExtended = (rotExtendedRatio >= 1f);
-            float addedDelta = (isFullyExtended ? Time.deltaTime * 10f : _boneCountDiv * .1f);
-            float currDelta = (_boneCountDiv * addedDelta);
-
-            int Count = (_dataCount - 1);
-            Vector3 targetPos    = targetTr.position;
-            Vector3 last2GrabDir = (targetPos - lastData.Tr.position);
-            float last2Grab = last2GrabDir.magnitude;
-            float currRatio = 0f;
-
-            last2GrabDir.Normalize();
-
-            for (int i = 0; i < Count; i++)
-            {
-
-                ref BoneData nextData = ref _datas[i + 1];
-                ref BoneData data = ref _datas[i];
-
-                /**루트모션과의 차이를 구한다...*/
-                Vector3 oriDir2TargetDir = (targetDir - data.originDir) * rotExtendedRatio;
-                Vector3 goalDir = (data.originDir + oriDir2TargetDir);
-                Vector3 boneDir = (nextData.Tr.position - data.Tr.position).normalized;
-                Quaternion rotQuat = GetQuatBetweenVector(boneDir, goalDir.normalized, currRatio += Time.deltaTime * .5f);
-
-                data.Tr.rotation *= (rotQuat);
-                data.PrevQuat = data.Tr.rotation;
-            }
+            /**원상복귀 될 때의 처리...*/
 
         }
-
     }
 
 
@@ -685,19 +637,57 @@ public sealed class PullableObject : MonoBehaviour
     //===========================================
     /////          Core methods             /////
     //===========================================
-    private bool DatasIsValid()
+    private bool UpdatePulling()
     {
-        #region Omit
-        int Count = 0;
-        if (_datas == null || (Count=_datas.Length) < 2) return false;
+        if (GrabTarget == null) return false;
 
-        for(int i=0; i<Count; i++)
+        /***************************************
+         *   계산에 필요한 요소들을 구한다..
+         * ****/
+        Transform    grabTr   = GrabTarget.transform;
+        ref BoneData root     = ref _datas[0];
+
+        /**뿌리지점에서 잡힌 지점까지의 거리를 구한다...*/
+        Vector3 rootPos         = root.OriginPos;
+        Vector3 root2GrabDir    = (grabTr.position - root.OriginPos);
+        float   root2GrabLen    = root2GrabDir.magnitude;
+        float extendedRatio     = ( root2GrabLen * _fullyExtendedDiv );
+        root2GrabDir.Normalize();
+
+
+        /****************************************
+         *   모든 본의 상태를 갱신한다...
+         * ****/
+        int Count = (_dataCount - 1);
+        float lenRatio = 0f;
+        for (int i = 0; i < Count; i++)
         {
-            if (_datas[i].Tr == null) return false;
+            ref BoneData nextData = ref _datas[i + 1];
+            ref BoneData data = ref _datas[i];
+
+            /**루트모션과의 차이를 구한다...*/
+            Vector3 oriDir2TargetDir = (root2GrabDir - data.originDir) * extendedRatio;
+            Vector3 goalDir = (data.originDir + oriDir2TargetDir);
+            Vector3 boneDir = (nextData.Tr.position - data.Tr.position).normalized;
+            Quaternion rotQuat = GetQuatBetweenVector(boneDir, goalDir.normalized, lenRatio += Time.deltaTime * .5f);
+
+            data.Tr.rotation *= (rotQuat);
+            data.PrevQuat = data.Tr.rotation;
         }
+        //for (int i = 0; i < Count; i++)
+        //{
+        //    ref BoneData curr = ref _datas[i];
+        //    ref BoneData next = ref _datas[i + 1];
+
+        //    Vector3 currDir    = (next.Tr.position - curr.Tr.position).normalized;
+        //    Vector3 updatePos  = rootPos + root2GrabDir * (root2GrabLen * lenRatio);
+        //    Quaternion rotQuat = GetQuatBetweenVector(curr.originDir, root2GrabDir);
+
+        //    curr.Tr.rotation = (curr.OriginQuat * rotQuat);
+        //    lenRatio += curr.lengthRatio;
+        //}
 
         return true;
-        #endregion
     }
 
     private Quaternion GetQuatBetweenVector(Vector3 from, Vector3 to, float ratio=1f)
@@ -722,7 +712,7 @@ public sealed class PullableObject : MonoBehaviour
 
     public void UnHold()
     {
-
+            
     }
 
 
