@@ -1,3 +1,4 @@
+using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,7 @@ public sealed class EgoCrabHand : MonoBehaviour
     private Animator  _animator;
     private Coroutine _progressCoroutine;
     private Vector3   _startScale = Vector3.one;
+    private bool      _isAttack = false;
 
 
 
@@ -57,6 +59,25 @@ public sealed class EgoCrabHand : MonoBehaviour
         #endregion
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        #region Omit
+        /**충돌했는지 체크를 한다...*/
+        if (!_isAttack) return;
+
+
+        /****************************************
+         *   플레이어가 점프 상태이면 스킵한다...
+         * ***/
+        if (other.CompareTag("Player"))
+        {
+            Player.Instance.isDead = true;
+        }
+
+        /**공통적인 처리...*/
+        #endregion
+    }
+
 
 
     //=======================================
@@ -67,12 +88,15 @@ public sealed class EgoCrabHand : MonoBehaviour
         if(_progressCoroutine!=null) StopCoroutine(_progressCoroutine);
         transform.position = startPos;
         _progressCoroutine = StartCoroutine(AttackProgress());
+        _isAttack = false;
     }
 
     private IEnumerator AttackProgress()
     {
         #region Omit
         if (targetTransform == null) yield break;
+
+        _isAttack = false;
 
         /***************************************
          *   계산에 필요한 것들을 구한다...
@@ -126,6 +150,7 @@ public sealed class EgoCrabHand : MonoBehaviour
         /******************************************
          *    대상을 향해 내려찍는다...
          * ***/
+        _isAttack = true;
         timeLeft = _AttackDuration;
 
         /**내려찍는 곳까지의 거리를 구한다...*/
@@ -158,7 +183,10 @@ public sealed class EgoCrabHand : MonoBehaviour
 
         } while (progressRatio < 1f);
 
-        CameraManager.GetInstance()?.CameraShake(3f, .4f);
+
+        _isAttack = false;
+        CameraManager.GetInstance()?.CameraShake(3f, .2f);
+
 
         /**공격을 마친 후 대기...*/
         timeLeft = .7f;

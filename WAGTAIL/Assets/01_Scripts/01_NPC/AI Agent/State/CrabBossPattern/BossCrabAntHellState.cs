@@ -8,16 +8,18 @@ public class BossCrabAntHellState : AIAttackState
     //////          Property            //////
     //========================================
     private SandScript _targetSand;
-    private float      _currTime = 0f;
+    private float      _duration = 0f;
 
 
     //==================================================
     //////        Public and Override methods       ////
     //==================================================
-    public BossCrabAntHellState(AIStateMachine stateMachine, GameObject andhellPrefab)
+    public BossCrabAntHellState(AIStateMachine stateMachine, GameObject andhellPrefab, float duration)
     : base(stateMachine)
     {
         #region Omit
+        _duration = duration;
+
         if (andhellPrefab != null){
 
             _targetSand = andhellPrefab.GetComponent<SandScript>();
@@ -29,7 +31,7 @@ public class BossCrabAntHellState : AIAttackState
     {
         #region Omit
         AISM.Animator.SetTrigger("");
-        _currTime = 0f;
+        curTimer = 0f;
         
         if(_targetSand!=null)
         {
@@ -48,8 +50,8 @@ public class BossCrabAntHellState : AIAttackState
         #region Omit
         base.Update();
 
-        _currTime += Time.deltaTime;
-        if(_currTime>5f) {
+        curTimer += Time.deltaTime;
+        if(curTimer > _duration) {
 
             _targetSand?.IntakeSand(false);
             AISM.NextPattern();
