@@ -112,8 +112,8 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
     [SerializeField] private bool       _playerOnSand = false;
     [SerializeField] public Vector3     SandCenterIntakeOffset  = Vector3.zero;
     [SerializeField] public Vector3     SandCenterIdleOffset    = Vector3.zero;
-    [SerializeField] public float       PullPower = .5f;
-    [SerializeField] private float      _IntakeDuration = 1f;
+    [SerializeField] public float       PullPower = 6f;
+    [SerializeField] private float      _IntakeDuration = 0.8f;
     [SerializeField] private int        _precision = 2;
 
 
@@ -153,8 +153,9 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
     private float _playerLastSpeed  = 0f;
     private float _playerLastJumPow = 0f;
 
-    private bool _isIntake = false;
-
+    private bool  _isIntake = false;
+    private float _shakeTime = 0f;
+    private bool _playerDead = false;
 
 
     //=======================================
@@ -200,6 +201,12 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
         /**파라미터를 갱신한다...*/
         _sandMat?.SetFloat("_Speed", _totalTime+=(deltaTime*_currPullSpeed));
 
+        /**흔들림 효과*/
+        if (_currPullSpeed>0f && (_shakeTime -= deltaTime) <= 0f)
+        {
+            CameraManager.GetInstance().CameraShake(1.5f, .1f);
+            _shakeTime = .1f;
+        }
 
 
         /*********************************************
@@ -207,8 +214,17 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
          * ***/
         if (_playerOnSand) {
 
+            Player player = Player.Instance;
+            if (_playerDead) {
+
+                /**플레이어가 빨려들어갔을 경우...*/
+                player.transform.position += (Vector3.down * .025f);
+                return;
+            }
+
+
             RaycastHit hit;
-            if (GetPlayerFloorinfo(out hit))
+            if (_currPullSpeed>0f && GetPlayerFloorinfo(out hit))
             {
                 bool isGround       = (hit.normal.y > 0);
                 bool isSameCollider = (hit.collider.gameObject.Equals(gameObject));
@@ -216,17 +232,32 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
                 /**땅을 밟음 판정을 적용한다...*/
                 if (isGround && isSameCollider)
                 {
-                    Vector3 playerPos       = Player.Instance.transform.position;
+                    Vector3 playerPos       = player.transform.position;
                     Vector3 centerPos       = GetWorldCenterPosition();
                     Vector3 target2Center   = (centerPos - playerPos).normalized;
                     Vector3 right           = Vector3.Cross(hit.normal, target2Center);
                     Vector3 forward         = Vector3.Cross(right, hit.normal);
 
-                    Debug.DrawLine(playerPos, centerPos, Color.red);
+                    //Debug.DrawLine(playerPos, centerPos, Color.red);
                     float pullPow = (PullPower * _currPullSpeed);
-                    Player.Instance.controller.Move((forward * pullPow * deltaTime));
+                    player.controller.Move((forward * pullPow * deltaTime));
+
+                    float target2CenterLen = (centerPos - playerPos).magnitude;
+
+                    /**플레이어가 모래 가운데로 들어왔다면 죽음판정...*/
+                    if (!player.isDead && target2CenterLen < 1f){
+
+                        player.controller.enabled = true;
+                        _playerDead   = true;
+                        player.isDead = true;
+                    }
                 }
-                else _playerOnSand = false;
+
+                else{
+
+                    _playerOnSand = false;
+                    _playerDead = false;
+                }
             }
         }
 
@@ -245,13 +276,13 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
     private void OnCollisionStay(Collision collision)
     {
         #region Omit
-        if (collision.gameObject.CompareTag("Player")) return;
+        if (collision.gameObject.CompareTag("Player") || _currPullSpeed <= 0f) return;
 
         /****************************************
          *   충돌한 객체가 땅을 밟은 것인지 체크한다...
          * ****/
-        int Count = collision.contactCount;
-        bool isGround = false;
+        int Count          = collision.contactCount;
+        bool isGround      = false;
         ContactPoint point = new ContactPoint();
 
         for (int i = 0; i < Count; i++) {
@@ -277,10 +308,19 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
         Vector3 right           = Vector3.Cross(point.normal, target2Center);
         Vector3 forward         = Vector3.Cross(right, point.normal);
 
+        float target2CenterLen  = (centerPos - body.position).magnitude;
+
         if (body != null) {
 
             float pullPow = (PullPower * _currPullSpeed);
             body.MovePosition(body.position + (forward * pullPow * Time.fixedDeltaTime));
+
+            if(target2CenterLen<1f)
+            {
+                Physics.IgnoreCollision(collision.collider, _meshCollider);
+                body.velocity = Vector3.zero;
+                GameObject.Destroy(body.gameObject, 2f);
+            }
         }
 
         #endregion
@@ -491,6 +531,7 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
                 if (isGround && isSameCollider)
                 {
                     _playerOnSand = true;
+                    _playerDead = false;
                     return true;
                 }
             }
@@ -502,7 +543,7 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
 
     public void ExecutionFunction(float time)
     {
-        //throw new NotImplementedException();
+        //interface implements...
     }
 
     private Vector3 GetWorldCenterPosition()

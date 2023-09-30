@@ -1,20 +1,249 @@
+using FMOD;
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Timeline;
 
-public sealed class BossCrabSowingSeedsState : BossNepenthesSmallShotGun
+public sealed class BossCrabSowingSeedsState : AIAttackState
 {
-    //==================================================
-    //////        Public and Override methods       ////
-    //==================================================
-    public BossCrabSowingSeedsState( AIStateMachine       stateMachine,
-                                     BossNepenthesProfile profile,
-                                     float  flightTime,
-                                     int    count,
-                                     float  rad )
+    #region Define
+    public struct BossCrabSowingSeedsDesc
+    {
+        public GameObject SeedPrefab;
+        public GameObject MarkerPrefab;
+        public Transform  shootPoint;
+        public float      delayTime;
+        public float      flightTime;
+        public float      changeTime;
+        public float      rad;
+        public int        count;
+    };
 
-    :base( stateMachine, profile,flightTime,count,rad)
+    private struct ThrowDesc
+    {
+        public Rigidbody  throwBody;
+        public Collider   collider;
+        public GameObject marker;
+        public Vector3    goalPos;
+    }
+    #endregion
+
+    //======================================
+    /////           Fields              ////
+    //======================================
+    private BossCrabSowingSeedsDesc _desc;
+    private readonly ThrowDesc[]    _targets;
+
+    private float _changeTimeDiv = 1f;
+    private bool  _isShoot       = false;
+    private bool  _ignoreRelease = false;
+
+
+
+    //========================================
+    //////        Override methods        ////
+    //========================================
+    public BossCrabSowingSeedsState( AIStateMachine stateMachine, ref BossCrabSowingSeedsDesc desc )
+    :base( stateMachine )
+    {
+        _desc = desc;
+        _targets = new ThrowDesc[_desc.count];
+    }
+
+    public override void Enter()
+    {
+        AISM.Animator.SetTrigger("isAttack");
+        _changeTimeDiv = (1f / _desc.changeTime);
+        curTimer       = 0f;
+        _isShoot       = false;
+        _ignoreRelease = false;
+    }
+
+    public override void Exit()
     {
     }
 
+    public override void Update()
+    {
+        base.Update();
+        if (Player.Instance.isDead) return;
+
+        /***********************************
+         *   타이머에 따른 상태변화 적용...
+         * ***/
+        curTimer += Time.deltaTime;
+        ShootDelay();
+        ChangeState();
+        ApplySeedsIgonre();
+    }
+
+
+
+    //==========================================
+    ///////         Core methods            ////
+    //==========================================
+    protected override void ChangeState()
+    {
+        #region Omit
+        /****************************************
+         *   각 마커들의 크기가 점점 커지도록 한다...
+         * ***/
+        int Count           = _desc.count;
+        float progressRatio = Mathf.Clamp((curTimer * _changeTimeDiv), 0f, 1f);
+
+        for( int i=0; i<Count; i++ )
+        {
+            GameObject marker = _targets[i].marker;
+            if (marker == null) continue;
+
+            marker.transform.localScale = (Vector3.one * progressRatio);
+        }
+
+
+        /**시간이 다되면 다음 상태로 전환한다...*/
+        if(progressRatio>=1f) base.ChangeState();
+
+        #endregion
+    }
+
+    private void CreateMarker()
+    {
+        #region Omit
+        /*****************************************
+         *   Player의 주변위치들을 저장한다....
+         * ****/
+        for (int i=0; i<_desc.count; i++){
+
+            _targets[i].goalPos = Search();
+        }
+
+
+        /*****************************************
+         *   marker 객체를 생성하고, 참조를 담아둔다.
+         * ****/
+        for(int i=0; i<_desc.count; i++)
+        {
+            GameObject newMarker = GameObject.Instantiate(_desc.MarkerPrefab);
+            newMarker.GetComponentInChildren<Transform>().localScale = Vector3.one*.3f;
+            newMarker.transform.SetPositionAndRotation(
+
+                  _targets[i].goalPos,
+                  Quaternion.Euler(-90f, 0f, 0f)
+            );
+
+            _targets[i].marker = newMarker;
+        }
+        #endregion
+    }
+
+    private void PositionLuncher()
+    {
+        #region Omit
+        for (int i= 0; i < _desc.count; i++)
+        {
+            ref ThrowDesc desc = ref _targets[i];
+
+            /**던져졌을 때의 가속도를 계산한다...*/
+            Vector3 vel = IpariUtility.CaculateVelocity(
+                desc.goalPos, 
+                _desc.shootPoint.position, 
+                _desc.flightTime * Random.Range(.5f,1f)
+            );
+
+
+            /**씨앗 폭탄을 생성한다...*/
+            GameObject obj = GameObject.Instantiate(
+                _desc.SeedPrefab, 
+                _desc.shootPoint.position, 
+                Quaternion.identity
+            );
+
+
+            /**씨앗 폭탄에게 가속도를 가한다...*/
+            desc.throwBody = obj.GetComponent<Rigidbody>();
+            if(desc.throwBody != null)
+            {
+                float torquePow = Random.Range(1f, 5f);
+
+                desc.collider = obj.GetComponent<Collider>();
+                desc.throwBody.velocity = vel;
+                desc.throwBody.AddTorque(vel*torquePow);
+            }
+        }
+
+        /**각 씨앗들은 서로 충돌판정이 나지 않도록 한다...*/
+        for(int i=0; i<_desc.count; i++){
+
+            IgnoreCollisionOtherSeeds(ref _targets[i]);
+        }
+        #endregion
+    }
+
+    private void IgnoreCollisionOtherSeeds( ref ThrowDesc desc, bool value=true )
+    {
+        #region Omit
+        if (desc.collider != null)
+        {
+            int Count = _desc.count;
+
+            for(int i=0; i<Count; i++){
+
+                ref ThrowDesc other = ref _targets[i];
+                Physics.IgnoreCollision(desc.collider, other.collider, value );
+            }
+        }
+        #endregion
+    }
+
+    private Vector3 Search()
+    {
+        #region Omit
+        /*************************************************************
+         *   플레이어를 기준으로하는 원 반경에서의 무작위 위치값을 반환한다...
+         * ***/
+        Vector3 unitDir  = Random.onUnitSphere;
+        float   randRad  = Random.Range(0.0f, _desc.rad);
+
+        Vector3 result = (unitDir * randRad) + Player.Instance.transform.position;
+        result.y = .1f;
+
+        return result;
+        #endregion
+    }
+
+    public void ShootDelay()
+    {
+        #region Omit
+        if (!_isShoot && curTimer >= _desc.delayTime)
+        {
+            FModAudioManager.PlayOneShotSFX(
+                FModSFXEventType.Broken,
+                Vector3.zero,
+                FModParamLabel.BrokenType.Wall
+            );
+
+            CreateMarker();
+            PositionLuncher();
+            _isShoot = true;
+        }
+
+        #endregion
+    }
+
+    public void ApplySeedsIgonre()
+    {
+        #region Omit
+        if (!_ignoreRelease && curTimer >= (_desc.flightTime*.5f + _desc.delayTime))
+        {
+            /**각 씨앗들은 서로 충돌판정이 나지 않도록 한다...*/
+            for (int i = 0; i < _desc.count; i++){
+
+                IgnoreCollisionOtherSeeds(ref _targets[i], false);
+            }
+
+            _ignoreRelease = true;
+        }
+        #endregion
+    }
 }

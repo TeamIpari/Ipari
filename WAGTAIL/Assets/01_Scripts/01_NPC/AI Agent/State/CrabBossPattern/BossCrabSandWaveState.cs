@@ -7,23 +7,51 @@ public class BossCrabSandWaveState : AIAttackState
     //====================================
     /////           Fields            ////
     //====================================
-    private SandWave wave;
+    private SandWave[] _waves;
+    private int        _waveCount = 0;
+    private int        _waveLeft  = 0;
 
 
 
     //==================================================
     //////        Public and Override methods       ////
     //==================================================
-    public BossCrabSandWaveState(AIStateMachine stateMachine)
+    public BossCrabSandWaveState(AIStateMachine stateMachine, params GameObject[] waves)
     : base(stateMachine)
     {
-        wave = AISM.character.GetComponent<SandWave>();
+        /**프리팹들을 추가한다...*/
+        int length = waves.Length;
+        if( length>0 )
+        {
+            _waves = new SandWave[length];
+            for(int i=0; i<length; i++){
+
+                if (waves[i] == null) continue;
+                _waves[_waveCount++] = waves[i].GetComponent<SandWave>();
+            }
+        }
     }
 
     public override void Enter()
     {
-        wave?.StartWave();
-        AISM.NextPattern();
+        _waveLeft = _waveCount;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        /*******************************************************
+         *   TODO: 추후, 꽃게 애니메이션에 의해서 발생하도록 수정예정.
+         * ***/
+        if ((curTimer -= Time.deltaTime) <= 0f && _waveLeft > 0)
+        {
+            curTimer = 1f;
+            _waves[--_waveLeft]?.StartWave();
+
+            /**모든 충격파를 발생시켰다면, 다음 패턴으로 넘어간다...*/
+            if (_waveLeft <= 0) AISM.NextPattern();
+        }
     }
 
     public override void Exit()
