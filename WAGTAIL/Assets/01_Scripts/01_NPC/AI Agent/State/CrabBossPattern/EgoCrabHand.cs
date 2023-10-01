@@ -21,7 +21,7 @@ public sealed class EgoCrabHand : MonoBehaviour
     [SerializeField] public  GameObject     MarkerPrefab;
     [SerializeField] public  AnimationCurve curve;
     [SerializeField] private float          _AttackReadyDuration = 1f;
-    [SerializeField] private float          _AttackDuration = 1f;
+    [SerializeField] private float          _AttackDuration = .5f;
     [SerializeField] private float          _AttackRange = 1f;
 
 

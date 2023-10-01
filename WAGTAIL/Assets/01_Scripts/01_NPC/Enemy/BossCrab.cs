@@ -453,7 +453,7 @@ public sealed class BossCrab : Enemy
     /************************************
      *   ¾¾¾Ñ ¹ñ´Â ÆÐÅÏ °ü·Ã ÇÁ·ÎÆÛÆ¼...
      * ***/
-    [SerializeField,HideInInspector, Min(0)]
+    [SerializeField,HideInInspector, Min(0f)]
     private float        _SeedSpawnRange;
 
     [SerializeField,HideInInspector, Min(0)] 

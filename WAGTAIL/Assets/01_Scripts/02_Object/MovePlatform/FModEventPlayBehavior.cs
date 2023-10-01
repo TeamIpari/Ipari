@@ -28,6 +28,7 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
         ///==============================================
         private SerializedProperty ApplyTimingProperty;
         private SerializedProperty PlayEventProperty;
+        private SerializedProperty PlayEventParamProperty;
 
 
         //===============================================
@@ -54,6 +55,8 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
                     GUI_ShowTimingField(ref headerRect, space);
 
                     GUI_ShowEventReference(ref headerRect, space);
+
+                    GUI_ShowEventParamReference(ref headerRect, space);
                 }
 
                 scope.Dispose();
@@ -71,8 +74,9 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
             /**********************************************
              *  모든 필드의 SerializedProperty를 가져옵니다...
              * ***/
-            ApplyTimingProperty = editorProperty.FindPropertyRelative("timing");
-            PlayEventProperty = editorProperty.FindPropertyRelative("PlayEvent");
+            ApplyTimingProperty     = editorProperty.FindPropertyRelative("timing");
+            PlayEventProperty       = editorProperty.FindPropertyRelative("PlayEvent");
+            PlayEventParamProperty  = editorProperty.FindPropertyRelative("PlayEventParam");
             #endregion
         }
 
@@ -93,6 +97,17 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
             if (PlayEventProperty == null) return;
             header.y += offset;
             EditorGUI.PropertyField(header, PlayEventProperty);
+
+            if (PlayEventProperty.isExpanded) header.y += 80f;
+            #endregion
+        }
+
+        private void GUI_ShowEventParamReference(ref Rect header, float offset = 5f)
+        {
+            #region Omit
+            if (PlayEventParamProperty == null) return;
+            header.y += offset;
+            EditorGUI.PropertyField(header, PlayEventParamProperty);
             #endregion
         }
 
@@ -102,7 +117,8 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
             float baseHeight = GetBaseHeight();
 
             if (PlayEventProperty!=null && PlayEventProperty.isExpanded) baseHeight += 80f;
-            return baseHeight + (property.isExpanded? 60f:0f);
+
+            return baseHeight + (property.isExpanded? 130f:0f);
         }
 
 
@@ -123,15 +139,16 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
     [System.Serializable]
     public class PlatformAudioPlayData
     {
-        public EventReference       PlayEvent;
-        public PlatformApplyTiming  timing;
+        public EventReference         PlayEvent;
+        public FModParameterReference PlayEventParam;
+        public PlatformApplyTiming    timing;
 
         public void ApplyPlayEvent(PlatformApplyTiming applyTiming, Vector3 position)
         {
             int timingInt = (int)timing;    
             if( (timingInt &= (int)applyTiming)>0 ){
 
-                FMODUnity.RuntimeManager.PlayOneShot(PlayEvent, position);
+                FModAudioManager.PlayOneShotSFX(PlayEvent, position, PlayEventParam);
             }
         }
     }

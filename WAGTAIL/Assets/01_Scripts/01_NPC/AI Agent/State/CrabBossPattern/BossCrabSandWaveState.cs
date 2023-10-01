@@ -19,6 +19,7 @@ public class BossCrabSandWaveState : AIAttackState
     public BossCrabSandWaveState(AIStateMachine stateMachine, params GameObject[] waves)
     : base(stateMachine)
     {
+        #region Omit
         /**프리팹들을 추가한다...*/
         int length = waves.Length;
         if( length>0 )
@@ -30,6 +31,7 @@ public class BossCrabSandWaveState : AIAttackState
                 _waves[_waveCount++] = waves[i].GetComponent<SandWave>();
             }
         }
+        #endregion
     }
 
     public override void Enter()
@@ -39,6 +41,7 @@ public class BossCrabSandWaveState : AIAttackState
 
     public override void Update()
     {
+        #region Omit
         base.Update();
 
         /*******************************************************
@@ -52,6 +55,7 @@ public class BossCrabSandWaveState : AIAttackState
             /**모든 충격파를 발생시켰다면, 다음 패턴으로 넘어간다...*/
             if (_waveLeft <= 0) AISM.NextPattern();
         }
+        #endregion
     }
 
     public override void Exit()

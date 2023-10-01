@@ -117,6 +117,7 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
     [SerializeField] private int        _precision = 2;
 
 
+
     //=====================================
     ////            Fields             ////
     //=====================================
@@ -128,9 +129,9 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
     private Material        _sandMat;
 
     /**메시 생성에 관련된 필드...*/
-    private Vector3[]   _sandBounds          = new Vector3[4];
-    private Vector3     _currCenterOffset    = Vector3.zero;
-    private float       _precisionDiv        = 1f;
+    private static readonly Vector3[]   _sandBounds         = new Vector3[4];
+    private Vector3                     _currCenterOffset   = Vector3.zero;
+    private float                       _precisionDiv       = 1f;
 
     private Mesh        _mesh;
     private Vector3[]   _vertices;
@@ -276,7 +277,7 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
     private void OnCollisionStay(Collision collision)
     {
         #region Omit
-        if (collision.gameObject.CompareTag("Player") || _currPullSpeed <= 0f) return;
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Boss") || _currPullSpeed <= 0f) return;
 
         /****************************************
          *   충돌한 객체가 땅을 밟은 것인지 체크한다...
