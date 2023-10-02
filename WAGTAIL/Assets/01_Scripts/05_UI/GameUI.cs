@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameUI : MonoBehaviour
 {
@@ -46,7 +47,7 @@ public class GameUI : MonoBehaviour
         Continue();
         GameManager.GetInstance().Coin = 0;
         GameManager.GetInstance().Flower = 0;
-        SceneLoader.GetInstance().LoadScene("Chapter01");
+        SceneLoader.GetInstance().LoadScene(SceneManager.GetActiveScene().name);
         /*
         GameManager.GetInstance().RestartChapter();
         // 임시 땜빵임 추후에 수정안하면 안됨

@@ -512,7 +512,7 @@ GameObject:
   - component: {fileID: 8542177882760446187}
   - component: {fileID: 8542177882760446184}
   - component: {fileID: 8542177882760446185}
-  - component: {fileID: 8542177882760446186}
+  - component: {fileID: 1376284612}
   m_Layer: 6
   m_Name: BombFruit
   m_TagString: interactable
@@ -527,7 +527,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8542177882760446103}
-  m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.5, y: 2.078, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
@@ -598,7 +598,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8542177882760446103}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 09f9aac07ffb7494aa768d5689a7a7b6, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -636,12 +636,12 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 128
-  explosionRange: 1.5
+  explosionRange: 2
   explosionTime: 5
   explosionVFX: {fileID: 7873947948240952929, guid: d0c98e46a95c4564781abcc7366f489a,
     type: 3}
   _isStart: 0
---- !u!114 &8542177882760446186
+--- !u!114 &1376284612
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -650,17 +650,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8542177882760446103}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ff76ad8ea51b2545a8c3c307a8019d8, type: 3}
+  m_Script: {fileID: 11500000, guid: d4601c1c84ed98a43ae12bd38b800efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isSmall: 1
-  _promt: 
-  _value: 0
-  _hight: 3
-  _range: 17
+  value: 0
+  height: 3
+  range: 30
   autoTarget: {fileID: 0}
-  _overheadSpeed: 0.15
+  isSmall: 0
+  Forward: {x: 0, y: 0, z: 0}
   PhysicsCheck: 0
   flight: 0
-  Forward: {x: 0, y: 0, z: 0}
-  speed: 1

@@ -17,13 +17,18 @@ public class LandingState : State
     {
         base.Enter();
 
+        input = Vector2.zero;
+        velocity = Vector3.zero;
+        currentVelocity = Vector3.zero;
+        cVelocity = Vector3.zero;
+        
         FModAudioManager.PlayOneShotSFX(
             FModSFXEventType.Player_Landed,
             player.transform.position
         );
 
         _timePassed = 0f;
-        player.animator.SetTrigger("land");
+        player.animator.SetTrigger(Landing);
         _landingTime = 0.05f;
     }
 
