@@ -52,7 +52,7 @@ public class Throw : MonoBehaviour, IInteractable
         BoxCollider box = GetComponent<BoxCollider>();
         rigidbody.useGravity = true;
         spawnPoint = this.transform.position;
-        rigidbody.drag = GetComponent<BombObject>() == null ? Mathf.Infinity : 0;
+        //rigidbody.drag = GetComponent<BombObject>() == null ? Mathf.Infinity : 0;
 
         center = new GameObject();
         center.transform.position = this.transform.position + (box == null ? Vector3.zero : box.center);
@@ -84,6 +84,7 @@ public class Throw : MonoBehaviour, IInteractable
         else if (player.currentInteractable != null)
         {
             StartCoroutine(Throwing(interactor));
+            Debug.Log("Test");
             player.isCarry = false;
             return true;
         }
@@ -135,7 +136,7 @@ public class Throw : MonoBehaviour, IInteractable
         PhyscisChecking();
         CheckVelocity();
     }
-
+    
     IEnumerator Pickup()
     {
         // 추가된 스크립트 2023-08-22 강명호
@@ -207,7 +208,7 @@ public class Throw : MonoBehaviour, IInteractable
             Player.Instance.transform.LookAt(new Vector3(player.target.transform.position.x, Player.Instance.transform.position.y, player.target.transform.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
         // interactionPoint의 Position을 초기상태로 되돌림
@@ -228,7 +229,6 @@ public class Throw : MonoBehaviour, IInteractable
         else if (player.target != null)
         {
             Vector3 vel = IpariUtility.CaculateVelocity(player.target.transform.position + player.transform.forward * _range, player.transform.position, _hight);
-            Debug.Log(vel);
             rigidbody.velocity = vel;
         } 
         Forward = this.transform.position;
@@ -237,6 +237,7 @@ public class Throw : MonoBehaviour, IInteractable
         PhysicsCheck = true;
         if(_animator == null)
             flight = true;
+        yield return null;
     }
 
     public void ResetPoint()

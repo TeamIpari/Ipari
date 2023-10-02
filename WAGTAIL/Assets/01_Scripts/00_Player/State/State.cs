@@ -13,7 +13,7 @@ public class State
     public Vector3 gravityVelocity;
     public Vector3 velocity;
     public Vector3 currentVelocity;
-    private Vector3 _cVelocity;
+    public Vector3 cVelocity;
     protected Vector2 input;
     
     protected readonly InputAction moveAction;
@@ -29,7 +29,7 @@ public class State
     protected static readonly int Move = Animator.StringToHash("move");
     protected static readonly int Jump = Animator.StringToHash("jump");
     protected static readonly int Flight = Animator.StringToHash("flight");
-    protected static readonly int Landing = Animator.StringToHash("landing");
+    protected static readonly int Landing = Animator.StringToHash("land");
     protected static readonly int PickUp = Animator.StringToHash("pickup");
     protected static readonly int Carry = Animator.StringToHash("carry");
     protected static readonly int Throw = Animator.StringToHash("throw");
@@ -68,7 +68,7 @@ public class State
         // Slope 조정
         velocity = AdjustVelocityToSlope(velocity);
         // Movement Logic
-        currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref _cVelocity, player.velocityDampTime);
+        currentVelocity = Vector3.SmoothDamp(currentVelocity, velocity, ref cVelocity, player.velocityDampTime);
         player.controller.Move(currentVelocity * (Time.deltaTime * playerSpeed) + gravityVelocity * Time.deltaTime);
         
         // Player Rotation 보간

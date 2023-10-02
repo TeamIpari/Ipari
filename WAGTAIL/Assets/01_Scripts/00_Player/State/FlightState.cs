@@ -30,8 +30,8 @@ public class FlightState : State
         _gravityValue = player.gravityValue;
         gravityVelocity.y = 0;
         
-        player.animator.SetFloat("speed", 0);
-        player.animator.SetTrigger("flight");
+        player.animator.SetFloat(Speed, 0);
+        player.animator.SetTrigger(Flight);
     }
 
     public override void HandleInput()
@@ -44,12 +44,13 @@ public class FlightState : State
         }
 
         _dead = player.isDead;
-        input = moveAction.ReadValue<Vector2>();
-        velocity = new Vector3(input.x, 0, input.y);
-
-        velocity = velocity.x * player.cameraTransform.right.normalized +
-                   velocity.z * player.cameraTransform.forward.normalized;
-        velocity.y = 0f;
+        GetMoveInput();
+        _airVelocity = new Vector3(input.x, 0, input.y);
+        var temp = player.cameraTransform.forward;
+        temp.y = 0f;
+        _airVelocity = _airVelocity.x * player.cameraTransform.right.normalized +
+                       _airVelocity.z * temp.normalized;
+        _airVelocity.y = 0;
     }
 
     public override void LogicUpdate()
@@ -75,24 +76,13 @@ public class FlightState : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-
+        
         if (!_isGrounded)
         {
-            velocity = player.playerVelocity;
-            _airVelocity = new Vector3(input.x, 0, input.y);
-            
-            velocity = velocity.x * player.cameraTransform.right.normalized + 
-                       velocity.z * player.cameraTransform.forward.normalized;
-            velocity.y = 0f;
-
-            _airVelocity = _airVelocity.x * player.cameraTransform.right.normalized +
-                          _airVelocity.z * player.cameraTransform.forward.normalized;
-            _airVelocity.y = 0;
-
             player.controller.Move(gravityVelocity * Time.deltaTime + 
-                                   (_airVelocity * player.airControl + velocity * (1 - player.airControl)) * _playerSpeed * Time.deltaTime);
+                                   (_airVelocity * player.airControl + velocity * (1 - player.airControl)) * (player.playerSpeed * Time.deltaTime));
 
-            gravityVelocity.y += _gravityValue * Time.deltaTime;
+            gravityVelocity.y += player.gravityValue * Time.deltaTime;
             _isGrounded = player.controller.isGrounded;
 
             if (_airVelocity.sqrMagnitude > 0)

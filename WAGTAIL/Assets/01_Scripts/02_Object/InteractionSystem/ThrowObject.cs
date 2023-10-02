@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using IPariUtility;
+using UnityEngine.Serialization;
 
 //=================================================
 // 플레이어가 들고 던질 수 있는 오브젝트의 기반이 되는 클래스.
@@ -13,14 +14,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //==========================================================
     //                  Properties And Fields                 //
     //==========================================================
+    [FormerlySerializedAs("_value")]
     [Header("Throw Setting")]
     [Range(0, 5)]
-    [SerializeField] float _value = 0.0f;
-    [SerializeField] float _hight = 0.0f;
-    [SerializeField] float _range = 0.0f;
+    [SerializeField] private float value = 0.0f;
+    [SerializeField] private float height = 0.0f;
+    [SerializeField] private float range = 0.0f;
     [SerializeField] private Transform autoTarget;
-    [Range(0,0.25f)]
-    [SerializeField] float _overheadSpeed = 0.0f;
     
     private Transform _transform;
     private Collider _collider;
@@ -81,10 +81,15 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerHeadPos = _playerHead.transform;
         
         
-        _center = new GameObject();
-        _center.transform.position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center);
-        _center.transform.parent = _transform;
-        _center.name = "Center";
+        _center = new GameObject
+        {
+            transform =
+            {
+                position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center),
+                parent = _transform
+            },
+            name = "Center"
+        };
     }
 
     private void FixedUpdate()
@@ -191,14 +196,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
     {
         // Object 종속을 풀어줌
         _transform.SetParent(null);
-        
         if(autoTarget != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
             Player.Instance.transform.LookAt(new Vector3(autoTarget.position.x, Player.Instance.transform.position.y, autoTarget.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
 
@@ -207,22 +211,25 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _rigidbody.freezeRotation = false;
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _rigidbody.isKinematic = false;
-        _collider.isTrigger = false;
 
         if (_player.target == null)
-            _rigidbody.velocity = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * _range, this.transform.position, _hight);
+            _rigidbody.velocity = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, this.transform.position, height);
         else if (_player.target != null)
         {
-            Vector3 vel = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * _range, _player.transform.position, _hight);
-            Debug.Log(vel);
+            Vector3 vel = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * range, _player.transform.position, height);
             _rigidbody.velocity = vel;
-        } 
+        }
+
+        _rigidbody.velocity += _player.movementSM.currentState.velocity * _player.playerSpeed * 0.5f;
         Forward = transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;
         if(_animator == null)
             flight = true;
+
+        yield return new WaitForSeconds(0.2f);
+        _collider.isTrigger = false;
     }
     
     private void PhysicsChecking()
