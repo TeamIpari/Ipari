@@ -38,8 +38,8 @@ public class LandingState : State
 
         if (_timePassed > _landingTime)
         {
-            if (player.isIdle) stateMachine.ChangeState(player.idle);
-            else if (player.isCarry) stateMachine.ChangeState(player.carry);
+            if (player.isCarry) stateMachine.ChangeState(player.carry);
+            else if (player.isIdle) stateMachine.ChangeState(player.idle);
         }
         _timePassed += Time.deltaTime;
     }
