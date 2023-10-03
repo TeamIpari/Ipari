@@ -32,7 +32,7 @@ public class PickUpState : State
         if (_timePassed > _pickUpTime)
         {
             // 추가 스크립트
-            player.animator.SetTrigger(Carry);
+            //player.animator.SetTrigger(Carry);
             stateMachine.ChangeState(player.carry);
         }
         _timePassed += Time.deltaTime;

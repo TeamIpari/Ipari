@@ -223,7 +223,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             _rigidbody.velocity = vel;
         }
 
-        _rigidbody.velocity += _player.movementSM.currentState.velocity * _player.playerSpeed * 0.5f;
+        //_rigidbody.velocity += _player.movementSM.currentState.velocity * _player.playerSpeed * 0.3f;
         Forward = transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
@@ -231,7 +231,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         if(_animator == null)
             flight = true;
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
         _collider.isTrigger = false;
     }
     
