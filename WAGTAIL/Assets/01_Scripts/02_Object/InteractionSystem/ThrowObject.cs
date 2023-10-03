@@ -157,10 +157,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _player.isPickup = true;
         // Object가 손에 붙어서 움직이지 않도록 설정
         _rigidbody.useGravity = false;
-        _rigidbody.velocity = Vector3.zero;
         _rigidbody.freezeRotation = true;
         _rigidbody.isKinematic = true;
+        PhysicsCheck = false;
+        flight = false;
         _collider.isTrigger = true;
+        _rigidbody.angularVelocity = Vector3.zero;
+        _rigidbody.velocity = Vector3.zero;
         
         var pos = _transform.position;
         var currentTime = 0.0f;
@@ -169,10 +172,10 @@ public class ThrowObject : MonoBehaviour, IInteractable
         while (currentTime < lerpTime)
         {
             _transform.position = Vector3.Lerp(pos, _playerInteractionPos.position, currentTime / lerpTime);
-            currentTime += 0.1f;
-            yield return new WaitForSeconds(0.0025f);
+            currentTime += 0.4f;
+            yield return new WaitForSecondsRealtime(0.017f);
         }
-        yield return new WaitForSeconds(PickUpDelayTime);
+        yield return new WaitForSecondsRealtime(PickUpDelayTime);
         
         // BezierCurve를 위한 3개의 점 구하기 StartPos, Height, EndPos
         _startPos = _transform.position;
@@ -186,8 +189,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
         while (currentTime < pickUpTime)
         {
             _transform.position = BezierCurve(_startPos, _endPos, _height, currentTime / pickUpTime);
-            currentTime += 0.1f;
-            yield return new WaitForSeconds(0.0025f);
+            currentTime += 0.4f;
+            yield return new WaitForSecondsRealtime(0.017f);
         }
         _transform.SetParent(_playerHead.transform);
     }

@@ -1091,8 +1091,8 @@ GameObject:
   - component: {fileID: 3509578939232668639}
   - component: {fileID: 3980687351006014510}
   - component: {fileID: 3980687351006014514}
-  - component: {fileID: 3980687351006014512}
   - component: {fileID: 632526264}
+  - component: {fileID: 2356890723020834676}
   m_Layer: 6
   m_Name: ThrowCocosh
   m_TagString: interactable
@@ -1156,29 +1156,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3980687351006014512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4323270786792526181}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ff76ad8ea51b2545a8c3c307a8019d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isSmall: 1
-  _promt: 
-  _value: 0
-  _hight: 3
-  _range: 17
-  autoTarget: {fileID: 0}
-  _overheadSpeed: 0.15
-  PhysicsCheck: 0
-  flight: 0
-  Forward: {x: 0, y: 0, z: 0}
-  speed: 1
 --- !u!65 &632526264
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1192,6 +1169,26 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.659434, z: 0.5}
   m_Center: {x: 0, y: 0.329717, z: 0}
+--- !u!114 &2356890723020834676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4323270786792526181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4601c1c84ed98a43ae12bd38b800efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 0
+  height: 3
+  range: 30
+  autoTarget: {fileID: 0}
+  isSmall: 0
+  Forward: {x: 0, y: 0, z: 0}
+  PhysicsCheck: 0
+  flight: 0
 --- !u!1 &4643775020726420721
 GameObject:
   m_ObjectHideFlags: 0

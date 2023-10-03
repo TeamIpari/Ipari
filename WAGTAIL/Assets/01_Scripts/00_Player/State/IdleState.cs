@@ -24,7 +24,6 @@ public class IdleState : State
         currentVelocity = Vector3.zero;
         gravityVelocity.y = 0;
         
-        player.animator.ResetTrigger(Landing);
         player.animator.SetTrigger(Move);
         // FX
         // 임시로 넣어둔것이니 FX Manager가 완성되면 필히 수정해야함
