@@ -30,6 +30,7 @@ public class FlightState : State
         _gravityValue = player.gravityValue;
         gravityVelocity.y = 0;
         
+        player.animator.ResetTrigger(Landing);
         player.animator.SetFloat(Speed, 0);
         player.animator.SetTrigger(Flight);
     }

@@ -30,8 +30,10 @@ public class CarryState : State
         if (jumpAction.triggered) player.isJump = true;
         if (interactAction.triggered)
         {
-            player.animator.SetTrigger(Throw);
             player.Interaction();
+            player.animator.SetLayerWeight(1, 1);
+            player.animator.Play("LiftThrow", 1, 0f);
+            player.animator.SetTrigger(Throw);
         }
         GetMoveInput();
     }

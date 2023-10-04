@@ -27,7 +27,7 @@ public class State
     protected static readonly int Speed = Animator.StringToHash("speed");
     // Animator Parameter Trigger StringToHash
     protected static readonly int Move = Animator.StringToHash("move");
-    protected static readonly int Jump = Animator.StringToHash("jump");
+    protected static readonly int Jumping = Animator.StringToHash("jump");
     protected static readonly int Flight = Animator.StringToHash("flight");
     protected static readonly int Landing = Animator.StringToHash("land");
     protected static readonly int PickUp = Animator.StringToHash("pickup");

@@ -22,9 +22,10 @@ public class JumpingState : State
         _isGrounded = false;
         _jump = false;
         gravityVelocity.y = 0;
-
+        
+        player.animator.ResetTrigger(Landing);
         player.animator.SetFloat(Speed, 0);
-        if(!player.isCarry) player.animator.SetTrigger("jump");
+        player.animator.SetTrigger("jump");
         Jump();
     }
 
@@ -35,6 +36,8 @@ public class JumpingState : State
         if (interactAction.triggered && player.currentInteractable != null)
         {
             player.Interaction();
+            player.animator.SetLayerWeight(1, 1);
+            player.animator.Play("LiftThrow", 1, 0f);
             player.animator.SetTrigger(Throw);
         }
         GetMoveInput();

@@ -19,13 +19,13 @@ public class AnimManager : MonoBehaviour
 
     public void SetLayer()
     {
-        _animator.SetLayerWeight(1, 1f);
+        _animator.SetLayerWeight(1, 0f);
     }
 
     private IEnumerator WeightLerp()
     {
         float time = 0f;
-        float duration = 0.1f;
+        float duration = 0.15f;
         float start = 1f;
         float end = 0f;
         while (time < duration)
