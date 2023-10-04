@@ -54,7 +54,7 @@ public class TrampolinePlatformBehaviour : PlatformBehaviorBase
         else
         {
             Debug.Log(affectedPlatform.name);
-            standingBody.velocity = IpariUtility.CaculateVelocity(affectedPlatform.transform.position + IpariUtility.RandomDirection() * 4f, standingPoint, 2f);
+            standingBody.velocity = IpariUtility.CaculateVelocity(standingPoint + IpariUtility.RandomDirection() * 4f, standingPoint, 2f);
         }
 
         #endregion

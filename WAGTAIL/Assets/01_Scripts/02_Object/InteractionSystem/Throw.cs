@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using IPariUtility;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Throw : MonoBehaviour, IInteractable
 {
@@ -10,15 +11,18 @@ public class Throw : MonoBehaviour, IInteractable
     [SerializeField] private bool _isSmall;
     [SerializeField] private string _promt;
     private GameObject _playerEquipPoint;
-    private Vector3 _playerEquipPos;
+    private Transform _playerEquipPos;
     private GameObject _playerInteractionPoint;
+    private Transform _playerInteractionPos;
     private GameObject center;
-    private Rigidbody rigidbody;
+    private Rigidbody _rigidbody;
+    private GameObject _playerHead;
+    private Transform _playerHeadPos;
 
     [Header("Throw Setting")]
     [Range(0, 5)]
     [SerializeField] float _value = 0.0f;
-    [SerializeField] float _hight = 0.0f;
+    [SerializeField] float _height = 0.0f;
     [SerializeField] float _range = 0.0f;
     [SerializeField] private Transform autoTarget;
     [Range(0,0.25f)]
@@ -41,26 +45,6 @@ public class Throw : MonoBehaviour, IInteractable
     [SerializeField] private float speed = 1.0f;
     private Vector3 bounceDir;
 
-    private void Start()
-    {
-        _playerEquipPoint = Player.Instance.ThrowEquipPoint.gameObject;
-        _playerEquipPos = _playerEquipPoint.transform.localPosition;
-        _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
-         startPos = this.transform.position;
-        _animator = GetComponent<Animator>();
-        rigidbody = GetComponent<Rigidbody>();
-        BoxCollider box = GetComponent<BoxCollider>();
-        rigidbody.useGravity = true;
-        spawnPoint = this.transform.position;
-        //rigidbody.drag = GetComponent<BombObject>() == null ? Mathf.Infinity : 0;
-
-        center = new GameObject();
-        center.transform.position = this.transform.position + (box == null ? Vector3.zero : box.center);
-        center.transform.parent = this.transform;
-        center.name = "Center";
-        //if (_animator != null)
-        //    rayRange = 1f;
-    }
 
 
     public bool AnimEvent()
@@ -68,178 +52,181 @@ public class Throw : MonoBehaviour, IInteractable
         return false;
     }
 
+    //private void CheckRay()
+    //{
+    //    RaycastHit hit;
+    //    bool bRangeHit = Physics.Raycast(transform.position, -transform.up, out hit, 0.2f);
+    //    bool bTagHit = !hit.transform.gameObject.CompareTag("Player")
+    //        && !hit.transform.gameObject.CompareTag("PassCollision");
+    //    bool bLayerHit = hit.transform.gameObject.layer != 5;
+
+    //    if (bRangeHit && bTagHit && bLayerHit)
+    //    {
+    //        _rigidbody.velocity = Vector3.zero;
+    //        if (_animator != null)
+    //            _animator.SetTrigger("Grounded");
+    //    }
+    //}
+
+    //private void CheckVelocity()
+    //{
+    //    if (_rigidbody.velocity == Vector3.zero && _rigidbody.isKinematic == false )
+    //    {
+    //        //rigidbody.isKinematic = true;
+    //        //rigidbody.drag = GetComponent<BombObject>() == null ? Mathf.Infinity : 0;
+    //    }
+    //}
+
+
+    #region "완료"
+
+
     public bool Interact(GameObject interactor)
     {
-        var player = interactor.GetComponent<Player>();
-        if(_playerEquipPoint.transform.childCount == 0 &&
-            player.movementSM.currentState == player.idle)
+        if (Player.Instance.currentInteractable == null)
         {
-            StartCoroutine(Pickup());
-            // isCarry를 isThrow로 바꿔줘야함
-            player.isPickup = true;
-            
-            return true;
+            StartCoroutine(PickUp(2f, 2.5f));
+            Player.Instance.isCarry = true;
         }
-
-        else if (player.currentInteractable != null)
+        else
         {
             StartCoroutine(Throwing(interactor));
-            Debug.Log("Test");
-            player.isCarry = false;
+            Player.Instance.isCarry = false;
             return true;
         }
-
         return false;
-    }
-    
-    private void CheckRay()
-    {
-        RaycastHit hit;
-        bool bRangeHit = Physics.Raycast(transform.position, -transform.up, out hit, 0.2f);
-        bool bTagHit = !hit.transform.gameObject.CompareTag("Player")
-            && !hit.transform.gameObject.CompareTag("PassCollision");
-        bool bLayerHit = hit.transform.gameObject.layer != 5;
-
-        if (bRangeHit && bTagHit && bLayerHit)
-        {
-            rigidbody.velocity = Vector3.zero;
-            if (_animator != null)
-                _animator.SetTrigger("Grounded");
-        }
-    }
-
-    private void CheckVelocity()
-    {
-        if (rigidbody.velocity == Vector3.zero && rigidbody.isKinematic == false )
-        {
-            //rigidbody.isKinematic = true;
-            rigidbody.drag = GetComponent<BombObject>() == null ? Mathf.Infinity : 0;
-        }
     }
 
     private void PhyscisChecking()
     {
         if (PhysicsCheck)
         {
-            rigidbody.velocity += Physics.gravity * .05f;
+            _rigidbody.velocity += Physics.gravity * .05f;
         }
-        if (flight)
-        {
-            this.transform.RotateAround(center.transform.position, Forward, (speed * Time.deltaTime));
-        }
+        //if (flight)
+        //{
+        //    this.transform.RotateAround(center.transform.position, Forward, (speed * Time.deltaTime));
+        //}
     }
 
     private void FixedUpdate()
     {
-        if(Input.GetKeyDown(KeyCode.K))
-            ResetPoint();
         PhyscisChecking();
-        CheckVelocity();
     }
-    
-    IEnumerator Pickup()
+
+    private void Start()
     {
-        // 추가된 스크립트 2023-08-22 강명호
-        //if (_isSmall)
-        //{
-        //    _playerEquipPoint.transform.localPosition = new Vector3(_playerEquipPoint.transform.localPosition.x, _playerEquipPoint.transform.localPosition.y - 0.338f, _playerEquipPoint.transform.localPosition.z + 0.865f);
-        //}
-        // ================================
 
-        transform.SetParent(_playerEquipPoint.transform);
-        transform.position = new Vector3(_playerInteractionPoint.transform.position.x, Player.Instance.transform.position.y, _playerInteractionPoint.transform.position.z) ;
-        transform.rotation = Quaternion.identity;
-        startPos = transform.position;
-        _value = 0;
+        _rigidbody = GetComponent<Rigidbody>();
 
-        // 방향벡터를 구함.
-        Vector3 lookvec = Player.Instance.transform.position - transform.position;
-        lookvec = lookvec.normalized;
-        
-        // 꺾이는 지점.
-        height = new Vector3(startPos.x, _playerEquipPoint.transform.position.y -.5f, startPos.z) + lookvec * 0.5f;
-        // 머리 위
-        endPos = new Vector3(_playerEquipPoint.transform.position.x, _playerEquipPoint.transform.position.y - 0.5f, _playerEquipPoint.transform.position.z);
+        _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
+        _playerInteractionPos = _playerInteractionPoint.transform;
+        _playerEquipPoint = Player.Instance.ThrowEquipPoint.gameObject;
+        _playerEquipPos = _playerEquipPoint.transform;
+        _playerHead = Player.Instance.Head;
+        _playerHeadPos = _playerHead.transform;
+    }
+
+    IEnumerator PickUp(float lerpTime, float pickUpTime)
+    {
+        Player.Instance.isPickup = true;
+
         // Object가 Player의 머리 위에서 움직이는걸 방지
-        rigidbody.useGravity = false;
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.freezeRotation = true;
-        //rigidbody.isKinematic = true;
-        GetComponent<Collider>().isTrigger = true;
-        // 추가된 스크립트 2023-08-22 강명호
-        if (_isSmall)
-            yield return new WaitForSeconds(0.4f);
-        else
-            yield return new WaitForSeconds(0.75f);
-        // ==============================
-        rigidbody.drag = 0;
+        _rigidbody.useGravity = false;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.freezeRotation = true;
+        _rigidbody.isKinematic = true;
+        PhysicsCheck = false;
+        flight = false;
+        _rigidbody.angularVelocity = Vector3.zero;
+        _rigidbody.velocity = Vector3.zero;
 
-        if (_animator != null)
-            _animator.SetTrigger("Caught");
+        var pos = transform.position;
+        var currentTime = 0.0f;
 
-        while (_value <= 1)
+        while (currentTime < lerpTime)
         {
-            yield return new WaitForSeconds(0.0025f);
-            transform.transform.position = (BeziurCurve(_value));
-            _value += 0.05f;
+            transform.position = Vector3.Lerp(pos, _playerInteractionPos.position, currentTime / lerpTime);
+            currentTime += 0.4f;
+            yield return new WaitForSecondsRealtime(0.017f);
         }
-        // Object를 Player의 머리 위로 옮김.
-        //rigidbody.isKinematic = true;
-        rigidbody.useGravity = false;
+        yield return new WaitForSecondsRealtime(0.3f);
+
+        // BezierCurve를 위한 3개의 점 구하기 StartPos, Height, EndPos
+        startPos = transform.position;
+        var lookVec = (Player.Instance.transform.position - transform.position).normalized;
+        height = new Vector3(startPos.x, _playerEquipPos.position.y - 0.5f, startPos.z) + lookVec * 0.5f;
+        endPos = _playerEquipPos.position;
+        endPos.y -= 0.25f;
+
+        // 머리 위로 드는 곡선을 그리는 코루틴
+        currentTime = 0.0f;
+        while (currentTime < pickUpTime)
+        {
+            transform.position = BezierCurve(startPos, endPos, height, currentTime / pickUpTime);
+            currentTime += 0.4f;
+            yield return new WaitForSecondsRealtime(0.017f);
+        }
+        transform.SetParent(_playerHead.transform);
+
     }
 
-    Vector3 BeziurCurve( float _value)
+    private Vector3 BezierCurve(Vector3 startPos, Vector3 endPos, Vector3 height, float value)
     {
-        Vector3 A = Vector3.Lerp(startPos, height, _value);
+        var a = Vector3.Lerp(startPos, height, value);
 
-        Vector3 B = Vector3.Lerp(height, endPos, _value);
+        var b = Vector3.Lerp(height, endPos, value);
 
-        Vector3 C = Vector3.Lerp(A, B, _value);
+        var c = Vector3.Lerp(a, b, value);
 
-        return C;
+        return c;
     }
 
     IEnumerator Throwing(GameObject interactor)
     {
-        Player player = interactor.GetComponent<Player>();
-        if(player.target != null)
+        // Object 종속을 풀어줌
+        transform.SetParent(null);
+        if (Player.Instance.target != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
-            Player.Instance.transform.LookAt(new Vector3(player.target.transform.position.x, Player.Instance.transform.position.y, player.target.transform.position.z));
+            Player.Instance.transform.LookAt(
+                new Vector3(Player.Instance.target.transform.position.x,
+                Player.Instance.transform.position.y,
+                Player.Instance.target.transform.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
+        Debug.Log($"{Player.Instance.target}");
         yield return new WaitForSeconds(0.1f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
-        // interactionPoint의 Position을 초기상태로 되돌림
-        _playerInteractionPoint.transform.localPosition = _nomalInteractionPoint;
-
-        // Object 종속을 풀어줌
-        _playerEquipPoint.transform.DetachChildren();
 
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
-        rigidbody.freezeRotation = false;
-        rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        //rigidbody.isKinematic = false;
-        GetComponent<Collider>().isTrigger = false;
-
-        //rigidbody.velocity = CaculateVelocity(interactor.player.transform.position + interactor.player.transform.forward * _range, this.transform.position, _hight);
-        if (player.target == null)
-            rigidbody.velocity = IpariUtility.CaculateVelocity(player.transform.position + player.transform.forward * _range, this.transform.position, _hight);
-        else if (player.target != null)
+        _rigidbody.useGravity = true;
+        _rigidbody.freezeRotation = false;
+        _rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        _rigidbody.isKinematic = false;
+        if (Player.Instance.target == null)
         {
-            Vector3 vel = IpariUtility.CaculateVelocity(player.target.transform.position + player.transform.forward * _range, player.transform.position, _hight);
-            rigidbody.velocity = vel;
-        } 
-        Forward = this.transform.position;
+            Vector3 val = IpariUtility.CaculateVelocity(Player.Instance.transform.position + Player.Instance.transform.forward * _range, this.transform.position, _height);
+            _rigidbody.velocity = val;
+        }
+        else if (Player.Instance.target != null)
+        {
+            Vector3 val = IpariUtility.CaculateVelocity(Player.Instance.target.transform.position + Player.Instance.transform.forward * _range, Player.Instance.transform.position, _height);
+            _rigidbody.velocity = val;
+        }
+        Debug.Log($"{_rigidbody.velocity}");
+        Forward = transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;
-        if(_animator == null)
+        if (_animator == null)
             flight = true;
-        yield return null;
+
+        yield return new WaitForSeconds(0.3f);
     }
 
+    #endregion
     public void ResetPoint()
     {
         // 위치 초기화
@@ -260,20 +247,20 @@ public class Throw : MonoBehaviour, IInteractable
         {
             flight = false;
             PhysicsCheck = false;
-            rigidbody.useGravity = true;
+            _rigidbody.useGravity = true;
             if (_animator != null)
             {
                 _animator.SetTrigger("Grounded");
-                rigidbody.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+                _rigidbody.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
             }
             else
-               rigidbody.freezeRotation = false;
-            rigidbody.velocity += Physics.gravity * .05f;
+               _rigidbody.freezeRotation = false;
+            _rigidbody.velocity += Physics.gravity * .05f;
         }
         if(bounceDir == default)
         {
             bounceDir = IpariUtility.RandomDirection();
-            rigidbody.velocity += bounceDir;
+            _rigidbody.velocity += bounceDir;
         }
     }
 

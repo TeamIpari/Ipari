@@ -73,7 +73,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //=================================================================
     //                      Magic Methods          
     //=================================================================
-    private void Start()
+    private void Start()    //
     {
         // Caching
         _transform = GetComponent<Transform>();
@@ -101,7 +101,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         };
     }
 
-    private void FixedUpdate()
+    private void FixedUpdate()  //
     {
         PhysicsChecking();
     }
@@ -171,7 +171,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _rigidbody.isKinematic = true;
         PhysicsCheck = false;
         flight = false;
-        _collider.isTrigger = true;
+        //_collider.isTrigger = true;
         _rigidbody.angularVelocity = Vector3.zero;
         _rigidbody.velocity = Vector3.zero;
         
@@ -231,20 +231,17 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
         if (_player.target == null)
         {
-            Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, _player.transform.position, height);
-            //Debug.Log($"TargetPos = {val}");
+            Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, this.transform.position, height);
             _rigidbody.velocity = val;
             
         }
         else if (_player.target != null)
         {
             Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * range, _player.transform.position, height);
-            //Debug.Log($"NormalPos = {val}");
             _rigidbody.velocity = val;
         }
 
         Debug.Log($"{_rigidbody.velocity}");
-        //_rigidbody.velocity += _player.movementSM.currentState.velocity * _player.playerSpeed * 0.3f;
         Forward = transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
