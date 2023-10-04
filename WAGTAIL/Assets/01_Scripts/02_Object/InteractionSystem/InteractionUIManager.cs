@@ -128,23 +128,36 @@ public class InteractionUIManager : MonoBehaviour
 
     private void AddParentMaterials()
     {
-        int i = 0;
-        Material[] materials = new Material[parentMat.materials.Length + 1];
-        for (i = 0; i < parentMat.materials.Length; i++)
-            materials[i] = parentMat.materials[i];
-        materials[i] = material;
+        try
+        {
+            int i = 0;
+            Material[] materials = new Material[parentMat.materials.Length + 1];
+            for (i = 0; i < parentMat.materials.Length; i++)
+                materials[i] = parentMat.materials[i];
+            materials[i] = material;
 
-        parentMat.materials = materials;
+            parentMat.materials = materials;
+        }
+        catch
+        {
+
+        }
     }
 
     private void SubtractParentMaterials()
     {
-        int i = 0;
-        Material[] materials = new Material[parentMat.materials.Length - 1];
-        for (i = 0; i < parentMat.materials.Length - 1; i++)
-            materials[i] = parentMat.materials[i];
+        try
+        {
+            int i = 0;
+            Material[] materials = new Material[parentMat.materials.Length - 1];
+            for (i = 0; i < parentMat.materials.Length - 1; i++)
+                materials[i] = parentMat.materials[i];
 
-        parentMat.materials = materials;
+            parentMat.materials = materials;
+
+        }
+        catch { }
+
     }
 
     //==================================================

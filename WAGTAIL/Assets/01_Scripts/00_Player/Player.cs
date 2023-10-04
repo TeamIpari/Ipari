@@ -215,7 +215,7 @@ public class Player : MonoBehaviour
 
         //Debug.Log(isCarry);
         // 이거 그냥 Carry State or Throw State 에 넣으면 되는거 아닌가?
-        if(isPickup)
+        if(isCarry)
         {
             EnemySearching();
         }
@@ -256,6 +256,7 @@ public class Player : MonoBehaviour
         else
         {
             currentInteractable.GetComponent<IInteractable>().Interact(gameObject);
+            target = null;
             currentInteractable = null;
         }
     }
