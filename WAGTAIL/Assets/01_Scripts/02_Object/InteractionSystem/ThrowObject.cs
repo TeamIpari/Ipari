@@ -59,6 +59,15 @@ public class ThrowObject : MonoBehaviour, IInteractable
     [SerializeField] private bool flight = false;
     private Animator _animator;
     // 위의 Properties는 테스트용으로 나중에 삭제 예정
+
+    // Property
+    public bool GetPhyscisCheck {
+        get
+        {
+            return PhysicsCheck;
+        }
+    }
+    
     
     
     //=================================================================
@@ -103,6 +112,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
                        !collision.gameObject.CompareTag("Player");
         if (bTagHit)
         {
+            //Debug.Log($"hit name = {collision.gameObject.name}");
             flight = false;
             PhysicsCheck = false;
             _rigidbody.useGravity = true;
@@ -199,12 +209,16 @@ public class ThrowObject : MonoBehaviour, IInteractable
     {
         // Object 종속을 풀어줌
         _transform.SetParent(null);
-        if(autoTarget != null)
+        if(_player.target != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
-            Player.Instance.transform.LookAt(new Vector3(autoTarget.position.x, Player.Instance.transform.position.y, autoTarget.position.z));
+            Player.Instance.transform.LookAt(
+                new Vector3(_player.target.transform.position.x,
+                Player.Instance.transform.position.y,
+                _player.target.transform.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
+        Debug.Log($"{_player.target}");
         yield return new WaitForSeconds(0.1f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
@@ -216,13 +230,20 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _rigidbody.isKinematic = false;
 
         if (_player.target == null)
-            _rigidbody.velocity = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, this.transform.position, height);
+        {
+            Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, _player.transform.position, height);
+            //Debug.Log($"TargetPos = {val}");
+            _rigidbody.velocity = val;
+            
+        }
         else if (_player.target != null)
         {
-            Vector3 vel = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * range, _player.transform.position, height);
-            _rigidbody.velocity = vel;
+            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * range, _player.transform.position, height);
+            //Debug.Log($"NormalPos = {val}");
+            _rigidbody.velocity = val;
         }
 
+        Debug.Log($"{_rigidbody.velocity}");
         //_rigidbody.velocity += _player.movementSM.currentState.velocity * _player.playerSpeed * 0.3f;
         Forward = transform.position;
 
@@ -234,7 +255,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         yield return new WaitForSeconds(0.3f);
         _collider.isTrigger = false;
     }
-    
+
     private void PhysicsChecking()
     {
         if (PhysicsCheck)
