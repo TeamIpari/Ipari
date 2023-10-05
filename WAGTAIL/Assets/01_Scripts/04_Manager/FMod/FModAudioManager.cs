@@ -775,7 +775,7 @@ public sealed class FModAudioManager : MonoBehaviour
         private const string _StudioSettingsPath = "Assets/Plugins/FMOD/Resources/FMODStudioSettings.asset";
         private const string _GroupFolderPath    = "Metadata/Group";
         private const string _ScriptDefine       = "FMOD_Event_ENUM";
-        private const string _EditorVersion      = "v1.231001";
+        private const string _EditorVersion      = "v1.231002";
 
         private const string _EventRootPath      = "event:/";
         private const string _BusRootPath        = "bus:/";
@@ -1152,7 +1152,7 @@ public sealed class FModAudioManager : MonoBehaviour
             GUILayout.Box(useBanner, GUILayout.Width(position.width), GUILayout.Height(100f));
 
             /**Editor Version을 띄운다.*/
-            using(var scope = new GUILayout.AreaScope(new Rect(position.width*.5f-5f, 100f - 20, 300, 30))){
+            using(var scope = new GUILayout.AreaScope(new Rect(position.width*.5f-95f, 100f - 20, 300, 30))){
 
                 GUILayout.Label($"FModAudio Settings Editor {_EditorVersion}", _BoldTxtStyle);
                 scope.Dispose();
@@ -2040,6 +2040,7 @@ public sealed class FModAudioManager : MonoBehaviour
 
         private string RemoveInValidChar(string inputString)
         {
+            #region Omit
             //시작 숫자 제거
             int removeCount = Regex.Match(inputString, @"^\d*").Length;
             inputString = inputString.Substring(removeCount, inputString.Length-removeCount);
@@ -2051,6 +2052,7 @@ public sealed class FModAudioManager : MonoBehaviour
             inputString = inputString.Replace(" ", "_");
 
             return inputString;
+            #endregion
         }
 
         private void GetBankList(List<NPData> lists)
@@ -2101,12 +2103,11 @@ public sealed class FModAudioManager : MonoBehaviour
                     if (!file.Exists) continue;
 
                     try { document.LoadXml(File.ReadAllText(file.FullName)); } catch { continue; }
-                    string idNode = document.SelectSingleNode("//object/@id")?.InnerText;
-                    string nameNode = document.SelectSingleNode("//object/property[@name='name']/value")?.InnerText;
-                    string outputNode = document.SelectSingleNode("//object/relationship[@name='output']/destination")?.InnerText;
+                    string idNode       = document.SelectSingleNode("//object/@id")?.InnerText;
+                    string nameNode     = document.SelectSingleNode("//object/property[@name='name']/value")?.InnerText;
+                    string outputNode   = document.SelectSingleNode("//object/relationship[@name='output']/destination")?.InnerText;
 
-                    if (idNode != null && nameNode != null && outputNode != null)
-                    {
+                    if (idNode != null && nameNode != null && outputNode != null){
 
                         busMap.Add(idNode, new NPData { Name = nameNode, Path = outputNode });
                         lists.Add(new NPData { Name = nameNode, Path = outputNode });
@@ -2190,6 +2191,7 @@ public sealed class FModAudioManager : MonoBehaviour
 
         private bool GetParamIsAlreadyContain(string checkParamName, List<FModParamDesc> descs)
         {
+            #region Omit
             int Count = descs.Count;
             for(int i=0; i<Count; i++)
             {
@@ -2197,10 +2199,12 @@ public sealed class FModAudioManager : MonoBehaviour
             }
 
             return false;
+            #endregion
         }
 
         private int GetCategoryIndex(string categoryName, List<FModEventCategoryDesc> descs)
         {
+            #region Omit
             int Count = descs.Count;
             for(int i=0; i<Count; i++)
             {
@@ -2208,6 +2212,7 @@ public sealed class FModAudioManager : MonoBehaviour
             }
 
             return -1;
+            #endregion
         }
 
         private int GetCategoryEventStartIndex(string categoryName, List<FModEventCategoryDesc> descs)

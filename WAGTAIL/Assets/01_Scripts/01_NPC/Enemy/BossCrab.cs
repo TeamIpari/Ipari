@@ -32,6 +32,7 @@ public sealed class BossCrab : Enemy
         private SerializedProperty SeedPrefabProperty;
         private SerializedProperty SeedPositionProperty;
         private SerializedProperty SeedMarkerProperty;
+        private SerializedProperty SeedFlightTimeProperty;
 
 
         /**분신 찍기 패턴 관련...*/
@@ -104,6 +105,11 @@ public sealed class BossCrab : Enemy
             if(SeedSpawnRangeProperty==null){
 
                 SeedSpawnRangeProperty = serializedObject.FindProperty("_SeedSpawnRange");
+            }
+
+            if(SeedFlightTimeProperty==null){
+
+                SeedFlightTimeProperty = serializedObject.FindProperty("_SeedFlightTime");
             }
 
             if(SeedCountProperty==null){
@@ -329,6 +335,17 @@ public sealed class BossCrab : Enemy
                 }
             }
 
+            /**씨앗이 날아가는데 걸리는 시간 표시.....*/
+            using (var changeScope = new EditorGUI.ChangeCheckScope())
+            {
+                float value = EditorGUILayout.FloatField("Seed Flight Duration", SeedFlightTimeProperty.floatValue);
+                if (changeScope.changed){
+
+                    if (value < 0) value = 0f;
+                    SeedFlightTimeProperty.floatValue = value;
+                }
+            }
+
             /**씨앗이 터지기까지 걸리는 시간 표시....*/
             using (var changeScope = new EditorGUI.ChangeCheckScope())
             {
@@ -430,9 +447,6 @@ public sealed class BossCrab : Enemy
             EditorGUILayout.Space(10f);
             #endregion
         }
-
-
-
     }
 #endif
     #endregion
@@ -454,16 +468,19 @@ public sealed class BossCrab : Enemy
      *   씨앗 뱉는 패턴 관련 프로퍼티...
      * ***/
     [SerializeField,HideInInspector, Min(0f)]
-    private float        _SeedSpawnRange;
+    private float        _SeedSpawnRange    = 3f;
 
     [SerializeField,HideInInspector, Min(0)] 
-    private int          _SeedCount;
+    private int          _SeedCount         = 5;
 
     [SerializeField,HideInInspector, Min(0f)] 
-    private float       _SeedExplodeTime;
+    private float       _SeedExplodeTime    = 5f;
 
     [SerializeField,HideInInspector, Min(0f)] 
-    private float       _SeedExplodeRange;
+    private float       _SeedExplodeRange   = 1.5f;
+
+    [SerializeField, HideInInspector, Min(0f)]
+    private float       _SeedFlightTime     = 3f;
 
     [SerializeField,HideInInspector] 
     public GameObject   SeedPrefab;
@@ -557,7 +574,7 @@ public sealed class BossCrab : Enemy
             changeTime   = 7f,
             delayTime    = 2f,
             count        = SeedCount,
-            flightTime   = 3f,
+            flightTime   = _SeedFlightTime,
             rad          = SeedSpawnRange,
             shootPoint   = SeedShotPosition
         };

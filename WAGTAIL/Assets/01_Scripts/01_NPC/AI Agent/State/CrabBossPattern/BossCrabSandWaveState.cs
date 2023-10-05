@@ -22,14 +22,14 @@ public class BossCrabSandWaveState : AIAttackState
         #region Omit
         /**프리팹들을 추가한다...*/
         int length = waves.Length;
-        if( length>0 )
-        {
-            _waves = new SandWave[length];
-            for(int i=0; i<length; i++){
+        if (!(length > 0)) return;
 
-                if (waves[i] == null) continue;
-                _waves[_waveCount++] = waves[i].GetComponent<SandWave>();
-            }
+        /**각 프리팹들로부터 SandWave Component를 추출한다.*/
+        _waves = new SandWave[length];
+        for (int i = 0; i < length; i++)
+        {
+            if (waves[i] == null) continue;
+            _waves[_waveCount++] = waves[i].GetComponent<SandWave>();
         }
         #endregion
     }

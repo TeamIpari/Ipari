@@ -161,6 +161,7 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
     [SerializeField] List<PlatformAudioPlayData> Datas = new List<PlatformAudioPlayData>();
 
 
+
     //=========================================
     /////        Override methods         /////
     //=========================================
@@ -190,8 +191,9 @@ public sealed class FModEventPlayBehavior : PlatformBehaviorBase
     }
 
 
+
     //=========================================
-    /////         Utility Methods       /////
+    /////         Utility Methods         /////
     //=========================================
     private void ApplyAudioPlays(PlatformApplyTiming timing, Vector3 position=default)
     {

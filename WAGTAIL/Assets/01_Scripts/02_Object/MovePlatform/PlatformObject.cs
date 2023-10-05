@@ -168,14 +168,17 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     [HideInInspector] public Vector3    PrevPosition    = Vector3.zero;
     [HideInInspector] public bool       PreventAddChild = false;
 
-    [HideInInspector][SerializeField]  
+    [HideInInspector, SerializeField]  
     private bool _PlayerOnPlatform = false;
 
-    [HideInInspector][SerializeField]  
+    [HideInInspector, SerializeField]  
     public bool UsedCollision = true;
 
-    [HideInInspector] public float CheckGroundOffset    = 0f;
-    [HideInInspector] public float CheckGroundDownOffset = 0f;
+    [HideInInspector] 
+    public float CheckGroundOffset    = 0f;
+
+    [HideInInspector] 
+    public float CheckGroundDownOffset = 0f;
 
 
 
@@ -185,7 +188,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     [SerializeField] 
     private List<PlatformBehaviorBase> Behaviors = new List<PlatformBehaviorBase>();
 
-    [HideInInspector][SerializeField] 
+    [HideInInspector, SerializeField] 
     private int _ObjectOnPlatformCount = 0;
 
     private List<GameObject> _ignoreExitList;

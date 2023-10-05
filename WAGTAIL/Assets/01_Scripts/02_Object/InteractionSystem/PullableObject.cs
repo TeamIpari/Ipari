@@ -125,6 +125,18 @@ public sealed class PullableObject : MonoBehaviour
             {
                 Vector3 prevPos = (datas[0].Tr!=null? HandleUtility.WorldToGUIPoint(datas[0].Tr.position):Vector3.zero);
 
+                /**잡힌 오브젝트가 있다면 트랜스폼을 편집할 수 있도록 한다...*/
+                if (targetObj.GrabTarget != null)
+                {
+                    Vector3 grabPos = targetObj.GrabTarget.transform.position;
+                    Vector3 grabGUIPos = HandleUtility.WorldToGUIPoint(grabPos);
+
+                    if (GUI_ShowBoneButton(grabGUIPos, GrabNodeButtonStyle))
+                    {
+                        selectionData = targetObj.GrabTarget.transform;
+                    }
+                }
+
                 /**GUI를 표시한다....*/
                 for (int i = 0; i < Count; i++){
 
@@ -145,9 +157,9 @@ public sealed class PullableObject : MonoBehaviour
                 }
 
                 /**잡힌 오브젝트가 있다면 트랜스폼을 편집할 수 있도록 한다...*/
-                if(targetObj.GrabTarget!=null){
+                if (targetObj.GrabTarget != null){
 
-                    Vector3 grabPos    = targetObj.GrabTarget.transform.position;
+                    Vector3 grabPos = targetObj.GrabTarget.transform.position;
                     Vector3 grabGUIPos = HandleUtility.WorldToGUIPoint(grabPos);
 
                     if (GUI_ShowBoneButton(grabGUIPos, GrabNodeButtonStyle))
@@ -446,6 +458,7 @@ public sealed class PullableObject : MonoBehaviour
         [System.NonSerialized] public Vector3    OriginPos;
         [System.NonSerialized] public Quaternion OriginQuat;
         [System.NonSerialized] public Quaternion PrevQuat;
+        [System.NonSerialized] public Quaternion InverseQuat;
         [System.NonSerialized] public Vector3    PrevPos;
         [System.NonSerialized] public Vector3    originDir;
         [System.NonSerialized] public float     originLength;
@@ -479,12 +492,7 @@ public sealed class PullableObject : MonoBehaviour
     {
         get
         {
-            bool NotGrabbed     = (GrabTarget == null);
-            bool dataIsNull     = (_datas == null);
-            bool dataIsEmpty    = (_datas.Length == 0);
-            bool IndexOneIsNull = (_datas[0].Tr == null);
-
-            if (NotGrabbed || dataIsNull || dataIsEmpty || IndexOneIsNull){
+            if (GrabTarget == null || _datas == null || _datas.Length == 0 || _datas[0].Tr == null){
 
                 return 0f;
             }
@@ -504,12 +512,7 @@ public sealed class PullableObject : MonoBehaviour
     {
         get
         {
-            bool NotGrabbed = (GrabTarget == null);
-            bool dataIsNull = (_datas == null);
-            bool dataIsEmpty = (_datas.Length == 0);
-            bool IndexOneIsNull = (_datas[0].Tr == null);
-
-            if (NotGrabbed || dataIsNull || dataIsEmpty || IndexOneIsNull){
+            if (GrabTarget == null || _datas == null || _datas.Length == 0 || _datas[0].Tr == null){
 
                 return 0f;
             }
@@ -542,12 +545,13 @@ public sealed class PullableObject : MonoBehaviour
     //=======================================
     //////            Fields            /////
     //=======================================
-    [SerializeField][HideInInspector] 
+    [SerializeField, HideInInspector] 
     private BoneData[] _datas;
 
-    [SerializeField][HideInInspector]
+    [SerializeField, HideInInspector]
     private int        _dataCount = -1;
 
+    private const int   _fabrikLimit       = 100;
     private const float _SpringValue       = .025f;
     private float       _SpringSpeed       = 0f;
 
@@ -608,6 +612,8 @@ public sealed class PullableObject : MonoBehaviour
                 return;
             }
 
+            data.Tr.parent       = transform;
+            data.InverseQuat     = Quaternion.Inverse(data.Tr.rotation);
             data.OriginPos       = data.Tr.position;
             data.OriginQuat      = data.Tr.rotation;
             data.PrevQuat        = data.Tr.rotation;
@@ -615,8 +621,9 @@ public sealed class PullableObject : MonoBehaviour
             data.originLength    = (next.Tr.position - data.Tr.position).magnitude;
             data.originLengthDiv = (1f / data.originLength);
             data.lengthRatio     = (data.originLength * _fullyExtendedDiv);
-            
         }
+
+        /**마지막 본의 자식부모 관계를 해지한다...*/
         #endregion
     }
 
@@ -625,11 +632,31 @@ public sealed class PullableObject : MonoBehaviour
         if (_dataCount < 2) return;
 
         /**당겨지고 있을 때의 처리...*/
-        if(UpdatePulling()==false)
-        {
-            /**원상복귀 될 때의 처리...*/
+        if(GrabTarget!=null){
 
+            LookAtTarget(GrabTarget.transform.position);
+            return;
         }
+
+        /**원상복귀될 때의 처리...*/
+        
+    }
+
+    private void OnDrawGizmos()
+    {
+        #region Omit
+        if (GrabTarget == null) return;
+
+        Vector3 grabPos = GrabTarget.transform.position;
+        Vector3 rootPos = RootPoint;
+
+        Vector3 root2GrabDir = (grabPos-rootPos).normalized;
+        Gizmos.color = UnityEngine.Color.blue;
+        Gizmos.DrawLine(rootPos, rootPos + root2GrabDir * _fullyExtendedLen);
+
+        Gizmos.color = UnityEngine.Color.white;
+        Gizmos.DrawLine(rootPos, grabPos);
+        #endregion
     }
 
 
@@ -637,57 +664,77 @@ public sealed class PullableObject : MonoBehaviour
     //===========================================
     /////          Core methods             /////
     //===========================================
-    private bool UpdatePulling()
+    private bool LookAtTarget(Vector3 targetPos)
     {
-        if (GrabTarget == null) return false;
+        #region Omit
+        if (_dataCount<2) return false;
 
-        /***************************************
-         *   계산에 필요한 요소들을 구한다..
-         * ****/
-        Transform    grabTr   = GrabTarget.transform;
-        ref BoneData root     = ref _datas[0];
+        /********************************************
+         *   FABRIK 알고리즘으로, 대상을 가리키도록 한다...
+         * ***/
 
-        /**뿌리지점에서 잡힌 지점까지의 거리를 구한다...*/
-        Vector3 rootPos         = root.OriginPos;
-        Vector3 root2GrabDir    = (grabTr.position - root.OriginPos);
-        float   root2GrabLen    = root2GrabDir.magnitude;
-        float extendedRatio     = ( root2GrabLen * _fullyExtendedDiv );
-        root2GrabDir.Normalize();
+        /**마지막 본에서 루트본까지 차례대로 트랜스폼을 변경한다...*/
+        ApplyForwardIK(_dataCount - 2, targetPos);
 
+        for (int i=_dataCount-3; i >= 0; i--){
 
-        /****************************************
-         *   모든 본의 상태를 갱신한다...
-         * ****/
-        int Count = (_dataCount - 1);
-        float lenRatio = 0f;
-        for (int i = 0; i < Count; i++)
-        {
-            ref BoneData nextData = ref _datas[i + 1];
-            ref BoneData data = ref _datas[i];
-
-            /**루트모션과의 차이를 구한다...*/
-            Vector3 oriDir2TargetDir = (root2GrabDir - data.originDir) * extendedRatio;
-            Vector3 goalDir = (data.originDir + oriDir2TargetDir);
-            Vector3 boneDir = (nextData.Tr.position - data.Tr.position).normalized;
-            Quaternion rotQuat = GetQuatBetweenVector(boneDir, goalDir.normalized, lenRatio += Time.deltaTime * .5f);
-
-            data.Tr.rotation *= (rotQuat);
-            data.PrevQuat = data.Tr.rotation;
+            ref BoneData next = ref _datas[i + 1];
+            ApplyForwardIK(i, next.Tr.position);
         }
-        //for (int i = 0; i < Count; i++)
-        //{
-        //    ref BoneData curr = ref _datas[i];
-        //    ref BoneData next = ref _datas[i + 1];
 
-        //    Vector3 currDir    = (next.Tr.position - curr.Tr.position).normalized;
-        //    Vector3 updatePos  = rootPos + root2GrabDir * (root2GrabLen * lenRatio);
-        //    Quaternion rotQuat = GetQuatBetweenVector(curr.originDir, root2GrabDir);
 
-        //    curr.Tr.rotation = (curr.OriginQuat * rotQuat);
-        //    lenRatio += curr.lengthRatio;
-        //}
+        /****************************************************
+         *   루트본이 원래 위치에 최대한 가깝게 이동하도록 보간...
+         * ***/
+        ref BoneData rootBone     = ref _datas[0];
+        ref BoneData rootDirBone  = ref _datas[1];
+        ref BoneData lastBone     = ref _datas[_dataCount - 1];
+        Transform    targetTr     = GrabTarget.transform;
+
+        int   leftCount     = _fabrikLimit;
+        float root2forward  = 2f;
+
+        while (leftCount-- > 0 && root2forward > .05f)
+        {
+            /**루트본을 원래 위치에 붙여놓는다...*/
+            rootBone.Tr.position = rootBone.OriginPos;
+            
+            for(int i=1; i<_dataCount-1; i++){
+
+                ref BoneData prev = ref _datas[i-1];
+                ApplyBackwardIK(i, prev.Tr.position);
+            }
+
+            root2forward = (rootBone.OriginPos - rootBone.Tr.position).sqrMagnitude;
+        }
 
         return true;
+        #endregion
+    }
+
+    private void ApplyForwardIK(int applyIndex, Vector3 target)
+    {
+        #region Omit
+        ref BoneData bone     = ref _datas[applyIndex];
+        ref BoneData nextBone = ref _datas[applyIndex+1];
+
+        Vector3 bone2Target = (target - bone.OriginPos).normalized;
+        Quaternion rotQuat  = GetQuatBetweenVector(bone.originDir, bone2Target);
+
+        bone.Tr.position        = target + bone2Target*(-bone.originLength);
+        bone.Tr.rotation        = (rotQuat*bone.OriginQuat);
+        #endregion
+    }
+
+    private void ApplyBackwardIK(int applyIndex, Vector3 target)
+    {
+        #region Omit
+        ref BoneData bone = ref _datas[applyIndex];
+        ref BoneData next = ref _datas[applyIndex+1];
+
+        Vector3 bone2Target = (target-bone.Tr.position).normalized;
+        bone.Tr.position    = target + (bone2Target * -bone.originLength);
+        #endregion
     }
 
     private Quaternion GetQuatBetweenVector(Vector3 from, Vector3 to, float ratio=1f)

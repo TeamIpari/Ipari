@@ -272,6 +272,13 @@ public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
             Gizmos.color = Color.red;
             Gizmos.DrawWireMesh(_mesh, transform.position, transform.rotation, transform.localScale);
         }
+
+        Vector3 pos = transform.position;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(pos+SandCenterIdleOffset, .2f);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(pos+SandCenterIntakeOffset, .2f);
     }
 
     private void OnCollisionStay(Collision collision)
