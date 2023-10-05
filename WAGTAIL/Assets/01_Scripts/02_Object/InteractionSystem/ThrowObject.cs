@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using IPariUtility;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 //=================================================
 // 플레이어가 들고 던질 수 있는 오브젝트의 기반이 되는 클래스.
@@ -79,6 +80,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _transform = GetComponent<Transform>();
         _collider = GetComponent<Collider>();
         _rigidbody = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
         
         // Player Caching
         _player = Player.Instance;
@@ -88,17 +90,21 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerEquipPos = _playerEquipPoint.transform;
         _playerHead = _player.Head;
         _playerHeadPos = _playerHead.transform;
-        
-        
-        _center = new GameObject
-        {
-            transform =
-            {
-                position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center),
-                parent = _transform
-            },
-            name = "Center"
-        };
+
+
+        //_center = new GameObject
+        //{
+        //    transform =
+        //    {
+        //        position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center),
+        //        parent = _transform
+        //    },
+        //    name = "Center"
+        //};
+        _center = new GameObject();
+        _center.transform.position = this.transform.position + (GetComponent<BoxCollider>() == null ? Vector3.zero : GetComponent<BoxCollider>().center);
+        _center.transform.parent = this.transform;
+        _center.name = "Center";
     }
 
     private void FixedUpdate()  //
@@ -166,7 +172,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     {
         _player.isPickup = true;
         // Object가 손에 붙어서 움직이지 않도록 설정
-        _rigidbody.useGravity = false;
+        //_rigidbody.useGravity = false;
         _rigidbody.freezeRotation = true;
         _rigidbody.isKinematic = true;
         PhysicsCheck = false;
@@ -207,6 +213,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private IEnumerator Throwing(GameObject interactor)
     {
+        Debug.Log($"Throwing Object!!!");
         // Object 종속을 풀어줌
         _transform.SetParent(null);
         if(_player.target != null)
@@ -231,7 +238,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
         if (_player.target == null)
         {
-            Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, this.transform.position, height);
+            Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, _player.transform.position, height);
             _rigidbody.velocity = val;
             
         }
@@ -242,6 +249,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         }
 
         Debug.Log($"{_rigidbody.velocity}");
+        _rigidbody.velocity += _player.movementSM.currentState.velocity * _player.playerSpeed * 0.4f;
         Forward = transform.position;
 
         Forward = _playerInteractionPoint.transform.right;
@@ -250,7 +258,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             flight = true;
 
         yield return new WaitForSeconds(0.3f);
-        _collider.isTrigger = false;
+        //_collider.isTrigger = false;
     }
 
     private void PhysicsChecking()

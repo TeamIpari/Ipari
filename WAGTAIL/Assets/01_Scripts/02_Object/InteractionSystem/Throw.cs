@@ -19,6 +19,8 @@ public class Throw : MonoBehaviour, IInteractable
     private GameObject _playerHead;
     private Transform _playerHeadPos;
 
+    private Player _player;
+
     [Header("Throw Setting")]
     [Range(0, 5)]
     [SerializeField] float _value = 0.0f;
@@ -52,46 +54,39 @@ public class Throw : MonoBehaviour, IInteractable
         return false;
     }
 
-    //private void CheckRay()
-    //{
-    //    RaycastHit hit;
-    //    bool bRangeHit = Physics.Raycast(transform.position, -transform.up, out hit, 0.2f);
-    //    bool bTagHit = !hit.transform.gameObject.CompareTag("Player")
-    //        && !hit.transform.gameObject.CompareTag("PassCollision");
-    //    bool bLayerHit = hit.transform.gameObject.layer != 5;
-
-    //    if (bRangeHit && bTagHit && bLayerHit)
-    //    {
-    //        _rigidbody.velocity = Vector3.zero;
-    //        if (_animator != null)
-    //            _animator.SetTrigger("Grounded");
-    //    }
-    //}
-
-    //private void CheckVelocity()
-    //{
-    //    if (_rigidbody.velocity == Vector3.zero && _rigidbody.isKinematic == false )
-    //    {
-    //        //rigidbody.isKinematic = true;
-    //        //rigidbody.drag = GetComponent<BombObject>() == null ? Mathf.Infinity : 0;
-    //    }
-    //}
-
 
     #region "완료"
 
 
+    private void Start()
+    {
+
+        _rigidbody = GetComponent<Rigidbody>();
+
+        _player = Player.Instance;
+        _playerInteractionPoint = _player.InteractionPoint.gameObject;
+        _playerInteractionPos = _playerInteractionPoint.transform;
+        _playerEquipPoint = _player.ThrowEquipPoint.gameObject;
+        _playerEquipPos = _playerEquipPoint.transform;
+        _playerHead = _player.Head;
+        _playerHeadPos = _playerHead.transform;
+    }
+    private void FixedUpdate()
+    {
+        PhyscisChecking();
+    }
+
     public bool Interact(GameObject interactor)
     {
-        if (Player.Instance.currentInteractable == null)
+        if (_player.currentInteractable == null)
         {
             StartCoroutine(PickUp(2f, 2.5f));
-            Player.Instance.isCarry = true;
+            _player.isCarry = true;
         }
         else
         {
             StartCoroutine(Throwing(interactor));
-            Player.Instance.isCarry = false;
+            _player.isCarry = false;
             return true;
         }
         return false;
@@ -103,36 +98,19 @@ public class Throw : MonoBehaviour, IInteractable
         {
             _rigidbody.velocity += Physics.gravity * .05f;
         }
-        //if (flight)
-        //{
-        //    this.transform.RotateAround(center.transform.position, Forward, (speed * Time.deltaTime));
-        //}
+        if (flight)
+        {
+            this.transform.RotateAround(center.transform.position, Forward, (speed * Time.deltaTime));
+        }
     }
 
-    private void FixedUpdate()
-    {
-        PhyscisChecking();
-    }
-
-    private void Start()
-    {
-
-        _rigidbody = GetComponent<Rigidbody>();
-
-        _playerInteractionPoint = Player.Instance.InteractionPoint.gameObject;
-        _playerInteractionPos = _playerInteractionPoint.transform;
-        _playerEquipPoint = Player.Instance.ThrowEquipPoint.gameObject;
-        _playerEquipPos = _playerEquipPoint.transform;
-        _playerHead = Player.Instance.Head;
-        _playerHeadPos = _playerHead.transform;
-    }
 
     IEnumerator PickUp(float lerpTime, float pickUpTime)
     {
-        Player.Instance.isPickup = true;
+        _player.isPickup = true;
 
         // Object가 Player의 머리 위에서 움직이는걸 방지
-        _rigidbody.useGravity = false;
+        //_rigidbody.useGravity = false;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.freezeRotation = true;
         _rigidbody.isKinematic = true;
@@ -154,7 +132,7 @@ public class Throw : MonoBehaviour, IInteractable
 
         // BezierCurve를 위한 3개의 점 구하기 StartPos, Height, EndPos
         startPos = transform.position;
-        var lookVec = (Player.Instance.transform.position - transform.position).normalized;
+        var lookVec = (_player.transform.position - transform.position).normalized;
         height = new Vector3(startPos.x, _playerEquipPos.position.y - 0.5f, startPos.z) + lookVec * 0.5f;
         endPos = _playerEquipPos.position;
         endPos.y -= 0.25f;
@@ -184,18 +162,19 @@ public class Throw : MonoBehaviour, IInteractable
 
     IEnumerator Throwing(GameObject interactor)
     {
+        Debug.Log("Throw");
         // Object 종속을 풀어줌
         transform.SetParent(null);
-        if (Player.Instance.target != null)
+        if (_player.target != null)
         {
-            Player.Instance.GetComponent<CharacterController>().enabled = false;
-            Player.Instance.transform.LookAt(
-                new Vector3(Player.Instance.target.transform.position.x,
-                Player.Instance.transform.position.y,
-                Player.Instance.target.transform.position.z));
-            Player.Instance.GetComponent<CharacterController>().enabled = true;
+            _player.GetComponent<CharacterController>().enabled = false;
+            _player.transform.LookAt(
+                new Vector3(_player.target.transform.position.x,
+                _player.transform.position.y,
+                _player.target.transform.position.z));
+            _player.GetComponent<CharacterController>().enabled = true;
         }
-        Debug.Log($"{Player.Instance.target}");
+        Debug.Log($"{_player.target}");
         yield return new WaitForSeconds(0.1f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
@@ -205,14 +184,14 @@ public class Throw : MonoBehaviour, IInteractable
         _rigidbody.freezeRotation = false;
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _rigidbody.isKinematic = false;
-        if (Player.Instance.target == null)
+        if (_player.target == null)
         {
-            Vector3 val = IpariUtility.CaculateVelocity(Player.Instance.transform.position + Player.Instance.transform.forward * _range, this.transform.position, _height);
+            Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + Player.Instance.transform.forward * _range, Player.Instance.transform.position, _height);
             _rigidbody.velocity = val;
         }
-        else if (Player.Instance.target != null)
+        else if (_player.target != null)
         {
-            Vector3 val = IpariUtility.CaculateVelocity(Player.Instance.target.transform.position + Player.Instance.transform.forward * _range, Player.Instance.transform.position, _height);
+            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position + Player.Instance.transform.forward * _range, Player.Instance.transform.position, _height);
             _rigidbody.velocity = val;
         }
         Debug.Log($"{_rigidbody.velocity}");
@@ -224,6 +203,7 @@ public class Throw : MonoBehaviour, IInteractable
             flight = true;
 
         yield return new WaitForSeconds(0.3f);
+        GetComponent<Collider>().isTrigger = false;
     }
 
     #endregion
