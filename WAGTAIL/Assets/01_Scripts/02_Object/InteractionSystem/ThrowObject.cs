@@ -90,15 +90,15 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerHeadPos = _playerHead.transform;
         
         
-        _center = new GameObject
-        {
-            transform =
-            {
-                position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center),
-                parent = _transform
-            },
-            name = "Center"
-        };
+        //_center = new GameObject
+        //{
+        //    transform =
+        //    {
+        //        position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center),
+        //        parent = _transform
+        //    },
+        //    name = "Center"
+        //};
     }
 
     private void FixedUpdate()

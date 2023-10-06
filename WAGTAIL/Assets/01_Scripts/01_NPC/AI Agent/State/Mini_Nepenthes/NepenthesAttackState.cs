@@ -5,7 +5,6 @@ using UnityEngine.XR;
 
 public class NepenthesAttackState : AIAttackState
 {
-    private float timer;
     private float delayTime = 0.65f;
     private Vector3 lockOn;
 
@@ -42,7 +41,8 @@ public class NepenthesAttackState : AIAttackState
     public override void Update()
     {
         base.Update();
-        if (AttackCheck())
+        curTimer += Time.deltaTime;
+        if (delayTime > curTimer)
         {
             lockOn = AISM.Target.transform.position;
             AISM.character.AttackTimerReset();
@@ -60,16 +60,7 @@ public class NepenthesAttackState : AIAttackState
     //===========================================
     /////           core methods           /////
     //===========================================
-    private bool AttackCheck()
-    {
-        if (delayTime > timer)
-        {
-            timer += Time.deltaTime;
-            return false;
-        }
-        return true;
 
-    }
     private void LookatTarget()
     {
         Vector3 dir = AISM.character.RotatePoint.position - AISM.Target.transform.position;

@@ -32,7 +32,7 @@ public class BossNepenthesSmallShotGun : AIAttackState
         this.time = flightTime;
         this.rad = rad;
         this.circleObj = Profile.ShotMarker;
-        this.delayTime = 0.8f;
+        this.delayTime = 0.5f;
     }
 
     //====================================================
