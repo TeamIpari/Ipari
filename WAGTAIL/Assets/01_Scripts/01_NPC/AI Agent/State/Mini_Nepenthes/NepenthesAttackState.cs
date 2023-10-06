@@ -21,8 +21,6 @@ public class NepenthesAttackState : AIAttackState
     //===========================================
     public override void Enter()
     {
-        timer = 0;
-
         AISM.Animator.SetTrigger("isAttack");
 
     }
