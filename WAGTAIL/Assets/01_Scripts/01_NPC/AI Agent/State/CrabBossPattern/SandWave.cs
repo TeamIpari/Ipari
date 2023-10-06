@@ -30,6 +30,7 @@ public class SandWave : MonoBehaviour
     private float           _delayTime = 0f;
 
 
+
     //========================================
     /////          Magic methods          ////
     //========================================
@@ -195,15 +196,17 @@ public class SandWave : MonoBehaviour
          * ****/
         if (_FXLists == null) return;
 
+        /**생성되었던 FX들을 활성화시킨다...*/
         for (int i = 0; i < Pricision; i++) {
 
             _FXLists[i].transform.position = transform.position;
             _FXLists[i].SetActive(true);
         }
 
+        /**파도 계산에 필요한 모든 요소들을 구한다...*/
         _radianDiv = (Mathf.PI * 2f) / Pricision;
-        _timeLeft = WaveDuration;
-        _timeDiv = 1f / WaveDuration;
+        _timeLeft  = WaveDuration;
+        _timeDiv   = 1f / WaveDuration;
 
         _shakeTime = 0f;
         _shakeTime = _shakeMaxTime;
@@ -215,6 +218,9 @@ public class SandWave : MonoBehaviour
     {
         #region Omit
 
+        /**************************************************
+         *   주어진 worldPos가 판정안으로 들어왔는지 검사한다.
+         * ***/
         float center2TargetLen = ( worldPos - transform.position ).sqrMagnitude;
         float progressRatio    = Mathf.Clamp(1f - (_timeLeft * _timeDiv), 0f, 1f);
         float compareLen       = WaveMaxRadius * waveCurve.Evaluate(progressRatio)-1f;
