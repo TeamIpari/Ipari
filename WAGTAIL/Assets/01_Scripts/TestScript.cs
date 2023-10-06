@@ -19,4 +19,9 @@ public sealed class TestScript : MonoBehaviour
     {
         transform.position = playerCamera.WorldToScreenPoint(new Vector3(target.position.x,target.position.y+distance,target.position.z));
     }
+
+    public void testLog(string txt)
+    {
+        Debug.Log(txt);
+    }
 }
