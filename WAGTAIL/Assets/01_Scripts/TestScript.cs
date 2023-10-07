@@ -34,5 +34,6 @@ public sealed class TestScript : MonoBehaviour
             pullInOutState.HoldTarget(gameObject);
             isTrigger = false;
         }
+
     }
 }
