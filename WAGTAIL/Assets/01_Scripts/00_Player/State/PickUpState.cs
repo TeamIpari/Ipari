@@ -38,12 +38,6 @@ public class PickUpState : State
         _timePassed += Time.deltaTime;
     }
     
-    public override void PhysicsUpdate()
-    {
-        base.PhysicsUpdate();
-        Movement(player.playerSpeed);
-    }
-    
     public override void Exit()
     {
         base.Exit();
