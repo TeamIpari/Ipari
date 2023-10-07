@@ -5,59 +5,41 @@ using UnityEngine;
 /**************************************************************
  *   인스펙터에서 FMod Event를 재생할 수 있는 기능을 제공합니다...
  * ***/
+[AddComponentMenu("FMOD Studio/FModInspectorHelper")]
 public sealed class FModInspectorHelper : MonoBehaviour
 {
+    [System.Serializable]
+    public struct EventDesc
+    {
+        public FMODUnity.EventReference EventRef;
+        public FModParameterReference   ParamRef;
+        public Vector3                  EventPos;
+    }
+
+
     //===============================================
     /////        Property and Fields             ////
     //===============================================
-    [SerializeField] FMODUnity.EventReference EventRef;
-    [SerializeField] FModParameterReference   ParamRef;
-    [SerializeField] Vector3                  EventPos;
-
-    private int _EventRef = -1;
+    [SerializeField] EventDesc[] EventDescs = new EventDesc[0];
 
 
 
     //=======================================
     /////        Public methods         /////
     //=======================================
-    public void SetEventPosition( Vector3 position )
+    public void PlayOneShotSFX(int index)
     {
-        EventPos = position;
+        if (EventDescs == null || EventDescs.Length < index) return;
+
+        ref EventDesc desc = ref EventDescs[index];
+        FModAudioManager.PlayOneShotSFX( desc.EventRef, desc.EventPos, desc.ParamRef );
     }
 
-    public void SetLocalParameterType( FModLocalParamType localParamType)
+    public void PlayBGM( int index )
     {
-        ParamRef.SetParameter(localParamType);
-    }
+        if (EventDescs == null || EventDescs.Length < index) return;
 
-    public void SetGlobalParameterType( FModGlobalParamType globalParamType )
-    {
-        ParamRef.SetParameter(globalParamType);
-    }
-
-    public void SetParameterValue( float value )
-    {
-        ParamRef.SetParameter((FModLocalParamType)ParamRef.ParamType, value);
-    }
-
-    public void PlayBGMEvent( FModBGMEventType bgmEvent )
-    {
-        FModAudioManager.PlayBGM(bgmEvent, ParamRef);
-    }
-
-    public void PlaySFXEvent(  FModSFXEventType sfxEvent )
-    {
-        FModAudioManager.PlayOneShotSFX(sfxEvent, ParamRef, EventPos);
-    }
-
-    public void PlayBGMEvent()
-    {
-        FModAudioManager.PlayBGM(EventRef, ParamRef);
-    }
-
-    public void PlaySFXEvent()
-    {
-        FModAudioManager.PlayOneShotSFX(EventRef, EventPos, ParamRef );
+        ref EventDesc desc = ref EventDescs[index];
+        FModAudioManager.PlayBGM(desc.EventRef, desc.ParamRef);
     }
 }
