@@ -148,22 +148,13 @@ public struct FModParameterReference
             GUIStyle style   = (isBlack ? _labelStyle : _labelStyleLight);
             Color    color   = (isBlack ? new Color(.3f, .3f, .3f):new Color(0.7254f, 0.7254f, 0.7254f));
 
-            /*************************************
-             *   뒷배경 상자를 그린다...
-             * ***/
-            Rect rect   = header;
-            rect.height = 70f;
-            EditorGUI.DrawRect(rect, color);
-
-
+ 
             /************************************
              *   프로퍼티 이름을 출력한다...
              * ***/
-            rect = header;
-            rect.x += 10f;
-            EditorGUI.LabelField(rect, property.displayName, style);
+            EditorGUI.LabelField(header, property.displayName, style);
 
-            header.x     += 20f;
+            header.x     += 10f;
             header.y     += 20f;
             header.width -= 40f;
 
@@ -174,6 +165,10 @@ public struct FModParameterReference
         {
             #region Omit
             Rect rect = header;
+            //rect.x += 20f;
+
+            /**작은 사각형을 그린다...*/
+            
 
             /**************************************
              *   파라미터 타입을 표시한다...
@@ -190,14 +185,14 @@ public struct FModParameterReference
                 if(isGlobal){
 
                     FModGlobalParamType global = (FModGlobalParamType)value;
-                    result = EditorGUI.EnumPopup(rect, "ParamType", global);
+                    result = EditorGUI.EnumPopup(rect, "●-ParamType", global);
                 }
 
                 /**로컬 파라미터일 경우...*/
                 else{
 
                     FModLocalParamType local = (FModLocalParamType)value;
-                    result = EditorGUI.EnumPopup(rect, "ParamType", local);
+                    result = EditorGUI.EnumPopup(rect, "●-ParamType", local);
                 }
 
                 /**값이 변경되었을 경우 갱신한다...*/
@@ -233,6 +228,9 @@ public struct FModParameterReference
         private void GUI_ShowParamValue( ref Rect header, float space = 3f )
         {
             #region Omit
+            Rect rect = header;
+            //rect.x += 20f;
+
             using (var scope = new EditorGUI.ChangeCheckScope()){
 
                 /*******************************************
@@ -240,7 +238,7 @@ public struct FModParameterReference
                  * ***/
                 if(ParamTypeProperty.intValue<0)
                 {
-                    EditorGUI.TextField(header, "Param Value", "(No Value)");
+                    EditorGUI.TextField(rect, "●-Param Value", "(No Value)");
                     return;
                 }
 
@@ -249,7 +247,7 @@ public struct FModParameterReference
                  * ***/
                 if (_labels==null)
                 {
-                    float value = EditorGUI.Slider(header, "Param Value", ParamValueProperty.floatValue, _min, _max);
+                    float value = EditorGUI.Slider(rect, "●-Param Value", ParamValueProperty.floatValue, _min, _max);
 
                     /**값이 변경되었다면 갱신.*/
                     if(scope.changed){
@@ -264,7 +262,7 @@ public struct FModParameterReference
                 /******************************************
                  *   레이블이 존재하는 파라미터일 경우...
                  * ***/
-                int selected = EditorGUI.Popup(header,"Param Value", _select, _labels);
+                int selected = EditorGUI.Popup(rect, "●-Param Value", _select, _labels);
 
                 /**값이 변경되었다면 갱신...*/
                 if(_select != selected){
