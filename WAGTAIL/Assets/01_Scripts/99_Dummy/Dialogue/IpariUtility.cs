@@ -23,10 +23,10 @@ namespace IPariUtility
             // define the distance x and y first;
             Vector3 distance = target - origin;
             Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
-            distanceXZ.y = 0f; // y는 0으로 설정.
+            //distanceXZ.y = 0f; // y는 0으로 설정.
                                //Forward = origin;
                                // Create a float the represent our distance
-            float Sy = distance.y;      // 세로 높이의 거리를 지정.
+            float Sy = distance.y + distanceXZ.y;      // 세로 높이의 거리를 지정.
             float Sxz = distanceXZ.magnitude;
 
             // 속도 추가
@@ -121,6 +121,16 @@ namespace IPariUtility
             Vector3 c2 = (b2 - a2);
 
             return a2 + (c2 * w);
+        }
+
+        internal static Quaternion GetQuatBetweenVector(Vector3 from, Vector3 to, float ratio = 1f)
+        {
+            /********************************************
+             *   주어진 두 벡터사이의 쿼터니언 값을 계산한다...
+             * ***/
+            float angle         = Vector3.Angle(from, to) * ratio;
+            Vector3 cross       = Vector3.Cross(from, to);
+            return Quaternion.AngleAxis(angle, cross);
         }
 
         //internal static Vector3 AngleToDirZ(Transform transform, float v)

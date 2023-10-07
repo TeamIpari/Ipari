@@ -6,22 +6,33 @@ using UnityEngine.SceneManagement;
 
 public sealed class TestScript : MonoBehaviour
 {
-    [SerializeField] private Camera playerCamera;
-    [SerializeField] private Transform target;
-    [SerializeField] private float distance;
+    private bool           isTrigger = false;
+    private PullableObject pullable;
+    private PullInOutState pullInOutState;
 
-    private void FixedUpdate()
+    private void Start()
     {
-        if(target) TrackUI();
-    }
-    
-    private void TrackUI()
-    {
-        transform.position = playerCamera.WorldToScreenPoint(new Vector3(target.position.x,target.position.y+distance,target.position.z));
+        pullable       = GetComponent<PullableObject>();
+        pullInOutState = new PullInOutState(Player.Instance, Player.Instance.movementSM, Player.Instance.transform.Find("HoldingPoint").gameObject);
     }
 
-    public void testLog(string txt)
+    private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(txt);
+        if (other.CompareTag("Player")) isTrigger = true;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player")) isTrigger = false;
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.F) && isTrigger)
+        {
+            Player.Instance.movementSM.ChangeState(pullInOutState);
+            pullInOutState.HoldTarget(gameObject);
+            isTrigger = false;
+        }
     }
 }
