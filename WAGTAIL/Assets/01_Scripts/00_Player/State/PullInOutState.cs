@@ -192,8 +192,9 @@ public sealed class PullInOutState : State
          * ***/
         _applyIK = true;
 
-        float fullLen = PulledTarget.FullyExtendedLength;
-        bool isMove   = false;
+        float fullLen    = PulledTarget.FullyExtendedLength;
+        float fullLenDiv = (1f/fullLen);
+        bool isMove      = false;
 
         PulledTarget.Hold(_GrabPos);
 
@@ -243,7 +244,7 @@ public sealed class PullInOutState : State
             SetMoveAnim(ref isMove, input.sqrMagnitude);
 
             /**이동속도*/
-            animator.SetFloat("speed", 1f - exLenRatio);
+            animator.SetFloat("speed", (speed * fullLenDiv));
 
             yield return null;
         }
