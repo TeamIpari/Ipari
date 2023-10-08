@@ -94,10 +94,10 @@ public class PullingState : State
         base.LogicUpdate();
         player.animator.SetFloat("speed", input.magnitude, player.speedDampTime, Time.deltaTime);
 
-        if (!isPull)
-        {
-            stateMachine.ChangeState(player.pullOut);
-        }
+        //if (!isPull)
+        //{
+        //    stateMachine.ChangeState(player.pullOut);
+        //}
     }
 
     public override void PhysicsUpdate()

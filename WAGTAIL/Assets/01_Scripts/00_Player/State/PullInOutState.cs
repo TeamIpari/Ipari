@@ -44,14 +44,18 @@ public sealed class PullInOutState : State
     //=================================================
     ////////         Override methods            //////
     //=================================================
-    public PullInOutState(Player player, StateMachine stateMachine, GameObject grapPos)
+    public PullInOutState(Player player, StateMachine stateMachine, GameObject grapPos=null)
     :base(player, stateMachine)
     {
         #region Omit
         /***********************************************************
          *  플레이어가 잡는 위치 및 양 팔들의 트랜스폼의 참조를 구한다...
          * ***/
-        _GrabPos = grapPos;
+        if(grapPos==null)
+        {
+            _GrabPos = player.transform.Find("HoldingPoint").gameObject;
+        }
+        else _GrabPos = grapPos;
 
         Transform playerTr      = player.transform;
         Transform modeling      = playerTr.Find("NewTavuti@Modeling");
@@ -66,14 +70,14 @@ public sealed class PullInOutState : State
         _LForearm = _LArm.transform.Find("Bip001 L UpperArm").Find("Bip001 L Forearm");
         _RForearm = _RArm.transform.Find("Bip001 R UpperArm").Find("Bip001 R Forearm");
 
-        /**콜백을 등록한다...*/
-        AnimatorHelper dispatcher = modeling.GetComponent<AnimatorHelper>();
-        if(dispatcher)
-        {
-            dispatcher.AnimatorLateUpdate += () =>{
 
-                if(_applyIK) SetArmRotate();
-            };
+        /*********************************************************************
+         *   IK를 적용하기 위한 AnimationHelper의 LateUpdate콜백을 등록한다...
+         * ****/
+        AnimatorHelper dispatcher = modeling.GetComponent<AnimatorHelper>();
+        if(dispatcher){
+
+            dispatcher.AnimatorLateUpdate += () =>{ SetArmRotate(); };
         }
 
         #endregion
@@ -94,6 +98,7 @@ public sealed class PullInOutState : State
         if (_progressCoroutine != null){
 
             player.StopCoroutine(_progressCoroutine);
+            _progressCoroutine = null;
         }
         #endregion
     }
@@ -108,6 +113,8 @@ public sealed class PullInOutState : State
         input += pushXAxisAction.ReadValue<Vector2>();
         #endregion
     }
+
+    
 
 
 
@@ -145,8 +152,8 @@ public sealed class PullInOutState : State
         Transform           playerTr  = player.transform;
         CharacterController playerCon = player.controller;
 
-        Vector3     grabPoint       = PulledTarget.LastPoint;
-        Vector3     rootPoint       = PulledTarget.RootPoint;
+        Vector3     grabPoint       = PulledTarget.EndPosition;
+        Vector3     rootPoint       = PulledTarget.StartPosition;
         Vector3     playerPos       = player.transform.position;
         Vector3     playerGrabPos   = _GrabPos.transform.position;
         Vector3     startDir        = playerTr.forward;
@@ -166,7 +173,6 @@ public sealed class PullInOutState : State
         /*********************************************
          *   대상을 바라본다...
          * ***/
-
         animator.Play(PullAnimation.HOLD);
 
         do{
@@ -187,19 +193,19 @@ public sealed class PullInOutState : State
         while (currTime < _LookAtTime);
 
 
-        /*****************************************************
+        /*******************************************************
          *   해당 PullableObject를 잡고, 끊어질 때까지 당긴다.....
          * ***/
         _applyIK = true;
 
-        float fullLen    = PulledTarget.FullyExtendedLength;
+        float fullLen    = PulledTarget.MaxLength;
         float fullLenDiv = (1f/fullLen);
         bool isMove      = false;
 
-        PulledTarget.Hold(_GrabPos);
-
-        while(PulledTarget.IsBroken==false){
-
+        /**대상을 잡는다...*/
+        PulledTarget.HoldingPoint = _GrabPos;
+        while(PulledTarget.IsBroken==false)
+        {
             /******************************************
              *   당기는 동작에 필요한 계산들을 모두 구한다...
              * ***/
@@ -208,14 +214,12 @@ public sealed class PullInOutState : State
             Vector3 moveDir     = new Vector3(input.x, 0f, input.y);
             bool isPulling      = Vector3.Dot(input, lookDir) < 0;
             float deltaTime     = Time.deltaTime * 2f;
-            float exLenRatio    = Mathf.Clamp(PulledTarget.NormalizedExtendedLength - .7f, 0f, .85f);
+            float exLenRatio    = Mathf.Clamp(PulledTarget.NormalizedLength - .7f, 0f, .85f);
             float speed         = fullLen;
 
-            /**당기는 반대방향으로는 갈 수 없다...*/
+            /**당겨질 때에만 저항력을 적용한다....*/
             if (isPulling)
-            {
-                speed -= (fullLen * exLenRatio);
-            }
+                    speed -= (fullLen * exLenRatio);
 
 
             /**바라볼 방향을 향하는 쿼터니언을 구한다...*/
@@ -229,7 +233,7 @@ public sealed class PullInOutState : State
                 animator.SetFloat("speed", 0f);
 
                 animator.Play(PullAnimation.PLAYER_IDLE);
-                PulledTarget.UnHold();
+                PulledTarget.HoldingPoint = null;
                 player.movementSM.ChangeState(player.idle);
                 player.isPull = false;
                 yield break;
@@ -249,6 +253,10 @@ public sealed class PullInOutState : State
             yield return null;
         }
 
+
+        /**********************************************
+         *   줄이 끊어지고 플레이어가 넘어진다.....
+         * ****/
         _applyIK = false;
         animator.SetFloat("speed", 0f);
         animator.Play(PullAnimation.PUT);
@@ -281,6 +289,8 @@ public sealed class PullInOutState : State
     private void SetArmRotate()
     {
         #region Omit
+        if (_applyIK == false) return;
+
         /*******************************************
          *   양 팔이 잡을 위치를 구한다....
          * ***/
@@ -324,8 +334,8 @@ public sealed class PullInOutState : State
         Quaternion RRotQuat = IpariUtility.GetQuatBetweenVector(RArmDir, RArmTarget);
 
         /**최종적용*/
-        Debug.DrawLine(_LArm.position, _LArm.position + LArmTarget * 10f, Color.red);
-        Debug.DrawLine(_RArm.position, _RArm.position + RArmTarget * 10f, Color.red);
+        //Debug.DrawLine(_LArm.position, _LArm.position + LArmTarget * 10f, Color.red);
+        //Debug.DrawLine(_RArm.position, _RArm.position + RArmTarget * 10f, Color.red);
         _LArm.rotation = (LRotQuat * _LArm.rotation);
         _RArm.rotation = (RRotQuat * _RArm.rotation);
         #endregion

@@ -55,14 +55,14 @@ public class Pulling : MonoBehaviour, IInteractable
             return true;
         }
 
-        else if (player.movementSM.currentState == player.pull)
-        {
-            player.isPull = false;
-            if (animator != null)
-                animator.SetTrigger("Cancel");
-            _playerEquipPoint.transform.DetachChildren();
-            return true;
-        }
+        //else if (player.movementSM.currentState == player.pull)
+        //{
+        //    player.isPull = false;
+        //    if (animator != null)
+        //        animator.SetTrigger("Cancel");
+        //    _playerEquipPoint.transform.DetachChildren();
+        //    return true;
+        //}
 
         return false;
     }

@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 
 public class IdleState : State
 {
-    private Vector3 _slopeSlideVelocity;
+    private Vector3    _slopeSlideVelocity;
     private GameObject _FXMove;
+
+    private static readonly Collider[] _colliders = new Collider[3];
+
 
     public IdleState(Player _player, StateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -35,7 +39,8 @@ public class IdleState : State
         base.HandleInput();
 
         if (jumpAction.triggered) player.isJump = true;
-        if (interactAction.triggered) player.Interaction();
+        if(interactAction.triggered && !HoldNearestObject()) player.Interaction();
+
         GetMoveInput();
 
         _FXMove.SetActive(input != Vector2.zero);
@@ -55,11 +60,6 @@ public class IdleState : State
         if (player.isPickup)
         {
             stateMachine.ChangeState(player.pickup);
-        }
-
-        if (player.isPull)
-        {
-            stateMachine.ChangeState(player.pull);
         }
 
         if (player.isFlight)
@@ -122,5 +122,48 @@ public class IdleState : State
         }
         
         _slopeSlideVelocity = Vector3.zero;
+    }
+
+    private bool HoldNearestObject()
+    {
+        #region Omit
+
+        CharacterController playerCon = player.controller;
+
+        /***************************************
+         *   계산에 필요한 요소들을 모두 구한다....
+         * ******/
+        float height            = playerCon.height;
+        float radius            = playerCon.radius;
+        float heightHalfOffset  = (height * .5f) - (radius);
+        Vector3 playerPos       = playerCon.transform.position;
+        Vector3 center          = (playerPos + playerCon.center);
+        Vector3 point1          = center + (Vector3.up * heightHalfOffset);
+        Vector3 point2          = center + (Vector3.down * heightHalfOffset);
+
+        
+        /**************************************************
+         *   플레이어와 접촉한 Pullable collider를 탐지한다...
+         * ******/
+
+        /**주변을 탐색한다....*/
+        int hitCount = Physics.OverlapCapsuleNonAlloc(
+            point1,
+            point2,
+            radius,
+            _colliders,
+            (1 << LayerMask.NameToLayer("Pullable"))
+        );
+
+        /**탐지되었을 경우, 최상위 객체를 고른다....*/
+        if (hitCount>0){
+
+            player.movementSM.ChangeState(player.pullInout);
+            player.pullInout.HoldTarget(_colliders[0].gameObject);
+            return true;
+        }
+
+        return false;
+        #endregion
     }
 }
