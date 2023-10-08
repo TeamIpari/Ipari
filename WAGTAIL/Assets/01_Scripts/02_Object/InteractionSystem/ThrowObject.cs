@@ -6,7 +6,7 @@ using IPariUtility;
 using UnityEngine.Serialization;
 
 //=================================================
-// ÇÃ·¹ÀÌ¾î°¡ µé°í ´øÁú ¼ö ÀÖ´Â ¿ÀºêÁ§Æ®ÀÇ ±â¹İÀÌ µÇ´Â Å¬·¡½º.
+// í”Œë ˆì´ì–´ê°€ ë“¤ê³  ë˜ì§ˆ ìˆ˜ ìˆëŠ” ì˜¤ë¸Œì íŠ¸ì˜ ê¸°ë°˜ì´ ë˜ëŠ” í´ë˜ìŠ¤.
 //=================================================
 [AddComponentMenu("InteractionSystem/ThrowObject")]
 public class ThrowObject : MonoBehaviour, IInteractable
@@ -21,20 +21,20 @@ public class ThrowObject : MonoBehaviour, IInteractable
     [SerializeField] private float height = 0.0f;
     [SerializeField] private float range = 0.0f;
     [SerializeField] private Transform autoTarget;
-    
+
     private Transform _transform;
     private Collider _collider;
     private Rigidbody _rigidbody;
     private GameObject _center;
     private Vector3 _bounceDir;
-    
+
     // Properties for Bezier Curve
     private Vector3 _startPos;
     private Vector3 _height;
     private Vector3 _endPos;
-    
+
     public string InteractionPrompt { get; } = string.Empty;
-    
+
     // Player Properties
     private Player _player;
     private GameObject _playerInteractionPoint;
@@ -43,7 +43,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Transform _playerEquipPos;
     private GameObject _playerHead;
     private Transform _playerHeadPos;
-    
+
     // DelayTime Properties
     private const float LerpTime = 2f;
     private const float PickUpDelayTime = 0.3f;
@@ -53,21 +53,23 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //                    Test Properties                    
     //=================================================================
     [Header("Test Properties")]
+    [SerializeField] private bool isTarget;
     [SerializeField] private bool isSmall;
     [SerializeField] private Vector3 Forward;
     [SerializeField] private bool PhysicsCheck = false;
     [SerializeField] private bool flight = false;
     private Animator _animator;
-    // À§ÀÇ Properties´Â Å×½ºÆ®¿ëÀ¸·Î ³ªÁß¿¡ »èÁ¦ ¿¹Á¤
+    // ìœ„ì˜ PropertiesëŠ” í…ŒìŠ¤íŠ¸ìš©ìœ¼ë¡œ ë‚˜ì¤‘ì— ì‚­ì œ ì˜ˆì •
 
     // Property
-    public bool GetPhyscisCheck {
+    public bool GetPhyscisCheck
+    {
         get
         {
             return PhysicsCheck;
         }
     }
-    
+
     //=================================================================
     //                      Magic Methods          
     //=================================================================
@@ -77,7 +79,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _transform = GetComponent<Transform>();
         _collider = GetComponent<Collider>();
         _rigidbody = GetComponent<Rigidbody>();
-        
+
         // Player Caching
         _player = Player.Instance;
         _playerInteractionPoint = _player.InteractionPoint.gameObject;
@@ -86,8 +88,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerEquipPos = _playerEquipPoint.transform;
         _playerHead = _player.Head;
         _playerHeadPos = _playerHead.transform;
-        
-        
+
+
         //_center = new GameObject
         //{
         //    transform =
@@ -101,9 +103,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private void FixedUpdate()
     {
-        PhysicsChecking();
+        if (!isTarget)
+            PhysicsChecking();
+        _rigidbody.velocity += -Vector3.up * .05f;
     }
-    
+
     private void OnCollisionEnter(Collision collision)
     {
         bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
@@ -123,7 +127,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
                 _rigidbody.freezeRotation = false;
             _rigidbody.velocity += Physics.gravity * .05f;
         }
-        if(_bounceDir == default)
+        if (_bounceDir == default)
         {
             _bounceDir = RandomDirection().normalized;
             _rigidbody.velocity += _bounceDir;
@@ -148,29 +152,29 @@ public class ThrowObject : MonoBehaviour, IInteractable
             _rigidbody.velocity = Vector3.zero;
             _player.isPickup = true;
         }
-        
+
         else
         {
             StartCoroutine(Throwing(interactor));
-            _player.isCarry = false;
+            //_player.isCarry = false;
             return true;
         }
 
         return false;
     }
-    
+
     public bool AnimEvent()
     {
         throw new System.NotImplementedException();
     }
-    
+
     //=================================================================
     //                      Core Methods
     //=================================================================
     private IEnumerator PickUp(float lerpTime, float pickUpTime)
     {
         _player.isPickup = true;
-        // Object°¡ ¼Õ¿¡ ºÙ¾î¼­ ¿òÁ÷ÀÌÁö ¾Êµµ·Ï ¼³Á¤
+        // Objectê°€ ì†ì— ë¶™ì–´ì„œ ì›€ì§ì´ì§€ ì•Šë„ë¡ ì„¤ì •
         _rigidbody.useGravity = false;
         _rigidbody.freezeRotation = true;
         _rigidbody.isKinematic = true;
@@ -179,11 +183,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _collider.isTrigger = true;
         _rigidbody.angularVelocity = Vector3.zero;
         _rigidbody.velocity = Vector3.zero;
-        
+
         var pos = _transform.position;
         var currentTime = 0.0f;
-        
-        // ¼Õ¿¡¼­ Á¶±İ ¶³¾îÁ®ÀÖ´Â Object¸¦ ¼ÕÀ¸·Î ²ø¾î´ç±â´Â È¿°ú¸¦ ÁÖ±â À§ÇÑ Lerp
+
+        // ì†ì—ì„œ ì¡°ê¸ˆ ë–¨ì–´ì ¸ìˆëŠ” Objectë¥¼ ì†ìœ¼ë¡œ ëŒì–´ë‹¹ê¸°ëŠ” íš¨ê³¼ë¥¼ ì£¼ê¸° ìœ„í•œ Lerp
         while (currentTime < lerpTime)
         {
             _transform.position = Vector3.Lerp(pos, _playerInteractionPos.position, currentTime / lerpTime);
@@ -191,15 +195,15 @@ public class ThrowObject : MonoBehaviour, IInteractable
             yield return new WaitForSecondsRealtime(0.017f);
         }
         yield return new WaitForSecondsRealtime(PickUpDelayTime);
-        
-        // BezierCurve¸¦ À§ÇÑ 3°³ÀÇ Á¡ ±¸ÇÏ±â StartPos, Height, EndPos
+
+        // BezierCurveë¥¼ ìœ„í•œ 3ê°œì˜ ì  êµ¬í•˜ê¸° StartPos, Height, EndPos
         _startPos = _transform.position;
         var lookVec = (_player.transform.position - _transform.position).normalized;
         _height = new Vector3(_startPos.x, _playerEquipPos.position.y - 0.5f, _startPos.z) + lookVec * 0.5f;
         _endPos = _playerEquipPos.position;
         _endPos.y -= 0.25f;
-        
-        // ¸Ó¸® À§·Î µå´Â °î¼±À» ±×¸®´Â ÄÚ·çÆ¾
+
+        // ë¨¸ë¦¬ ìœ„ë¡œ ë“œëŠ” ê³¡ì„ ì„ ê·¸ë¦¬ëŠ” ì½”ë£¨í‹´
         currentTime = 0.0f;
         while (currentTime < pickUpTime)
         {
@@ -212,9 +216,9 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private IEnumerator Throwing(GameObject interactor)
     {
-        // Object Á¾¼ÓÀ» Ç®¾îÁÜ
+        // Object ì¢…ì†ì„ í’€ì–´ì¤Œ
         _transform.SetParent(null);
-        if(_player.target != null)
+        if (_player.target != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
             Player.Instance.transform.LookAt(
@@ -228,7 +232,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         if (_animator != null)
             _animator.SetTrigger("Flight");
 
-        // ¸Ó¸® À§¿¡¼­ ¿òÁ÷ÀÌ´Â°É ¹æÁöÇÏ±â À§ÇÑ °Íµé ÇØÁ¦
+        // ë¨¸ë¦¬ ìœ„ì—ì„œ ì›€ì§ì´ëŠ”ê±¸ ë°©ì§€í•˜ê¸° ìœ„í•œ ê²ƒë“¤ í•´ì œ
         _rigidbody.useGravity = true;
         _rigidbody.freezeRotation = false;
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
@@ -236,13 +240,18 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
         if (_player.target == null)
         {
+            isTarget = false;
             Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, _player.transform.position, height);
             _rigidbody.velocity = val;
-            
+
         }
         else if (_player.target != null)
         {
-            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * range, _player.transform.position, height);
+            float distance = Vector3.Distance(_player.target.transform.position, _player.transform.position);
+            isTarget = true;
+            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position, _player.transform.position, 1f);
+            GameObject obj = Instantiate(new GameObject(), _player.target.transform.position, Quaternion.identity);
+            Debug.Log($"NormalPos = {_player.target.transform.position}");
             _rigidbody.velocity = val;
         }
         
@@ -251,10 +260,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;
-        if(_animator == null)
+        if (_animator == null)
             flight = true;
 
         yield return new WaitForSecondsRealtime(0.3f);
+        _player.isCarry = false;
         _collider.isTrigger = false;
     }
 
@@ -264,13 +274,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
         {
             _rigidbody.velocity += Physics.gravity * .05f;
         }
-        
-        if (flight)
-        {
-            transform.RotateAround(_center.transform.position, Forward, (1.0f * Time.deltaTime));
-        }
+
+        //if (flight)
+        //{
+        //    transform.RotateAround(_center.transform.position, Forward, (1.0f * Time.deltaTime));
+        //}
     }
-    
+
     private Vector3 BezierCurve(Vector3 startPos, Vector3 endPos, Vector3 height, float value)
     {
         var a = Vector3.Lerp(startPos, height, value);
@@ -278,13 +288,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
         var b = Vector3.Lerp(height, endPos, value);
 
         var c = Vector3.Lerp(a, b, value);
- 
+
         return c;
     }
-    
+
     private Vector3 RandomDirection()
     {
-        // 8¹æÇâÀ¸·Î ÀÌµ¿ÀÌ °¡´ÉÇÏ°Ô ÇÒ ¿¹Á¤.
+        // 8ë°©í–¥ìœ¼ë¡œ ì´ë™ì´ ê°€ëŠ¥í•˜ê²Œ í•  ì˜ˆì •.
         switch (UnityEngine.Random.Range(0, 8))
         {
             case 0:
