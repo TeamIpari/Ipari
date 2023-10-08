@@ -68,8 +68,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
         }
     }
     
-    
-    
     //=================================================================
     //                      Magic Methods          
     //=================================================================
@@ -137,11 +135,18 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //=================================================================
     public bool Interact(GameObject interactor)
     {
-      
+        // PickUp logic
         if (_player.currentInteractable == null)
         {
-            StartCoroutine(PickUp(LerpTime, PickUpTime));
-            _player.isCarry = true;
+            _rigidbody.useGravity = false;
+            _rigidbody.freezeRotation = true;
+            _rigidbody.isKinematic = true;
+            PhysicsCheck = false;
+            flight = false;
+            _collider.isTrigger = true;
+            _rigidbody.angularVelocity = Vector3.zero;
+            _rigidbody.velocity = Vector3.zero;
+            _player.isPickup = true;
         }
         
         else
@@ -219,7 +224,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
         Debug.Log($"{_player.target}");
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSecondsRealtime(0.1f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
 
@@ -232,18 +237,15 @@ public class ThrowObject : MonoBehaviour, IInteractable
         if (_player.target == null)
         {
             Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, _player.transform.position, height);
-            //Debug.Log($"TargetPos = {val}");
             _rigidbody.velocity = val;
             
         }
         else if (_player.target != null)
         {
             Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * range, _player.transform.position, height);
-            //Debug.Log($"NormalPos = {val}");
             _rigidbody.velocity = val;
         }
-
-        Debug.Log($"{_rigidbody.velocity}");
+        
         //_rigidbody.velocity += _player.movementSM.currentState.velocity * _player.playerSpeed * 0.3f;
         Forward = transform.position;
 
@@ -252,7 +254,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         if(_animator == null)
             flight = true;
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSecondsRealtime(0.3f);
         _collider.isTrigger = false;
     }
 
