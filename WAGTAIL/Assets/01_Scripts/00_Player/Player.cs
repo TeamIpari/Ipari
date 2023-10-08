@@ -82,8 +82,7 @@ public class Player : MonoBehaviour
     public CarryState carry;
     public PickUpState pickup;
     public DropState drop;
-    public PullingState pull;
-    public PullOutState pullOut;
+    public PullInOutState pullInout;
     public DeathState death;
 
     //============================================//
@@ -170,28 +169,27 @@ public class Player : MonoBehaviour
     private void Start()
     {
         // Manager
-        GameManager = GameManager.GetInstance();
-        UIManager = UIManager.GetInstance();
-        CameraManager = CameraManager.GetInstance();
+        GameManager     = GameManager.GetInstance();
+        UIManager       = UIManager.GetInstance();
+        CameraManager   = CameraManager.GetInstance();
         
         // GetComponents
-        controller = GetComponent<CharacterController>();
-        animator = GetComponentInChildren<Animator>();
-        playerInput = GetComponent<PlayerInput>();
+        controller      = GetComponent<CharacterController>();
+        animator        = GetComponentInChildren<Animator>();
+        playerInput     = GetComponent<PlayerInput>();
         cameraTransform = Camera.main.transform;
 
         // State
-        movementSM = new StateMachine();
-        idle = new IdleState(this, movementSM);
-        jump = new JumpingState(this, movementSM);
-        flight = new FlightState(this, movementSM);
-        landing = new LandingState(this, movementSM);
-        carry = new CarryState(this, movementSM);
-        pickup = new PickUpState(this, movementSM);
-        drop = new DropState(this, movementSM);
-        pull = new PullingState(this, movementSM);
-        pullOut = new PullOutState(this, movementSM);
-        death = new DeathState(this, movementSM);
+        movementSM  = new StateMachine();
+        idle        = new IdleState(this, movementSM);
+        jump        = new JumpingState(this, movementSM);
+        flight      = new FlightState(this, movementSM);
+        landing     = new LandingState(this, movementSM);
+        carry       = new CarryState(this, movementSM);
+        pickup      = new PickUpState(this, movementSM);
+        drop        = new DropState(this, movementSM);
+        pullInout   = new PullInOutState(this, movementSM);
+        death       = new DeathState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);

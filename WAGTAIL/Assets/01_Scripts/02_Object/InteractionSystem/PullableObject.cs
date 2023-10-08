@@ -5,7 +5,6 @@ using UnityEngine.Events;
 using System.Drawing;
 using UnityEngine.UIElements;
 using IPariUtility;
-using Unity.VisualScripting;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -128,14 +127,14 @@ public sealed class PullableObject : MonoBehaviour
                 Vector3 prevPos = (datas[0].Tr!=null? HandleUtility.WorldToGUIPoint(datas[0].Tr.position):Vector3.zero);
 
                 /**잡힌 오브젝트가 있다면 트랜스폼을 편집할 수 있도록 한다...*/
-                if (targetObj.GrabTarget != null)
+                if (targetObj.HoldingPoint != null)
                 {
-                    Vector3 grabPos = targetObj.GrabTarget.transform.position;
+                    Vector3 grabPos = targetObj.HoldingPoint.transform.position;
                     Vector3 grabGUIPos = HandleUtility.WorldToGUIPoint(grabPos);
 
                     if (GUI_ShowBoneButton(grabGUIPos, GrabNodeButtonStyle))
                     {
-                        selectionData = targetObj.GrabTarget.transform;
+                        selectionData = targetObj.HoldingPoint.transform;
                     }
                 }
 
@@ -159,14 +158,14 @@ public sealed class PullableObject : MonoBehaviour
                 }
 
                 /**잡힌 오브젝트가 있다면 트랜스폼을 편집할 수 있도록 한다...*/
-                if (targetObj.GrabTarget != null){
+                if (targetObj.HoldingPoint != null){
 
-                    Vector3 grabPos = targetObj.GrabTarget.transform.position;
+                    Vector3 grabPos = targetObj.HoldingPoint.transform.position;
                     Vector3 grabGUIPos = HandleUtility.WorldToGUIPoint(grabPos);
 
                     if (GUI_ShowBoneButton(grabGUIPos, GrabNodeButtonStyle))
                     {
-                        selectionData = targetObj.GrabTarget.transform;
+                        selectionData = targetObj.HoldingPoint.transform;
                     }
                 }
             }
@@ -323,8 +322,8 @@ public sealed class PullableObject : MonoBehaviour
                 GrabTargetProperty              = serializedObject.FindProperty("_GrabTarget");
                 BeginSnappedProperty            = serializedObject.FindProperty("OnPullRelease");
                 FullyExtendedProperty           = serializedObject.FindProperty("OnFullyExtended");
-                BreakLengthRatioProperty        = serializedObject.FindProperty("BreakLengthRatio");
-                UsedStrongVibrationProperty     = serializedObject.FindProperty("UsedStrongVibration");
+                BreakLengthRatioProperty        = serializedObject.FindProperty("MaxScale");
+                UsedStrongVibrationProperty     = serializedObject.FindProperty("UseStrongShake");
             }
             #endregion
         }
@@ -347,7 +346,7 @@ public sealed class PullableObject : MonoBehaviour
             #region Omit
             if (targetObj == null) return;
 
-            EditorGUILayout.TextField("Extended Ratio", $"{targetObj.ExtendedLength} ({targetObj.NormalizedExtendedLength}%)");
+            EditorGUILayout.TextField("Current Length", $"{targetObj.Length} ({targetObj.NormalizedLength}%)");
 
             #endregion
         }
@@ -359,7 +358,7 @@ public sealed class PullableObject : MonoBehaviour
 
             using (var scope = new EditorGUI.ChangeCheckScope())
             {
-                float value = EditorGUILayout.FloatField("Break Length Ratio", BreakLengthRatioProperty.floatValue);
+                float value = EditorGUILayout.FloatField("Max Scale", BreakLengthRatioProperty.floatValue);
 
                 /**값이 바뀌었다면 갱신한다..*/
                 if(scope.changed){
@@ -437,14 +436,14 @@ public sealed class PullableObject : MonoBehaviour
                 /**GrabTarget 참조필드...*/
                 using (var scope = new EditorGUI.ChangeCheckScope()){
 
-                    GameObject value = (GameObject)EditorGUILayout.ObjectField("Grab Target", GrabTargetProperty.objectReferenceValue, typeof(GameObject), true);
+                    GameObject value = (GameObject)EditorGUILayout.ObjectField("Holding Point", GrabTargetProperty.objectReferenceValue, typeof(GameObject), true);
                     if (scope.changed) GrabTargetProperty.objectReferenceValue = value;
                 }
 
                 /**루트모션 사용여부...*/
                 using ( var scope = new EditorGUI.ChangeCheckScope()){
 
-                    bool value = EditorGUILayout.ToggleLeft("Used Strong Vibration", UsedStrongVibrationProperty.boolValue, GUILayout.Width(150f));
+                    bool value = EditorGUILayout.ToggleLeft("Use Strong Shake", UsedStrongVibrationProperty.boolValue, GUILayout.Width(130f));
                     if(scope.changed) UsedStrongVibrationProperty.boolValue = value;
                 }
 
@@ -495,7 +494,7 @@ public sealed class PullableObject : MonoBehaviour
     //=========================================
     /////            Property             /////
     //=========================================
-    public float        FullyExtendedLength
+    public float        MaxLength
     {
         get
         {
@@ -513,42 +512,42 @@ public sealed class PullableObject : MonoBehaviour
             return len;
         }
     }
-    public float        NormalizedExtendedLength 
+    public float        NormalizedLength 
     {
         get
         {
-            if (GrabTarget == null || _datas == null || _datas.Length == 0 || _datas[0].Tr == null){
+            if (HoldingPoint == null || _datas == null || _datas.Length == 0 || _datas[0].Tr == null){
 
                 return 0f;
             }
 
-            float Root2Target = (GrabTarget.transform.position - _datas[0].Tr.position).magnitude;
+            float Root2Target = (HoldingPoint.transform.position - _datas[0].Tr.position).magnitude;
 
             /**최대길이 연산자가 초기화되지않았다면 초기화.*/
             if(_fullyExtendedDiv<0) {
 
-                _fullyExtendedDiv = (1f / FullyExtendedLength);
+                _fullyExtendedDiv = (1f / MaxLength);
             }
 
             return ( Root2Target * _fullyExtendedDiv );
         }
     }
-    public float        ExtendedLength
+    public float        Length
     {
         get
         {
-            if (GrabTarget == null || _datas == null || _datas.Length == 0 || _datas[0].Tr == null){
+            if (HoldingPoint == null || _datas == null || _datas.Length == 0 || _datas[0].Tr == null){
 
                 return 0f;
             }
 
-            return (GrabTarget.transform.position - _datas[0].Tr.position).magnitude;
+            return (HoldingPoint.transform.position - _datas[0].Tr.position).magnitude;
         }
     }
     public bool         IsBroken { get; private set; } = false;
     public bool         IsDestroy { get; private set; } = false;
     public int          BoneCount { get { return _dataCount; } }
-    public Vector3      RootPoint
+    public Vector3      StartPosition
     {
         get
         {
@@ -558,7 +557,7 @@ public sealed class PullableObject : MonoBehaviour
             return _datas[0].Tr.position;
         }
     }
-    public Vector3      LastPoint
+    public Vector3      EndPosition
     {
         get
         {
@@ -571,10 +570,17 @@ public sealed class PullableObject : MonoBehaviour
             return _datas[_dataCount-2].Tr.position;
         }
     }
-    public GameObject   GrabTarget { get { return _GrabTarget; } }
+    public GameObject   HoldingPoint 
+    { 
+        get { return _GrabTarget; } 
+        set
+        {
+            _GrabTarget = value;
+        }
+    }
 
-    [SerializeField] public float            BreakLengthRatio = 1.5f;
-    [SerializeField] public bool             UsedStrongVibration = false;
+    [SerializeField] public float            MaxScale = 1.5f;
+    [SerializeField] public bool             UseStrongShake = false;
     [SerializeField] private GameObject       _GrabTarget; 
     [SerializeField] public  PullableObjEvent OnPullRelease;
     [SerializeField] public  PullableObjEvent OnFullyExtended;
@@ -589,8 +595,6 @@ public sealed class PullableObject : MonoBehaviour
 
     [SerializeField, HideInInspector]
     private int        _dataCount = -1;
-
-    private Animator _animator;
 
     private const int   _fabrikLimit       = 100;
     private float       _fullyExtendedLen = -1f;
@@ -608,17 +612,19 @@ public sealed class PullableObject : MonoBehaviour
     private float       _brokenDiv  = 0f;
 
 
+
     //===========================================
     /////          Magic methods            /////
     //===========================================
     private void Awake()
     {
         #region Omit
-        _animator = GetComponent<Animator>();
-        _fullyExtendedLen      = FullyExtendedLength;
+        _fullyExtendedLen      = MaxLength;
         _fullyExtendedDiv      = (1f/ _fullyExtendedLen);
         _boneCountDiv          = (1f/(_datas.Length-1));
         _brokenDiv             = (1f/_brokenTime);
+
+        gameObject.layer = LayerMask.NameToLayer("Pullable");
 
         /**************************************
          *   이벤트 대리자 초기화....
@@ -676,13 +682,13 @@ public sealed class PullableObject : MonoBehaviour
         /*************************************
          *   외부로부터 당겨질 경우의 처리를 한다..
          * ***/
-        if(GrabTarget!=null){
+        if(HoldingPoint!=null){
 
             /**팽팽하게 당겨졌을 때의 처리...*/
             if (!UpdateFullExtendedVibration())
             {
                 /**완전히 당겨지지 않았을 경우의 처리...*/
-                UpdateLookAtTarget(GrabTarget.transform.position);
+                UpdateLookAtTarget(HoldingPoint.transform.position);
             }
             return;
         }
@@ -703,10 +709,10 @@ public sealed class PullableObject : MonoBehaviour
     private void OnDrawGizmos()
     {
         #region Omit
-        if (GrabTarget == null) return;
+        if (HoldingPoint == null) return;
 
-        Vector3 grabPos = GrabTarget.transform.position;
-        Vector3 rootPos = RootPoint;
+        Vector3 grabPos = HoldingPoint.transform.position;
+        Vector3 rootPos = StartPosition;
 
         Vector3 root2GrabDir = (grabPos-rootPos).normalized;
         Gizmos.color = UnityEngine.Color.blue;
@@ -745,7 +751,7 @@ public sealed class PullableObject : MonoBehaviour
          *   루트본이 원래 위치에 최대한 가깝게 이동하도록 보간...
          * ***/
         ref BoneData rootBone     = ref _datas[0];
-        Transform    targetTr     = GrabTarget.transform;
+        Transform    targetTr     = HoldingPoint.transform;
 
         int   leftCount     = _fabrikLimit;
         float root2forward  = 2f;
@@ -768,7 +774,7 @@ public sealed class PullableObject : MonoBehaviour
         LastBone2GrabSolver();
 
         /**마지막 위치를 기록한다...*/
-        _lastExtendedLen = (GrabTarget.transform.position - _datas[0].Tr.position).magnitude;
+        _lastExtendedLen = (HoldingPoint.transform.position - _datas[0].Tr.position).magnitude;
         #endregion
     }
 
@@ -804,10 +810,10 @@ public sealed class PullableObject : MonoBehaviour
          *   BackwardIK로 인한 잡은 부분에 마지막 본이 닿지 않는
          *   문제점을 해결한다...
          * ***/
-        if (GrabTarget == null) return;
+        if (HoldingPoint == null) return;
 
         ref BoneData lastData = ref _datas[_dataCount - 1];
-        Vector3      grabPos  = GrabTarget.transform.position;
+        Vector3      grabPos  = HoldingPoint.transform.position;
         float last2TargetLen  = (grabPos - lastData.Tr.position).magnitude;
         float        partLen  = (last2TargetLen * _boneCountDiv);   
 
@@ -827,15 +833,15 @@ public sealed class PullableObject : MonoBehaviour
     private bool UpdateFullExtendedVibration()
     {
         #region Omit
-        if (GrabTarget == null) return false;
+        if (HoldingPoint == null) return false;
 
-        float root2TargetLen  = (GrabTarget.transform.position - _datas[0].Tr.position).magnitude;
+        float root2TargetLen  = (HoldingPoint.transform.position - _datas[0].Tr.position).magnitude;
         float extendedRatio   = (root2TargetLen * _fullyExtendedDiv);
 
         /****************************************
          *   줄이 한계치를 넘어섰다면 파괴된다...
          * ***/
-        if(!IsBroken && extendedRatio>=BreakLengthRatio)
+        if(!IsBroken && extendedRatio>=MaxScale)
         {
             IsBroken = true;
             _GrabTarget = null;
@@ -852,9 +858,9 @@ public sealed class PullableObject : MonoBehaviour
             /**줄이 당겨져서 완전히 펴졌을 때의 처리...*/
             if(_lastExtendedLen>0){
 
-                _Yspeed = (root2TargetLen - _lastExtendedLen) * (UsedStrongVibration ? 12f : 3f);
+                _Yspeed = (root2TargetLen - _lastExtendedLen) * (UseStrongShake ? 12f : 3f);
                _lastExtendedLen = 0;
-                FullStretchObject();
+                StretchFull();
                 OnFullyExtended?.Invoke();
             }
 
@@ -868,14 +874,14 @@ public sealed class PullableObject : MonoBehaviour
             ref BoneData last    = ref _datas[_dataCount-1];
 
             /**당겨지는 방향의 업벡터를 이용하여 배지어 제어점들을 구한다...*/
-            Vector3 forward       = (GrabTarget.transform.position - root.OriginPos);
+            Vector3 forward       = (HoldingPoint.transform.position - root.OriginPos);
             Vector3 forwardNormal = forward.normalized;
             Vector3 right         = Vector3.Cross(Vector3.up, forwardNormal).normalized;
             Vector3 up            = Vector3.Cross(forwardNormal, right).normalized;
 
             Vector3 a  = root.OriginPos;
             Vector3 cp = root.OriginPos + (forward*.5f) + (up*_Yspeed);
-            Vector3 b  = GrabTarget.transform.position;
+            Vector3 b  = HoldingPoint.transform.position;
 
             //Debug.DrawLine(cp, cp + up * _Yspeed, UnityEngine.Color.red);
 
@@ -911,7 +917,7 @@ public sealed class PullableObject : MonoBehaviour
         }
 
         /**마지막 위치를 기록한다...*/
-        else _lastExtendedLen = (GrabTarget.transform.position - _datas[0].Tr.position).magnitude;
+        else _lastExtendedLen = (HoldingPoint.transform.position - _datas[0].Tr.position).magnitude;
 
         return false;
         #endregion
@@ -997,7 +1003,7 @@ public sealed class PullableObject : MonoBehaviour
     //============================================
     //////          Public methods           /////
     //============================================
-    public void FullStretchObject()
+    public void StretchFull()
     {
         #region Omit
         if (_dataCount < 2) return;
@@ -1047,17 +1053,5 @@ public sealed class PullableObject : MonoBehaviour
 
         return _datas[index].originLength;
         #endregion
-    }
-
-    public void Hold( GameObject grabTarget )
-    {
-        _GrabTarget = grabTarget;
-        if(_animator!=null) _animator.enabled = true;
-    }
-
-    public void UnHold()
-    {
-        _GrabTarget = null;
-        if (_animator != null) _animator.enabled = false;
     }
 }
