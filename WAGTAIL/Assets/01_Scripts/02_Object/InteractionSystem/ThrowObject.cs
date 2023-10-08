@@ -21,20 +21,20 @@ public class ThrowObject : MonoBehaviour, IInteractable
     [SerializeField] private float height = 0.0f;
     [SerializeField] private float range = 0.0f;
     [SerializeField] private Transform autoTarget;
-    
+
     private Transform _transform;
     private Collider _collider;
     private Rigidbody _rigidbody;
     private GameObject _center;
     private Vector3 _bounceDir;
-    
+
     // Properties for Bezier Curve
     private Vector3 _startPos;
     private Vector3 _height;
     private Vector3 _endPos;
-    
+
     public string InteractionPrompt { get; } = string.Empty;
-    
+
     // Player Properties
     private Player _player;
     private GameObject _playerInteractionPoint;
@@ -43,7 +43,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Transform _playerEquipPos;
     private GameObject _playerHead;
     private Transform _playerHeadPos;
-    
+
     // DelayTime Properties
     private const float LerpTime = 2f;
     private const float PickUpDelayTime = 0.3f;
@@ -53,6 +53,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //                    Test Properties                    
     //=================================================================
     [Header("Test Properties")]
+    [SerializeField] private bool isTarget;
     [SerializeField] private bool isSmall;
     [SerializeField] private Vector3 Forward;
     [SerializeField] private bool PhysicsCheck = false;
@@ -61,15 +62,16 @@ public class ThrowObject : MonoBehaviour, IInteractable
     // 위의 Properties는 테스트용으로 나중에 삭제 예정
 
     // Property
-    public bool GetPhyscisCheck {
+    public bool GetPhyscisCheck
+    {
         get
         {
             return PhysicsCheck;
         }
     }
-    
-    
-    
+
+
+
     //=================================================================
     //                      Magic Methods          
     //=================================================================
@@ -79,7 +81,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _transform = GetComponent<Transform>();
         _collider = GetComponent<Collider>();
         _rigidbody = GetComponent<Rigidbody>();
-        
+
         // Player Caching
         _player = Player.Instance;
         _playerInteractionPoint = _player.InteractionPoint.gameObject;
@@ -88,8 +90,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerEquipPos = _playerEquipPoint.transform;
         _playerHead = _player.Head;
         _playerHeadPos = _playerHead.transform;
-        
-        
+
+
         //_center = new GameObject
         //{
         //    transform =
@@ -103,9 +105,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private void FixedUpdate()
     {
-        PhysicsChecking();
+        if (!isTarget)
+            PhysicsChecking();
+        _rigidbody.velocity += -Vector3.up * .05f;
     }
-    
+
     private void OnCollisionEnter(Collision collision)
     {
         bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
@@ -125,7 +129,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
                 _rigidbody.freezeRotation = false;
             _rigidbody.velocity += Physics.gravity * .05f;
         }
-        if(_bounceDir == default)
+        if (_bounceDir == default)
         {
             _bounceDir = RandomDirection().normalized;
             _rigidbody.velocity += _bounceDir;
@@ -137,28 +141,28 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //=================================================================
     public bool Interact(GameObject interactor)
     {
-      
+
         if (_player.currentInteractable == null)
         {
             StartCoroutine(PickUp(LerpTime, PickUpTime));
             _player.isCarry = true;
         }
-        
+
         else
         {
             StartCoroutine(Throwing(interactor));
-            _player.isCarry = false;
+            //_player.isCarry = false;
             return true;
         }
 
         return false;
     }
-    
+
     public bool AnimEvent()
     {
         throw new System.NotImplementedException();
     }
-    
+
     //=================================================================
     //                      Core Methods
     //=================================================================
@@ -174,10 +178,10 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _collider.isTrigger = true;
         _rigidbody.angularVelocity = Vector3.zero;
         _rigidbody.velocity = Vector3.zero;
-        
+
         var pos = _transform.position;
         var currentTime = 0.0f;
-        
+
         // 손에서 조금 떨어져있는 Object를 손으로 끌어당기는 효과를 주기 위한 Lerp
         while (currentTime < lerpTime)
         {
@@ -186,14 +190,14 @@ public class ThrowObject : MonoBehaviour, IInteractable
             yield return new WaitForSecondsRealtime(0.017f);
         }
         yield return new WaitForSecondsRealtime(PickUpDelayTime);
-        
+
         // BezierCurve를 위한 3개의 점 구하기 StartPos, Height, EndPos
         _startPos = _transform.position;
         var lookVec = (_player.transform.position - _transform.position).normalized;
         _height = new Vector3(_startPos.x, _playerEquipPos.position.y - 0.5f, _startPos.z) + lookVec * 0.5f;
         _endPos = _playerEquipPos.position;
         _endPos.y -= 0.25f;
-        
+
         // 머리 위로 드는 곡선을 그리는 코루틴
         currentTime = 0.0f;
         while (currentTime < pickUpTime)
@@ -209,7 +213,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     {
         // Object 종속을 풀어줌
         _transform.SetParent(null);
-        if(_player.target != null)
+        if (_player.target != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
             Player.Instance.transform.LookAt(
@@ -231,15 +235,19 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
         if (_player.target == null)
         {
+            isTarget = false;
             Vector3 val = IpariUtility.CaculateVelocity(_player.transform.position + _player.transform.forward * range, _player.transform.position, height);
             //Debug.Log($"TargetPos = {val}");
             _rigidbody.velocity = val;
-            
+
         }
         else if (_player.target != null)
         {
-            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * range, _player.transform.position, height);
-            //Debug.Log($"NormalPos = {val}");
+            float distance = Vector3.Distance(_player.target.transform.position, _player.transform.position);
+            isTarget = true;
+            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position, _player.transform.position, 1f);
+            GameObject obj = Instantiate(new GameObject(), _player.target.transform.position, Quaternion.identity);
+            Debug.Log($"NormalPos = {_player.target.transform.position}");
             _rigidbody.velocity = val;
         }
 
@@ -249,10 +257,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;
-        if(_animator == null)
+        if (_animator == null)
             flight = true;
 
         yield return new WaitForSeconds(0.3f);
+        _player.isCarry = false;
         _collider.isTrigger = false;
     }
 
@@ -262,13 +271,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
         {
             _rigidbody.velocity += Physics.gravity * .05f;
         }
-        
-        if (flight)
-        {
-            transform.RotateAround(_center.transform.position, Forward, (1.0f * Time.deltaTime));
-        }
+
+        //if (flight)
+        //{
+        //    transform.RotateAround(_center.transform.position, Forward, (1.0f * Time.deltaTime));
+        //}
     }
-    
+
     private Vector3 BezierCurve(Vector3 startPos, Vector3 endPos, Vector3 height, float value)
     {
         var a = Vector3.Lerp(startPos, height, value);
@@ -276,10 +285,10 @@ public class ThrowObject : MonoBehaviour, IInteractable
         var b = Vector3.Lerp(height, endPos, value);
 
         var c = Vector3.Lerp(a, b, value);
- 
+
         return c;
     }
-    
+
     private Vector3 RandomDirection()
     {
         // 8방향으로 이동이 가능하게 할 예정.
