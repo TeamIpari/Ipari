@@ -15,7 +15,6 @@ public class Player : MonoBehaviour
     // 1. Player에 있는 수치값들은 특수한 이유가 없으면 상수로 선언해야함.
     //==================================
     public float playerSpeed = 15.0f;
-    // 점프 사용할지 말지 몰라서 일단 기입만 해둠
     // =======================================
     public float jumpHeight = 0.8f;
     public float gravityMultiplier = 2;
@@ -26,6 +25,7 @@ public class Player : MonoBehaviour
     // =======================================
     public float slopeSpeed = 0f;
     public float respawnTime;
+
     //========================================
     //              지훈 추가               //
     //========================================
