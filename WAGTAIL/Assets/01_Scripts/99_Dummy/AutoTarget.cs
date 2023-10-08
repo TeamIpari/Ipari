@@ -33,23 +33,38 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
 
     private void Start()
     {
-        Vector3 curPos = qPoints.Dequeue();
-        // 타겟 설정
-        curTarget = GameObject.Instantiate<GameObject>(new GameObject(), this.transform.position + curPos, Quaternion.identity, this.transform);
-        curTarget.layer = LayerMask.NameToLayer("Enemies");
-        SphereCollider a = curTarget.AddComponent<SphereCollider>();
-        a.isTrigger = true;
-        hitCollision.center = curPos;
+        ChangeTarget();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-
+        if (other.CompareTag("interactable"))
+        {
+            ChangeTarget();
+        }
     }
 
     /////////////////////////////////////////////////
     /////            Core Method                /////
     /////////////////////////////////////////////////
 
+    private void ChangeTarget()
+    {
+        Vector3 curPos = qPoints.Dequeue();
+        // 타겟 설정
+        Debug.Log($"{curPos}");
+        if(curTarget == null)
+        {
+            curTarget = GameObject.Instantiate<GameObject>(new GameObject(), this.transform.position + curPos, Quaternion.identity, this.transform);
+            curTarget.layer = LayerMask.NameToLayer("Enemies");
+        }
+        else
+        {
+            curTarget.transform.position = transform.position + curPos;
+        }
+        SphereCollider a = curTarget.AddComponent<SphereCollider>();
+        a.isTrigger = true;
+        hitCollision.center = curPos;
+    }
 
 }

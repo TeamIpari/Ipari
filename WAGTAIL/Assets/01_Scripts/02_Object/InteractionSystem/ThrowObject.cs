@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using IPariUtility;
 using UnityEngine.Serialization;
+using FMODUnity;
 
 //=================================================
 // 플레이어가 들고 던질 수 있는 오브젝트의 기반이 되는 클래스.
@@ -32,6 +33,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Vector3 _startPos;
     private Vector3 _height;
     private Vector3 _endPos;
+    Vector3 spawnPoint;
 
     public string InteractionPrompt { get; } = string.Empty;
 
@@ -88,6 +90,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerEquipPos = _playerEquipPoint.transform;
         _playerHead = _player.Head;
         _playerHeadPos = _playerHead.transform;
+        spawnPoint = this.transform.position;
 
 
         //_center = new GameObject
@@ -103,9 +106,12 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private void FixedUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.K))
+            ResetPoint();
         if (!isTarget)
             PhysicsChecking();
-        _rigidbody.velocity += -Vector3.up * .05f;
+        else 
+            _rigidbody.velocity += -Vector3.up * .05f;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -247,11 +253,10 @@ public class ThrowObject : MonoBehaviour, IInteractable
         }
         else if (_player.target != null)
         {
-            float distance = Vector3.Distance(_player.target.transform.position, _player.transform.position);
+            float distance = Vector3.Distance(_player.target.transform.position, this.transform.position);
+            float flightTime = 1f * (distance / _player.throwRange);
             isTarget = true;
-            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position, _player.transform.position, 1f);
-            GameObject obj = Instantiate(new GameObject(), _player.target.transform.position, Quaternion.identity);
-            Debug.Log($"NormalPos = {_player.target.transform.position}");
+            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position, this.transform.position, flightTime);
             _rigidbody.velocity = val;
         }
         
@@ -290,6 +295,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
         var c = Vector3.Lerp(a, b, value);
 
         return c;
+    }
+
+    public void ResetPoint()
+    {
+        // 위치 초기화
+        transform.position = spawnPoint;
+        transform.rotation = Quaternion.identity;
     }
 
     private Vector3 RandomDirection()
