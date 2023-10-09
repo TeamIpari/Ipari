@@ -243,7 +243,7 @@ public class Player : MonoBehaviour
         #endregion
         if(currentInteractable == null)
         {
-            GameObject obj = FindViewTarget(transform, 3,holdTargetMask);
+            GameObject obj = FindViewTarget(transform, 1.5f ,holdTargetMask);
             if (obj == null)  return;
             var interactable = obj.GetComponent<IInteractable>();
             if (interactable == null)  return;

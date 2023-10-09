@@ -65,6 +65,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
     [SerializeField] private float Gravity = 7;
     private Animator _animator;
     [SerializeField] private float Rot = 12;
+    [SerializeField] private float correctionHeight = 0f;
+    [SerializeField] private const float correctionForward = 1.5f;
     // 위의 Properties는 테스트용으로 나중에 삭제 예정
 
     // Property
@@ -274,10 +276,14 @@ public class ThrowObject : MonoBehaviour, IInteractable
         else if (_player.target != null)
         {
             float distance = Vector3.Distance(_player.target.transform.position, this.transform.position);
-            flightTime = height * (distance / (_player.throwRange * 0.5f));
+            flightTime = height * (distance / (_player.throwRange));
             Debug.Log($"{height} * {distance} / {_player.throwRange}  = {flightTime}");
             isTarget = true;
-            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position + _player.transform.forward * (Gravity * flightTime), _player.transform.position, flightTime);
+            Vector3 correction_value =
+                new Vector3(_player.target.transform.position.x, _player.target.transform.position.y + correctionHeight, _player.target.transform.position.z)
+                + (_player.transform.forward * correctionForward)* (Gravity * flightTime);
+
+            Vector3 val = IpariUtility.CaculateVelocity(correction_value , _player.transform.position, flightTime);
             _rigidbody.velocity = val;
         }
         
