@@ -38,7 +38,8 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("interactable"))
+        Debug.Log($"{other.tag}");
+        if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
         {
             ChangeTarget();
         }
