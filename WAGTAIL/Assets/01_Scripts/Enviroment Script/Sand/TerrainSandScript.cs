@@ -53,9 +53,11 @@ public sealed class TerrainSandScript : SandScriptBase
          * ***/
         _radiusDiv = (1f/_intakeradius);
         
+        /**해당 터레인의 데이터의 복사본을 생성한다...*/
         _terrain = Terrain.activeTerrain;
         _terrain.terrainData = _terrainData = Instantiate(_terrain.terrainData);
 
+        /**터레인의 침식/깊이맵을 구한다....*/
         int radius = Mathf.RoundToInt(IntakeRadius);
         _intakeMap = new float[radius, radius];
         _heightMap = _terrainData.GetHeights(
@@ -69,11 +71,11 @@ public sealed class TerrainSandScript : SandScriptBase
         _terrainSizeDiv = new Vector3
         {
             x = (1f / _terrainData.size.x),
-            y = 1f,
+            y = (1f / _terrainData.size.y),
             z = (1f / _terrainData.size.z)
         };
 
-        _defaultY = 0f;
+        _defaultY = _terrain.SampleHeight(SandIntakeCenterOffset);
 
         #endregion
     }
@@ -100,16 +102,18 @@ public sealed class TerrainSandScript : SandScriptBase
          *   계산에 필요한 요소들을 모두 구한다...
          * ***/
         Vector3 tPos   = transform.position;
-        Vector3 center = (SandIntakeCenterOffset - tPos);
+        Vector3 center = (currCenter - tPos);
+        center.Scale(_terrainSizeDiv);
 
         int radius       = Mathf.RoundToInt(_intakeradius);
         float radiusHalf = (_intakeradius * .5f);
 
-        int centerX = Mathf.RoundToInt(center.x + radiusHalf);
-        int centerZ = Mathf.RoundToInt(center.z + radiusHalf);
-        float centerY = (currCenter.y - _defaultY);
+        int centerX = Mathf.FloorToInt(center.x * _terrainData.size.x);
+        int centerZ = Mathf.FloorToInt(center.z * _terrainData.size.z);
+        float centerY = Mathf.FloorToInt(center.y * _terrainData.size.y);
 
         Vector2 center2 = new Vector2(centerX, centerZ);
+
 
         /********************************************
          *   중심점에 알맞게 인테이크 맵을 갱신한다....
@@ -120,13 +124,13 @@ public sealed class TerrainSandScript : SandScriptBase
 
                 Vector2 currPos      = new Vector2(x, z);
                 Vector2 center2Curr  = (currPos - center2);
-                float outerRatio   = (1f - (center2Curr.magnitude * _radiusDiv));
-                _intakeMap[x, z] = _defaultY;
+                float outerRatio     = (1f - (center2Curr.magnitude * _radiusDiv));
+                _intakeMap[x, z]     = centerY;
             }
         }
 
         _defaultY += Time.deltaTime * .01f;
-        Debug.Log($"defaultY: {_defaultY}");
+        Debug.Log($"defaultY: {centerY}");
 
         _terrainData.SetHeights(centerX, centerZ, _intakeMap);
 
