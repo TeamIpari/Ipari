@@ -51,9 +51,10 @@ public sealed class PullInOutState : State
         /***********************************************************
          *  플레이어가 잡는 위치 및 양 팔들의 트랜스폼의 참조를 구한다...
          * ***/
-        if(grapPos==null)
-        {
-            _GrabPos = player.transform.Find("HoldingPoint").gameObject;
+        if(grapPos==null){
+
+            Transform bone = player.transform.Find("HoldingPoint");
+            if(bone) _GrabPos = bone.gameObject;
         }
         else _GrabPos = grapPos;
 

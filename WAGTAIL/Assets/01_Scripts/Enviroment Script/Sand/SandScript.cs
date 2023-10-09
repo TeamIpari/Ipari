@@ -8,19 +8,13 @@ using UnityEditor;
 #endif
 
 
-public interface IGroundSampler
-{
-    public float SampleHeight( Vector3 worldPos );
-}
-
-
 /************************************************
  *   모래가 빨려들어가는 효과가 구현된 컴포넌트입니다.
  * ***/
 [RequireComponent(typeof(MeshCollider))]
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-public sealed class SandScript : MonoBehaviour, IEnviroment, IGroundSampler
+public sealed class SandScript : MonoBehaviour, IEnviroment
 {
     #region Editor_Extenstion
 #if UNITY_EDITOR
