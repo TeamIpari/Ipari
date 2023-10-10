@@ -5857,7 +5857,6 @@ Transform:
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5422175600142598463}
   - {fileID: 6132359365043461152}
   - {fileID: 6518561097628748785}
   - {fileID: 454383210072239868}
@@ -5949,6 +5948,7 @@ MonoBehaviour:
   rotationDampTime: 0.2
   airControl: 1
   Head: {fileID: 988242659143486135}
+  HoldingPoint: {fileID: 5997057756112893711}
   InteractionPoint: {fileID: 3721331664163966929}
   EquipPoint: {fileID: 3721331665509980941}
   ThrowEquipPoint: {fileID: 2819294162053140285}
@@ -6068,8 +6068,9 @@ Transform:
   - {fileID: 3721331665509980941}
   - {fileID: 2819294162053140285}
   - {fileID: 8032893415455348918}
+  - {fileID: 5422175600142598463}
   m_Father: {fileID: 3721331665275117601}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5997057756112893711
 GameObject:
@@ -6099,8 +6100,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3721331665275117601}
-  m_RootOrder: 0
+  m_Father: {fileID: 6518561097628748785}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7237303861800443881
 GameObject:
@@ -6133,7 +6134,7 @@ Transform:
   - {fileID: 138297410}
   - {fileID: 1151473987}
   m_Father: {fileID: 3721331665275117601}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8032893415455348919
 GameObject:
@@ -6198,7 +6199,7 @@ Transform:
   m_Children:
   - {fileID: 6485123558535065449}
   m_Father: {fileID: 3721331665275117601}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -1.258, z: 0}
 --- !u!198 &4815068019610561795
 ParticleSystem:
@@ -10989,7 +10990,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 2c859fe54df13bd41b62f47a58b1a39b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2c859fe54df13bd41b62f47a58b1a39b,
         type: 3}
@@ -11150,18 +11151,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8032893415622124067}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &64483446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7186614508565438322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4095a2cb30c8e804e94d6be4d6751c08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7023678598651895111
 MonoBehaviour:
   m_ObjectHideFlags: 0
