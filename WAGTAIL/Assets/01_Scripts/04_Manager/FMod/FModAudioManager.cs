@@ -69,7 +69,7 @@ public struct FModParameterReference
             /**초기화에 실패했다면, 원래 방식대로 출력한다.*/
             if (GUI_Initialized(property)==false) return;
 
-            position.height = GetBaseHeight()- 70f;
+            position.height = GetBaseHeight()- 50f;
 
             /**모든 프로퍼티들을 표시한다...*/
             GUI_ShowPropertyRect(ref position, property);
@@ -327,7 +327,7 @@ public struct FModParameterReference
         ///==============================================
         private float GetBaseHeight()
         {
-            return GUI.skin.textField.CalcSize(GUIContent.none).y+ 70f;
+            return GUI.skin.textField.CalcSize(GUIContent.none).y+ 50f;
         }
 
     }

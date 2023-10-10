@@ -273,6 +273,7 @@ public sealed class PullableObject : MonoBehaviour
 
 
             GUI_ShowResetRotateButton();
+            GUI_ShowAutoSetDatasButton();
 
             GUI_ShowDataList();
 
@@ -395,7 +396,7 @@ public sealed class PullableObject : MonoBehaviour
         private void GUI_ShowResetRotateButton()
         {
             #region Omit
-            if (targetObj == null) return;
+            if (targetObj == null || targetObj._datas==null) return;
 
             /*************************************
              *   모든 본의 회전량을 초기화한다.
@@ -404,6 +405,7 @@ public sealed class PullableObject : MonoBehaviour
             {
                 int Count        = targetObj._datas.Length;
                 BoneData[] datas = targetObj._datas;
+                if (targetObj._datas.Length == 0 || targetObj._datas[0].Tr==null) return;
 
                 Undo.RegisterChildrenOrderUndo(targetObj._datas[0].Tr, "Changed All bones transform");
                 for (int i=1; i<Count; i++){
@@ -413,6 +415,52 @@ public sealed class PullableObject : MonoBehaviour
                 }
             }
 
+            #endregion
+        }
+
+        private void GUI_ShowAutoSetDatasButton()
+        {
+            #region Omit
+            if (dataListProperty == null) return;
+
+            if(GUILayout.Button("Add Children Bones By RootBone"))
+            {
+                if(dataListProperty.arraySize==0){
+
+                    Debug.LogError("RootBone is not exist!");
+                    return;
+                }
+
+                if (targetObj._datas[0].Tr==null){
+
+                    Debug.LogError("RootBone transform is not valid!");
+                    return;
+                }
+
+
+                /*****************************************************
+                 *   계층구조가 존재하는 대상만 모두 bone으로 추가한다...
+                 * ***/
+                int index = 1;
+                dataListProperty.arraySize = 1;
+
+
+                Transform parent = targetObj._datas[0].Tr;
+                Transform result;
+
+                /**나머지 자식 본들을 추가한다....*/
+                while ((result=FindChildManyChildren(parent))!=null)
+                {
+                    dataListProperty.arraySize++;
+
+                    SerializedProperty newData      = dataListProperty.GetArrayElementAtIndex(index++);
+                    SerializedProperty newDataTr    = newData.FindPropertyRelative("Tr");
+                    newDataTr.objectReferenceValue  = result;
+                    parent = result;
+                }
+
+                return;
+            }
             #endregion
         }
 
@@ -460,6 +508,33 @@ public sealed class PullableObject : MonoBehaviour
             EditorGUILayout.PropertyField(BeginSnappedProperty);
             EditorGUILayout.PropertyField(FullyExtendedProperty);
 
+            #endregion
+        }
+
+
+
+        //============================================
+        /////           Utility methods           ////
+        //============================================
+        private Transform FindChildManyChildren(Transform parent)
+        {
+            #region Omit
+            int childrenNum = parent.childCount;
+            int       maxCount    = -1;
+            Transform result      = null;
+
+            for(int i=0; i<childrenNum; i++)
+            {
+                Transform child = parent.GetChild(i);
+                
+                /**더 자식수가 많은 대상만을 추가한다...*/
+                if(maxCount<child.childCount){
+
+                    maxCount = child.childCount;
+                    result = child;
+                }
+            }
+            return result;
             #endregion
         }
 
@@ -581,6 +656,7 @@ public sealed class PullableObject : MonoBehaviour
 
     [SerializeField] public float            MaxScale = 1.5f;
     [SerializeField] public bool             UseStrongShake = false;
+    [SerializeField] public bool             ApplyUpdate = true;
     [SerializeField] private GameObject       _GrabTarget; 
     [SerializeField] public  PullableObjEvent OnPullRelease;
     [SerializeField] public  PullableObjEvent OnFullyExtended;
@@ -675,9 +751,9 @@ public sealed class PullableObject : MonoBehaviour
         #endregion
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (_dataCount < 2) return;
+        if (_dataCount < 2 || ApplyUpdate==false) return;
 
         /*************************************
          *   외부로부터 당겨질 경우의 처리를 한다..
@@ -860,7 +936,6 @@ public sealed class PullableObject : MonoBehaviour
 
                 _Yspeed = (root2TargetLen - _lastExtendedLen) * (UseStrongShake ? 12f : 3f);
                _lastExtendedLen = 0;
-                StretchFull();
                 OnFullyExtended?.Invoke();
             }
 
@@ -1003,6 +1078,11 @@ public sealed class PullableObject : MonoBehaviour
     //============================================
     //////          Public methods           /////
     //============================================
+    public void UsePullableUpdate(bool apply=true)
+    {
+        ApplyUpdate = apply;
+    }
+
     public void StretchFull()
     {
         #region Omit

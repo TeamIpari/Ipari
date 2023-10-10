@@ -65,6 +65,20 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
     //===============================================
     //////          Magic methods               /////
     //===============================================
+    private void OnDrawGizmosSelected()
+    {
+        #region Omit
+        OnDrawSandGizmos();
+
+        Vector3 pos = transform.position;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(pos + SandIdleCenterOffset, new Vector3(.2f, 10f, .2f));
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(pos + SandIntakeCenterOffset, new Vector3(.2f, 10f, .2f));
+        #endregion
+    }
+
     private void Awake()
     {
         OnSandAwake();
@@ -239,6 +253,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
     //===============================================
     protected virtual void OnSandAwake() { }
     protected virtual void OnSandStart() { }
+    protected virtual void OnDrawSandGizmos() { }
     protected virtual float SampleHeight( Vector3 worldPosition ){ return 0f; }
     protected abstract void UpdateSandMesh( Vector3 currCenter );
     protected abstract Vector3 GetWorldCenterPosition( Vector3 currCenter );

@@ -24,7 +24,7 @@ public sealed class TerrainSandScript : SandScriptBase
             /**값이 바뀌었을 경우*/
             if (isChanged == false) return;
             int radius = Mathf.RoundToInt(IntakeRadius);
-            _intakeMap = new float[radius, radius];
+            //_intakeMap = new float[radius, radius];
             _radiusDiv = (1f / _intakeradius);
         }
     }
@@ -32,11 +32,16 @@ public sealed class TerrainSandScript : SandScriptBase
 
     private Terrain     _terrain;
     private TerrainData _terrainData;
+
     private float[,]    _heightMap;
-    private float[,]    _intakeMap;
+    private float[,]    _heightMapOrigin;
+    private float[,]    _heightAlphaMap;
+
+    private Vector3     _terrainWH;
+    private Vector2Int  _terrainWHInt;
+    private Vector3     _terrainSize;
     private Vector3     _terrainSizeDiv;
 
-    private float _defaultY     = 0f;
     private float _intakeradius = 10f;
     private float _radiusDiv    = 0f;
 
@@ -57,25 +62,22 @@ public sealed class TerrainSandScript : SandScriptBase
         _terrain = Terrain.activeTerrain;
         _terrain.terrainData = _terrainData = Instantiate(_terrain.terrainData);
 
-        /**터레인의 침식/깊이맵을 구한다....*/
-        int radius = Mathf.RoundToInt(IntakeRadius);
-        _intakeMap = new float[radius, radius];
-        _heightMap = _terrainData.GetHeights(
-
-            0,0,
-            _terrainData.heightmapResolution,
-            _terrainData.heightmapResolution
-        );
-
-        /**크기에 대한 나눗셈 계산을 미리 구한다....*/
-        _terrainSizeDiv = new Vector3
+        /**해당 터레인의 높이맵을 초기화한다.....*/
+        _terrainWH       = (Vector3.one * _terrainData.heightmapResolution);
+        _terrainWHInt    = (Vector2Int.one * _terrainData.heightmapResolution);
+        _terrainSize     = _terrainData.size;
+        _terrainSizeDiv  = new Vector3
         {
-            x = (1f / _terrainData.size.x),
-            y = (1f / _terrainData.size.y),
-            z = (1f / _terrainData.size.z)
+            x = (1f / _terrainSize.x),
+            y = (1f / _terrainSize.y),
+            z = (1f / _terrainSize.z)
         };
 
-        _defaultY = _terrain.SampleHeight(SandIntakeCenterOffset);
+        _heightMapOrigin = _terrainData.GetHeights(0,0, _terrainWHInt.x, _terrainWHInt.y);
+        _heightMap       = new float[_heightMapOrigin.GetLength(0), _heightMapOrigin.GetLength(1)];
+        _heightAlphaMap  = new float[_heightMapOrigin.GetLength(0), _heightMapOrigin.GetLength(1)];
+
+        Debug.Log($"WH: {_terrainWH}/ size: {_terrainSize}/ div: {_terrainSizeDiv}");
 
         #endregion
     }
@@ -101,41 +103,38 @@ public sealed class TerrainSandScript : SandScriptBase
         /******************************************
          *   계산에 필요한 요소들을 모두 구한다...
          * ***/
-        Vector3 tPos   = transform.position;
-        Vector3 center = (currCenter - tPos);
-        center.Scale(_terrainSizeDiv);
+        currCenter.Scale(_terrainSizeDiv);
 
-        int radius       = Mathf.RoundToInt(_intakeradius);
-        float radiusHalf = (_intakeradius * .5f);
+        Vector3Int center = new Vector3Int
+        {
+            x = Mathf.RoundToInt(_terrainWH.x * currCenter.x),
+            y = 0,
+            z = Mathf.RoundToInt(_terrainWH.z * currCenter.z)
+        };
 
-        int centerX = Mathf.FloorToInt(center.x * _terrainData.size.x);
-        int centerZ = Mathf.FloorToInt(center.z * _terrainData.size.z);
-        float centerY = Mathf.FloorToInt(center.y * _terrainData.size.y);
+        _heightMapOrigin[center.x, center.z] = 1f;
+        _terrainData.SetHeights(0, 0, _heightMapOrigin);
 
-        Vector2 center2 = new Vector2(centerX+radiusHalf, centerZ+radiusHalf);
+        //Vector3 center = SandIntakeCenterOffset;
+        //center.Scale(_terrainSizeDiv);
 
+        //int centerX = Mathf.RoundToInt(_terrainData.heightmapResolution * Mathf.Clamp01(center.x));
+        //int centerZ = Mathf.RoundToInt(_terrainData.heightmapResolution * Mathf.Clamp01(center.z));
 
-        /********************************************
-         *   중심점에 알맞게 인테이크 맵을 갱신한다....
-         * ***/
-        //for (int x = 0; x < radius; x++)
-        //{
-        //    for (int z = 0; z < radius; z++){
+        //_heightMap[centerX, centerZ] = 1f;
+        //_terrainData.SetHeights(0, 0, _heightMap);
 
-        //        Vector2 currPos      = new Vector2(x, z);
-        //        Vector2 center2Curr  = (currPos - center2);
-        //        float outerRatio     = (1f - (center2Curr.magnitude * _radiusDiv));
-        //        _intakeMap[x, z]     = centerY;
-        //    }
-        //}
-        _intakeMap[1, 1] = 1f;
+        //Debug.Log($"size: {_heightMap.GetLength(0)}/ re: {_terrainData.heightmapResolution}/ ({centerX},{0},{centerZ}): {center}");
 
-        _defaultY += Time.deltaTime * .01f;
-        Debug.Log($"defaultY: {centerY}");
+        //int   radius     = Mathf.RoundToInt(_intakeradius);
+        //float radiusHalf = (_intakeradius * .5f);
 
-        _terrainData.SetHeights(centerX, centerZ, _intakeMap);
+        //int centerX     = Mathf.RoundToInt(_heightMap.GetLength(0)-1);
+        //int centerZ     = Mathf.RoundToInt(_heightMap.GetLength(1)-1);
+        //float centerY   = Mathf.FloorToInt(center.y * _terrainData.size.y);
 
-
+        //_heightMap[137, 259] = 1f;
+        //_terrainData.SetHeights(0, 0, _heightMap);
         #endregion
     }
 }
