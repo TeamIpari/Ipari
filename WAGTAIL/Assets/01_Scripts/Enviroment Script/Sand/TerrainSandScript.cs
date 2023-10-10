@@ -112,22 +112,23 @@ public sealed class TerrainSandScript : SandScriptBase
         int centerZ = Mathf.FloorToInt(center.z * _terrainData.size.z);
         float centerY = Mathf.FloorToInt(center.y * _terrainData.size.y);
 
-        Vector2 center2 = new Vector2(centerX, centerZ);
+        Vector2 center2 = new Vector2(centerX+radiusHalf, centerZ+radiusHalf);
 
 
         /********************************************
          *   중심점에 알맞게 인테이크 맵을 갱신한다....
          * ***/
-        for (int x = 0; x < radius; x++)
-        {
-            for (int z = 0; z < radius; z++){
+        //for (int x = 0; x < radius; x++)
+        //{
+        //    for (int z = 0; z < radius; z++){
 
-                Vector2 currPos      = new Vector2(x, z);
-                Vector2 center2Curr  = (currPos - center2);
-                float outerRatio     = (1f - (center2Curr.magnitude * _radiusDiv));
-                _intakeMap[x, z]     = centerY;
-            }
-        }
+        //        Vector2 currPos      = new Vector2(x, z);
+        //        Vector2 center2Curr  = (currPos - center2);
+        //        float outerRatio     = (1f - (center2Curr.magnitude * _radiusDiv));
+        //        _intakeMap[x, z]     = centerY;
+        //    }
+        //}
+        _intakeMap[1, 1] = 1f;
 
         _defaultY += Time.deltaTime * .01f;
         Debug.Log($"defaultY: {centerY}");

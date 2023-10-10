@@ -12,7 +12,9 @@ public class SandWave : MonoBehaviour
     //////        Property and Fields           /////
     //===============================================
     [SerializeField] public AnimationCurve waveCurve;
+    [SerializeField] public SandScript     SandTarget;
     [SerializeField] public GameObject     SandFX;
+    [SerializeField] public float          FXScale = 1f;
     [SerializeField] public float          WaveDuration;
     [SerializeField] public float          WaveMaxRadius;
     [SerializeField] public int            Pricision = 10;
@@ -54,16 +56,25 @@ public class SandWave : MonoBehaviour
             waveCurve.postWrapMode = WrapMode.Clamp;
         }
 
-        /**Sand FX들을 모두 초기화한다....*/
+        /*********************************************
+         *   Sand FX들을 초기화시킨다....
+         * ***/
         if (SandFX != null){
 
             _FXLists = new GameObject[Pricision];
-            for(int i=0; i< Pricision; i++)
-            {
+
+            /**이펙트들을 생성한다...*/
+            for (int i=0; i< Pricision; i++){
+
                 _FXLists[i] = Instantiate(SandFX);
-                _FXLists[i].transform.localScale = _FXLists[i].transform.localScale * .3f;
-                _FXLists[i].transform.SetParent(gameObject.transform);
-                _FXLists[i].SetActive(false);
+
+                ParticleSystem            system = _FXLists[i].GetComponent<ParticleSystem>();
+                ParticleSystem.MainModule module = system.main;
+
+                module.scalingMode          = ParticleSystemScalingMode.Local;
+                system.transform.localScale = (Vector3.one * FXScale);
+                system.transform.SetParent(transform);
+                system.gameObject.SetActive(false);
             }
 
             _radianDiv = (Mathf.PI * 2f) / Pricision;
@@ -88,10 +99,10 @@ public class SandWave : MonoBehaviour
         /*************************************************
          *   원형 모양으로 퍼지는데 필요한 요소들을 구한다...
          * *****/
-        Vector3 center = transform.position;
+        Vector3 center      = transform.position;
         float progressRatio = Mathf.Clamp(1f - (_timeLeft * _timeDiv), 0f, 1f);
-        float currRadian = 0f;
-        float currRadius = WaveMaxRadius * waveCurve.Evaluate(progressRatio);
+        float currRadian    = 0f;
+        float currRadius    = WaveMaxRadius * waveCurve.Evaluate(progressRatio);
 
         _collider.radius = currRadius;
 
@@ -108,10 +119,8 @@ public class SandWave : MonoBehaviour
          * ****/
         for (int i = 0; i < Pricision; i++){
 
-            Vector3 dir = new Vector3( Mathf.Cos(currRadian),
-                                       0f,
-                                       Mathf.Sin(currRadian));
-            Vector3 newPos = center + (dir * currRadius);
+            Vector3 dir    = new Vector3(  Mathf.Cos(currRadian), 0f, Mathf.Sin(currRadian));
+            Vector3 newPos = center + (dir * _collider.radius);
             RaycastHit hit;
 
             Physics.Raycast(
