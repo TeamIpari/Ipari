@@ -35,10 +35,10 @@ public class BossCrabAntHellState : AIAttackState
         
         if(_targetSand!=null)
         {
-            _targetSand.SandCenterIntakeOffset.y = -7f;
+            //_targetSand.SandCenterIntakeOffset.y = -7f;
 
-            _targetSand.SandCenterIdleOffset = _targetSand.SandCenterIntakeOffset;
-            _targetSand.SandCenterIdleOffset.y = -4.5f;
+            //_targetSand.SandCenterIdleOffset = _targetSand.SandCenterIntakeOffset;
+            //_targetSand.SandCenterIdleOffset.y = -4.5f;
 
             _targetSand.IntakeSand(true);
         }

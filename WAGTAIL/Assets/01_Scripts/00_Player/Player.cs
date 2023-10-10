@@ -57,9 +57,10 @@ public class Player : MonoBehaviour
     private int _numFound;
     [Header("Interaction")]
     public GameObject Head;
-    public Transform InteractionPoint;
-    public Transform EquipPoint;
-    public Transform ThrowEquipPoint;
+    public GameObject HoldingPoint;
+    public Transform  InteractionPoint;
+    public Transform  EquipPoint;
+    public Transform  ThrowEquipPoint;
     
     [Header("State Check")]
     public bool isIdle = true;
@@ -188,7 +189,7 @@ public class Player : MonoBehaviour
         carry       = new CarryState(this, movementSM);
         pickup      = new PickUpState(this, movementSM);
         drop        = new DropState(this, movementSM);
-        pullInout   = new PullInOutState(this, movementSM);
+        pullInout   = new PullInOutState(this, movementSM, HoldingPoint);
         death       = new DeathState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정

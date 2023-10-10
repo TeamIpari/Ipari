@@ -219,8 +219,10 @@ public sealed class PullInOutState : State
             float speed         = fullLen;
 
             /**당겨질 때에만 저항력을 적용한다....*/
-            if (isPulling)
-                    speed -= (fullLen * exLenRatio);
+            if (isPulling){
+
+                speed -= (fullLen * exLenRatio);
+            }
 
 
             /**바라볼 방향을 향하는 쿼터니언을 구한다...*/
