@@ -19,10 +19,10 @@ public class NepenthesAttackState : AIAttackState
     //===========================================
     /////               overrides              /////
     //===========================================
+
     public override void Enter()
     {
         AISM.Animator.SetTrigger("isAttack");
-
     }
 
     public override void Exit()
