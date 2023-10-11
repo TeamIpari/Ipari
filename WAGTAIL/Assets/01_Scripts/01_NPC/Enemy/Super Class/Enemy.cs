@@ -71,4 +71,14 @@ public class Enemy : Character
         base.CAttack(P);
     }
 
+    protected void initializeUI()
+    {
+        // Add Hp UI Show Function
+    }
+
+    protected void DeadEnemy()
+    {
+        // Add Hp UI Hide Function
+
+    }
 }
