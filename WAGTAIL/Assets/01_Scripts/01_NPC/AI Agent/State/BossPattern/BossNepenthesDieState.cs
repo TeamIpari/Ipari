@@ -8,21 +8,30 @@ public class BossNepenthesDieState : AIDieState
     //==========================================
     /////        properties Methods         ////
     //==========================================
-    private float curTimer;
+    private GameObject leftVine;
+    private GameObject rightVine;
+    private Animator animLeftVine;
+    private Animator animRightVine;
     private float brokenTime;
     private bool oneChance;
     //==========================================
     /////           magic Methods           ////
     //==========================================
-    public BossNepenthesDieState(AIStateMachine stateMachine) : base(stateMachine)
+    public BossNepenthesDieState(AIStateMachine stateMachine, GameObject LeftVine, GameObject RightVine) : base(stateMachine)
     {
 
+        this.leftVine = LeftVine;
+        this.rightVine = RightVine;
+        animLeftVine = LeftVine.GetComponent<Animator>();
+        animRightVine = rightVine.GetComponent<Animator>();
     }
 
     public override void Enter()
     {
         base.Enter();
         AISM.Animator.SetTrigger("isDeath");
+        animLeftVine.SetTrigger("isDeath");
+        animRightVine.SetTrigger("isDeath");
         curTimer = 0;
         brokenTime = 3.2f;
         oneChance = false;

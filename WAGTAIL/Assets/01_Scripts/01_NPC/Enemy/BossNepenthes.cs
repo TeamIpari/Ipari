@@ -116,8 +116,8 @@ public class BossNepenthes : Enemy
         AiAttack3 = new BossNepenthesSmallShotGun(AiSM, BossProfile, flyTime, ShotCount, ShotArea);
         AiAttack4 = new BossNepenthesOneShot(AiSM, BossProfile, SmallSize, flyTime);
         // Á×´Â ±â´É.
-        AiHit = new BossNepenthesHitState(AiSM);
-        AiDie = new BossNepenthesDieState(AiSM);
+        AiHit = new BossNepenthesHitState(AiSM, LeftVine, RightVine);
+        AiDie = new BossNepenthesDieState(AiSM, LeftVine, RightVine);
     }
 
     public void SetProfile(GameObject ShotMarker)
