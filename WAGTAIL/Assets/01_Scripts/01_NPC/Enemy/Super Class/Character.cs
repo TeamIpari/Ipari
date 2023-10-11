@@ -114,10 +114,12 @@ public class Character : MonoBehaviour
         }
         if (AttackTimer < AttackRate)
         {
+
             AttackTimer += Time.deltaTime;
 
             return false;
         }
+
         // 공격 가능 상태
         return true;
     }

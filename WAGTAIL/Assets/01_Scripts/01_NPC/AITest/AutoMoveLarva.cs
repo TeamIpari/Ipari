@@ -68,7 +68,7 @@ public class AutoMoveLarva : MonoBehaviour
         ObjSize = Center.Polygon;
         CircleR = Center.CircleSize;
         reverse = Center.Reverse;
-        Debug.Log(reverse);
+        //Debug.Log(reverse);
         DamagedAnimTimer = Center.DamagedAnimTimer;
         rotAngle = reverse ? 90f : -90f;
         rotDirection = reverse ? 1f : -1f;

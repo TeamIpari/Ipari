@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class NepenthesWaitState : AIWaitState
 {
-    private float curTimer = 0;
     private float waitTimer = 0;
     public NepenthesWaitState(AIStateMachine stateMachine, float waitRate) : base(stateMachine)
     {
         waitTimer = waitRate;
+        //Debug.Log($"WaitState Create{waitTimer}");
+        
     }
+    
 
     public override void Enter()
     {
@@ -31,6 +33,7 @@ public class NepenthesWaitState : AIWaitState
 
     public override void Update()
     {
+        
         if (curTimer < waitTimer)
         {
             curTimer += Time.deltaTime;
