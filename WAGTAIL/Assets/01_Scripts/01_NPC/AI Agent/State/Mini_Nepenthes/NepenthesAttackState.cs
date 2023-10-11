@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -7,13 +8,18 @@ public class NepenthesAttackState : AIAttackState
 {
     private float delayTime = 0.65f;
     private Vector3 lockOn;
+    private AIState NextState;
 
     //===========================================
     /////           magic methods           /////
     //===========================================
-    public NepenthesAttackState(AIStateMachine stateMachine) : base(stateMachine)
+    public NepenthesAttackState(AIStateMachine stateMachine, AIState nextState = null) : base(stateMachine)
     {
-
+        NextState = nextState;
+        if(nextState == null)
+        {
+            AISM.Target = GameObject.Instantiate(new GameObject(), AISM.Transform.position + AISM.Transform.forward * 5f, Quaternion.identity ,AISM.Transform);
+        }
     }
 
     //===========================================
@@ -22,6 +28,7 @@ public class NepenthesAttackState : AIAttackState
 
     public override void Enter()
     {
+        curTimer = 0;
         AISM.Animator.SetTrigger("isAttack");
     }
 
@@ -38,14 +45,14 @@ public class NepenthesAttackState : AIAttackState
 
     public override void Update()
     {
-        base.Update();
+        //base.Update();
         curTimer += Time.deltaTime;
-        if (delayTime > curTimer)
+        if (delayTime < curTimer)
         {
             lockOn = AISM.Target.transform.position;
             AISM.character.AttackTimerReset();
             AISM.character.CAttack(lockOn);
-            AISM.character.AiWait.SetNextState(AISM.character.AiIdle);
+            AISM.character.AiWait.SetNextState(NextState == null ? this : NextState);
             AISM.ChangeState(AISM.character.AiWait);
         }
         else
@@ -61,7 +68,9 @@ public class NepenthesAttackState : AIAttackState
 
     private void LookatTarget()
     {
-        Vector3 dir = AISM.character.RotatePoint.position - AISM.Target.transform.position;
+        Vector3 dir;
+        dir = AISM.character.RotatePoint.position - AISM.Target.transform.position;
+
         dir.y = AISM.character.RotatePoint.position.y;
 
         Quaternion quat = Quaternion.LookRotation(dir.normalized);
@@ -71,7 +80,8 @@ public class NepenthesAttackState : AIAttackState
 
         AISM.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
 
-        AISM.ChangeState(AISM.character.isAttack() ? AISM.character.AiAttack : AISM.CurrentState);
+        //if(AISM.character.isAttack())
+        //    AISM.ChangeState(AISM.character.AiAttack);
     }
 
 
