@@ -1,0 +1,207 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Water
+  m_Shader: {fileID: 4800000, guid: 3d82e95c6a9c2da4da4da07c92ece7ca, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ADVANCED_SHADING
+  - _DISTANCE_NORMALS
+  - _FOAM
+  - _NORMALMAP
+  - _REFRACTION
+  - _SHARP_INERSECTION
+  - _TRANSLUCENCY
+  - _WAVES
+  m_InvalidKeywords:
+  - ADVANCED_LIGHTING
+  - TESSELLATION
+  - _DEPTHEXP_ON
+  - _DEPTH_TEX
+  - _SIMPLE_LIGHTING
+  - _TESSELLATION
+  - _WORLDSPACEUV_ON
+  - _ZCLIP_ON
+  - _ZWRITE_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 88908a7c7a1f0ed418d1048378c17411, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMapLarge:
+        m_Texture: {fileID: 2800000, guid: 88908a7c7a1f0ed418d1048378c17411, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMapSlope:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CausticsTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamTex:
+        m_Texture: {fileID: 2800000, guid: 6a4aa5aa1ed7b9e4e9204a95f56f4d29, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IntersectionNoise:
+        m_Texture: {fileID: 2800000, guid: 2e10c404ec8e1ff41bff06b82e5569df, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PlanarReflection:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CausticsBrightness: 2
+    - _CausticsDistortion: 0.102
+    - _CausticsOn: 0
+    - _CausticsSpeed: 0.1
+    - _CausticsTiling: 0.5
+    - _ColorAbsorption: 0
+    - _Cull: 2
+    - _DepthExp: 1
+    - _DepthHorizontal: 0.01
+    - _DepthVertical: 8
+    - _DisableDepthTexture: 0
+    - _DistanceNormalsOn: 1
+    - _DistanceNormalsTiling: 0.03000003
+    - _EdgeFade: 7
+    - _EnvironmentReflectionsOn: 1
+    - _FlatShadingOn: 0
+    - _FoamBaseAmount: 0.358
+    - _FoamClipping: 0.445
+    - _FoamDistortion: 1
+    - _FoamOn: 1
+    - _FoamSpeed: 0.1
+    - _FoamSubSpeed: 0
+    - _FoamSubTiling: 0.5
+    - _FoamTiling: 0.1999999
+    - _FoamWaveAmount: 0.702
+    - _HorizonDistance: 32
+    - _IntersectionClipping: 0.5
+    - _IntersectionFalloff: 1
+    - _IntersectionLength: 1
+    - _IntersectionRippleDist: 20
+    - _IntersectionRippleStrength: 0.53
+    - _IntersectionSource: 0
+    - _IntersectionSpeed: 0.1
+    - _IntersectionStyle: 1
+    - _IntersectionTiling: 1
+    - _LightingOn: 1
+    - _NormalMapOn: 1
+    - _NormalSpeed: 0.2
+    - _NormalStrength: 0.165
+    - _NormalSubSpeed: 0
+    - _NormalSubTiling: 2
+    - _NormalTiling: 0.1600001
+    - _PlanarReflectionsEnabled: 0
+    - _PointSpotLightReflectionDistortion: 0.5
+    - _PointSpotLightReflectionSize: 0
+    - _PointSpotLightReflectionStrength: 10
+    - _ReceiveShadows: 1
+    - _ReflectionBlur: 0
+    - _ReflectionDistortion: 0.274
+    - _ReflectionFresnel: 13.04
+    - _ReflectionLighting: 0
+    - _ReflectionStrength: 1
+    - _RefractionChromaticAberration: 1
+    - _RefractionOn: 1
+    - _RefractionStrength: 0.228
+    - _RiverModeOn: 0
+    - _ShadingMode: 1
+    - _ShadowStrength: 1
+    - _SlopeFoam: 1
+    - _SlopeSpeed: 4
+    - _SlopeStretching: 0.5
+    - _SlopeThreshold: 0.25
+    - _SparkleIntensity: 0
+    - _SparkleSize: 0.155
+    - _SpecularReflectionsOn: 1
+    - _Speed: 1
+    - _SunReflectionDistortion: 0.634
+    - _SunReflectionSize: 0.837
+    - _SunReflectionStrength: 5
+    - _TessMax: 50
+    - _TessMin: 0
+    - _TessValue: 1.3
+    - _Tesselation: 0
+    - _TesselationOn: 0
+    - _TranslucencyCurvatureMask: 0.69
+    - _TranslucencyExp: 2
+    - _TranslucencyOn: 1
+    - _TranslucencyReflectionMask: 1
+    - _TranslucencyStrength: 1
+    - _UnderwaterRefractionOffset: 0.2
+    - _UnderwaterSurfaceSmoothness: 0.8
+    - _VertexColorDepth: 0
+    - _VertexColorFoam: 0
+    - _VertexColorWaveFlattening: 0
+    - _WaveCount: 5
+    - _WaveDistance: 0.97
+    - _WaveHeight: 1.7
+    - _WaveNormalStr: 2
+    - _WaveSpeed: 1.5
+    - _WaveSteepness: 1.76
+    - _WaveTint: 0.02
+    - _WavesOn: 1
+    - _WorldSpaceUV: 1
+    - _ZClip: 1
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 0, g: 0.09019608, b: 0.18039216, a: 1}
+    - _Direction: {r: 1, g: 1, b: 0, a: 0}
+    - _DistanceNormalsFadeDist: {r: 20, g: 500, b: 0, a: 0}
+    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HorizonColor: {r: 0.50953066, g: 5.8970256, b: 6.3541465, a: 0}
+    - _IntersectionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShallowColor: {r: 0, g: 0.9411765, b: 0.9254902, a: 1}
+    - _WaveDirection: {r: 1, g: 1, b: 1, a: 1}
+    - _WaveFadeDistance: {r: 76.39281, g: 303.8639, b: 0, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &6498140463000427223
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
