@@ -15,7 +15,7 @@ public class MovePoint : MonoBehaviour
     public List<GameObject> Objs;
     public List<GameObject> Larvas;
     public Vector3 Offset = new Vector3(0, 0, 0);
-    public const float Caculate = 4;  // defualt 6.25f -> 4.75f
+    public const float Caculate = 3.85f;  // defualt 6.25f -> 4.75f
     public float InitPrefabSize = 1.0f;
 
     public int CreatePoint;
@@ -84,7 +84,7 @@ public class MovePoint : MonoBehaviour
                     obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? false: true);
                     obj2.transform.localScale = new Vector3(InitPrefabSize, InitPrefabSize, InitPrefabSize);
                     obj2.transform.position = Objs[ver2 - 1].transform.position;
-                    //obj2.transform.parent = this.transform;
+                    obj2.transform.parent = this.transform;
                     Larvas.Add(obj2);
                 }
             }
