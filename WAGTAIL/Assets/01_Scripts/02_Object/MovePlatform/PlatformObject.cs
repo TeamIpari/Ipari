@@ -342,7 +342,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private void OnCollisionEnter(Collision collision)
     {
         #region Omit
-        if (UsedCollision == false) return;
+        if (UsedCollision == false || collision.gameObject.layer==LayerMask.NameToLayer("Enemies")) return;
 
         /***********************************
          *   enter의 처리를 안하는 경우의 처리.
