@@ -50,6 +50,8 @@ public class GameManager : Singleton<GameManager>
     private List<Chapter> _chapterList;
     private Chapter _lastActiveChapter;
     
+    //================================================
+
     protected override void Awake()
     {
         base.Awake();
@@ -67,6 +69,8 @@ public class GameManager : Singleton<GameManager>
         //_scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
         Coin = 0;
         Flower = 0;
+        IsKeyboard = true;
+        IsGamepad = false;
         
         // Chapter
         _chapterList = GetComponentsInChildren<Chapter>().ToList();
@@ -165,5 +169,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
     
+    public bool IsKeyboard { get; set; }
+
+    public bool IsGamepad { get; set; }
+
     #endregion
 }
