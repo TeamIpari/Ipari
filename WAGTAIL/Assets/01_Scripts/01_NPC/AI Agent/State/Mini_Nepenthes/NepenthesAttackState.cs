@@ -16,9 +16,10 @@ public class NepenthesAttackState : AIAttackState
     public NepenthesAttackState(AIStateMachine stateMachine, AIState nextState = null) : base(stateMachine)
     {
         NextState = nextState;
-        if(nextState == null)
+        if(NextState == null)
         {
-            AISM.Target = GameObject.Instantiate(new GameObject(), AISM.Transform.position + AISM.Transform.forward * 5f, Quaternion.identity ,AISM.Transform);
+            AISM.Target = GameObject.Instantiate(new GameObject(), AISM.Transform.position + AISM.Transform.forward * 5f, Quaternion.identity);
+            AISM.Target.name = "View Target";
         }
     }
 
@@ -77,8 +78,9 @@ public class NepenthesAttackState : AIAttackState
 
         Vector3 temp = quat.eulerAngles;
         Vector3 temp2 = AISM.character.RotatePoint.rotation.eulerAngles;
-
-        AISM.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
+        
+        if(NextState != null)   
+            AISM.character.RotatePoint.rotation = Quaternion.Euler(temp.x, temp.y - 180f, temp2.z);
 
         //if(AISM.character.isAttack())
         //    AISM.ChangeState(AISM.character.AiAttack);
