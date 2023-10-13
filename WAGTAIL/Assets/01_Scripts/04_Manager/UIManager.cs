@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using TMPro;
 using UnityEngine;
 
@@ -9,8 +8,7 @@ using UnityEngine;
 public enum CanvasType
 {
     MainMenu,
-    GameUI,
-    EndScreen
+    GameUI
 }
 
 public enum LanguageType
