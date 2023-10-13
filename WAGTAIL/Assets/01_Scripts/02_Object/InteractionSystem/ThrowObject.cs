@@ -57,6 +57,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //                    Test Properties                    
     //=================================================================
     [Header("Test Properties")]
+    [SerializeField] public bool isReady;
     [SerializeField] private bool isTarget;
     [SerializeField] private bool isSmall;
     [SerializeField] private Vector3 Forward;
@@ -83,6 +84,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //=================================================================
     private void Start()
     {
+        isReady = true;
+        
         // Caching
         _transform = GetComponent<Transform>();
         _collider = GetComponent<Collider>();
@@ -167,6 +170,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
         // PickUp logic
         if (_player.currentInteractable == null)
         {
+            if (!isReady)
+                return false;
             _rigidbody.useGravity = false;
             _rigidbody.freezeRotation = true;
             _rigidbody.isKinematic = true;
@@ -177,10 +182,12 @@ public class ThrowObject : MonoBehaviour, IInteractable
             _rigidbody.velocity = Vector3.zero;
             _player.isPickup = true;
             isTarget = false;
+            return true;
         }
 
         else
         {
+            isReady = false;
             StartCoroutine(Throwing(interactor));
             //_player.isCarry = false;
             return true;
@@ -244,6 +251,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private IEnumerator Throwing(GameObject interactor)
     {
+        Debug.Log(isReady);
         // Object 종속을 풀어줌
         _transform.SetParent(null);
         if (_player.target != null)
@@ -298,6 +306,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         yield return new WaitForSecondsRealtime(0.3f);
         _player.isCarry = false;
         _collider.isTrigger = false;
+        isReady = true;
     }
 
     private void PhysicsChecking()
