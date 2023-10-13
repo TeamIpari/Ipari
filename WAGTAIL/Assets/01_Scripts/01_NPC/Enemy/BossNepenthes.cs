@@ -65,17 +65,30 @@ public class BossNepenthes : Enemy
 
     void Start()
     {
+        initializeUI();
+    }
+
+    public override void initializeUI()
+    {
         GameObject obj = GameObject.Find("HPArea");
         //HpCanvas = new GameObject[obj.transform.childCount];
         for (int i = 0; i < obj.transform.childCount; i++)
         {
             var piece = obj.transform.GetChild(i);
-            if(piece != null)
+            if (piece != null)
             {
                 Debug.Log($"{piece}");
                 HpCanvas.Push(piece.gameObject);
             }
         }
+    }
+
+    public override void Hit()
+    {
+        base.Hit();
+        Debug.Log("AA");
+        GameObject hpGage = HpCanvas.Pop();
+        hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
     }
 
     public override void SetAttackPattern()
@@ -114,9 +127,6 @@ public class BossNepenthes : Enemy
             {
                 AiSM.ChangeState(AiDie);
             }
-            GameObject hpGage = HpCanvas.Pop();
-            Debug.Log($"AA{hpGage}");
-            hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
         }
     }
 
@@ -148,4 +158,5 @@ public class BossNepenthes : Enemy
     {
         SceneLoader.GetInstance().LoadScene(nextChapterName);
     }
+
 }
