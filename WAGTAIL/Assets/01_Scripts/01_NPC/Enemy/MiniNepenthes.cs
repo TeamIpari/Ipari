@@ -140,7 +140,6 @@ public class MiniNepenthes : Enemy
     //===========================================
     public override void CAttack(Vector3 Pos)
     {
-        Debug.Log("AA");
         // 방향 벡터를 구하고 해당 방향으로 탄환을 쏨.
         Vector3 PlayerPos = new Vector3(Pos.x, ShotPosition.position.y, Pos.z);
         Vector3 direction = PlayerPos - ShotPosition.position;
