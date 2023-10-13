@@ -214,7 +214,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
                 piece.GetComponent<Rigidbody>().useGravity = false;
                 piece.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 piece.GetComponent<Rigidbody>().isKinematic = true;
-                piece.gameObject.layer = LayerMask.NameToLayer("Defualt");
+                //piece.gameObject.layer = LayerMask.NameToLayer("Defualt");
 
                 piece.rotation = Quaternion.Euler(v);
                 piece.position = PosList[i];
