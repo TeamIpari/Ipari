@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class BrokenPlatform : MonoBehaviour, IEnviroment
 {
+    // 
     private MeshRenderer mesh;
     private Collider col;
+    public GameObject BasePlatform;
+    public GameObject PlatformPiece; 
     public GameObject Light;
     public bool IsUpdownMode = false;
 
@@ -32,22 +35,23 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     [SerializeField] private const float _explosionForceRadius = 10;
     [SerializeField] private const float _fragScaleFactor = 0.1f;
 
-    float curTime;
-    public float shakeDelay;
+    private float curTime;
+    private float shakeDelay;
     private Vector3[] PosList;
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
     public bool IsHit { get; set; }
 
+    //===============================================
+    /////           Magic Methods               /////
+    //===============================================
     public bool Interact()
     {
         if (BossRoomFieldManager.Instance != null)
         {
-            BossRoomFieldManager.Instance.PlayerOnTilePos = this.transform.parent.localPosition;
+            BossRoomFieldManager.Instance.PlayerOnTilePos = transform.localPosition;
         }
-        //if (this.enabled)
-        //    ExecutionFunction(HideNDownTime);
         return false;
     }
 
@@ -68,6 +72,56 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         //    }
         //}
     }
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        this.tag = "Platform";
+        startPos = transform.position;
+        mesh = GetComponent<MeshRenderer>();
+        col = GetComponent<Collider>();
+        PosList = new Vector3[PlatformPiece.transform.childCount];
+        for (int i = 0; i < PlatformPiece.transform.childCount; i++)
+        {
+            var piece = PlatformPiece.transform.GetChild(i);
+            PosList[i] = piece.position;
+        }
+        PlatformPiece.SetActive(false);    
+    }
+
+    public void ExecutionFunction(float time)
+    {
+        if (IsHit)
+            return;
+        IsHit = true;
+        if (Light != null)
+            Light.SetActive(true);
+        delayTime = time;
+        if (!IsUpdownMode)
+            StartCoroutine(HidePlatform());
+        else
+            StartCoroutine(DownPlatform());
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+        //if (shake)
+        //{
+        //    curTime += Time.deltaTime;
+        //    if (curTime > shakeDelay)
+        //    {
+        //        Vector3 pos = startPos + (UnityEngine.Random.insideUnitSphere * ShakeSpeed);
+        //        transform.position = new Vector3(pos.x, transform.position.y, pos.z);
+        //        curTime = 0;
+        //    }
+        //}
+    }
+
+    //===============================================
+    /////           Core Methods               /////
+    //===============================================
+
 
     private IEnumerator DownPlatform(bool callBack = false)
     {
@@ -100,7 +154,6 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
             yield return new WaitForSeconds(0.001f);
         }
         IsHit = false;
-
     }
 
 
@@ -112,11 +165,13 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
         shake = true;
         yield return new WaitForSeconds(delayTime);
+        BasePlatform.SetActive(false);
+        PlatformPiece.SetActive(true);
         shake = false;
 
-        for (int i = 0; i < this.transform.childCount; i++)
+        for (int i = 0; i < PlatformPiece.transform.childCount; i++)
         {
-            var rigidbody = this.transform.GetChild(i).GetComponent<Rigidbody>();
+            var rigidbody = PlatformPiece.transform.GetChild(i).GetComponent<Rigidbody>();
             if (rigidbody != null)
             {
                 rigidbody.useGravity = true;
@@ -124,17 +179,12 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
                 // 리지드 바디에 벨로시티를 부가함.
                 rigidbody.velocity = ExplosionVelocity(rigidbody);
                 rigidbody.gameObject.layer = LayerMask.NameToLayer("Pass");
-                //rigidbody.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce),
-                //    new Vector3(transform.parent.position.x, transform.parent.position.y - 2f, transform.parent.position.z), _explosionForceRadius);
             }
         }
-        if (col != null)
-            col.enabled = false;
-        if (mesh != null)
-            mesh.enabled = false;
+        if (col != null) col.enabled = false;
+        if (mesh != null) mesh.enabled = false;
 
-        if (!callBack)
-            StartCoroutine(ShowPlatform());
+        if (!callBack) StartCoroutine(ShowPlatform());
     }
 
     private Vector3 ExplosionVelocity(Rigidbody rigid)
@@ -145,22 +195,20 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         // 방향 벡터를 구함.
         direction.Normalize();
 
-
         return direction * 1.5f;
     }
 
     private IEnumerator ShowPlatform()
     {
-        if (Light != null)
-            Light.SetActive(false);
+        if (Light != null) Light.SetActive(false);
 
         yield return new WaitForSeconds(ShowNUpTime);
 
         Vector3 v = new Vector3(-90, 0, 0);
 
-        for (int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < PlatformPiece.transform.childCount; i++)
         {
-            var piece = transform.GetChild(i);
+            var piece = PlatformPiece.transform.GetChild(i);
             if (piece.GetComponent<Rigidbody>() != null)
             {
                 piece.GetComponent<Rigidbody>().useGravity = false;
@@ -172,17 +220,17 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
                 piece.position = PosList[i];
             }
         }
+        if (col != null) col.enabled = true;
+        if (mesh != null) mesh.enabled = true;
+        PlatformPiece.SetActive(false);
+        BasePlatform.SetActive(true);
 
-        //transform.position = startPos;
-        if (col != null)
-            col.enabled = true;
-        if (mesh != null)
-            mesh.enabled = true;
         IsHit = false;
     }
 
     public void HideOnly(bool isUpdown)
     {
+        // 사라지게 하기.
         mesh = GetComponent<MeshRenderer>();
         col = GetComponent<Collider>();
         if (!IsUpdownMode)
@@ -199,50 +247,4 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     }
 
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-        this.tag = "Platform";
-        startPos = transform.position;
-        mesh = GetComponent<MeshRenderer>();
-        col = GetComponent<Collider>();
-        PosList = new Vector3[transform.childCount];
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            var piece = transform.GetChild(i);
-            PosList[i] = piece.position;
-        }
-    }
-
-    public void ExecutionFunction(float time)
-    {
-        if (IsHit)
-            return;
-        IsHit = true;
-        if (Light != null)
-            Light.SetActive(true);
-        delayTime = time;
-        if (!IsUpdownMode)
-        {
-            StartCoroutine(HidePlatform());
-        }
-        else
-        {
-            StartCoroutine(DownPlatform());
-        }
-    }
-    // Update is called once per frame
-    private void Update()
-    {
-        if(shake)
-        {
-            curTime += Time.deltaTime;
-            if(curTime > shakeDelay)
-            {
-                Vector3 pos = startPos + (UnityEngine.Random.insideUnitSphere * ShakeSpeed);
-                transform.position = new Vector3(pos.x, transform.position.y, pos.z);
-                curTime = 0;
-            }
-        }
-    }
 }

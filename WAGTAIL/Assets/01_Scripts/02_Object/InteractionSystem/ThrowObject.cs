@@ -102,7 +102,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _center = new GameObject();
         _center.transform.parent = this.transform;
         _center.transform.position = (gameObject.GetComponent<Collider>() == null ? Vector3.zero : gameObject.GetComponent<Collider>().bounds.center);
-        Debug.Log($"{gameObject.GetComponent<Collider>().bounds.center}");
         _center.name = "Center";
 
         //_center = new GameObject
@@ -277,7 +276,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
         {
             float distance = Vector3.Distance(_player.target.transform.position, this.transform.position);
             flightTime = height * (distance / (_player.throwRange));
-            Debug.Log($"{height} * {distance} / {_player.throwRange}  = {flightTime}");
             isTarget = true;
             Vector3 correction_value =
                 new Vector3(_player.target.transform.position.x, _player.target.transform.position.y + correctionHeight, _player.target.transform.position.z)
