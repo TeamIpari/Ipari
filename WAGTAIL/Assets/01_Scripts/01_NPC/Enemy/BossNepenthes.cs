@@ -86,7 +86,6 @@ public class BossNepenthes : Enemy
     public override void Hit()
     {
         base.Hit();
-        Debug.Log("AA");
         GameObject hpGage = HpCanvas.Pop();
         hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
     }
