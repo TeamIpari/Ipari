@@ -48,6 +48,7 @@ public class BossNepenthes : Enemy
     [Header("Next Chapter")]
     [Tooltip("보스가 죽었을 때 갈 다음 씬 이름")]
     public string nextChapterName;
+    private Stack<GameObject> HpCanvas = new Stack<GameObject>();
 
     //[Header("Attack4 Parameter")]
 
@@ -60,6 +61,21 @@ public class BossNepenthes : Enemy
         StateSetting();
         SettingPattern(CharacterMovementPattern[GetCurPhaseHpArray].EPatterns);
         AiSM.CurrentState = AiSM.Pattern[0];
+    }
+
+    void Start()
+    {
+        GameObject obj = GameObject.Find("HPArea");
+        //HpCanvas = new GameObject[obj.transform.childCount];
+        for (int i = 0; i < obj.transform.childCount; i++)
+        {
+            var piece = obj.transform.GetChild(i);
+            if(piece != null)
+            {
+                Debug.Log($"{piece}");
+                HpCanvas.Push(piece.gameObject);
+            }
+        }
     }
 
     public override void SetAttackPattern()
@@ -98,6 +114,9 @@ public class BossNepenthes : Enemy
             {
                 AiSM.ChangeState(AiDie);
             }
+            GameObject hpGage = HpCanvas.Pop();
+            Debug.Log($"AA{hpGage}");
+            hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
         }
     }
 
