@@ -28,7 +28,7 @@ public class CarryState : State
         base.HandleInput();
 
         if (jumpAction.triggered) player.isJump = true;
-        if (interactAction.triggered)
+        if (interactAction.triggered && player.currentInteractable != null)
         {
             player.Interaction();
             player.animator.SetLayerWeight(1, 1);

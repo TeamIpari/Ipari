@@ -182,11 +182,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
             _rigidbody.velocity = Vector3.zero;
             _player.isPickup = true;
             isTarget = false;
+            isReady = false;
             return true;
         }
 
         else
         {
+            _transform.SetParent(null);
             isReady = false;
             StartCoroutine(Throwing(interactor));
             //_player.isCarry = false;
@@ -251,9 +253,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private IEnumerator Throwing(GameObject interactor)
     {
-        Debug.Log(isReady);
         // Object 종속을 풀어줌
-        _transform.SetParent(null);
         if (_player.target != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
@@ -267,7 +267,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         yield return new WaitForSecondsRealtime(0.1f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
-
+        
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
         _rigidbody.useGravity = true;
         _rigidbody.freezeRotation = false;
@@ -300,11 +300,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;
+        _player.isCarry = false;
         if (_animator == null)
             flight = true;
 
         yield return new WaitForSecondsRealtime(0.3f);
-        _player.isCarry = false;
         _collider.isTrigger = false;
         isReady = true;
     }
