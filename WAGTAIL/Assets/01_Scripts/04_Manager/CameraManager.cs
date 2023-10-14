@@ -7,11 +7,7 @@ using UnityEngine;
 
 public enum CameraType
 {
-    Village,
     Main,
-    Side,
-    Top,
-    Back,
     Death
 }
 
