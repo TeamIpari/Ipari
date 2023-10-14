@@ -26,10 +26,10 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         }
     }
 
+    [SerializeField] public bool    IntakeOnAwake = false;
     [SerializeField] public float   IntakePower = 6f;
     [SerializeField] public Vector3 SandIdleCenterOffset   = Vector3.zero;
     [SerializeField] public Vector3 SandIntakeCenterOffset = Vector3.zero;
-    [SerializeField] protected Material SandMat;
 
 
 
@@ -40,8 +40,8 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
     /*****************************************
      *   참조에 대한 캐싱 관련 필드들...
      * ***/
-    private Renderer _renderer;
-    private Collider _collider;
+    private Collider   _collider;
+    protected Material _SandMat;
 
 
     /*****************************************
@@ -94,11 +94,9 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         gameObject.tag      = "Platform";
 
         _collider = GetComponent<Collider>();
-        if(_renderer!=null){
+        _SandMat?.SetFloat("_Speed", 0f);
 
-            SandMat = _renderer.sharedMaterial;
-            SandMat.SetFloat("_Speed", 0f);
-        }
+        if (IntakeOnAwake) IntakeSand(true);
         #endregion
     }
 
@@ -108,7 +106,6 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         /********************************************
          *   점점 파고들어가는 효과 적용.
          * ***/
-        UpdateSandMesh(SandIntakeCenterOffset);
         float deltaTime = Time.deltaTime;
         if (_currIntakeTime > 0f)
         {
@@ -124,7 +121,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         /***************************************************************
          *   모래 침식 uv 애니메이션의 속도와, 흔들림 효과를 적용한다.....
          * *****/
-        SandMat?.SetFloat("_Speed", _totalTime += (deltaTime * _currPullSpeed));
+        if(_SandMat) _SandMat.SetFloat("_Speed", _totalTime += (deltaTime * _currPullSpeed));
 
         if (_currPullSpeed > 0f && (_shakeTime -= deltaTime) <= 0f){
 
@@ -161,12 +158,13 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         if (isGround && isSameCollider)
         {
             Vector3 playerPos       = player.transform.position;
-            Vector3 centerPos       = GetWorldCenterPosition( _currCenterOffset );
+            Vector3 centerPos       = GetWorldCenterPosition(_currCenterOffset);
             Vector3 target2Center   = (centerPos - playerPos).normalized;
-            Vector3 right           = Vector3.Cross(hit.normal, target2Center);
-            Vector3 forward         = Vector3.Cross(right, hit.normal);
+            Vector3 right           = Vector3.Cross(target2Center, hit.normal);
+            Vector3 forward         = -Vector3.Cross(right, hit.normal);
 
             float pullPow = (IntakePower * _currPullSpeed);
+            Debug.DrawLine(playerPos, playerPos + forward * 3f, Color.blue);
             player.controller.Move((forward * pullPow * deltaTime));
 
             float target2CenterLen = (centerPos - playerPos).magnitude;
@@ -255,8 +253,8 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
     protected virtual void OnSandStart() { }
     protected virtual void OnDrawSandGizmos() { }
     protected virtual float SampleHeight( Vector3 worldPosition ){ return 0f; }
-    protected abstract void UpdateSandMesh( Vector3 currCenter );
-    protected abstract Vector3 GetWorldCenterPosition( Vector3 currCenter );
+    protected abstract void UpdateSandMesh( Vector3 currCenterOffset);
+    protected virtual Vector3 GetWorldCenterPosition(Vector3 currCenter) { return (currCenter + transform.position); }
 
 
 

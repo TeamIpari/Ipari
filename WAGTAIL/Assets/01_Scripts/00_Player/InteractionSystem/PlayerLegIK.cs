@@ -36,8 +36,6 @@ public sealed class PlayerLegIK : MonoBehaviour
     private float _calf2FootLen     = 0f;
     private int _raycastLayer       = 0;
 
-    RaycastHit LResult, RResult;
-
 
 
     //===========================================
@@ -60,49 +58,28 @@ public sealed class PlayerLegIK : MonoBehaviour
         #region Omit
         if (_initComplete == false) return;
 
-        /*****************************************
-         *    각 발들이 밟고있는 부분을 구한다....
-         * ****/
-        Vector3 position    = transform.position;
-        Vector3 LCalfPoint  = transform.position + (transform.right * -.3f)+(transform.forward*.3f);
-        Vector3 LCalf2Foot  = (LFoot.position - LCalf.position).normalized;
-        LCalfPoint.y = LFoot.position.y;
-
-        Vector3 RCalfPoint  = transform.position + (transform.right * .3f) + (transform.forward * .3f);
-        Vector3 RCalf2Foot  = (RFoot.position - RCalf.position).normalized;
-        RCalf2Foot.y = RFoot.position.y;
-
-        //RaycastHit LResult, RResult;
-        GetSteppedPosition(out LResult, LCalf.position, LCalf2Foot);
-        GetSteppedPosition(out RResult, RCalf.position, RCalf2Foot);
-
-        Debug.DrawLine(LCalfPoint, LCalfPoint+Vector3.down * _legLen, Color.yellow);    
-        Debug.DrawLine(LResult.point, LResult.point + LResult.normal * 10f, Color.blue);
-        Debug.DrawLine(RResult.point, RResult.point + RResult.normal * 10f, Color.blue);
-
-
         /*********************************************
          *    Lef IK를 적용한다....
          * ****/
-        ApplyLegIK(ref LResult, LThigh, LCalf, LFoot);
-        ApplyLegIK(ref RResult, RThigh, RCalf, RFoot);
+        ApplyLegIK( LThigh, LCalf, LFoot);
+        ApplyLegIK( RThigh, RCalf, RFoot);
 
         #endregion
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(LFoot.position, .1f);
-
+        Vector3 position = transform.position + (Vector3.up * .655f);
+        Vector3 LPos     = position + (transform.right * -.2f);
+        Vector3 RPos     = position + (transform.right * .2f);
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(LResult.point, .1f);
+        Gizmos.DrawSphere(position, .2f);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(RFoot.position, .1f);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(LPos, .2f);
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(RResult.point, .1f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(RPos, .2f);
     }
 
 
@@ -116,10 +93,10 @@ public sealed class PlayerLegIK : MonoBehaviour
         return Physics.SphereCast(
 
             startPosition,
-            .1f,
+            .05f,
             dir,
             out result,
-            _calf2FootLen + .2f,
+            .2f,
             _raycastLayer,
             QueryTriggerInteraction.Ignore
 
@@ -128,13 +105,29 @@ public sealed class PlayerLegIK : MonoBehaviour
         #endregion
     }
 
-    private void ApplyLegIK( ref RaycastHit result, Transform thigh, Transform calf, Transform foot )
+    private void ApplyLegIK( Transform thigh, Transform calf, Transform foot )
     {
         #region Omit
-        if (result.collider == null || result.normal.y<=0f) return;
+        Vector3 startPosition = foot.position + (Vector3.up);
+
+        RaycastHit result;
+        Physics.SphereCast(
+
+            startPosition,
+            .05f,
+            Vector3.down,
+            out result,
+            1.4f,
+            _raycastLayer,
+            QueryTriggerInteraction.Ignore
+
+        );
+
+        if (result.collider == null) return;
 
         /**계산에 필요한 요소들을 구한다....*/
-        float   footRaiseOffset = (result.point - foot.position).magnitude;
+        Debug.DrawLine(result.point, result.point + result.normal * 10f, Color.red);
+        float   footRaiseOffset = (result.point.y - foot.position.y)+.18f;
         Vector3 right           = Vector3.Cross(transform.forward, result.normal);
         Vector3 forward         = -Vector3.Cross(right, result.normal);
 
@@ -142,7 +135,7 @@ public sealed class PlayerLegIK : MonoBehaviour
         /**갱신할 발의 회전값, 위치값을 구한다....*/
         Vector3     footDir       = foot.right;
         Vector3     footGoalDir   = result.normal;
-        Vector3     footPos       = result.point + (result.normal * .15f) + (forward*footRaiseOffset);
+        Vector3     footPos       = foot.position + ((result.normal+forward).normalized * footRaiseOffset);
         Quaternion  footRot       = (IpariUtility.GetQuatBetweenVector(footDir, footGoalDir) * foot.rotation);
 
         /**갱신할 정강이의 회전값, 위치값을 구한다....*/
@@ -154,7 +147,7 @@ public sealed class PlayerLegIK : MonoBehaviour
         /**갱신할 골반의 회전값을 구한다...*/
         Vector3     thighDir        = (calf.position - thigh.position).normalized;
         Vector3     thighGoalDir    = (calfPos - thigh.position).normalized;
-        Vector3     thighPos        = calfPos - (thighDir* _thigh2CalfLen);
+        Vector3     thighPos        = calfPos - (thighGoalDir* _thigh2CalfLen);
         Quaternion  thighRot        = (IpariUtility.GetQuatBetweenVector(thighDir, thighGoalDir) * thigh.rotation);
 
 
