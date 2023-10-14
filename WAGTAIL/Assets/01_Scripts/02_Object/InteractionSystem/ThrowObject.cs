@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using IPariUtility;
 using UnityEngine.Serialization;
-using FMODUnity;
-using UnityEngine.UIElements;
 
 //=================================================
 // 플레이어가 들고 던질 수 있는 오브젝트의 기반이 되는 클래스.
