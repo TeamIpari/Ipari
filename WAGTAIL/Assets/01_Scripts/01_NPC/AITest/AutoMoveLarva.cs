@@ -96,13 +96,54 @@ public class AutoMoveLarva : MonoBehaviour
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("AA");
+        /*************************************
+         *   띵호가 추가함.....
+         * ***/
+        if (other.gameObject.CompareTag("Player"))
+        {
+
+            Debug.Log($"사망");
+            other.gameObject.GetComponent<Player>().isDead = true;
+        }
+
+
+        /***************************************
+         *   PlatformObject에 대한 처리...
+         * ***/
+
+        //if (!other.gameObject.CompareTag("Platform")) return;
+
+        //bool isGround = (other.gameObject.GetComponent<Collision>().GetContact(0).normal.y > 0);
+        //bool NoParent = (transform.parent == null);
+        //bool SameParent = (transform.parent == collision.transform);
+
+        //if (isGround && (NoParent || SameParent))
+        //{
+        //    MPCenter.PlatformEnterCount = MPCenter.Larvas.Count; /*애벌레 개수...*/
+
+        //    /***/
+        //    PlatformObject obj = collision.gameObject.GetComponent<PlatformObject>();
+        //    if (obj == null) return;
+
+        //    for (int i = 0; i < MPCenter.PlatformEnterCount; i++)
+        //    {
+
+        //        MPCenter.Larvas[i].transform.parent = collision.transform;
+        //        obj.IgnoreCollisionExit(gameObject);
+        //        obj.IgnoreCollisionEnter(gameObject);
+        //    }
+        //}
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         /*************************************
          *   띵호가 추가함.....
          * ***/
         if (collision.collider.CompareTag("Player")){
-
             collision.collider.GetComponent<Player>().isDead = true;
         }
 

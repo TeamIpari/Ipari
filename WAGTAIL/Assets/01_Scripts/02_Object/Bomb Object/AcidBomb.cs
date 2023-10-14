@@ -1,3 +1,4 @@
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -75,6 +76,8 @@ public class AcidBomb : Bullet
 
     private void OnCollisionEnter(Collision collision)
     {
+        BulletHit(collision.transform);
+        Destroy(this.gameObject);
         // 강띵호가 추가함
         if (collision.collider.CompareTag("Player"))
         {
@@ -94,8 +97,6 @@ public class AcidBomb : Bullet
             DestroyPlatform();
             //collision.collider.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
         }
-        BulletHit(collision.transform);
-        Destroy(this.gameObject);
     }
 
     //=======================================
@@ -121,16 +122,26 @@ public class AcidBomb : Bullet
         #region Omit
         int mask = (1 << 1) | ( 1 << 2) | (1 << 3)  | (1 << 4) | (1 <<5)| (1 << 6) | /*(1<<7) |*/(1<<8)  | ( 1 << 9) | (1<< 10) | (1 << 11) | (1<<12) | (1 <<14) | (1<<15) | (1 << 16);
         #endregion
-        Debug.Log($"{passedMask}");
-        Collider[] cols = Physics.OverlapSphere(bombMarker.transform.position, this.transform.localScale.x, /*(1 << 7) | (1 << 13)*/ passedMask);
-        
-        foreach(var c in cols) 
-        { 
-            if(c.CompareTag("Platform"))
-                c.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
-            else if(c.CompareTag("Player"))
-                c.GetComponent<Player>().isDead = true;
-        }
+            Collider[] cols = 
+            Physics.OverlapSphere(
+                bombMarker.transform.localPosition, 
+                this.transform.localScale.x-0.5f);
+            //var size = Physics.OverlapSphereNonAlloc(bombMarker.transform.position, this.transform.localScale.x, cols);
+            foreach (var c in cols)
+            {
+                try
+                {
+                    if (c.CompareTag("Platform"))
+                        c.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
+                    else if (c.CompareTag("Player"))
+                        c.GetComponent<Player>().isDead = true;
+
+                }
+                catch
+                {
+                    ;
+                }
+            }
     }
 
     public override void SetMarker(GameObject marker)

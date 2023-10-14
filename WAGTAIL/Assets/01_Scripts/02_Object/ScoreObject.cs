@@ -103,14 +103,12 @@ public class ScoreObject : MonoBehaviour
                 {
                     FModAudioManager.PlayOneShotSFX(FModSFXEventType.Get_Bead);
                 }
-                //SoundTest.GetInstance().PlaySound("isCoinInteract");
                 break;
             case ScoreType.Flower:
                 _gameManager.Flower += 1;
                 FModAudioManager.PlayOneShotSFX(FModSFXEventType.Get_Flower);
                 SpawnVFX();
                 gameObject.SetActive(false);
-                //SoundTest.GetInstance().PlaySound("isFlowerInteract");
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

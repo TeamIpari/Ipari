@@ -99,15 +99,15 @@ public class CameraManager : Singleton<CameraManager>
 
     public void CameraShake(float value, float time)
     {
-        //Debug.Log($"{_currentCamera.name} ");
-        // 없어서 추가함.
-        GameObject obj = GameObject.Find("BossRoomCM");
-        CinemachineVirtualCamera vcam = obj.GetComponent<CinemachineVirtualCamera>();
-        CinemachineBasicMultiChannelPerlin vcamperl = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        ////Debug.Log($"{_currentCamera.name} ");
+        //// 없어서 추가함.
+        //GameObject obj = GameObject.Find("BossRoomCM");
+        //CinemachineVirtualCamera vcam = obj.GetComponent<CinemachineVirtualCamera>();
+        //CinemachineBasicMultiChannelPerlin vcamperl = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         
-        vcamperl.m_AmplitudeGain = value;
-        shakeTimer = time;
-        StartCoroutine(Shaking(vcamperl)); ;
+        //vcamperl.m_AmplitudeGain = value;
+        //shakeTimer = time;
+        //StartCoroutine(Shaking(vcamperl)); ;
     }
 
     private IEnumerator Shaking(CinemachineBasicMultiChannelPerlin vcam)

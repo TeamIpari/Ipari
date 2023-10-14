@@ -248,8 +248,8 @@ public class Player : MonoBehaviour
             if (obj == null)  return;
             var interactable = obj.GetComponent<IInteractable>();
             if (interactable == null)  return;
-            interactable.Interact(gameObject);
-            currentInteractable = obj;
+            if (interactable.Interact(gameObject))
+                currentInteractable = obj;
         }
 
         else

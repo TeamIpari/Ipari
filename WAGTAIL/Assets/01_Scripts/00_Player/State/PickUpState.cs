@@ -60,14 +60,18 @@ public class PickUpState : State
     private IEnumerator PickUpObject(float lerpTime, float pickUpTime)
     {
         var pos = _currentInteractableTransform.position;
+        var rot = _currentInteractableTransform.rotation;
         var currentTime = 0.0f;
 
         while (currentTime < lerpTime)
         {
             _currentInteractableTransform.position = Vector3.Lerp(pos, player.InteractionPoint.position, currentTime / lerpTime);
+            _currentInteractableTransform.rotation = Quaternion.Lerp(rot, Quaternion.Euler(0f,player.transform.rotation.y,0f), currentTime / lerpTime);
             currentTime += Time.deltaTime;
             yield return new WaitForSecondsRealtime(Time.deltaTime);
         }
+        _currentInteractableTransform.rotation = Quaternion.Euler(0f,player.transform.rotation.y,0f);
+        Debug.Log(_currentInteractableTransform.rotation);
         yield return new WaitForSecondsRealtime(PickUpDelayTime);
         
         // BezierCurve를 위한 3개의 점 구하기 StartPos, Height, EndPos

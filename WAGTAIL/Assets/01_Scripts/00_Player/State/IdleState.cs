@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
 
 public class IdleState : State
 {
@@ -39,7 +37,7 @@ public class IdleState : State
         base.HandleInput();
 
         if (jumpAction.triggered) player.isJump = true;
-        if(interactAction.triggered && !HoldNearestObject()) player.Interaction();
+        if (interactAction.triggered && !HoldNearestObject()) player.Interaction();
 
         GetMoveInput();
 
