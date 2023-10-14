@@ -587,7 +587,7 @@ public sealed class BossCrab : Enemy
         AiSM      = AIStateMachine.CreateFormGameObject(gameObject);
         AiIdle    = new BossCrabIdleState(AiSM, IdleRate);
         AiWait    = new BossNepenthesWaitState(AiSM, WaitRate);
-        AiHit     = new BossNepenthesHitState(AiSM);
+        AiHit     = new BossCrabHitState(AiSM);
         AiDie     = new BossCrabDieState(AiSM);
         AiAttack  = new BossCrabSowingSeedsState(AiSM, ref sowingSeedsDesc);
         AiAttack2 = new BossCrabEgoStampState(AiSM, newHand);

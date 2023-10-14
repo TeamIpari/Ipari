@@ -103,6 +103,7 @@ public sealed class PullableObject : MonoBehaviour
         private SerializedProperty FullyExtendedProperty;
         private SerializedProperty BreakLengthRatioProperty;
         private SerializedProperty UsedStrongVibrationProperty;
+        private SerializedProperty ApplyUpdateProperty;
 
 
         //=====================================================
@@ -325,6 +326,7 @@ public sealed class PullableObject : MonoBehaviour
                 FullyExtendedProperty           = serializedObject.FindProperty("OnFullyExtended");
                 BreakLengthRatioProperty        = serializedObject.FindProperty("MaxScale");
                 UsedStrongVibrationProperty     = serializedObject.FindProperty("UseStrongShake");
+                ApplyUpdateProperty             = serializedObject.FindProperty("ApplyUpdate");
             }
             #endregion
         }
@@ -497,6 +499,9 @@ public sealed class PullableObject : MonoBehaviour
 
             }
             EditorGUILayout.EndHorizontal();
+
+            /**IK적용 여부...*/
+            ApplyUpdateProperty.boolValue = EditorGUILayout.Toggle("Apply Update", ApplyUpdateProperty.boolValue);
             #endregion
         }
 
@@ -651,6 +656,7 @@ public sealed class PullableObject : MonoBehaviour
         set
         {
             _GrabTarget = value;
+            if (_GrabTarget != null) ApplyUpdate = true;
         }
     }
 

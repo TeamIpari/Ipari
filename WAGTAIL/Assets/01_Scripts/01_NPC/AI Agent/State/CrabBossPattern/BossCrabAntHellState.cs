@@ -7,8 +7,8 @@ public class BossCrabAntHellState : AIAttackState
     //========================================
     //////          Property            //////
     //========================================
-    private SandScript _targetSand;
-    private float      _duration = 0f;
+    private SandScriptBase _targetSand;
+    private float          _duration = 0f;
 
 
     //==================================================
@@ -22,7 +22,7 @@ public class BossCrabAntHellState : AIAttackState
 
         if (andhellPrefab != null){
 
-            _targetSand = andhellPrefab.GetComponent<SandScript>();
+            _targetSand = andhellPrefab.GetComponent<SandScriptBase>();
         }
         #endregion
     }
@@ -35,10 +35,11 @@ public class BossCrabAntHellState : AIAttackState
         
         if(_targetSand!=null)
         {
-            //_targetSand.SandCenterIntakeOffset.y = -7f;
-
-            //_targetSand.SandCenterIdleOffset = _targetSand.SandCenterIntakeOffset;
-            //_targetSand.SandCenterIdleOffset.y = -4.5f;
+            #region Deprecate
+            _targetSand.SandIntakeCenterOffset.y = -7f;
+            _targetSand.SandIdleCenterOffset = _targetSand.SandIntakeCenterOffset;
+            _targetSand.SandIdleCenterOffset.y = -4.5f;
+            #endregion
 
             _targetSand.IntakeSand(true);
         }

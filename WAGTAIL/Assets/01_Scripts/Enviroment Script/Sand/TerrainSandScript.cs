@@ -84,7 +84,7 @@ public sealed class TerrainSandScript : SandScriptBase
 
     protected override void OnSandStart()
     {
-        SandMat = _terrain.materialTemplate;
+        _SandMat = _terrain.materialTemplate;
     }
 
     protected override Vector3 GetWorldCenterPosition( Vector3 currCenter )

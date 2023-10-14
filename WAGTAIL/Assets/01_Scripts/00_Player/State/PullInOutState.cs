@@ -37,6 +37,7 @@ public sealed class PullInOutState : State
     private GameObject  _GrabPos;
     private Transform   _LArm, _RArm;
     private Transform   _LForearm, _RForearm;
+    private Transform   _LHand, _RHand;
     private Transform   _bip01Pelvis;
 
 
@@ -51,10 +52,10 @@ public sealed class PullInOutState : State
         /***********************************************************
          *  플레이어가 잡는 위치 및 양 팔들의 트랜스폼의 참조를 구한다...
          * ***/
-        if(grapPos==null){
+        if (grapPos == null){
 
             Transform bone = player.transform.Find("HoldingPoint");
-            if(bone) _GrabPos = bone.gameObject;
+            if (bone) _GrabPos = bone.gameObject;
         }
         else _GrabPos = grapPos;
 
@@ -68,8 +69,10 @@ public sealed class PullInOutState : State
 
         _LArm     = bipNeck.Find("Bip001 L Clavicle");
         _RArm     = bipNeck.Find("Bip001 R Clavicle");
-        _LForearm = _LArm.transform.Find("Bip001 L UpperArm").Find("Bip001 L Forearm");
-        _RForearm = _RArm.transform.Find("Bip001 R UpperArm").Find("Bip001 R Forearm");
+        _LForearm = _LArm.Find("Bip001 L UpperArm").Find("Bip001 L Forearm");
+        _RForearm = _RArm.Find("Bip001 R UpperArm").Find("Bip001 R Forearm");
+        _LHand    = _LForearm.Find("Bip001 L Hand");
+        _RHand    = _RForearm.Find("Bip001 R Hand");
 
 
         /*********************************************************************
@@ -78,6 +81,7 @@ public sealed class PullInOutState : State
         AnimatorHelper dispatcher = modeling.GetComponent<AnimatorHelper>();
         if(dispatcher){
 
+            _GrabPos = _LArm.gameObject;
             dispatcher.AnimatorLateUpdate += () =>{ SetArmRotate(); };
         }
 
@@ -132,8 +136,6 @@ public sealed class PullInOutState : State
 
         /**당길 수 있는 객체라면 당기는 작업을 실행한다..*/
         if(isPullable){
-
-            player.movementSM.ChangeState(this);
 
             if(_progressCoroutine!=null) player.StopCoroutine(_progressCoroutine);
             _progressCoroutine = player.StartCoroutine(PullingProgress());
@@ -213,7 +215,7 @@ public sealed class PullInOutState : State
             Vector3 playerDir   = playerTr.forward;
             Vector3 lookDir     = (rootPoint - playerTr.position).normalized;
             Vector3 moveDir     = new Vector3(input.x, 0f, input.y);
-            bool isPulling      = Vector3.Dot(input, lookDir) < 0;
+            bool isPulling      = Vector3.Dot(moveDir, lookDir) <= 0;
             float deltaTime     = Time.deltaTime * 2f;
             float exLenRatio    = Mathf.Clamp(PulledTarget.NormalizedLength - .7f, 0f, .85f);
             float speed         = fullLen;
@@ -223,7 +225,6 @@ public sealed class PullInOutState : State
 
                 speed -= (fullLen * exLenRatio);
             }
-
 
             /**바라볼 방향을 향하는 쿼터니언을 구한다...*/
             lookDir.y = 0f;
@@ -294,51 +295,52 @@ public sealed class PullInOutState : State
         #region Omit
         if (_applyIK == false) return;
 
-        /*******************************************
-         *   양 팔이 잡을 위치를 구한다....
-         * ***/
-        int     boneIndex = -1;
-        Vector3 forward   = player.transform.forward;
-        for(int i=PulledTarget.BoneCount-2; i>=0; i--)
+        /*********************************************
+         *   양 팔을 지정한 위치로 회전시킨다...
+         * ******/
+        int boneIndex = -1;
+        Vector3 forward = player.transform.forward;
+        for (int i = PulledTarget.BoneCount - 2; i >= 0; i--)
         {
-            Vector3 currPos  = PulledTarget.GetBonePosition(i);
-            Vector3 currDir  = (currPos - _bip01Pelvis.position).normalized;
-            
-            /**뒤에 있다면 제외한다...*/
-            if(Vector3.Dot(forward, currDir)<0) 
+            Vector3 currPos = PulledTarget.GetBonePosition(i);
+            Vector3 currDir = (currPos - _bip01Pelvis.position).normalized;
+
+            if (Vector3.Dot(forward, currDir) < 0)
                 continue;
 
             boneIndex = i;
             break;
         }
 
-        /**실패했을 경우 기본값을 사용한다...*/
+
         if (boneIndex < 0) boneIndex = (PulledTarget.BoneCount - 2);
 
-        float boneLen   = PulledTarget.GetBoneLength(boneIndex);
+        float boneLen = PulledTarget.GetBoneLength(boneIndex);
         Vector3 bonePos = PulledTarget.GetBonePosition(boneIndex);
         Vector3 boneDir = PulledTarget.GetBoneDir(boneIndex);
+        Vector3 right = player.transform.right;
+        Vector3 up    = player.transform.up;
 
-        Vector3 right   = Vector3.Cross(boneDir, Vector3.up);
-        Vector3 LgrabPos = (bonePos + boneDir * boneLen*.6f);
-        Vector3 RgrabPos = (bonePos + boneDir * boneLen * .8f) + (right* .04f);
-
-
-        /*********************************************
-         *   양 팔을 지정한 위치로 회전시킨다...
-         * ******/
         Vector3 LArmDir    = (_LForearm.position - _LArm.position).normalized;
-        Vector3 LArmTarget = (LgrabPos - _LArm.position).normalized;
+        Vector3 LArmTarget = (bonePos - _LArm.position).normalized;
 
         Vector3 RArmDir    = (_RForearm.position - _RArm.position).normalized;
-        Vector3 RArmTarget = (RgrabPos - _RArm.position).normalized;
+        Vector3 RArmTarget = (bonePos - _RArm.position).normalized;
 
         Quaternion LRotQuat = IpariUtility.GetQuatBetweenVector(LArmDir, LArmTarget);
         Quaternion RRotQuat = IpariUtility.GetQuatBetweenVector(RArmDir, RArmTarget);
 
+        Vector3 LHandDir     = -_LHand.right;
+        Vector3 LHandGoalDir = (bonePos - _LHand.position).normalized;
+
+        Vector3 RHandDir     = -_RHand.right;
+        Vector3 RHandGoalDir = (bonePos - _RHand.position).normalized;
+
+        Quaternion LHandRotQuat = IpariUtility.GetQuatBetweenVector(LHandDir, LHandGoalDir);
+        Quaternion RHandRotQuat = IpariUtility.GetQuatBetweenVector(RHandDir, RHandGoalDir);
+
+
         /**최종적용*/
-        //Debug.DrawLine(_LArm.position, _LArm.position + LArmTarget * 10f, Color.red);
-        //Debug.DrawLine(_RArm.position, _RArm.position + RArmTarget * 10f, Color.red);
         _LArm.rotation = (LRotQuat * _LArm.rotation);
         _RArm.rotation = (RRotQuat * _RArm.rotation);
         #endregion

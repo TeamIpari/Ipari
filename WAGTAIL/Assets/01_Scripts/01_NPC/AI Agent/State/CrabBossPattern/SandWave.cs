@@ -73,6 +73,7 @@ public class SandWave : MonoBehaviour
 
                 module.scalingMode          = ParticleSystemScalingMode.Local;
                 system.transform.localScale = (Vector3.one * FXScale);
+                system.transform.position   = transform.position;
                 system.transform.SetParent(transform);
                 system.gameObject.SetActive(false);
             }
@@ -117,22 +118,23 @@ public class SandWave : MonoBehaviour
         /********************************************
          *    이펙트들을 진행된 구간으로 이동시킨다...
          * ****/
+        float radius = _collider.radius;
         for (int i = 0; i < Pricision; i++){
 
             Vector3 dir    = new Vector3(  Mathf.Cos(currRadian), 0f, Mathf.Sin(currRadian));
-            Vector3 newPos = center + (dir * _collider.radius);
+            Vector3 newPos = center + (dir * radius);
             RaycastHit hit;
 
-            Physics.Raycast(
+            if(Physics.Raycast(
 
                 newPos,
                 Vector3.down,
                 out hit,
                 10f,
                  1 << LayerMask.NameToLayer("Platform")
-            );
+            )) 
+            newPos.y = hit.point.y;
 
-            newPos.y -= hit.distance;
             _FXLists[i].transform.position = newPos;
             currRadian += _radianDiv;
         }
@@ -151,17 +153,18 @@ public class SandWave : MonoBehaviour
         #endregion
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         #region Omit
         Rigidbody body;
         Vector3 center2Target  = (other.transform.position - transform.position);
-        float center2TargetLen = center2Target.magnitude;
+        float center2TargetLen = center2Target.sqrMagnitude;
         float progressRatio    = Mathf.Clamp(1f - (_timeLeft * _timeDiv), 0f, 1f);
         float compareLen       = WaveMaxRadius * waveCurve.Evaluate(progressRatio) - 3f;
 
         /**충돌했는지 체크를 한다...*/
-        if (!(center2TargetLen> compareLen)) return;
+        if (SandTarget != null && SandTarget.PlayerOnSand == false) return;
+        if (!(center2TargetLen> (compareLen*compareLen))) return;
 
 
         /****************************************

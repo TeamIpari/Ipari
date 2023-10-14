@@ -219,7 +219,7 @@ public sealed class SandScript : MonoBehaviour, IEnviroment
 
 
             RaycastHit hit;
-            if (_currPullSpeed>0f && GetPlayerFloorinfo(out hit))
+            if (GetPlayerFloorinfo(out hit))
             {
                 bool isGround       = (hit.normal.y > 0);
                 bool isSameCollider = (hit.collider.gameObject.Equals(gameObject));
@@ -227,33 +227,35 @@ public sealed class SandScript : MonoBehaviour, IEnviroment
                 /**땅을 밟음 판정을 적용한다...*/
                 if (isGround && isSameCollider)
                 {
-                    Vector3 playerPos       = player.transform.position;
-                    Vector3 centerPos       = GetWorldCenterPosition();
-                    Vector3 target2Center   = (centerPos - playerPos).normalized;
-                    Vector3 right           = Vector3.Cross(hit.normal, target2Center);
-                    Vector3 forward         = Vector3.Cross(right, hit.normal);
+                    if(_currPullSpeed > 0f){
 
-                    //Debug.DrawLine(playerPos, centerPos, Color.red);
-                    float pullPow = (PullPower * _currPullSpeed);
-                    player.controller.Move((forward * pullPow * deltaTime));
+                        Vector3 playerPos = player.transform.position;
+                        Vector3 centerPos = GetWorldCenterPosition();
+                        Vector3 target2Center = (centerPos - playerPos).normalized;
+                        Vector3 right = Vector3.Cross(hit.normal, target2Center);
+                        Vector3 forward = Vector3.Cross(right, hit.normal);
 
-                    float target2CenterLen = (centerPos - playerPos).magnitude;
+                        //Debug.DrawLine(playerPos, centerPos, Color.red);
+                        float pullPow = (PullPower * _currPullSpeed);
+                        player.controller.Move((forward * pullPow * deltaTime));
 
-                    /**플레이어가 모래 가운데로 들어왔다면 죽음판정...*/
-                    if (!player.isDead && target2CenterLen < 1f){
+                        float target2CenterLen = (centerPos - playerPos).magnitude;
 
-                        player.controller.enabled = true;
-                        _playerDead   = true;
-                        player.isDead = true;
+                        /**플레이어가 모래 가운데로 들어왔다면 죽음판정...*/
+                        if (!player.isDead && target2CenterLen < 1f)
+                        {
+                            player.controller.enabled = true;
+                            _playerDead = true;
+                            player.isDead = true;
+                        }
                     }
-                }
-
-                else{
-
-                    _playerOnSand = false;
-                    _playerDead = false;
+                    return;
                 }
             }
+
+            /**플레이어가 땅에서 벗어났을 경우...*/
+            _playerOnSand   = false;
+            _playerDead     = false;
         }
 
         #endregion
@@ -509,7 +511,7 @@ public sealed class SandScript : MonoBehaviour, IEnviroment
             Vector3.down,
             out hit,
             heightHalf + .1f,
-            1<<gameObject.layer
+            ~(1<<LayerMask.NameToLayer("Player"))
         );
         #endregion
     }
