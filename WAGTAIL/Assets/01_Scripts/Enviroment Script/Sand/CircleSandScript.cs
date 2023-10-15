@@ -47,8 +47,7 @@ public sealed class CircleSandScript : SandScriptBase
             _mesh.vertices  = _vertices = (Vector3[])_filter.sharedMesh.vertices.Clone();
             _mesh.triangles = (int[])_filter.mesh.triangles.Clone(); 
             _mesh.uv        = (Vector2[])_filter.mesh.uv.Clone();
-
-            _centerIndex      = FindCenterVertex(_mesh.triangles);
+            _centerIndex    = FindCenterVertex(_mesh.triangles);
 
             Vector3 sandScale = transform.localScale;
             _startCenter      = _mesh.vertices[_centerIndex];

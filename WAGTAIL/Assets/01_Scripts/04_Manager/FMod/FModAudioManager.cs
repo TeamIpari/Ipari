@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using UnityEngine.Rendering;
 using UnityEngine.Events;
 using System.Xml;
+using static UnityEngine.InputSystem.Layouts.InputControlLayout;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -824,6 +825,7 @@ public sealed class FModAudioManager : MonoBehaviour
          *   Editor GUI Fields...
          * **/
         private Regex   _regex     = new Regex(@"[^a-zA-Z0-9_]");
+        StringBuilder   builder    = new StringBuilder();
         private Vector2 _Scrollpos = Vector2.zero;
 
         /** Categorys... *************************/
@@ -1626,7 +1628,7 @@ public sealed class FModAudioManager : MonoBehaviour
             #region Ommision
             if (_EditorSettings == null) return;
 
-            StringBuilder builder = new StringBuilder();
+            builder.Clear();
             builder.AppendLine("using UnityEngine;");
             builder.AppendLine("");
 

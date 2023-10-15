@@ -127,7 +127,7 @@ public sealed class PlayerLegIK : MonoBehaviour
 
         /**계산에 필요한 요소들을 구한다....*/
         Debug.DrawLine(result.point, result.point + result.normal * 10f, Color.red);
-        float   footRaiseOffset = (result.point.y - foot.position.y)+.18f;
+        float   footRaiseOffset = (result.point.y - foot.position.y)+.145f;
         Vector3 right           = Vector3.Cross(transform.forward, result.normal);
         Vector3 forward         = -Vector3.Cross(right, result.normal);
 

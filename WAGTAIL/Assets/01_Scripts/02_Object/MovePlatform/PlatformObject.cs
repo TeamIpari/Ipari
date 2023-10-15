@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using IPariUtility;
 
 #if UNITY_EDITOR
 using UnityEditor;
