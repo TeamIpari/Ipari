@@ -122,14 +122,12 @@ public class ThrowObject : MonoBehaviour, IInteractable
             ResetPoint();
         if (!isTarget)
             PhysicsChecking();
-        else 
+        else if(isTarget )
             _rigidbody.velocity += -Vector3.up * (Gravity * 0.1f);
 
-        if (flight)
-        {
-            transform.RotateAround(_center.transform.position, Forward, (Rot / flightTime));
-        }
+        FlightRotate();
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -140,6 +138,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             //Debug.Log($"hit name = {collision.gameObject.name}");
             flight = false;
             PhysicsCheck = false;
+            isTarget = false;
             _rigidbody.useGravity = true;
             if (_animator != null)
             {
@@ -355,5 +354,21 @@ public class ThrowObject : MonoBehaviour, IInteractable
                 return new Vector3(-1, 0, 1);
         }
         return Vector3.zero;
+    }
+
+    private void FlightRotate()
+    {
+        if (flight && _animator == null)
+        {
+            transform.RotateAround(_center.transform.position, Forward, (Rot / flightTime));
+        }
+        else if (!flight && _animator != null)
+        {
+            ;
+        }
+        else
+        {
+            _rigidbody.velocity += -Vector3.up * (Gravity * 1.4f);
+        }
     }
 }

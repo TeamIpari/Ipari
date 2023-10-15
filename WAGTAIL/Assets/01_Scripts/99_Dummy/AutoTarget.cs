@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,7 +43,10 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
         if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
         {
             ChangeTarget();
+            other.attachedRigidbody.velocity = new Vector3(0, other.attachedRigidbody.velocity.y, 0);
+
         }
+
     }
 
     /////////////////////////////////////////////////
