@@ -6,33 +6,52 @@ using UnityEngine;
 public class SaySpeaker : MonoBehaviour/*, IInteractable*/
 {
     [SerializeField] private bool IsSaying = false;
-    // ¸»À» ÇÏ¿´´Â°¡? ÇÏÁö ¾Ê¾ÒÀ» °æ¿ì !¸¦ ¶ç¿öÁÜ.
+    // ë§ì„ í•˜ì˜€ëŠ”ê°€? í•˜ì§€ ì•Šì•˜ì„ ê²½ìš° !ë¥¼ ë„ì›Œì¤Œ.
     public GameObject QuestIcon;
     public GameObject SpeakBalloon;
-    public bool IsSay = false;
+    public bool isSay = false;
     public bool isUsing = false;
-    public int SayType = 1;     // ¾î¶² ¸»À» ¹ñÀ» °ÍÀÎÁö ´ë»ó¸¶´Ù ´Ù¸§.
-    public TextMeshProUGUI TextViewer;      // ÇÊ¼ö
-    public CutScene CutScenePlayer;         // ÀÖÀ¸¸é Àç»ı.
+    public bool isInteract = false;
+    public int SayType = 1;     // ì–´ë–¤ ë§ì„ ë±‰ì„ ê²ƒì¸ì§€ ëŒ€ìƒë§ˆë‹¤ ë‹¤ë¦„.
+    public TextMeshProUGUI TextViewer;      // í•„ìˆ˜
+    public GameObject TextBoxPrefab;
+    public CutScene CutScenePlayer;         // ìˆìœ¼ë©´ ì¬ìƒ.
     public Dialogue Dialogue;
 
 
     private void Start()
     {
-        if(TextViewer != null)
+        if(TextViewer == null)
         {
             Debug.LogWarning(this.gameObject.name + ": Not Have A TextViewer at SeapkerController");
+            TextBoxPrefab = GameObject.Find("TextBox2");
+            Debug.Log($"{TextBoxPrefab.name}");
+            Transform tf;
+            for(int i = 0;i < TextBoxPrefab.transform.childCount; i++)
+            {
+                tf = TextBoxPrefab.transform.GetChild(i);
+                if (tf.GetComponent<TextMeshProUGUI>() != null)
+                    TextViewer = tf.GetComponent<TextMeshProUGUI>();
+
+            }
         }
-        SpeakBalloon =
-            TextViewer.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject;
-        SpeakBalloon.SetActive(false);
+        //SpeakBalloon =
+        //    TextViewer.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject;
+        //SpeakBalloon.SetActive(false);
         isUsing = false;
+        isInteract = false;
     }
 
-    //private void Update()
-    //{
-        
-    //}
+    private void Update()
+    {
+        if (isUsing && isInteract && Input.GetKeyDown(KeyCode.F)) 
+        {
+            if (!IsSaying && !isUsing)
+                StartCoroutine(AnimEvents());
+            else
+                PlaySay();
+        }
+    }
 
     public void AnimEvent()
     {
@@ -46,21 +65,23 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
     {
         Player.Instance.playerInput.enabled = false;
         isUsing = true;
+
+        isInteract = true;
         Animator anim = QuestIcon.GetComponent<Animator>();
         if(anim != null)
             QuestIcon.GetComponent<Animator>().SetTrigger("Interactable");
         yield return new WaitForSeconds(1.0f);
         IsSaying = true;
         Dialogue = LoadManager.GetInstance().IO_GetScriptable(SayType);
-        IsSay = true;
-        SpeakBalloon.SetActive(true);
+        isSay = true;
+        //SpeakBalloon.SetActive(true);
         LoadManager.GetInstance().TmpSet(TextViewer);
         LoadManager.GetInstance().StartDialogue(Dialogue);
     }
 
     public void PlaySay()
     {
-        if (IsSay && !IsSaying)
+        if (isSay && !IsSaying)
         {
             return;
         }
@@ -74,7 +95,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
             {
                 Player.Instance.playerInput.enabled = true;
                 IsSaying = false;
-                SpeakBalloon.SetActive(false);
+                //SpeakBalloon.SetActive(false);
                 if (CutScenePlayer != null)
                 {
                     CutScenePlayer.gameObject.SetActive(true);
