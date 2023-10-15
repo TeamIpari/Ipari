@@ -306,7 +306,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             {
                 #region Call_OnObjectPlatformStay
                 /**만약 해당 객체가 부모가 없을 때만 자식으로 넣는다.*/
-                if (Player.Instance.transform.parent == null && !PreventAddChild) {
+                if (Player.Instance.transform.parent == null && !PreventAddChild && Behaviors.Find(x => x.GetComponent<TrampolinePlatformBehaviour>() != null) == null) {
 
                     Player.Instance.transform.parent = this.transform;
                 }
