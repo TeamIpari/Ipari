@@ -2,9 +2,7 @@ using FMOD;
 using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 public sealed class BossCrabSowingSeedsState : AIAttackState
 {
@@ -227,7 +225,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
             1f
         );
 
-        desc.goalPos    = result.point + (result.normal*.3f);
+        desc.goalPos    = result.point + (result.normal*.03f);
         desc.goalNormal = result.normal;
         #endregion
     }
@@ -238,9 +236,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         if (!_isShoot && curTimer >= _desc.delayTime)
         {
             FModAudioManager.PlayOneShotSFX(
-                FModSFXEventType.Broken,
-                Vector3.zero,
-                FModParamLabel.BrokenType.Wall
+                FModSFXEventType.Broken
             );
 
             CreateMarker();

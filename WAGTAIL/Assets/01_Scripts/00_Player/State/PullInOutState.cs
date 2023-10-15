@@ -1,9 +1,7 @@
 using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 /***************************************************
  *  플레이어가 무언가를 당기는 상태가 구현된 클래스입니다.

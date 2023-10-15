@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /*****************************************************
  *   모래 이펙트가 점점 퍼지는 기능이 구현된 컴포넌트입니다...
@@ -10,7 +13,7 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public class SandWave : MonoBehaviour
 {
-    #region Editor_Extension
+#region Editor_Extension
 #if UNITY_EDITOR
     [CustomEditor(typeof(SandWave))]
     private class SandWaveEditor : Editor
@@ -55,7 +58,7 @@ public class SandWave : MonoBehaviour
         //=================================================
         private void GUI_Initialized()
         {
-            #region Omit
+#region Omit
 
             /*****************************************
              *   모든 프로퍼티들을 초기화한다...
@@ -76,12 +79,12 @@ public class SandWave : MonoBehaviour
             }
 
 
-            #endregion
+#endregion
         }
 
         private void GUI_ShowLimitproperties()
         {
-            #region Omit
+#region Omit
 
             /****************************************************************
              *    웨이브 위치 제한을 사용할 경우에만 하위 프로퍼티들을 표시한다...
@@ -92,12 +95,12 @@ public class SandWave : MonoBehaviour
                 LimitCircleRadiusProperty.floatValue    = EditorGUILayout.FloatField("Limit Circle Radius", LimitCircleRadiusProperty.floatValue);
             }
 
-            #endregion
+#endregion
         }
 
     }
 #endif
-    #endregion
+#endregion
 
     //===============================================
     //////              Property                /////
@@ -144,7 +147,7 @@ public class SandWave : MonoBehaviour
     //========================================
     private void Awake()
     {
-        #region Omit
+#region Omit
         /**콜라이더를 초기화한다...*/
         if(_collider = GetComponent<SphereCollider>()){
 
@@ -186,12 +189,12 @@ public class SandWave : MonoBehaviour
 
             _radianDiv = (Mathf.PI * 2f) / Pricision;
         }
-        #endregion
+#endregion
     }
 
     private void Update()
     {
-        #region Omit
+#region Omit
         if (IsSpeading==false || _FXLists==null) return;
 
         /**모래파도가 시작되었을 때, 일정시간 대기한다...*/
@@ -203,6 +206,8 @@ public class SandWave : MonoBehaviour
         }
 
         _timeLeft -= deltaTime;
+
+
         /*************************************************
          *   원형 모양으로 퍼지는데 필요한 요소들을 구한다...
          * *****/
@@ -225,6 +230,7 @@ public class SandWave : MonoBehaviour
          *    이펙트들을 진행된 구간으로 이동시킨다...
          * ****/
         float radius = _collider.radius;
+        int   layer  = (1 << LayerMask.NameToLayer("Platform"));
         for (int i = 0; i < Pricision; i++){
 
             Vector3 dir    = new Vector3(  Mathf.Cos(currRadian), 0f, Mathf.Sin(currRadian));
@@ -247,15 +253,10 @@ public class SandWave : MonoBehaviour
 
             /**이펙트가 놓일 바닥의 위치를 구한다....*/
             RaycastHit hit;
-            if (Physics.Raycast(
+            if (Physics.Raycast( newPos, Vector3.down,out hit, 10f, layer)){
 
-                newPos,
-                Vector3.down,
-                out hit,
-                10f,
-                 1 << LayerMask.NameToLayer("Platform")
-            )) 
-            newPos.y = hit.point.y;
+                newPos.y = hit.point.y;
+            }
 
 
             /**최종 적용....*/
@@ -279,12 +280,12 @@ public class SandWave : MonoBehaviour
             IsSpeading = false;
         }
 
-        #endregion
+#endregion
     }
 
     private void OnTriggerStay(Collider other)
     {
-        #region Omit
+#region Omit
         if (IsSpeading == false) return;
 
         Rigidbody body;
@@ -297,6 +298,7 @@ public class SandWave : MonoBehaviour
         if (SandTarget != null && SandTarget.PlayerOnSand == false) return;
         if (!(center2TargetLen> (compareLen*compareLen))) return;
         if (progressRatio>=1f) return; 
+
 
         /****************************************
          *   플레이어가 점프 상태이면 스킵한다...
@@ -321,7 +323,7 @@ public class SandWave : MonoBehaviour
             body.velocity = pow;
         }
 
-        #endregion
+#endregion
     }
 
 
@@ -331,7 +333,7 @@ public class SandWave : MonoBehaviour
     //==========================================
     public void StartWave()
     {
-        #region Omit
+#region Omit
         /**************************************
          *   모래파도를 일으킨다....
          * ****/
@@ -353,12 +355,12 @@ public class SandWave : MonoBehaviour
         _shakeTime = _shakeMaxTime;
         _delayTime = .1f;
         IsSpeading = true;
-        #endregion
+#endregion
     }
 
     private bool CheckHitWave( Vector3 worldPos )
     {
-        #region Omit
+#region Omit
 
         /**************************************************
          *   주어진 worldPos가 판정안으로 들어왔는지 검사한다.
@@ -369,12 +371,12 @@ public class SandWave : MonoBehaviour
         compareLen *= compareLen;
 
         return (center2TargetLen > compareLen);
-        #endregion
+#endregion
     }
 
     private void InitSandFXPosition()
     {
-        #region Omit
+#region Omit
         if (_FXLists == null) return;
 
         int Count = _FXLists.Length;
@@ -383,7 +385,7 @@ public class SandWave : MonoBehaviour
             GameObject fx = _FXLists[i];
             fx.transform.localPosition = Vector3.zero;
         }
-        #endregion
+#endregion
     }
 
 
