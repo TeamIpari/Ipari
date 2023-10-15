@@ -66,7 +66,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
     [SerializeField] private float Rot = 12;
     [SerializeField] private float correctionHeight = 0f;
     [SerializeField] private const float correctionForward = 1.5f;
-    // 위의 Properties는 테스트용으로 나중에 삭제 예정
+    [SerializeField] private float correctionGravity = 0f;
+    // 위의 Properties는 테스트용으로 나중에 삭제 예정( 안할수도?)
 
     // Property
     public bool GetPhyscisCheck
@@ -83,7 +84,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private void Start()
     {
         isReady = true;
-        
+        flight = true;
         // Caching
         _transform = GetComponent<Transform>();
         _collider = GetComponent<Collider>();
@@ -104,16 +105,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _center.transform.parent = this.transform;
         _center.transform.position = (gameObject.GetComponent<Collider>() == null ? Vector3.zero : gameObject.GetComponent<Collider>().bounds.center);
         _center.name = "Center";
-
-        //_center = new GameObject
-        //{
-        //    transform =
-        //    {
-        //        position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center),
-        //        parent = _transform
-        //    },
-        //    name = "Center"
-        //};
     }
 
     private void FixedUpdate()
@@ -148,7 +139,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             else
                 _rigidbody.freezeRotation = false;
             //_rigidbody.velocity += Physics.gravity * Gravity;
-            _rigidbody.velocity += -Vector3.up * (Gravity / 10f);
+            //_rigidbody.velocity += -Vector3.up * (Gravity / 10f);
             flightTime = 1;
         }
         if (_bounceDir == default)
@@ -368,7 +359,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         }
         else
         {
-            _rigidbody.velocity += -Vector3.up * (Gravity * 1.4f);
+            _rigidbody.velocity += -Vector3.up * (correctionGravity * 1.4f);
         }
     }
 }

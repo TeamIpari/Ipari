@@ -84,17 +84,19 @@ public class BossRoomFieldManager :MonoBehaviour
     //======================================
     private IEnumerator BrokenDelayCo(float x, float y)
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(0.75f);
         //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
+        Vector3 pos = BossFild[new Vector2(x, y)].transform.position;
 
-        GameObject obj = GameObject.Instantiate<GameObject>(_interactionVFX, BossFild[new Vector2(x, y)].transform.position, Quaternion.identity);
+        GameObject obj = GameObject.Instantiate<GameObject>(_interactionVFX, new Vector3(pos.x, pos.y + 0.5f, pos.z - 1f), _interactionVFX.transform.rotation);
+        Destroy(obj, 1);
     }
     private void SpawnVFX()
     {
         if (_interactionVFX != null)
         {
             GameObject exploVFX = Instantiate(_interactionVFX, gameObject.transform.position + Vector3.up * 0f, gameObject.transform.rotation);
-            Destroy(exploVFX, 2);
+            Destroy(exploVFX, 1);
         }
 
         else
@@ -125,7 +127,7 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         int x, z;
 
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(0.75f);
         if (reActionPools[0] == null)
             CreateReActionObject();
         
@@ -136,7 +138,7 @@ public class BossRoomFieldManager :MonoBehaviour
 
             fruit.SetActive(true);
             fruit.transform.position = GetTilePos(x, z);
-            yield return new WaitForSeconds(spawnDelay * 0.001f);
+            yield return new WaitForSeconds(spawnDelay * 0.01f);
         }
 
         yield return null;
@@ -159,11 +161,14 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         // ³»·Á Âï±â -> 2.5ÃÊ ÈÄ ³»·Á ÂïÀ½.
         // .Attack Delay = 2.5f
-        float X = (xPos - Offset.x ), Y = 0;
+        float X = (xPos - Offset.x ) + 9, Y = 0;
         float FindY = Y * (-StoneYSize);
+
+        Debug.Log($"AA {X}, {FindY}");
 
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
+            Debug.Log($"{X}, {FindY}");
             StartCoroutine(BrokenDelayCo(X, FindY));
             //BrokenDelay(X, FindY);
             Y++;
