@@ -17,6 +17,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
     public GameObject TextBoxPrefab;
     public CutScene CutScenePlayer;         // 있으면 재생.
     public Dialogue Dialogue;
+    public TextMeshProUGUI NameTag;
 
 
     private void Start()
@@ -24,16 +25,9 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
         if(TextViewer == null)
         {
             Debug.LogWarning(this.gameObject.name + ": Not Have A TextViewer at SeapkerController");
-            TextBoxPrefab = GameObject.Find("TextBox2");
-            Debug.Log($"{TextBoxPrefab.name}");
-            Transform tf;
-            for(int i = 0;i < TextBoxPrefab.transform.childCount; i++)
-            {
-                tf = TextBoxPrefab.transform.GetChild(i);
-                if (tf.GetComponent<TextMeshProUGUI>() != null)
-                    TextViewer = tf.GetComponent<TextMeshProUGUI>();
-
-            }
+            TextBoxPrefab = UIManager.GetInstance().GetGameUI(GameUIType.TextBox).gameObject;
+            TextViewer = TextBoxPrefab.GetComponent<TextBoxUI>().textBox;
+            NameTag = TextBoxPrefab.GetComponent<TextBoxUI>().nameTag;
         }
         //SpeakBalloon =
         //    TextViewer.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject;
@@ -95,6 +89,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
             {
                 Player.Instance.playerInput.enabled = true;
                 IsSaying = false;
+                TextBoxPrefab.SetActive(false);
                 //SpeakBalloon.SetActive(false);
                 if (CutScenePlayer != null)
                 {
@@ -106,6 +101,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
         else
         {
             Debug.Log("Waiting");
+            TextBoxPrefab.SetActive(true);
         }
     }
 
