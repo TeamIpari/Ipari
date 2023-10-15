@@ -97,12 +97,12 @@ public class SceneLoader : Singleton<SceneLoader>
                 //CameraManager.GetInstance().CameraSetting();
             }
 
-            if(_loadSceneName == "Chapter02_JKH")
+            if(_loadSceneName == "Chapter02_Heejin")
             {
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
             }
             
-            if(_loadSceneName == "Boss_Room_Programing_End")
+            if(_loadSceneName == "BOSS_ROOM_Heejin")
             {
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
             }
