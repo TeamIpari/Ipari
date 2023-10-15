@@ -110,10 +110,9 @@ public class BossNepenthesVineAttack : AIAttackState
                         vineAnim.SetTrigger("isAttack");
                         myThread = new Thread(new ThreadStart(ThreadFunction));
                         myThread.Start();
-
+                        Debug.Log($"{spawnPos}");
+                        BossRoomFieldManager.Instance.BreakingPlatform(spawnPos.x, true);
                     }
-                    //eStateChange();
-                    //Invoke(A);
                 }
                 break;
             case VineState.STATE_ORIGINBACK:
@@ -197,8 +196,7 @@ public class BossNepenthesVineAttack : AIAttackState
 
 
         // 몇 초 후 떨어지게 하기.
-        BossRoomFieldManager.Instance.BreakingPlatform(spawnPos.x, true);
-        spawnPos = BossRoomFieldManager.Instance.transform.position + new Vector3(spawnPos.x, vine.transform.position.y + 2f, vine.transform.position.z);
+        spawnPos = BossRoomFieldManager.Instance.transform.position + new Vector3(spawnPos.x, vine.transform.position.y + 2.8f, vine.transform.position.z);
     }
 }
 

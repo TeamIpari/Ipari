@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
+[Serializable]
 public struct BossNepenthesProfile
 {
     public GameObject BulletPrefab;
@@ -28,6 +30,9 @@ public class BossNepenthes : Enemy
     public Transform ShotPosition;
     public GameObject ShotMarker;
     public GameObject MiniShotMarker;
+    public GameObject FX_Hitprefab;
+    private GameObject FX_Hit;
+    public Transform hitTrasnform;
 
     [Header("Attack1 Parameter")]
     public GameObject LeftVine;
@@ -60,49 +65,14 @@ public class BossNepenthes : Enemy
         SetProfile(ShotMarker);
         StateSetting();
         SettingPattern(CharacterMovementPattern[GetCurPhaseHpArray].EPatterns);
+        FX_Hit = GameObject.Instantiate(FX_Hitprefab ,hitTrasnform.position, FX_Hitprefab.transform.rotation ,this.transform.parent);
+        FX_Hit.SetActive(false);
         AiSM.CurrentState = AiSM.Pattern[0];
     }
 
     void Start()
     {
         initializeUI();
-    }
-
-    public override void initializeUI()
-    {
-        GameObject obj = GameObject.Find("HPArea");
-        //HpCanvas = new GameObject[obj.transform.childCount];
-        for (int i = 0; i < obj.transform.childCount; i++)
-        {
-            var piece = obj.transform.GetChild(i);
-            if (piece != null)
-            {
-                Debug.Log($"{piece}");
-                HpCanvas.Push(piece.gameObject);
-            }
-        }
-    }
-
-    public override void Hit()
-    {
-        base.Hit();
-        GameObject hpGage = HpCanvas.Pop();
-        hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
-    }
-
-    public override void SetAttackPattern()
-    {
-        base.SetAttackPattern();
-    }
-
-    protected override void AddPattern(AIState curPattern)
-    {
-        base.AddPattern(curPattern);
-    }
-
-    public override void SettingPattern(MonsterPattern.Pattern[] pattern)
-    {
-        base.SettingPattern(pattern);
     }
 
     void Update()
@@ -128,6 +98,46 @@ public class BossNepenthes : Enemy
             }
         }
     }
+
+    public override void initializeUI()
+    {
+        GameObject obj = GameObject.Find("HPArea");
+        //HpCanvas = new GameObject[obj.transform.childCount];
+        for (int i = 0; i < obj.transform.childCount; i++)
+        {
+            var piece = obj.transform.GetChild(i);
+            if (piece != null)
+            {
+                Debug.Log($"{piece}");
+                HpCanvas.Push(piece.gameObject);
+            }
+        }
+    }
+
+    public override void Hit()
+    {
+        base.Hit();
+        GameObject hpGage = HpCanvas.Pop();
+        hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
+        FX_Hit.SetActive(true);
+
+    }
+
+    public override void SetAttackPattern()
+    {
+        base.SetAttackPattern();
+    }
+
+    protected override void AddPattern(AIState curPattern)
+    {
+        base.AddPattern(curPattern);
+    }
+
+    public override void SettingPattern(MonsterPattern.Pattern[] pattern)
+    {
+        base.SettingPattern(pattern);
+    }
+
 
     // ============================================
     /////           Core Methods            ///

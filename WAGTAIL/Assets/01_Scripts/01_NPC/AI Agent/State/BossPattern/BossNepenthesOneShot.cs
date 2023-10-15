@@ -35,7 +35,7 @@ public class BossNepenthesOneShot: AIAttackState
         this.bullet = profile.BulletPrefab;
         this.time = time;
         this.bombSize = size;
-        this.delayTime = 0.75f;
+        this.delayTime = 1f;
     }
 
     public override void Enter()
