@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -149,7 +150,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
          *   플레이어가 모래를 밟고 있는 동안의 처리를 한다.
          * ***/
         RaycastHit hit;
-        if (!(_currPullSpeed > 0f && GetPlayerFloorinfo(out hit))) return;
+        if (!(_currPullSpeed > 0f && IpariUtility.GetPlayerFloorinfo(out hit, 1<<gameObject.layer))) return;
 
         bool isGround       = (hit.normal.y > 0);
         bool isSameCollider = (hit.collider.gameObject.Equals(gameObject));
@@ -290,7 +291,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         if (PlayerOnSand == false)
         {
             RaycastHit hit;
-            if (GetPlayerFloorinfo(out hit)){
+            if (IpariUtility.GetPlayerFloorinfo(out hit, 1<<gameObject.layer)){
 
                 bool isGround       = (hit.normal.y > 0);
                 bool isSameCollider = (hit.collider.gameObject.Equals(gameObject));
@@ -306,28 +307,6 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         }
 
         return false;
-        #endregion
-    }
-
-    protected bool GetPlayerFloorinfo(out RaycastHit hit)
-    {
-        #region Ommision
-        CharacterController con = Player.Instance.controller;
-
-        float heightHalf = con.height;
-        float radius = con.radius;
-        float heightHalfOffset = (heightHalf * .5f) - radius;
-        Vector3 playerPos = con.transform.position;
-        Vector3 center = (playerPos + con.center);
-
-        return Physics.SphereCast(
-            center,
-            radius,
-            Vector3.down,
-            out hit,
-            heightHalf + .1f,
-            1 << gameObject.layer
-        );
         #endregion
     }
 }

@@ -528,6 +528,9 @@ public sealed class BossCrab : Enemy
     private float        _AntHellDuration;
 
 
+    [SerializeField]
+    public bool StartPatternOnAwake = false;
+
 
     //===============================================
     //////          Magic methods               /////
@@ -539,13 +542,16 @@ public sealed class BossCrab : Enemy
 
         StateSetting();
         SettingPattern(CharacterMovementPattern[GetCurPhaseHpArray].EPatterns);
-        AiSM.CurrentState = AiSM.Pattern[0];
+        if(StartPatternOnAwake) AiSM.CurrentState = AiSM.Pattern[0];
         #endregion
     }
 
     private void Update()
     {
-       AiSM?.CurrentState.Update();
+        if(AiSM.CurrentState!=null){
+
+            AiSM?.CurrentState.Update();
+        }
     }
 
 
@@ -553,6 +559,12 @@ public sealed class BossCrab : Enemy
     //============================================
     ////////         Core methods           //////
     //============================================
+    public void CrabBossAweaking()
+    {
+        if(AiSM.CurrentState==null)
+        AiSM.CurrentState = AiSM.Pattern[0];
+    }
+
     private void StateSetting()
     {
         #region Omit

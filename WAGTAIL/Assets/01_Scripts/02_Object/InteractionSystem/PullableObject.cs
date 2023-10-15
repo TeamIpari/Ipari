@@ -962,7 +962,7 @@ public sealed class PullableObject : MonoBehaviour
             Vector3 cp = root.OriginPos + (forward*.5f) + (up*_Yspeed);
             Vector3 b  = HoldingPoint.transform.position;
 
-            //Debug.DrawLine(cp, cp + up * _Yspeed, UnityEngine.Color.red);
+
 
             /**********************************************
              *   배지어 곡선을 기반으로하여 본을 업데이트 한다....
@@ -978,8 +978,6 @@ public sealed class PullableObject : MonoBehaviour
                 Vector3 nextBezier = IpariUtility.GetBezier(ref a, ref cp, ref b, (ratio += curr.lengthRatio));
                 Vector3 curr2Next  = (nextBezier-currBezier).normalized;
                 Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(curr.originDir, curr2Next);
-
-                //Debug.DrawLine(currBezier, nextBezier, UnityEngine.Color.blue);
 
                 next.Tr.position = nextBezier;
                 curr.Tr.rotation = (rotQuat * curr.OriginQuat);
