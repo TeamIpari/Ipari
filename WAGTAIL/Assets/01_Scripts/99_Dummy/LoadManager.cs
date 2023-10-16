@@ -93,28 +93,35 @@ public class LoadManager : Singleton<LoadManager>
         bool endOfFile = false;
         var data_values = testFile.Split('\n');
         int count1 = 0;
-        while (!endOfFile)
+        try
         {
-            Scriptable scriptable = new Scriptable();
-            if (count1 == 0)
+            while (!endOfFile)
             {
+                Scriptable scriptable = new Scriptable();
+                if (count1 == 0)
+                {
+                    count1++;
+                    continue;
+                }
+                var data_value = data_values[count1].Split(',');
+                if (data_value == null)
+                {
+                    endOfFile = true;
+                    break;
+                }
+                if (data_value[0] == "")
+                {
+                    endOfFile = true;
+                    break;
+                }
+                scriptable.Init(data_value);
+                Dic_Say.Add(int.Parse(data_value[0]), scriptable);
                 count1++;
-                continue;
             }
-            var data_value = data_values[count1].Split(',');
-            if (data_value == null)
-            {
-                endOfFile = true;
-                break;
-            }
-            if (data_value[0] == "")
-            {
-                endOfFile = true;
-                break;
-            }
-            scriptable.Init(data_value);
-            Dic_Say.Add(int.Parse(data_value[0]), scriptable);
-            count1++;
+        }
+        catch
+        {
+
         }
     }
     
