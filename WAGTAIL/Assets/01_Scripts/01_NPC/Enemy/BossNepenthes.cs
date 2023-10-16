@@ -65,8 +65,6 @@ public class BossNepenthes : Enemy
         SetProfile(ShotMarker);
         StateSetting();
         SettingPattern(CharacterMovementPattern[GetCurPhaseHpArray].EPatterns);
-        FX_Hit = GameObject.Instantiate(FX_Hitprefab ,hitTrasnform.position, FX_Hitprefab.transform.rotation ,this.transform.parent);
-        FX_Hit.SetActive(false);
         AiSM.CurrentState = AiSM.Pattern[0];
     }
 
@@ -119,8 +117,10 @@ public class BossNepenthes : Enemy
         base.Hit();
         GameObject hpGage = HpCanvas.Pop();
         hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
-        FX_Hit.SetActive(true);
-
+        FX_Hit = GameObject.Instantiate(FX_Hitprefab, hitTrasnform.position, FX_Hitprefab.transform.rotation, this.transform.parent);
+        //FX_Hit.SetActive(false);
+        //FX_Hit.SetActive(true);
+        Destroy(FX_Hit, 1.0f);
     }
 
     public override void SetAttackPattern()
