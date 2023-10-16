@@ -194,24 +194,24 @@ public sealed class TreeObstacles : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         #region Omit
-        if (rebound >= 0 && fallDownSpeed > 0f)
-        {
-            //Tree Sound 재생...
-            FModAudioManager.PlayOneShotSFX(
-                  FModSFXEventType.Tree_Obstacle,
-                  FModLocalParamType.TreeActionType,
-                  FModParamLabel.TreeActionType.TreeCrash,
-                  transform.position
-              );
-
-            fallDownSpeed = -rebound;
-            fallDownRot -= rebound;
-            rebound -= maxRebound * ReboundValue;
-            if (rebound < 0) rebound = 0;
-        }
-
         if (other.gameObject.CompareTag("Platform"))
         {
+            if (rebound >= 0 && fallDownSpeed > 0f){
+
+                //Tree Sound 재생...
+                FModAudioManager.PlayOneShotSFX(
+                      FModSFXEventType.Tree_Obstacle,
+                      FModLocalParamType.TreeActionType,
+                      FModParamLabel.TreeActionType.TreeCrash,
+                      transform.position
+                  );
+
+                fallDownSpeed = -rebound;
+                fallDownRot -= rebound;
+                rebound -= maxRebound * ReboundValue;
+                if (rebound < 0) rebound = 0;
+            }
+
             //have ShatterObject...
             ShatterObject shatter = other.gameObject.GetComponent<ShatterObject>();
             if(shatter!=null)

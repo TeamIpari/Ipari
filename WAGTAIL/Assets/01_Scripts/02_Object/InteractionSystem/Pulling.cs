@@ -137,8 +137,7 @@ public class Pulling : MonoBehaviour, IInteractable
         try
         {
             ;
-            if (animator != null)
-                _shatterObject.GetComponent<FlowerObject>()?.CreatePoint();
+
         }
         catch
         {

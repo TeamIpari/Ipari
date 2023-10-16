@@ -96,9 +96,13 @@ public sealed class PullableObject : MonoBehaviour
 
         /**Serialized Properties...*/
         private SerializedProperty dataListProperty;
-        private SerializedProperty BeginSnappedProperty;
         private SerializedProperty GrabTargetProperty;
-        private SerializedProperty FullyExtendedProperty;
+
+        private SerializedProperty OnPullReleaseProperty;
+        private SerializedProperty OnFullyExtendedProperty;
+        private SerializedProperty OnPullStartProperty;
+        private SerializedProperty OnBreakProperty;
+
         private SerializedProperty BreakLengthRatioProperty;
         private SerializedProperty UsedStrongVibrationProperty;
         private SerializedProperty ApplyUpdateProperty;
@@ -320,11 +324,14 @@ public sealed class PullableObject : MonoBehaviour
                 targetObj                       = (target as PullableObject);
                 dataListProperty                = serializedObject.FindProperty("_datas");
                 GrabTargetProperty              = serializedObject.FindProperty("_GrabTarget");
-                BeginSnappedProperty            = serializedObject.FindProperty("OnPullRelease");
-                FullyExtendedProperty           = serializedObject.FindProperty("OnFullyExtended");
                 BreakLengthRatioProperty        = serializedObject.FindProperty("MaxScale");
                 UsedStrongVibrationProperty     = serializedObject.FindProperty("UseStrongShake");
                 ApplyUpdateProperty             = serializedObject.FindProperty("ApplyUpdate");
+
+                OnPullReleaseProperty            = serializedObject.FindProperty("OnPullRelease");
+                OnFullyExtendedProperty          = serializedObject.FindProperty("OnFullyExtended");
+                OnPullStartProperty              = serializedObject.FindProperty("OnPullStart");
+                OnBreakProperty                  = serializedObject.FindProperty("OnBreak");
             }
             #endregion
         }
@@ -506,10 +513,13 @@ public sealed class PullableObject : MonoBehaviour
         private void GUI_ShowEvents()
         {
             #region Omit
-            if (BeginSnappedProperty == null || FullyExtendedProperty == null) return;
+            if (OnPullStartProperty==null || OnPullReleaseProperty==null || OnFullyExtendedProperty==null || OnBreakProperty==null) 
+                return;
 
-            EditorGUILayout.PropertyField(BeginSnappedProperty);
-            EditorGUILayout.PropertyField(FullyExtendedProperty);
+            EditorGUILayout.PropertyField(OnPullStartProperty);
+            EditorGUILayout.PropertyField(OnPullReleaseProperty);
+            EditorGUILayout.PropertyField(OnFullyExtendedProperty);
+            EditorGUILayout.PropertyField(OnBreakProperty);
 
             #endregion
         }
@@ -579,6 +589,8 @@ public sealed class PullableObject : MonoBehaviour
             /*************************************
              *   각 본들의 길이의 총합을 구한다.
              * ***/
+            if(_fullyExtendedLen>0f) return _fullyExtendedLen;
+
             float len = 0f;
             int Count = _datas.Length;
 
@@ -586,6 +598,7 @@ public sealed class PullableObject : MonoBehaviour
 
                 len += (_datas[i].Tr.position - _datas[i - 1].Tr.position).magnitude;
             }
+            _fullyExtendedLen = len;
 
             return len;
         }
@@ -654,7 +667,12 @@ public sealed class PullableObject : MonoBehaviour
         set
         {
             _GrabTarget = value;
-            if (_GrabTarget != null) ApplyUpdate = true;
+            if (_GrabTarget != null)
+            {
+                ApplyUpdate = true;
+                OnPullStart?.Invoke();
+            }
+            else OnPullRelease?.Invoke();
         }
     }
 
@@ -663,6 +681,8 @@ public sealed class PullableObject : MonoBehaviour
     [SerializeField] public bool             ApplyUpdate = true;
     [SerializeField] private GameObject       _GrabTarget; 
     [SerializeField] public  PullableObjEvent OnPullRelease;
+    [SerializeField] public  PullableObjEvent OnBreak;
+    [SerializeField] public  PullableObjEvent OnPullStart;
     [SerializeField] public  PullableObjEvent OnFullyExtended;
 
 
@@ -705,20 +725,6 @@ public sealed class PullableObject : MonoBehaviour
         _brokenDiv             = (1f/_brokenTime);
 
         gameObject.layer = LayerMask.NameToLayer("Pullable");
-
-        /**************************************
-         *   이벤트 대리자 초기화....
-         * ***/
-        if (OnPullRelease == null){
-
-            OnPullRelease = new PullableObjEvent();
-        }
-
-        if (OnFullyExtended == null){
-
-            OnFullyExtended = new PullableObjEvent();
-        }
-
 
         /**************************************
          *  본 정보 초기화....
@@ -1050,7 +1056,7 @@ public sealed class PullableObject : MonoBehaviour
         /**모두 줄어들었을 경우의 처리를 한다...*/
         if(progressRatio<=0f){
 
-            OnPullRelease?.Invoke();
+            OnBreak?.Invoke();
             IsDestroy = true;
             Destroy(gameObject);
         }
@@ -1120,7 +1126,7 @@ public sealed class PullableObject : MonoBehaviour
         #region Omit
         if (_dataCount == 0 || _datas == null) return Vector3.zero;
 
-        index = Mathf.Clamp(index, 0, _dataCount - 1);
+        index = Mathf.Clamp(index, 0, _dataCount - 2);
         ref BoneData curr = ref _datas[index];
         ref BoneData next = ref _datas[index+1];
 
@@ -1134,6 +1140,78 @@ public sealed class PullableObject : MonoBehaviour
         if (_dataCount == 0 || _datas == null) return 0f;
 
         return _datas[index].originLength;
+        #endregion
+    }
+
+    public Vector3 GetBonePositionFromLength(float length)
+    {
+        #region Omit
+        for(int i=0; i<_dataCount; i++)
+        {
+            ref BoneData data = ref _datas[i];
+
+            /**해당 본의 길이를 반환한다....*/
+            if(length<=data.originLength){
+
+                Vector3 dataDir = GetBoneDir(i);
+                float lenRatio  = (length * data.originLengthDiv);
+
+                return data.Tr.position + (dataDir * lenRatio * data.originLength);
+            }
+
+            length -= data.originLength;
+        }
+
+        return Vector3.zero;
+        #endregion
+    }
+
+    public Vector3 GetBoneDirFromLength(float length)
+    {
+        #region Omit
+        for (int i = 0; i < _dataCount; i++)
+        {
+            ref BoneData data = ref _datas[i];
+
+            /**해당 본의 길이를 반환한다....*/
+            if (length <= data.originLength){
+
+                Vector3 dataDir = GetBoneDir(i);
+                float lenRatio = (length * data.originLengthDiv);
+
+                return dataDir;
+            }
+
+            length -= data.originLength;
+        }
+
+        return Vector3.zero;
+        #endregion
+    }
+
+    public void GetBonePositionAndDirFromLength(float length, out Vector3 outPos, out Vector3 outDir)
+    {
+        #region Omit
+        for (int i = 0; i < _dataCount; i++)
+        {
+            ref BoneData data = ref _datas[i];
+
+            /**해당 본의 길이를 반환한다....*/
+            if (length <= data.originLength){
+
+                Vector3 dataDir = GetBoneDir(i);
+                float lenRatio = (length * data.originLengthDiv);
+
+                outPos = data.Tr.position + (dataDir * lenRatio * data.originLength);
+                outDir = dataDir;
+                return;
+            }
+
+            length -= data.originLength;
+        }
+
+        outPos = Vector3.zero;
+        outDir = Vector3.zero;
         #endregion
     }
 }

@@ -532,6 +532,7 @@ public sealed class BossCrab : Enemy
     public bool StartPatternOnAwake = false;
 
 
+
     //===============================================
     //////          Magic methods               /////
     //===============================================
@@ -571,9 +572,10 @@ public sealed class BossCrab : Enemy
         /**********************************************
          *   상태 초기화에 필요한 요소들을 초기화한다...
          * ***/
-        EgoCrabHand newHand = (CrabHandPrefab!=null? GameObject.Instantiate(CrabHandPrefab).GetComponent<EgoCrabHand>():null);
-        if(newHand!=null)
+        EgoCrabHand newHand = null;
+        if(CrabHandPrefab != null)
         {
+            newHand = GameObject.Instantiate(CrabHandPrefab).GetComponent<EgoCrabHand>();
             newHand.AttackDuration      = EgoAtkCompleteRate;
             newHand.AttackRange         = EgoAtkRange;
             newHand.AttackReadyDuration = EgoAtkWaitTime;
