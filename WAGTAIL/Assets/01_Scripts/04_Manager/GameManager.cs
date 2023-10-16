@@ -15,7 +15,8 @@ public enum CheckPointType
 public enum ScoreType
 {
     Coin,
-    Flower
+    Flower,
+    Cocosi
 }
 
 public enum ChapterType
@@ -45,6 +46,8 @@ public class GameManager : Singleton<GameManager>
     private List<ScoreObject> _scoreObjectList;
     private int _coin = 0;
     private int _flower = 0;
+
+    public bool[] cocosi;
     //================================================
     // Chapter
     private List<Chapter> _chapterList;
