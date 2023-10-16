@@ -14,10 +14,10 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
     public bool isInteract = false;
     public int SayType = 1;     // 어떤 말을 뱉을 것인지 대상마다 다름.
     public TextMeshProUGUI TextViewer;      // 필수
+    public TextMeshProUGUI NameTag;
     public GameObject TextBoxPrefab;
     public CutScene CutScenePlayer;         // 있으면 재생.
     public Dialogue Dialogue;
-    public TextMeshProUGUI NameTag;
 
 
     private void Start()
@@ -69,6 +69,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
         Dialogue = LoadManager.GetInstance().IO_GetScriptable(SayType);
         isSay = true;
         //SpeakBalloon.SetActive(true);
+        LoadManager.GetInstance().NameTagSet(NameTag);
         LoadManager.GetInstance().TmpSet(TextViewer);
         LoadManager.GetInstance().StartDialogue(Dialogue);
     }
