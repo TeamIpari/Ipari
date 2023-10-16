@@ -40,10 +40,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
     {
         if (isUsing && isInteract && Input.GetKeyDown(KeyCode.F)) 
         {
-            if (!IsSaying && !isUsing)
-                StartCoroutine(AnimEvents());
-            else
-                PlaySay();
+            AnimEvent();
         }
     }
 
@@ -64,7 +61,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
         Animator anim = QuestIcon.GetComponent<Animator>();
         if(anim != null)
             QuestIcon.GetComponent<Animator>().SetTrigger("Interactable");
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.0f);
         IsSaying = true;
         Dialogue = LoadManager.GetInstance().IO_GetScriptable(SayType);
         isSay = true;

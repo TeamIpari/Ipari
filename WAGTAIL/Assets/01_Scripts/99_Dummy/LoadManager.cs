@@ -137,9 +137,6 @@ public class LoadManager : Singleton<LoadManager>
                 break;
         }
         dialogue = new Dialogue();
-        Debug.Log($"AA {nametmp.Count}");
-        for(int i = 0; i < nametmp.Count; i++)
-            Debug.Log($"BB {nametmp[i]}");
 
         dialogue.name = nametmp[0];
         dialogue.sentences = new string[temp.Count];
@@ -221,6 +218,8 @@ public class LoadManager : Singleton<LoadManager>
         {
             if (letter == '*')
                 Tmps.text += ',';
+            else if (letter == '\\')
+                Tmps.text += '\n';
             else
                 Tmps.text += letter;
             if (isSpeedUp)
