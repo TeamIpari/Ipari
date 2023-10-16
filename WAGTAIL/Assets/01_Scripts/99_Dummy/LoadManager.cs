@@ -26,14 +26,21 @@ public class LoadManager : Singleton<LoadManager>
                     chapter = int.Parse(str[1]);
                 if (str[2] != "")
                     sayTarget = str[2];
+                //if (str[3] != "")
+                //    wait = int.Parse(str[3]) == 0 ? false : true;
+                //if (str[4] != "")
+                //    Korean = str[4];
+                //if (str[5] != "")
+                //    English = str[5];
+                //if (str[6] != "")
+                //    Japanese = str[6];
                 if (str[3] != "")
-                    wait = int.Parse(str[3]) == 0 ? false : true;
+                    Korean = str[3];
                 if (str[4] != "")
-                    Korean = str[4];
+                    English = str[4];
                 if (str[5] != "")
-                    English = str[5];
-                if (str[6] != "")
-                    Japanese = str[6];
+                    Japanese = str[5];
+
             }
             catch
             {
