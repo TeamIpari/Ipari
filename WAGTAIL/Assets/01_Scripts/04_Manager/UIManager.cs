@@ -24,6 +24,7 @@ public enum GameUIType
     Interactable,
     Tutorial,
     Coin,
+    CoCosi,
     TextBox,
     Chapter,
     Death
