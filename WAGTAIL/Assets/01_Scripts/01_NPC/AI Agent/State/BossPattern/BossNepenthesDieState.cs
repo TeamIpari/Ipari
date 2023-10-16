@@ -33,7 +33,7 @@ public class BossNepenthesDieState : AIDieState
         animLeftVine.SetTrigger("isDeath");
         animRightVine.SetTrigger("isDeath");
         curTimer = 0;
-        brokenTime = 3.2f;
+        brokenTime = 1.5f;
         oneChance = false;
     }
 

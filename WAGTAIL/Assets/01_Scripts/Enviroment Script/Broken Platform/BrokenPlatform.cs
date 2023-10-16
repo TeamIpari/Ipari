@@ -184,6 +184,9 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         if (col != null) col.enabled = false;
         if (mesh != null) mesh.enabled = false;
 
+        if (delayTime > 0)
+            StopAllCoroutines();
+
         if (!callBack) StartCoroutine(ShowPlatform());
     }
 

@@ -50,6 +50,7 @@ public class LoadManager : Singleton<LoadManager>
     //public GameObject
     public int ChapterNum = 0;
     public TextMeshProUGUI Tmps;
+    public TextMeshProUGUI NameTag;
     public ChapterScript Dic_Say;
     public Dialogue dialogue = new Dialogue();
     public bool isSpeedUp = false;
@@ -115,16 +116,25 @@ public class LoadManager : Singleton<LoadManager>
         if (num == 0)
             num = ChapterNum;
         Scriptable sc;
+        List<string> nametmp = new List<string>();
         List<string> temp = new List<string>();
         for (int i = 0; i < Dic_Say.Count; i++)
         {
             Dic_Say.TryGetValue(i, out sc);
-            if(sc.chapter == num)
+            if (sc.chapter == num)
+            {
+                nametmp.Add(sc.sayTarget);
                 temp.Add(Language(sc));
+            }
             else if (sc.chapter > num)
                 break;
         }
         dialogue = new Dialogue();
+        Debug.Log($"AA {nametmp.Count}");
+        for(int i = 0; i < nametmp.Count; i++)
+            Debug.Log($"BB {nametmp[i]}");
+
+        dialogue.name = nametmp[0];
         dialogue.sentences = new string[temp.Count];
         for(int i = 0; i < temp.Count; i++)
         {
@@ -153,6 +163,9 @@ public class LoadManager : Singleton<LoadManager>
     {
         bTyping = false;
         sentences.Clear();
+        Debug.Log($"{dialogue.name}");
+        if (NameTag != null)
+            NameTag.text = dialogue.name;
         foreach (string sentence in dialogue.sentences)
         {
             sentences.Enqueue(sentence);
@@ -217,6 +230,12 @@ public class LoadManager : Singleton<LoadManager>
             return true;
         //Debug.Log("End of conversation.");
         return false;
+    }
+    
+    public void NameTagSet(TextMeshProUGUI tmp)
+    {
+        NameTag = tmp;
+        NameTag.text = string.Empty;
     }
 
     public void TmpSet(TextMeshProUGUI tmp)
