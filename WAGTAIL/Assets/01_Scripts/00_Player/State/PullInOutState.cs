@@ -230,7 +230,7 @@ public sealed class PullInOutState : State
                 speed -= (fullLen * exLenRatio);
             }
 
-            speed = Mathf.Clamp(speed, 0f, 4f);
+            speed = Mathf.Clamp(speed, 0f, 5.5f);
 
             /**바라볼 방향을 향하는 쿼터니언을 구한다...*/
             lookDir.y = 0f;
