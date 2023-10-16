@@ -155,7 +155,7 @@ public class BossNepenthes : Enemy
         AiAttack4 = new BossNepenthesOneShot(AiSM, BossProfile, SmallSize, flyTime);
         // Á×´Â ±â´É.
         AiHit = new BossNepenthesHitState(AiSM, LeftVine, RightVine);
-        AiDie = new BossNepenthesDieState(AiSM, LeftVine, RightVine);
+        AiDie = new BossNepenthesDieState(AiSM, LeftVine, RightVine, nextChapterName);
     }
 
     public void SetProfile(GameObject ShotMarker)
@@ -163,10 +163,11 @@ public class BossNepenthes : Enemy
         BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
     }
     
-    public override void GoNextChapter()
-    {
-        Debug.Log("Load");
-        SceneLoader.GetInstance().LoadScene(nextChapterName);
-    }
+    //public override void GoNextChapter()
+    //{
+    //    Debug.Log("Load");
+        
+    //    //SceneLoader.GetInstance().LoadScene(nextChapterName);
+    //}
 
 }
