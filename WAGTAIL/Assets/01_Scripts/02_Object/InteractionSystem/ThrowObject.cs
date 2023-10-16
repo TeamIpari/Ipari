@@ -165,6 +165,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             PhysicsCheck = false;
             flight = false;
             _collider.isTrigger = true;
+            _animator.SetTrigger("Caught");
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.velocity = Vector3.zero;
             _player.isPickup = true;
