@@ -64,13 +64,6 @@ public class IdleState : State
         {
             stateMachine.ChangeState(player.flight);
         }
-
-        if (player.isDead)
-        {
-            stateMachine.ChangeState(player.death);
-        }
-
-        // TODO : Idle 상태일때 추락 후 땅에 닿았을 때 landingState호출 해주기
     }
 
     public override void PhysicsUpdate()

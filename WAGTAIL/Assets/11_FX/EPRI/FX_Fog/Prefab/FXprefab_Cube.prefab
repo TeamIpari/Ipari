@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3020602598637825829}
   - component: {fileID: 3020602598637825826}
   - component: {fileID: 3020602598637825827}
+  - component: {fileID: 850211933}
+  - component: {fileID: 8643309111879276466}
   m_Layer: 0
   m_Name: FXprefab_Cube
   m_TagString: Untagged
@@ -28,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 3020602598637825824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 307.9, y: 3.61, z: 155.74}
-  m_LocalScale: {x: 64.28, y: 25, z: 64.64623}
+  m_LocalScale: {x: 156.04381, y: 23.555906, z: 173.1477}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -62,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e274c79d1a44b4149824cc205352ba13, type: 2}
+  - {fileID: 2100000, guid: a147fe62079d19b438701d9d67fb66f5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -92,8 +94,34 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3020602598637825824}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &850211933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3020602598637825824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434888be88ee6864ab0df23bc5d15f92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8643309111879276466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3020602598637825824}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d08dd6dbf040884b99db9235523725a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextChapter: 0
+  nextChapterName: 

@@ -52,11 +52,6 @@ public class JumpingState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
-        if (player.isDead)
-        {
-            stateMachine.ChangeState(player.death);
-        }
         
         if (_jump)
         {

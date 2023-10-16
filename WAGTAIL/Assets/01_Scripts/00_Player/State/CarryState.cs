@@ -53,11 +53,6 @@ public class CarryState : State
         {
             stateMachine.ChangeState(player.jump);
         }
-
-        if (player.isDead)
-        {
-            stateMachine.ChangeState(player.death);
-        }
     }
 
     public override void PhysicsUpdate()

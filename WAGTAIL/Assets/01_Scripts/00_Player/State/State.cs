@@ -149,7 +149,11 @@ public class State
     // State ±³Ã¼ Logic
     public virtual void LogicUpdate()
     {
-
+        if (player.isDead)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
     }
 
     public virtual void PhysicsUpdate()
