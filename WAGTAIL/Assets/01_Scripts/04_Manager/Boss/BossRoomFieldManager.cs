@@ -40,7 +40,8 @@ public class BossRoomFieldManager :MonoBehaviour
     [Header("CameraShakeValue")]
     public float ShakePower = 1.5f;
     public float ShakeTime = 0.18f;
-    public float ShakeTiming = 2.5f;
+    public float EndShakePower = 5f;
+    public float EndShakeTime = 2.5f;
 
     [Header("Shake ReAction Parameter")]
     public GameObject ReActionObject;
@@ -84,13 +85,14 @@ public class BossRoomFieldManager :MonoBehaviour
     //======================================
     private IEnumerator BrokenDelayCo(float x, float y)
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.85f);
         //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
         Vector3 pos = BossFild[new Vector2(x, y)].transform.position;
 
         GameObject obj = GameObject.Instantiate<GameObject>(_interactionVFX, new Vector3(pos.x, pos.y + 0.5f, pos.z - 1f), _interactionVFX.transform.rotation);
         Destroy(obj, 1);
     }
+
     private void SpawnVFX()
     {
         if (_interactionVFX != null)
@@ -128,6 +130,7 @@ public class BossRoomFieldManager :MonoBehaviour
         int x, z;
 
         yield return new WaitForSeconds(0.75f);
+        CameraShake(ShakePower, ShakeTime);
         if (reActionPools[0] == null)
             CreateReActionObject();
         
@@ -144,9 +147,9 @@ public class BossRoomFieldManager :MonoBehaviour
         yield return null;
     }
 
-    private void CameraShake()
+    private void CameraShake(float shakePower, float shakeTime )
     {
-        CameraManager.GetInstance().CameraShake(ShakePower, ShakeTime);
+        CameraManager.GetInstance().CameraShake(shakePower, shakeTime);
     }
 
     //======================================
@@ -164,11 +167,9 @@ public class BossRoomFieldManager :MonoBehaviour
         float X = (xPos - Offset.x ) + 9, Y = 0;
         float FindY = Y * (-StoneYSize);
 
-        Debug.Log($"AA {X}, {FindY}");
 
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
-            Debug.Log($"{X}, {FindY}");
             StartCoroutine(BrokenDelayCo(X, FindY));
             //BrokenDelay(X, FindY);
             Y++;
@@ -176,7 +177,7 @@ public class BossRoomFieldManager :MonoBehaviour
         }
         this.reAction = reAction;
         
-        Invoke("CameraShake", ShakeTiming);
+        //Invoke("CameraShake", ShakeTiming);
         if (reAction)
         {
             StartCoroutine(SpawnReActionObject());
@@ -203,14 +204,19 @@ public class BossRoomFieldManager :MonoBehaviour
         }
     }
 
-    public void EnableBrokenPlatformComponent()
+    public void EnableBrokenPlatformComponent(string nextScene = "")
     {
         foreach(var curTile in BossFild)
         {
             //curTile.Value.gameObject.GetComponentInChildren<PlatformObject>().enabled = false;
             //curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
-            curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().HideOnly(false);
+            curTile.Value.gameObject.GetComponentInChildren<IEnviroment>().ExecutionFunction(0.5f);
+            //curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().HideOnly(false);
         }
-        deathZone.gameObject.SetActive(false);
+        CameraShake(EndShakePower, EndShakeTime);
+
+        deathZone.enabled = false;
+        Potal pt = deathZone.GetComponent<Potal>();
+        pt.enabled = true;
     }
 }

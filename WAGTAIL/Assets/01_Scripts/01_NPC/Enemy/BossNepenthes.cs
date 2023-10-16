@@ -163,8 +163,9 @@ public class BossNepenthes : Enemy
         BossProfile.SetProfile(BulletPrefab, ShotPosition, ShotMarker);
     }
     
-    public void GoNextChapter()
+    public override void GoNextChapter()
     {
+        Debug.Log("Load");
         SceneLoader.GetInstance().LoadScene(nextChapterName);
     }
 
