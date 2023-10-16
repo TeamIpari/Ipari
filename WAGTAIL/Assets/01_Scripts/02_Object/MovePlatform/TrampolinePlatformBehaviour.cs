@@ -49,7 +49,7 @@ public class TrampolinePlatformBehaviour : PlatformBehaviorBase
             FModAudioManager.PlayOneShotSFX(FModSFXEventType.Mushroom_Jump);
             //Player.Instance.animator.SetTrigger("flight");
             Player.Instance.movementSM.ChangeState(Player.Instance.jump);
-            Player.Instance.movementSM.currentState.gravityVelocity.y += Mathf.Sqrt(JumpHeight * -3.0f * Player.Instance.gravityValue);
+            Player.Instance.movementSM.currentState.gravityVelocity.y += Mathf.Sqrt(JumpHeight * -1.0f * Player.Instance.gravityValue);
         }
         else
         {

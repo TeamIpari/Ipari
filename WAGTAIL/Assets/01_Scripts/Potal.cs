@@ -22,7 +22,7 @@ public class Potal : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && this.enabled)
         {
             GoNextChapter();
         }

@@ -218,5 +218,6 @@ public class BossRoomFieldManager :MonoBehaviour
         deathZone.enabled = false;
         Potal pt = deathZone.GetComponent<Potal>();
         pt.enabled = true;
+        pt.nextChapterName = nextScene;
     }
 }
