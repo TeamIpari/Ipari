@@ -1,68 +1,152 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using UnityEngine;
 using IPariUtility;
+using System.Text;
 
-/// <summary>
-/// 터지고 Object를 생성하여 포물선 궤적으로 던져줘야함.
-/// </summary>
 
-public class FlowerObject : MonoBehaviour
+/**************************************************
+ *   당길 수 있는 꽃의 움직임이 구현된 컴포넌트입니다.
+ * ****/
+[RequireComponent(typeof(Animator))]
+public sealed class FlowerObject : MonoBehaviour
 {
-    public GameObject CoinPrefab;
-    public Transform FlowerTransform;
-    public List<Vector3> Targets;
-    public float PointRadian = 3f;        // 초기 값 3;
-    public int InitCount = 5;
-    public float FlightTIme = 2;
-    public bool IsDance = false;
-    [SerializeField] private GameObject _explosionVFX;
-    
-    // Start is called before the first frame update
-    void Start()
+    private struct LeafDesc
     {
-        GetComponent<Animator>().SetBool("Dance", IsDance);
+        public Transform  leafTr;
+        public Quaternion OriginQuat;
     }
 
-    public void CreatePoint()
+    //===============================================
+    //////              Property               //////
+    //==============================================
+    [SerializeField] public GameObject CoinPrefab;
+    [SerializeField] public GameObject FoldoutSFX;
+    [SerializeField] public float      CoinSpawnRadian = .5f;
+    [SerializeField] public float      CoinFlightTime  = 2f;
+    [SerializeField] public int        CointSpawnCount = 5;
+
+
+
+    //===============================================
+    //////               Fields               //////
+    //==============================================
+    private Animator        _FlowerAnimator;
+    private PullableObject  _PullableStem;
+    private LeafDesc[]      _upLeafs = new LeafDesc[4];
+    private int             _lookAtBoneIndex = 0;
+
+
+
+    //======================================================
+    ///////              Magic methods                //////
+    //======================================================
+    private void Start()
     {
-        for(int i = 0; i < InitCount; i++)
-            Targets.Add(Search());
-        
-        foreach(var t in Targets)
+        #region Omit
+        _FlowerAnimator = GetComponent<Animator>();
+        if(_PullableStem = transform.Find("PullingVine_Rig").GetComponent<PullableObject>())
         {
-            GameObject _obj = GameObject.Instantiate(CoinPrefab);
+            _lookAtBoneIndex = Mathf.RoundToInt((_PullableStem.BoneCount-1)*.1f);
+        }
+        
 
-            _obj.transform.rotation = Quaternion.Euler(90, 0, 0);
-            _obj.transform.position = FlowerTransform.position;
-            _obj.transform.position += Vector3.up * 1.5f;
-            _obj.AddComponent<Rigidbody>().velocity = IpariUtility.CaculateVelocity(t, FlowerTransform.position, FlightTIme);
-            _obj.GetComponent<ScoreObject>().SetTime(FlightTIme, 2);
-            //marker.Add(_obj);
+        /**IK를 적용할 꽃 잎사귀들을 가져온다....*/
+        Transform flowerTr = transform;
+        for(int i=0; i<=3; i++)
+        {
+            ref LeafDesc desc = ref _upLeafs[i];
+
+            desc.leafTr     = flowerTr.Find($"CoinFlower_Up_Zero{i+1}");
+            desc.OriginQuat = desc.leafTr.rotation;
+        }
+        #endregion
+    }
+
+    private void LateUpdate()
+    {
+        #region Omit
+        /***********************************************
+         *    꽃이 당겨질 때의 IK를 적용한다.....
+         * ****/
+        if (_PullableStem == null) return;
+
+        /**계산에 필요한 요소들을 구한다....*/
+        Vector3   goalPos      = _PullableStem.GetBonePosition(_lookAtBoneIndex);
+        Vector3   flowerPos    = transform.position;
+        Vector3   pullingDir   = (goalPos - flowerPos).normalized;
+        Quaternion rotQuat     = IpariUtility.GetQuatBetweenVector(transform.forward, pullingDir, .83f);
+   
+        _upLeafs[0].leafTr.rotation = (rotQuat * _upLeafs[0].OriginQuat);
+        _upLeafs[1].leafTr.rotation = (rotQuat * _upLeafs[1].OriginQuat);
+        _upLeafs[2].leafTr.rotation = (rotQuat * _upLeafs[2].OriginQuat);
+        _upLeafs[3].leafTr.rotation = (rotQuat * _upLeafs[3].OriginQuat);
+
+        #endregion
+    }
+
+
+
+    //=====================================================
+    ///////             Public methods               //////
+    //=====================================================
+    public void FlowerFoldout()
+    {
+        #region Omit
+
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Flowers_Burst, transform.position, 2f);
+        _FlowerAnimator?.Play("PullingEnd");
+
+        /********************************************
+         *   꽃이 펼쳐졌을 때 다수의 코인을 생성한다....
+         * ***/
+        if (CoinPrefab != null){
+
+            Vector3 flowerPos = transform.position;
+            for (int i = 0; i < CointSpawnCount; i++)
+            {
+                /**새로운 코인을 생성한다.....*/
+                GameObject newCoin = GameObject.Instantiate(CoinPrefab);
+
+                Rigidbody coinBody = newCoin.AddComponent<Rigidbody>();
+                coinBody.velocity = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime);
+
+                ScoreObject coinScore = newCoin.GetComponent<ScoreObject>();
+                coinScore.SetTime(CoinFlightTime, 2f);
+
+                Transform coinTr = newCoin.transform;
+                Vector3 coinPos = flowerPos;
+                Quaternion coinQuat = Quaternion.Euler(90f, 0f, 0f);
+                coinTr.SetPositionAndRotation(coinPos, coinQuat);
+            }
         }
 
-        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Flowers_Burst);
-        //SoundTest.GetInstance().PlaySound("isCoinFlowerExplo");
-        if (_explosionVFX != null )         
-        {           
-            GameObject exploVFX = Instantiate(_explosionVFX, transform.position, transform.rotation);
-            Destroy(exploVFX, 7);
+        
+        /************************************************
+         *    꽃이 펼쳐졌을 때의 이펙트를 생성한다....
+         * ****/
+        if(FoldoutSFX!=null){
+
+            GameObject foldoutVFX = Instantiate(FoldoutSFX, transform.position, transform.rotation);
+            Destroy(foldoutVFX, 7);
         }
-        Destroy(this.gameObject);
+
+
+        #endregion
     }
 
     private Vector3 Search()
     {
-        // Random.onUnitSphere : 반경 1을 갖는 구의 표면상에서 임의의 지점을 반환함
+        #region Omit
+        float r = Random.Range(0.0f, CoinSpawnRadian);
+
         Vector3 getPoint = Random.onUnitSphere;
         getPoint.y = 0.1f;
 
-        // 0.0f 부터 지정한 반지름의 길이 사이의 랜덤 값을 산출함.
-        float r = Random.Range(0.0f, PointRadian);
-        Vector3 vec = (getPoint * r) + FlowerTransform.position;
+        Vector3 vec = (getPoint * r) + transform.position;
 
         return new Vector3(vec.x, 0.1f, vec.z);
+        #endregion
     }
+
 }

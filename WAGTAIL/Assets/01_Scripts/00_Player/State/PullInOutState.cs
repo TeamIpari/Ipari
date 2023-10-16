@@ -1,6 +1,7 @@
 using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 /***************************************************
@@ -36,7 +37,7 @@ public sealed class PullInOutState : State
     private Transform   _LArm, _RArm;
     private Transform   _LForearm, _RForearm;
     private Transform   _LHand, _RHand;
-    private Transform   _bip01Pelvis;
+    private float       _arm2ForearmLen, _forearm2HandLen;
 
 
 
@@ -61,16 +62,24 @@ public sealed class PullInOutState : State
         Transform modeling      = playerTr.Find("NewTavuti@Modeling");
         Transform con           = modeling.Find("NewTavuti_Con");
         Transform bip01         = con.Find("Bip001");
-        Transform bip01Pelvis   = _bip01Pelvis = bip01.Find("Bip001 Pelvis");
+        Transform bip01Pelvis   = bip01.Find("Bip001 Pelvis");
         Transform bip01Spine    = bip01Pelvis.Find("Bip001 Spine").Find("Bip001 Spine1");
         Transform bipNeck       = bip01Spine.Find("Bip001 Neck");
 
-        _LArm     = bipNeck.Find("Bip001 L Clavicle");
-        _RArm     = bipNeck.Find("Bip001 R Clavicle");
-        _LForearm = _LArm.Find("Bip001 L UpperArm").Find("Bip001 L Forearm");
-        _RForearm = _RArm.Find("Bip001 R UpperArm").Find("Bip001 R Forearm");
-        _LHand    = _LForearm.Find("Bip001 L Hand");
-        _RHand    = _RForearm.Find("Bip001 R Hand");
+        _LArm = bipNeck.Find("Bip001 L Clavicle");
+        _RArm = bipNeck.Find("Bip001 R Clavicle");
+
+        _LForearm    = _LArm.Find("Bip001 L UpperArm").Find("Bip001 L Forearm");
+        _LHand       = _LForearm.Find("Bip001 L Hand");
+
+        _RForearm   = _RArm.Find("Bip001 R UpperArm").Find("Bip001 R Forearm");
+        _RHand      = _RForearm.Find("Bip001 R Hand");
+
+        _LForearm = _LForearm.Find("Bip001 L ForeTwist");
+        _RForearm = _RForearm.Find("Bip001 R ForeTwist");
+
+        _arm2ForearmLen  = (_LHand.position - _LArm.position).magnitude;
+        _forearm2HandLen = (_LHand.position - _LForearm.position).magnitude;
 
 
         /*********************************************************************
@@ -79,7 +88,6 @@ public sealed class PullInOutState : State
         AnimatorHelper dispatcher = modeling.GetComponent<AnimatorHelper>();
         if(dispatcher){
 
-            _GrabPos = _LArm.gameObject;
             dispatcher.AnimatorLateUpdate += () =>{ SetArmRotate(); };
         }
 
@@ -222,6 +230,8 @@ public sealed class PullInOutState : State
                 speed -= (fullLen * exLenRatio);
             }
 
+            speed = Mathf.Clamp(speed, 0f, 4f);
+
             /**바라볼 방향을 향하는 쿼터니언을 구한다...*/
             lookDir.y = 0f;
             Quaternion rotQuat  = IpariUtility.GetQuatBetweenVector(playerDir, lookDir);
@@ -292,53 +302,64 @@ public sealed class PullInOutState : State
         if (_applyIK == false) return;
 
         /*********************************************
-         *   양 팔을 지정한 위치로 회전시킨다...
+         *   잡게될 지점과, 잡은 본의 방향을 구한다....
          * ******/
-        int boneIndex = -1;
-        Vector3 forward = player.transform.forward;
-        for (int i = PulledTarget.BoneCount - 2; i >= 0; i--)
-        {
-            Vector3 currPos = PulledTarget.GetBonePosition(i);
-            Vector3 currDir = (currPos - _bip01Pelvis.position).normalized;
 
-            if (Vector3.Dot(forward, currDir) < 0)
-                continue;
+        /**손이 잡게될 위치를 얻어온다...*/
+        Vector3 grabPos, grabDir;
+        PulledTarget.GetBonePositionAndDirFromLength(
+            (PulledTarget.MaxLength - .1f), 
+            out grabPos, 
+            out grabDir
+        );
 
-            boneIndex = i;
-            break;
-        }
+        /**양손이 향하게될 오프셋을 구한다....*/
+        Vector3 grabRight = -Vector3.Cross(Vector3.up, grabDir);
 
 
-        if (boneIndex < 0) boneIndex = (PulledTarget.BoneCount - 2);
+        /******************************************************
+         *   각 본들이 위치해야할 위치와 회전값과 방향을 구한다...
+         * ******/
 
-        float boneLen = PulledTarget.GetBoneLength(boneIndex);
-        Vector3 bonePos = PulledTarget.GetBonePosition(boneIndex);
-        Vector3 boneDir = PulledTarget.GetBoneDir(boneIndex);
-        Vector3 right = player.transform.right;
-        Vector3 up    = player.transform.up;
+        /**Hands...*/
+        Vector3 LHandGoalPos  = grabPos + (grabRight * -.02f);
+        Vector3 LHandDir      = _LHand.transform.up;
+        Vector3 RHandGoalPos  = grabPos + (grabRight * .1f);
+        Vector3 RHandDir      = _RHand.transform.up;
 
-        Vector3 LArmDir    = (_LForearm.position - _LArm.position).normalized;
-        Vector3 LArmTarget = (bonePos - _LArm.position).normalized;
+        /**ForeArms....*/
+        Vector3 LForeArmDir     = (_LHand.position - _LForearm.position).normalized;
+        Vector3 LForeArmGoalDir = (LHandGoalPos - _LForearm.position).normalized;
+        Vector3 LForeArmPos     = LHandGoalPos + (_LHand.right*_forearm2HandLen);
+        Vector3 RForeArmDir       = (_RHand.position - _RForearm.position).normalized;
+        Vector3 RForeArmGoalDir   = (RHandGoalPos - _RForearm.position).normalized;
+        Vector3 RForeArmPos       = RHandGoalPos + (_RHand.right * _forearm2HandLen);
 
-        Vector3 RArmDir    = (_RForearm.position - _RArm.position).normalized;
-        Vector3 RArmTarget = (bonePos - _RArm.position).normalized;
-
-        Quaternion LRotQuat = IpariUtility.GetQuatBetweenVector(LArmDir, LArmTarget);
-        Quaternion RRotQuat = IpariUtility.GetQuatBetweenVector(RArmDir, RArmTarget);
-
-        Vector3 LHandDir     = -_LHand.right;
-        Vector3 LHandGoalDir = (bonePos - _LHand.position).normalized;
-
-        Vector3 RHandDir     = -_RHand.right;
-        Vector3 RHandGoalDir = (bonePos - _RHand.position).normalized;
-
-        Quaternion LHandRotQuat = IpariUtility.GetQuatBetweenVector(LHandDir, LHandGoalDir);
-        Quaternion RHandRotQuat = IpariUtility.GetQuatBetweenVector(RHandDir, RHandGoalDir);
+        /**Arms...*/
+        Vector3 LArmDir     = (_LForearm.position - _LArm.position).normalized;
+        Vector3 LArmGoalDir = (LHandGoalPos - _LArm.position).normalized;
+        Vector3 LArmPos     = LForeArmPos - (LArmGoalDir * _arm2ForearmLen);
+        Vector3 RArmDir        = (_RForearm.position - _RArm.position).normalized;
+        Vector3 RArmGoalDir    = (RHandGoalPos - _RArm.position).normalized;
+        Vector3 RArmPos        = RForeArmPos - (RArmGoalDir * _arm2ForearmLen);
 
 
-        /**최종적용*/
-        _LArm.rotation = (LRotQuat * _LArm.rotation);
-        _RArm.rotation = (RRotQuat * _RArm.rotation);
+        /************************************************
+         *    각 본들에게 최종 적용을 한다.....
+         * ****/
+        _LArm.rotation = (IpariUtility.GetQuatBetweenVector(LArmDir, LArmGoalDir) * _LArm.rotation);
+        _RArm.rotation = (IpariUtility.GetQuatBetweenVector(RArmDir, RArmGoalDir) * _RArm.rotation);
+
+        //_LForearm.position = LForeArmPos;
+        //_LForearm.rotation = (IpariUtility.GetQuatBetweenVector(LForeArmDir, LForeArmGoalDir) * _LForearm.rotation);
+        //_RForearm.position = RForeArmPos;
+        //_RForearm.rotation = (IpariUtility.GetQuatBetweenVector(RForeArmDir, RForeArmGoalDir) * _RForearm.rotation);
+
+        _LHand.rotation = (IpariUtility.GetQuatBetweenVector(LHandDir, grabRight) * _LHand.transform.rotation);
+        //_LHand.position = LHandGoalPos;
+        _RHand.rotation = (IpariUtility.GetQuatBetweenVector(RHandDir, -grabRight) * _RHand.transform.rotation);
+       // _RHand.position = RHandGoalPos;
+
         #endregion
     }
 }
