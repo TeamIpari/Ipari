@@ -44,7 +44,6 @@ public class FlightState : State
             _jump = true;
         }
 
-        _dead = player.isDead;
         GetMoveInput();
         _airVelocity = new Vector3(input.x, 0, input.y);
         var temp = player.cameraTransform.forward;
@@ -57,11 +56,6 @@ public class FlightState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
-        if (_dead)
-        {
-            stateMachine.ChangeState(player.death);
-        }
 
         if (_jump)
         {
