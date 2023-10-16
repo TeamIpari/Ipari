@@ -65,6 +65,10 @@ public class Enemy : Character
             }
         }
     }
+    public virtual void GoNextChapter()
+    {
+        //SceneLoader.GetInstance().LoadScene(nextChapterName);
+    }
 
     public override void CAttack(Vector3 P)
     {

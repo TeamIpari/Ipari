@@ -495,7 +495,7 @@ PrefabInstance:
     - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
         type: 3}
       propertyPath: HP
-      value: 100
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
         type: 3}
@@ -11187,7 +11187,8 @@ MonoBehaviour:
   TargetPos: {x: 0, y: 0, z: 0}
   ShakePower: 1.5
   ShakeTime: 0.25
-  ShakeTiming: 0.75
+  EndShakePower: 5
+  EndShakeTime: 1.5
   ReActionObject: {fileID: 460624085}
   deathZone: {fileID: 850211933}
   spawnDelay: 50
@@ -19340,7 +19341,7 @@ MonoBehaviour:
   m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
   m_PivotOffset: {x: 0, y: 0, z: 0}
   m_AmplitudeGain: 0
-  m_FrequencyGain: 0
+  m_FrequencyGain: 1
   mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1001 &448164359
 PrefabInstance:
@@ -46830,6 +46831,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8643309111879276466, guid: 33be135471336ae4cb1bbc15095d75e0,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8643309111879276466, guid: 33be135471336ae4cb1bbc15095d75e0,
+        type: 3}
+      propertyPath: nextChapter
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33be135471336ae4cb1bbc15095d75e0, type: 3}

@@ -204,7 +204,7 @@ public class BossRoomFieldManager :MonoBehaviour
         }
     }
 
-    public void EnableBrokenPlatformComponent()
+    public void EnableBrokenPlatformComponent(string nextScene = "")
     {
         foreach(var curTile in BossFild)
         {
@@ -215,6 +215,8 @@ public class BossRoomFieldManager :MonoBehaviour
         }
         CameraShake(EndShakePower, EndShakeTime);
 
-        deathZone.gameObject.SetActive(false);
+        deathZone.enabled = false;
+        Potal pt = deathZone.GetComponent<Potal>();
+        pt.enabled = true;
     }
 }

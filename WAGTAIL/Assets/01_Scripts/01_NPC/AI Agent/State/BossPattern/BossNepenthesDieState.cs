@@ -24,6 +24,7 @@ public class BossNepenthesDieState : AIDieState
         this.rightVine = RightVine;
         animLeftVine = LeftVine.GetComponent<Animator>();
         animRightVine = rightVine.GetComponent<Animator>();
+
     }
 
     public override void Enter()
@@ -54,6 +55,7 @@ public class BossNepenthesDieState : AIDieState
         if(curTimer > brokenTime && !oneChance)
         {
             BossRoomFieldManager.Instance.EnableBrokenPlatformComponent();
+            AISM.character.GetComponent<Enemy>().GoNextChapter();
             oneChance = true;
         }
     }
