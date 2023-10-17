@@ -74,6 +74,7 @@ public sealed class InterativeUIPopup : MonoBehaviour
     //=========================================
     private Camera          _mainCam;
     private Animator        _animator;
+    private Image           _image;
     private TextMeshProUGUI _text;
     private RectTransform   _rectTr;
     private ShowType        _show = ShowType.InVisible;
@@ -98,11 +99,12 @@ public sealed class InterativeUIPopup : MonoBehaviour
 
         _ins      = this;
         _mainCam  = Camera.main;
+        _image    = GetComponent<Image>();
         _animator = GetComponent<Animator>();
         _text     = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         _rectTr   = _animator.GetComponent<RectTransform>();
 
-        gameObject.SetActive(false);
+        _image.color = new Color(1f, 1f, 1f, 0f);
         #endregion
     }
 
@@ -129,7 +131,7 @@ public sealed class InterativeUIPopup : MonoBehaviour
 
             _ins._show = showType;
             _ins._animator.Play(_anims[(int)showType], 0, 0f);
-            _ins.gameObject.SetActive(true);
+            _ins._image.color = new Color(1f, 1f, 1f, 1f);
         }
 
         _ins._text.text       = msg;
