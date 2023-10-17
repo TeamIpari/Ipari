@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     // =======================================
     public float slopeSpeed = 0f;
     public float respawnTime;
+    public bool isSwimming = false;
 
     //========================================
     //              지훈 추가               //
@@ -212,8 +213,6 @@ public class Player : MonoBehaviour
 
         movementSM.currentState.LogicUpdate();
 
-        //Debug.Log(isCarry);
-        // 이거 그냥 Carry State or Throw State 에 넣으면 되는거 아닌가?
         if(isCarry)
         {
             EnemySearching();
@@ -242,13 +241,12 @@ public class Player : MonoBehaviour
         //    currentInteractable = _colliders[0].gameObject;
         //}
         #endregion
-
         
-
-
 
         if(currentInteractable == null)
         {
+            if(isSwimming)
+                return;
             GameObject obj = FindViewTarget(transform, 1.5f ,holdTargetMask);
             if (obj == null)  return;
             var interactable = obj.GetComponent<IInteractable>();
