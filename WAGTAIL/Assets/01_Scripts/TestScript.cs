@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 
 public sealed class TestScript : MonoBehaviour
 {
+    private void Start()
+    {
 
+    }
 
 }

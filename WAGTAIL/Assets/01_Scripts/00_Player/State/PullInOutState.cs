@@ -221,7 +221,7 @@ public sealed class PullInOutState : State
             Vector3 moveDir     = new Vector3(input.x, 0f, input.y);
             bool isPulling      = Vector3.Dot(moveDir, lookDir) <= 0;
             float deltaTime     = Time.deltaTime * 2f;
-            float exLenRatio    = Mathf.Clamp(PulledTarget.NormalizedLength - .7f, 0f, .85f);
+            float exLenRatio    = Mathf.Clamp(PulledTarget.NormalizedLength - .7f, .3f, .85f);
             float speed         = fullLen;
 
             /**당겨질 때에만 저항력을 적용한다....*/
