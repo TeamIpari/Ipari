@@ -242,6 +242,11 @@ public class Player : MonoBehaviour
         //    currentInteractable = _colliders[0].gameObject;
         //}
         #endregion
+
+        
+
+
+
         if(currentInteractable == null)
         {
             GameObject obj = FindViewTarget(transform, 1.5f ,holdTargetMask);
