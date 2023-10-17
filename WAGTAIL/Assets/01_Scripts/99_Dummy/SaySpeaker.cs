@@ -85,6 +85,7 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
             }
             else
             {
+                Player.Instance.currentInteractable = null;
                 Player.Instance.playerInput.enabled = true;
                 IsSaying = false;
                 TextBoxPrefab.SetActive(false);
