@@ -20,11 +20,23 @@ public sealed class FlowerObject : MonoBehaviour
     //===============================================
     //////              Property               //////
     //==============================================
-    [SerializeField] public GameObject CoinPrefab;
-    [SerializeField] public GameObject FoldoutSFX;
-    [SerializeField] public float      CoinSpawnRadian = .5f;
-    [SerializeField] public float      CoinFlightTime  = 2f;
-    [SerializeField] public int        CointSpawnCount = 5;
+    [SerializeField] 
+    public GameObject CoinPrefab;
+
+    [SerializeField] 
+    public GameObject FoldoutSFX;
+
+    [SerializeField]
+    public float      LookTargetRatio = .1f;
+
+    [SerializeField, Min(0f)] 
+    public float      CoinSpawnRadian = .5f;
+
+    [SerializeField, Min(0f)] 
+    public float      CoinFlightTime  = 2f;
+
+    [SerializeField, Min(0)] 
+    public int        CointSpawnCount = 5;
 
 
 
@@ -47,7 +59,7 @@ public sealed class FlowerObject : MonoBehaviour
         _FlowerAnimator = GetComponent<Animator>();
         if(_PullableStem = transform.Find("PullingVine_Rig").GetComponent<PullableObject>())
         {
-            _lookAtBoneIndex = Mathf.RoundToInt((_PullableStem.BoneCount-1)*.1f);
+            _lookAtBoneIndex = Mathf.RoundToInt((_PullableStem.BoneCount-1)* LookTargetRatio);
         }
         
 
