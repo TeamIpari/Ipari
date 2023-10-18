@@ -14,7 +14,7 @@ public class AutoMoveLarva : MonoBehaviour
     public float DamagedAnimTimer = 1.5f;
     public float Timer = 0;
     
-    public MovePoint MPCenter;
+    public LarvaSpawner MPCenter;
     public Animator Animator;
     private Vector3 temp;
     private bool reverse;
@@ -61,7 +61,7 @@ public class AutoMoveLarva : MonoBehaviour
         transform.rotation = Quaternion.Euler(temp.x , temp.y -45f, temp.z);
     }
 
-    public void SetUp(MovePoint Center, bool delay = false)
+    public void SetUp(LarvaSpawner Center, bool delay = false)
     {
         MPCenter = Center;
         ObjSpeed = Center.MoveSpeed;
@@ -98,7 +98,6 @@ public class AutoMoveLarva : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("AA");
         /*************************************
          *   띵호가 추가함.....
          * ***/

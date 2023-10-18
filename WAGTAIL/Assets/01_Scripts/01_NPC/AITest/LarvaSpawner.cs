@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class MovePoint : MonoBehaviour
+public class LarvaSpawner : MonoBehaviour
 {
 
     //public
@@ -19,6 +19,7 @@ public class MovePoint : MonoBehaviour
     public float InitPrefabSize = 1.0f;
 
     public int CreatePoint;
+    public int SpawnEA;
     public float MoveSpeed = 0; 
 
     public GameObject[] LarvaPrefabs;
@@ -41,6 +42,8 @@ public class MovePoint : MonoBehaviour
         CreatePoint = Polygon / CreatePoint;
         if (MoveSpeed == 0)
             MoveSpeed = 50f;
+        if (SpawnEA == 0 || SpawnEA > Polygon - LarvaPrefabs.Length)
+            SpawnEA = 1;
         SetVertices(CircleSize, Polygon);
 
     }
@@ -77,16 +80,31 @@ public class MovePoint : MonoBehaviour
                 count += 1;
                 // ver2는 -- 연산자임에 반해 LarvaCur은 ++인 이유
                 // 개발자들이 Inspector에는 머리 - 몸통 - 꼬리 순으로 넣을 것이기 때문에 반대로 연산하게 만듬.
-                for (int ver2 = ver1, LarvaCur = LarvaPrefabs.Length - 1; ver2 > ver1 - LarvaPrefabs.Length; ver2--)
-                {
-                    GameObject obj2 = Instantiate(LarvaPrefabs[LarvaCur--]);
-                    obj2.transform.rotation = Quaternion.Euler(0f , 0f ,0f);
-                    obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? false: true);
-                    obj2.transform.localScale = new Vector3(InitPrefabSize, InitPrefabSize, InitPrefabSize);
-                    obj2.transform.position = Objs[ver2 - 1].transform.position;
-                    obj2.transform.parent = this.transform;
-                    Larvas.Add(obj2);
-                }
+                //for (int ver2 = ver1, LarvaCur = LarvaPrefabs.Length - 1; ver2 > ver1 - LarvaPrefabs.Length; ver2--)
+                //{
+                //    GameObject obj2 = Instantiate(LarvaPrefabs[LarvaCur--]);
+                //    obj2.transform.rotation = Quaternion.Euler(0f , 0f ,0f);
+                //    obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? false: true);
+                //    obj2.transform.localScale = new Vector3(InitPrefabSize, InitPrefabSize, InitPrefabSize);
+                //    obj2.transform.position = Objs[ver2 - 1].transform.position;
+                //    obj2.transform.parent = this.transform;
+                //    Larvas.Add(obj2);
+                //}
+            }
+        }
+        for(int i = 1; i <= SpawnEA; i++)
+        {
+            Debug.Log($"AA{i}");
+            for (int ver2 = polygon / i, LarvaCur = LarvaPrefabs.Length - 1; ver2 > (polygon / i)- LarvaPrefabs.Length/* - (polygon / i)*/; ver2--)
+            {
+                //Debug.Log($"{ver2}");
+                GameObject obj2 = Instantiate(LarvaPrefabs[LarvaCur--]);
+                obj2.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? false : true);
+                obj2.transform.localScale = new Vector3(InitPrefabSize, InitPrefabSize, InitPrefabSize);
+                obj2.transform.position = Objs[ver2 - 1].transform.position;
+                obj2.transform.parent = this.transform;
+                Larvas.Add(obj2);
             }
         }
     }
