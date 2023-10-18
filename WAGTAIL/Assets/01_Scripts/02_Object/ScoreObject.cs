@@ -2,8 +2,18 @@ using System;
 using UnityEngine;
 using IPariUtility;
 
-public class ScoreObject : MonoBehaviour
+
+/*****************************************************************************
+ *    상호작용시, 특정 수집요소를 카운팅하는 기능이 구현된 컴포넌트입니다...
+ * *****/
+
+public sealed class ScoreObject : MonoBehaviour
 {
+    //=================================================
+    /////                Property                 /////
+    //=================================================
+
+
     [SerializeField] private GameObject _interactionVFX;
     private GameManager _gameManager;
     private Rigidbody _rigidbody;
