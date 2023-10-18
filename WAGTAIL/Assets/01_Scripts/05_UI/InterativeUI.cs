@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /**********************************************************
  *  상호작용에 알맞는 UI가 출력되되록 하는 컴포넌트입니다.
  * ***/
-public sealed class InterativeUIPopup : MonoBehaviour
+public sealed class InterativeUI : MonoBehaviour
 {
     public enum ShowType
     {
@@ -79,7 +79,7 @@ public sealed class InterativeUIPopup : MonoBehaviour
     private RectTransform   _rectTr;
     private ShowType        _show = ShowType.InVisible;
 
-    private static InterativeUIPopup _ins;
+    private static InterativeUI _ins;
     private readonly static string[] _anims = new string[2] { "Interaction_FadeIn", "Interaction_FadeOut" };
 
 
@@ -104,7 +104,7 @@ public sealed class InterativeUIPopup : MonoBehaviour
         _text     = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         _rectTr   = _animator.GetComponent<RectTransform>();
 
-        _image.color = new Color(1f, 1f, 1f, 0f);
+        _rectTr.position = new Vector3(999f, 999f);
         #endregion
     }
 

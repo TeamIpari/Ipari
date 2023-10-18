@@ -11,7 +11,7 @@ using UnityEditor;
 /***********************************************
  *   당겨질 수 있는 효과를 제공하는 컴포넌트입니다...
  * **/
-public sealed class PullableObject : MonoBehaviour
+public sealed class PullableObject : MonoBehaviour, IInteractable
 {
     #region Editor_Extension
     /****************************************
@@ -578,10 +578,12 @@ public sealed class PullableObject : MonoBehaviour
         [System.NonSerialized] public float     lengthRatio;
     }
     #endregion
-
+    
     //=========================================
     /////            Property             /////
     //=========================================
+    public string       InteractionPrompt { get; set;  } = "당긴다.";
+    public Vector3      InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
     public float        MaxLength
     {
         get
@@ -724,7 +726,7 @@ public sealed class PullableObject : MonoBehaviour
         _boneCountDiv          = (1f/(_datas.Length-1));
         _brokenDiv             = (1f/_brokenTime);
 
-        gameObject.layer = LayerMask.NameToLayer("Pullable");
+        gameObject.layer = LayerMask.NameToLayer("Interactable");
 
         /**************************************
          *  본 정보 초기화....
@@ -1214,4 +1216,22 @@ public sealed class PullableObject : MonoBehaviour
         outDir = Vector3.zero;
         #endregion
     }
+    
+    
+    
+    public bool Interact(GameObject interactor)
+    {
+        #region Omit
+        if (!interactor.CompareTag("Player")) return false;
+
+        /**플레이어가 당기기 상태로 전환되도록 한다.....*/
+        Player player              = Player.Instance;
+        player.currentInteractable = gameObject;
+        player.movementSM.ChangeState(player.pullInout);
+
+        return true;
+        #endregion
+    }
+
+    public bool AnimEvent() { return false; }
 }

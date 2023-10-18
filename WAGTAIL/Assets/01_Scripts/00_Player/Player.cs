@@ -245,8 +245,6 @@ public class Player : MonoBehaviour
 
         if(currentInteractable == null)
         {
-            if(isSwimming)
-                return;
             GameObject obj = FindViewTarget(transform, 1.5f ,holdTargetMask);
             if (obj == null)  return;
             var interactable = obj.GetComponent<IInteractable>();

@@ -34,7 +34,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Vector3 _endPos;
     Vector3 spawnPoint;
 
-    public string InteractionPrompt { get; } = string.Empty;
+    public string InteractionPrompt    { get; set; } = "들어올린다.";
+    public Vector3 InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
 
     // Player Properties
     private Player _player;
@@ -77,6 +78,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             return PhysicsCheck;
         }
     }
+
 
     //=================================================================
     //                      Magic Methods          

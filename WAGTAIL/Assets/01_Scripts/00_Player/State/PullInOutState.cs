@@ -1,7 +1,6 @@
 using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 /***************************************************
@@ -33,11 +32,12 @@ public sealed class PullInOutState : State
     private bool        _applyIK     = false;
 
     /**IK 참조 관련...*/
-    private GameObject  _GrabPos;
-    private Transform   _LArm, _RArm;
-    private Transform   _LForearm, _RForearm;
-    private Transform   _LHand, _RHand;
-    private float       _arm2ForearmLen, _forearm2HandLen;
+    private GameObject     _GrabPos;
+    private PullableObject _PulledTarget;
+    private Transform      _LArm, _RArm;
+    private Transform      _LForearm, _RForearm;
+    private Transform      _LHand, _RHand;
+    private float          _arm2ForearmLen, _forearm2HandLen;
 
 
 
@@ -96,8 +96,22 @@ public sealed class PullInOutState : State
 
     public override void Enter()
     {
+        #region  Omit
         base.Enter();
+        
+        /***********************************************************
+         *   현재 플레이어가 상호작용한 물체가 없으면 상태를 종료한다...
+         ********/
+        GameObject target;
+        if ((target = player.currentInteractable)==null) return;
+        if ((PulledTarget = target.GetComponent<PullableObject>()) == null) return;
+        
+        /**당기기를 시작한다....*/
+        if(_progressCoroutine!=null) player.StopCoroutine(_progressCoroutine);
+        _progressCoroutine = player.StartCoroutine(PullingProgress());
+        
         player.isPull = true;
+        #endregion
     }
 
     public override void Exit()
@@ -105,6 +119,7 @@ public sealed class PullInOutState : State
         #region Omit
         base.Exit();
         player.isPull = false;
+        player.currentInteractable = null;
 
         if (_progressCoroutine != null){
 
@@ -130,23 +145,6 @@ public sealed class PullInOutState : State
     //=================================================
     ////////            Core methods            //////
     //=================================================
-    public void HoldTarget(GameObject target)
-    {
-        #region Omit
-        Vector3 targetDistance = (target.transform.position - player.transform.position);
-
-        bool isSameDir  = Vector3.Dot(player.transform.forward, targetDistance) >= 0f;
-        bool isPullable = (PulledTarget = target.GetComponent<PullableObject>());
-
-        /**당길 수 있는 객체라면 당기는 작업을 실행한다..*/
-        if(isPullable){
-
-            if(_progressCoroutine!=null) player.StopCoroutine(_progressCoroutine);
-            _progressCoroutine = player.StartCoroutine(PullingProgress());
-        }
-        #endregion
-    }
-
     private IEnumerator PullingProgress()
     {
         #region Omit
