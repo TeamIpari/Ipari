@@ -197,7 +197,6 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         if (desc.collider != null)
         {
             int Count = _desc.count;
-
             for(int i=0; i<Count; i++){
 
                 ref ThrowDesc other = ref _targets[i];

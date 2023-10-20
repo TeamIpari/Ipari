@@ -203,9 +203,10 @@ public sealed class PullInOutState : State
          * ***/
         _applyIK = true;
 
-        float fullLen    = PulledTarget.MaxLength;
-        float fullLenDiv = (1f/fullLen);
-        bool isMove      = false;
+        float fullLen     = PulledTarget.MaxLength;
+        float fullLenDiv  = (1f/fullLen);
+        float limitLenDiv = (1f / PulledTarget.MaxScale);
+        bool isMove       = false;
 
         /**대상을 잡는다...*/
         PulledTarget.HoldingPoint = _GrabPos;
@@ -214,21 +215,21 @@ public sealed class PullInOutState : State
             /******************************************
              *   당기는 동작에 필요한 계산들을 모두 구한다...
              * ***/
-            Vector3 playerDir   = playerTr.forward;
-            Vector3 lookDir     = (rootPoint - playerTr.position).normalized;
-            Vector3 moveDir     = new Vector3(input.x, 0f, input.y);
-            bool isPulling      = Vector3.Dot(moveDir, lookDir) <= 0;
-            float deltaTime     = Time.deltaTime * 2f;
-            float exLenRatio    = Mathf.Clamp(PulledTarget.NormalizedLength - .7f, .3f, .85f);
-            float speed         = fullLen;
+            Vector3 playerDir    = playerTr.forward;
+            Vector3 lookDir      = (rootPoint - playerTr.position).normalized;
+            Vector3 moveDir      = new Vector3(input.x, 0f, input.y);
+            bool isPulling       = Vector3.Dot(moveDir, lookDir) <= 0;
+            float normalizedLen  = PulledTarget.NormalizedLength;
+            float nearLimitRatio = (normalizedLen * limitLenDiv);
+            float deltaTime      = Time.deltaTime * 2f;
+            float speed          = fullLen;
 
             /**당겨질 때에만 저항력을 적용한다....*/
-            if (isPulling){
+            if (isPulling && normalizedLen>=.95f){
 
-                speed -= (fullLen * exLenRatio);
+                speed -= (fullLen * Mathf.Clamp(nearLimitRatio, 0f, .9f));
             }
-
-            speed = Mathf.Clamp(speed, 0f, 5.5f);
+            speed = Mathf.Clamp(speed, 0f, 4.1f);
 
             /**바라볼 방향을 향하는 쿼터니언을 구한다...*/
             lookDir.y = 0f;
@@ -256,7 +257,7 @@ public sealed class PullInOutState : State
             SetMoveAnim(ref isMove, input.sqrMagnitude);
 
             /**이동속도*/
-            animator.SetFloat("speed", (speed * fullLenDiv));
+            animator.SetFloat("speed", speed * fullLenDiv);
 
             yield return null;
         }

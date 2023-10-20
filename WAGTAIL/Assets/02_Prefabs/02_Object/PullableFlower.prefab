@@ -1710,6 +1710,7 @@ GameObject:
   - component: {fileID: 6466350701986664450}
   - component: {fileID: 1107106369263012472}
   - component: {fileID: 6789087143604926445}
+  - component: {fileID: 1502369303}
   m_Layer: 0
   m_Name: PullableFlower
   m_TagString: Untagged
@@ -1724,7 +1725,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5978184463752039096}
-  m_LocalRotation: {x: -0.5906375, y: -0.38877675, z: -0.38877678, w: 0.59063745}
+  m_LocalRotation: {x: -0.59063894, y: -0.3887746, z: -0.3887746, w: 0.59063894}
   m_LocalPosition: {x: 17.57, y: 8.571096, z: -25.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1748,7 +1749,7 @@ Transform:
   - {fileID: 6466350703743871948}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: -66.708}
 --- !u!95 &1107106369263012472
 Animator:
   serializedVersion: 5
@@ -1784,11 +1785,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CoinPrefab: {fileID: 6194149063077610279, guid: 41c10a69ad133f149a74d2e42d8a6074,
     type: 3}
+  PullableObj: {fileID: 5978184465224069494}
   FoldoutSFX: {fileID: 7961726930175722652, guid: b5648cc7f18e3ea41a9c7e6a428b29c3,
     type: 3}
+  LookTargetRatio: 0.1
+  LookRotationRatio: 0.1
   CoinSpawnRadian: 0.5
   CoinFlightTime: 3
   CointSpawnCount: 5
+  FlowerDestroyDuration: 0.3
+--- !u!136 &1502369303
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5978184463752039096}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 1.0076983
+  m_Height: 2.9299574
+  m_Direction: 2
+  m_Center: {x: -0.0000000038053605, y: -0.11049044, z: 0.9649787}
 --- !u!1 &6079489721426389373
 GameObject:
   m_ObjectHideFlags: 0
@@ -2620,17 +2639,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 326afd151d9fb464c869919d7f871a73,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.579
+      value: -1.318
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 326afd151d9fb464c869919d7f871a73,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.509
+      value: 0.397
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 326afd151d9fb464c869919d7f871a73,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.567
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 326afd151d9fb464c869919d7f871a73,
         type: 3}
@@ -2817,8 +2836,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.6248652, y: 1.777689, z: 3.184403}
-  m_Center: {x: -0.3124246, y: 0.38884053, z: -0.50119704}
+  m_Size: {x: 1.6248814, y: 1.777705, z: 1.6932558}
+  m_Center: {x: -0.31242245, y: 0.38884115, z: -0.11436279}
 --- !u!114 &6789087141855841280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2857,67 +2876,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31dd2f709a454d544afb49a27b25933c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxScale: 1.7
-  UseStrongShake: 0
+  MaxScale: 1.3
+  StrechVibePow: 0.7
+  UseFixedVibe: 1
   ApplyUpdate: 1
   _GrabTarget: {fileID: 0}
   OnPullRelease:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1107106369263012472}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: Play
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Idle
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnBreak:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1107106369263012472}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: Play
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: PullingEnd
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6789087143604926445}
-        m_TargetAssemblyTypeName: FlowerObject, Assembly-CSharp
-        m_MethodName: FlowerFoldout
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnPullStart:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1107106369263012472}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: Play
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: PullingStart
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnFullyExtended:
     m_PersistentCalls:
       m_Calls:
