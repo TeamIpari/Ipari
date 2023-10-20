@@ -104,7 +104,8 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         private SerializedProperty OnBreakProperty;
 
         private SerializedProperty BreakLengthRatioProperty;
-        private SerializedProperty UsedStrongVibrationProperty;
+        private SerializedProperty StrechVibePowProperty;
+        private SerializedProperty UseFixedVibeProperty;
         private SerializedProperty ApplyUpdateProperty;
 
 
@@ -272,6 +273,8 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
             GUI_ShowBreakLengthRatio();
 
+            GUI_ShowStrechVibe();
+
             EditorGUILayout.Space(10f);
 
 
@@ -325,10 +328,11 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
                 dataListProperty                = serializedObject.FindProperty("_datas");
                 GrabTargetProperty              = serializedObject.FindProperty("_GrabTarget");
                 BreakLengthRatioProperty        = serializedObject.FindProperty("MaxScale");
-                UsedStrongVibrationProperty     = serializedObject.FindProperty("UseStrongShake");
                 ApplyUpdateProperty             = serializedObject.FindProperty("ApplyUpdate");
+                StrechVibePowProperty           = serializedObject.FindProperty("StrechVibePow");
+                UseFixedVibeProperty            = serializedObject.FindProperty("UseFixedVibe");
 
-                OnPullReleaseProperty            = serializedObject.FindProperty("OnPullRelease");
+        OnPullReleaseProperty            = serializedObject.FindProperty("OnPullRelease");
                 OnFullyExtendedProperty          = serializedObject.FindProperty("OnFullyExtended");
                 OnPullStartProperty              = serializedObject.FindProperty("OnPullStart");
                 OnBreakProperty                  = serializedObject.FindProperty("OnBreak");
@@ -495,13 +499,6 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
                     if (scope.changed) GrabTargetProperty.objectReferenceValue = value;
                 }
 
-                /**루트모션 사용여부...*/
-                using ( var scope = new EditorGUI.ChangeCheckScope()){
-
-                    bool value = EditorGUILayout.ToggleLeft("Use Strong Shake", UsedStrongVibrationProperty.boolValue, GUILayout.Width(130f));
-                    if(scope.changed) UsedStrongVibrationProperty.boolValue = value;
-                }
-
             }
             EditorGUILayout.EndHorizontal();
 
@@ -521,6 +518,31 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             EditorGUILayout.PropertyField(OnFullyExtendedProperty);
             EditorGUILayout.PropertyField(OnBreakProperty);
 
+            #endregion
+        }
+
+        private void GUI_ShowStrechVibe()
+        {
+            #region Omit
+            if (StrechVibePowProperty == null || UseFixedVibeProperty == null) return;
+
+            /******************************************************
+             *   줄이 완전히 펴졌을 때의 프로퍼티들을 모두 표시한다...
+             * ***/
+            EditorGUILayout.BeginHorizontal();
+            {
+                /**진동의 힘을 결정하는 프로퍼티를 표시한다...*/
+                using (var scope = new EditorGUI.ChangeCheckScope()){
+
+                    float value = EditorGUILayout.FloatField("Strech Vibration Pow", StrechVibePowProperty.floatValue);
+                    if (scope.changed) 
+                        StrechVibePowProperty.floatValue = Mathf.Clamp(value, 0f, float.MaxValue);
+                }
+
+                /**고정 힘을 사용하는지에 대한 여부를 결정한다....*/
+                UseFixedVibeProperty.boolValue = EditorGUILayout.ToggleLeft("Use Fixed Pow", UseFixedVibeProperty.boolValue, GUILayout.Width(130f));
+            }
+            EditorGUILayout.EndHorizontal();
             #endregion
         }
 
@@ -582,7 +604,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     //=========================================
     /////            Property             /////
     //=========================================
-    public string       InteractionPrompt { get; set;  } = "당긴다.";
+    public string       InteractionPrompt { get; set; } = "당긴다.";
     public Vector3      InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
     public float        MaxLength
     {
@@ -678,9 +700,10 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         }
     }
 
-    [SerializeField] public float            MaxScale = 1.5f;
-    [SerializeField] public bool             UseStrongShake = false;
-    [SerializeField] public bool             ApplyUpdate = true;
+    [SerializeField] public float            MaxScale       = 1.5f;
+    [SerializeField] public float            StrechVibePow  = 3f;
+    [SerializeField] public bool             UseFixedVibe   = false;
+    [SerializeField] public bool             ApplyUpdate    = true;
     [SerializeField] private GameObject       _GrabTarget; 
     [SerializeField] public  PullableObjEvent OnPullRelease;
     [SerializeField] public  PullableObjEvent OnBreak;
@@ -727,6 +750,11 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         _brokenDiv             = (1f/_brokenTime);
 
         gameObject.layer = LayerMask.NameToLayer("Interactable");
+        if (OnPullStart == null)     OnPullStart = new PullableObjEvent();
+        if (OnFullyExtended == null) OnFullyExtended = new PullableObjEvent();
+        if (OnPullRelease == null)   OnPullRelease = new PullableObjEvent();
+        if (OnBreak == null)         OnBreak = new PullableObjEvent();
+
 
         /**************************************
          *  본 정보 초기화....
@@ -849,7 +877,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         {
             /**루트본을 원래 위치에 붙여놓는다...*/
             rootBone.Tr.position = rootBone.OriginPos;
-            
+
             for(int i=1; i<_dataCount-1; i++){
 
                 ref BoneData prev = ref _datas[i-1];
@@ -946,7 +974,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             /**줄이 당겨져서 완전히 펴졌을 때의 처리...*/
             if(_lastExtendedLen>0){
 
-                _Yspeed = (root2TargetLen - _lastExtendedLen) * (UseStrongShake ? 12f : 3f);
+                _Yspeed = StrechVibePow * (!UseFixedVibe? (root2TargetLen - _lastExtendedLen): 1f);
                _lastExtendedLen = 0;
                 OnFullyExtended?.Invoke();
             }
@@ -1216,8 +1244,6 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         outDir = Vector3.zero;
         #endregion
     }
-    
-    
     
     public bool Interact(GameObject interactor)
     {

@@ -23,11 +23,17 @@ public sealed class FlowerObject : MonoBehaviour
     [SerializeField] 
     public GameObject CoinPrefab;
 
+    [SerializeField]
+    public GameObject PullableObj;
+
     [SerializeField] 
     public GameObject FoldoutSFX;
 
     [SerializeField]
     public float      LookTargetRatio = .1f;
+
+    [SerializeField]
+    public float     LookRotationRatio = .1f;
 
     [SerializeField, Min(0f)] 
     public float      CoinSpawnRadian = .5f;
@@ -38,6 +44,9 @@ public sealed class FlowerObject : MonoBehaviour
     [SerializeField, Min(0)] 
     public int        CointSpawnCount = 5;
 
+    [SerializeField, Min(0f)]
+    public float     FlowerDestroyDuration = .3f;
+
 
 
     //===============================================
@@ -45,8 +54,11 @@ public sealed class FlowerObject : MonoBehaviour
     //==============================================
     private Animator        _FlowerAnimator;
     private PullableObject  _PullableStem;
-    private LeafDesc[]      _upLeafs = new LeafDesc[4];
+
+    private const int       _upLeafMaxCount  = 4;
+    private int             _upLeafCount     = 0;
     private int             _lookAtBoneIndex = 0;
+    private LeafDesc[]      _upLeafs         = new LeafDesc[4];
 
 
 
@@ -56,21 +68,46 @@ public sealed class FlowerObject : MonoBehaviour
     private void Start()
     {
         #region Omit
-        _FlowerAnimator = GetComponent<Animator>();
-        if(_PullableStem = transform.Find("PullingVine_Rig").GetComponent<PullableObject>())
+        /************************************************************
+         *   해당 꽃이 가지는 PullableObject에 대한 초기화를 진행한다...
+         * ****/
+        if( PullableObj && (_PullableStem = PullableObj.GetComponent<PullableObject>()))
         {
+            _FlowerAnimator  = GetComponent<Animator>();
             _lookAtBoneIndex = Mathf.RoundToInt((_PullableStem.BoneCount-1)* LookTargetRatio);
+
+            /**PullableObject에 대리자를 등록한다....*/
+            _PullableStem.OnPullStart.AddListener(() => { 
+                _FlowerAnimator.Play("PullingStart"); 
+            });
+
+            _PullableStem.OnPullRelease.AddListener(() => {
+                _FlowerAnimator.Play("Idle"); 
+            });
+
+            _PullableStem.OnBreak.AddListener(() => { 
+                _FlowerAnimator.Play("PullingEnd"); 
+                FlowerFoldout();
+            });
         }
         
 
-        /**IK를 적용할 꽃 잎사귀들을 가져온다....*/
+        /*******************************************************************
+         *   PullableObject가 당겨지는 곳을 바라볼 잎사귀들의 참조를 가져온다...
+         * ****/
         Transform flowerTr = transform;
-        for(int i=0; i<=3; i++)
+        for(int i=0; i<_upLeafMaxCount; i++)
         {
-            ref LeafDesc desc = ref _upLeafs[i];
+            ref LeafDesc desc = ref _upLeafs[_upLeafCount];
+            
+            /**해당 이름의 잎사귀가 존재하지 않는다면 스킵한다...*/
+            if((desc.leafTr = flowerTr.Find($"CoinFlower_Up_Zero{i + 1}"))==null){
+                continue;
+            }
 
-            desc.leafTr     = flowerTr.Find($"CoinFlower_Up_Zero{i+1}");
+            /**해당 잎사귀의 최초 쿼터니언 값을 캐싱한다...*/
             desc.OriginQuat = desc.leafTr.rotation;
+            _upLeafCount++;
         }
         #endregion
     }
@@ -81,33 +118,30 @@ public sealed class FlowerObject : MonoBehaviour
         /***********************************************
          *    꽃이 당겨질 때의 IK를 적용한다.....
          * ****/
-        if (_PullableStem == null) return;
+        if (_PullableStem == null || _upLeafCount< _upLeafMaxCount) return;
 
         /**계산에 필요한 요소들을 구한다....*/
         Vector3   goalPos      = _PullableStem.GetBonePosition(_lookAtBoneIndex);
         Vector3   flowerPos    = transform.position;
         Vector3   pullingDir   = (goalPos - flowerPos).normalized;
-        Quaternion rotQuat     = IpariUtility.GetQuatBetweenVector(transform.forward, pullingDir, .83f);
+        Quaternion rotQuat     = IpariUtility.GetQuatBetweenVector(_upLeafs[0].leafTr.forward, pullingDir, LookRotationRatio);
    
-        _upLeafs[0].leafTr.rotation = (rotQuat * _upLeafs[0].OriginQuat);
-        _upLeafs[1].leafTr.rotation = (rotQuat * _upLeafs[1].OriginQuat);
-        _upLeafs[2].leafTr.rotation = (rotQuat * _upLeafs[2].OriginQuat);
-        _upLeafs[3].leafTr.rotation = (rotQuat * _upLeafs[3].OriginQuat);
-
+        _upLeafs[0].leafTr.rotation = (rotQuat * _upLeafs[0].leafTr.rotation);
+        _upLeafs[1].leafTr.rotation = (rotQuat * _upLeafs[1].leafTr.rotation);
+        _upLeafs[2].leafTr.rotation = (rotQuat * _upLeafs[2].leafTr.rotation);
+        _upLeafs[3].leafTr.rotation = (rotQuat * _upLeafs[3].leafTr.rotation);
         #endregion
     }
 
 
 
     //=====================================================
-    ///////             Public methods               //////
+    ///////              Core methods                //////
     //=====================================================
     public void FlowerFoldout()
     {
         #region Omit
-
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Flowers_Burst, transform.position, 2f);
-        _FlowerAnimator?.Play("PullingEnd");
 
         /********************************************
          *   꽃이 펼쳐졌을 때 다수의 코인을 생성한다....
@@ -121,7 +155,7 @@ public sealed class FlowerObject : MonoBehaviour
                 GameObject newCoin = GameObject.Instantiate(CoinPrefab);
 
                 Rigidbody coinBody = newCoin.AddComponent<Rigidbody>();
-                coinBody.velocity = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime);
+                coinBody.velocity  = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime);
 
                 ScoreObject coinScore = newCoin.GetComponent<ScoreObject>();
                 coinScore.SetTime(CoinFlightTime, 2f);
@@ -158,6 +192,32 @@ public sealed class FlowerObject : MonoBehaviour
         Vector3 vec = (getPoint * r) + transform.position;
 
         return new Vector3(vec.x, 0.1f, vec.z);
+        #endregion
+    }
+
+    public void DestroyFlower()
+    {
+        StartCoroutine(DestroyProgress());
+    }
+
+    private IEnumerator DestroyProgress()
+    {
+        #region Omit
+        float leftTime     = FlowerDestroyDuration;
+        float leftTimeDiv  = (1f/leftTime);
+        Vector3 startScale = transform.localScale;
+
+        _FlowerAnimator.enabled = false;
+
+        while((leftTime-=Time.deltaTime)>=0f)
+        {
+            float progressRatio = (leftTime * leftTimeDiv);
+            transform.localScale = (startScale*progressRatio);
+            yield return null;
+        }
+
+        Destroy(gameObject);
+
         #endregion
     }
 
