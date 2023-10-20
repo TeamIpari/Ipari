@@ -94,7 +94,6 @@ public class LarvaSpawner : MonoBehaviour
         }
         for(int i = 1; i <= SpawnEA; i++)
         {
-            Debug.Log($"AA{i}");
             for (int ver2 = polygon / i, LarvaCur = LarvaPrefabs.Length - 1; ver2 > (polygon / i)- LarvaPrefabs.Length/* - (polygon / i)*/; ver2--)
             {
                 //Debug.Log($"{ver2}");
