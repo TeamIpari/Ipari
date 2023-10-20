@@ -124,6 +124,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Debug.Log($"{collision.gameObject.layer}");
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemies"))
+        {
+            Debug.Log("AA");
+            ResetPoint();
+            return;
+        }
         bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
                        !collision.gameObject.CompareTag("Player");
         if (bTagHit)
@@ -148,6 +155,15 @@ public class ThrowObject : MonoBehaviour, IInteractable
         {
             _bounceDir = RandomDirection().normalized;
             _rigidbody.velocity += _bounceDir;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<Deathzone>() != null)
+        {
+            Debug.Log("BB");
+            ResetPoint();
         }
     }
 
@@ -322,8 +338,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
     public void ResetPoint()
     {
         // 위치 초기화
-        transform.position = spawnPoint;
+        transform.position = spawnPoint + Vector3.up * 5f;
         transform.rotation = Quaternion.identity;
+        _rigidbody.velocity = Vector3.zero;
+        PhysicsCheck = false;
+        flight = false;
     }
 
     private Vector3 RandomDirection()

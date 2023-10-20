@@ -258,6 +258,7 @@ public class EasyWallCollider : MonoBehaviour
     {
         GameObject go = new GameObject("EdgeCollider " + name)
         {
+            tag = "Wall",
             layer = gameObject.layer
         };
 
@@ -288,6 +289,7 @@ public class EasyWallCollider : MonoBehaviour
     {
         GameObject go = new GameObject("CornerCollider " + name);
         go.layer = gameObject.layer;
+        go.tag = "Wall";
 
         if (IsStatic)
             go.isStatic = true;
@@ -314,6 +316,7 @@ public class EasyWallCollider : MonoBehaviour
         {
             GameObject r = new GameObject("CornerCollider");
             r.layer = gameObject.layer;
+            r.tag = gameObject.tag;
             r.isStatic = gameObject.isStatic;
             r.transform.SetParent(ColliderContainer);
             r.AddComponent<MeshFilter>().sharedMesh = CylinderMesh;
