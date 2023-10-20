@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -188,10 +189,10 @@ public class IdleState : State
             for (int i = 0; i < hitCount; i++){
 
                 Vector3 hitPos     = _colliders[i].bounds.center;
-                Vector3 player2Hit = (hitPos - playerPos).normalized;
+                Vector3 player2Hit = (hitPos - playerPos-(playerTr.forward*-1f)).normalized;
 
                 float acos = Mathf.Abs(Mathf.Acos(Vector3.Dot(playerDir, player2Hit)));
-                if (acos <= _interactViewRadian)
+                if (acos <= _interactViewRadian && hitPos.y>=playerPos.y)
                 {
                     hitCollider = _colliders[i];
                     break;
@@ -214,13 +215,18 @@ public class IdleState : State
                 isChange = true;
             }
 
+            #region Null_Test
 #if UNITY_EDITOR
             if (_lastInteract.Interactable==null)
             {
                 Debug.LogWarning($"경고!!! ({_lastInteract.Collider.name})의 interactable이 null임!!!!!");
+                return false;
             }
 #endif
-            Vector3 popupPos = hitCollider.bounds.center + _lastInteract.Interactable.InteractPopupOffset;
+            #endregion
+
+            /**상호작용한 물체에 대한 UI를 표시한다....*/
+            Vector3 popupPos = (hitCollider.bounds.center + _lastInteract.Interactable.InteractPopupOffset);
             InterativeUI.PopupUI(
 
                 InterativeUI.ShowType.Visible,
@@ -233,6 +239,7 @@ public class IdleState : State
             /**상호작용 키를 입력했을 경우....*/
             if (interactAction.triggered)
             {
+                /**상호작용 UI를 비표시한다...*/
                 InterativeUI.PopupUI(
 
                     InterativeUI.ShowType.InVisible,
@@ -256,6 +263,7 @@ public class IdleState : State
          * *****/
         if(_lastInteract.Collider!=null)
         {
+            /**상호작용 UI를 종료시킨다...*/
             InterativeUI.PopupUI(
 
                 InterativeUI.ShowType.InVisible,
