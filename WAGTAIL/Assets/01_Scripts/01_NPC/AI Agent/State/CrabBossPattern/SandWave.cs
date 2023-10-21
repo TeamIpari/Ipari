@@ -13,7 +13,7 @@ using UnityEditor;
 [RequireComponent(typeof(SphereCollider))]
 public class SandWave : MonoBehaviour
 {
-#region Editor_Extension
+    #region Editor_Extension
 #if UNITY_EDITOR
     [CustomEditor(typeof(SandWave))]
     private class SandWaveEditor : Editor
@@ -147,7 +147,7 @@ public class SandWave : MonoBehaviour
     //========================================
     private void Awake()
     {
-#region Omit
+        #region Omit
         /**콜라이더를 초기화한다...*/
         if(_collider = GetComponent<SphereCollider>()){
 
@@ -189,12 +189,12 @@ public class SandWave : MonoBehaviour
 
             _radianDiv = (Mathf.PI * 2f) / Pricision;
         }
-#endregion
+        #endregion
     }
 
     private void Update()
     {
-#region Omit
+        #region Omit
         if (IsSpeading==false || _FXLists==null) return;
 
         /**모래파도가 시작되었을 때, 일정시간 대기한다...*/
@@ -280,12 +280,12 @@ public class SandWave : MonoBehaviour
             IsSpeading = false;
         }
 
-#endregion
+        #endregion
     }
 
     private void OnTriggerStay(Collider other)
     {
-#region Omit
+        #region Omit
         if (IsSpeading == false) return;
 
         Rigidbody body;
@@ -297,14 +297,15 @@ public class SandWave : MonoBehaviour
         /**충돌했는지 체크를 한다...*/
         if (SandTarget != null && SandTarget.PlayerOnSand == false) return;
         if (!(center2TargetLen> (compareLen*compareLen))) return;
-        if (progressRatio>=1f) return; 
+        if (progressRatio>=1f) return;
 
 
         /****************************************
          *   플레이어가 점프 상태이면 스킵한다...
          * ***/
-        if (other.CompareTag("Player")){
-
+        bool playerOnSand = (SandTarget != null ? SandTarget.PlayerOnSand : true);
+        if (other.CompareTag("Player") && playerOnSand)
+        {
             if (Player.Instance.movementSM.currentState == Player.Instance.jump) return;
 
             Player.Instance.isDead = true;
@@ -323,7 +324,7 @@ public class SandWave : MonoBehaviour
             body.velocity = pow;
         }
 
-#endregion
+        #endregion
     }
 
 
@@ -333,7 +334,7 @@ public class SandWave : MonoBehaviour
     //==========================================
     public void StartWave()
     {
-#region Omit
+        #region Omit
         /**************************************
          *   모래파도를 일으킨다....
          * ****/
@@ -360,7 +361,7 @@ public class SandWave : MonoBehaviour
 
     private bool CheckHitWave( Vector3 worldPos )
     {
-#region Omit
+        #region Omit
 
         /**************************************************
          *   주어진 worldPos가 판정안으로 들어왔는지 검사한다.
@@ -376,7 +377,7 @@ public class SandWave : MonoBehaviour
 
     private void InitSandFXPosition()
     {
-#region Omit
+        #region Omit
         if (_FXLists == null) return;
 
         int Count = _FXLists.Length;

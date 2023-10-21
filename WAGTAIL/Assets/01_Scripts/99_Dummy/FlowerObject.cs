@@ -101,9 +101,8 @@ public sealed class FlowerObject : MonoBehaviour
             ref LeafDesc desc = ref _upLeafs[_upLeafCount];
             
             /**해당 이름의 잎사귀가 존재하지 않는다면 스킵한다...*/
-            if((desc.leafTr = flowerTr.Find($"CoinFlower_Up_Zero{i + 1}"))==null){
+            if((desc.leafTr = flowerTr.Find($"CoinFlower_Up_Zero{i + 1}"))==null)
                 continue;
-            }
 
             /**해당 잎사귀의 최초 쿼터니언 값을 캐싱한다...*/
             desc.OriginQuat = desc.leafTr.rotation;
@@ -209,6 +208,7 @@ public sealed class FlowerObject : MonoBehaviour
 
         _FlowerAnimator.enabled = false;
 
+        /**꽃이 점점 작아지다가 파괴된다....*/
         while((leftTime-=Time.deltaTime)>=0f)
         {
             float progressRatio = (leftTime * leftTimeDiv);

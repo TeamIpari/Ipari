@@ -13,7 +13,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
     /////          Property             /////
     //=======================================
     public string EnviromentPrompt  { get; set; } = string.Empty;
-    public bool   PlayerOnSand      { get; private set; } = false;
+    public bool   PlayerOnSand      { get { return _PlayerOnSand; } private set { _PlayerOnSand = value; } }
     public bool   PlayerIsDead      { get; private set; } = false;
     public bool   IsHit             { get; set; } = false;
     public bool   IsIntake          { get; private set; } = false;
@@ -27,6 +27,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         }
     }
 
+    [SerializeField] private bool   _PlayerOnSand = false;
     [SerializeField] public bool    IntakeOnAwake = false;
     [SerializeField] public float   IntakePower = 6f;
     [SerializeField] public Vector3 SandIdleCenterOffset   = Vector3.zero;
@@ -150,14 +151,21 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
          *   플레이어가 모래를 밟고 있는 동안의 처리를 한다.
          * ***/
         RaycastHit hit;
-        if (!(_currPullSpeed > 0f && IpariUtility.GetPlayerFloorinfo(out hit, 1<<gameObject.layer))) return;
+        if (!(IpariUtility.GetPlayerFloorinfo(out hit, 1<<gameObject.layer)))
+        {
+            PlayerOnSand = false;
+            return;
+        }
 
         bool isGround       = (hit.normal.y > 0);
         bool isSameCollider = (hit.collider.gameObject.Equals(gameObject));
 
-        /**땅을 밟고 있다면, 침식량에 따라 플레이어를 끌어당긴다...*/
+        /**땅을 밟고 있는 동안의 처리...*/
         if (isGround && isSameCollider)
         {
+            if (_currPullSpeed <= 0f) return;
+
+            /**모래가 가라앉는 동안의 처리...*/
             Vector3 playerPos       = player.transform.position;
             Vector3 centerPos       = GetWorldCenterPosition(_currCenterOffset);
             Vector3 target2Center   = (centerPos - playerPos).normalized;
@@ -165,26 +173,23 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
             Vector3 forward         = -Vector3.Cross(right, hit.normal);
 
             float pullPow = (IntakePower * _currPullSpeed);
-            Debug.DrawLine(playerPos, playerPos + forward * 3f, Color.blue);
             player.controller.Move((forward * pullPow * deltaTime));
 
-            float target2CenterLen = (centerPos - playerPos).magnitude;
 
             /**플레이어가 모래 가운데로 들어왔다면 죽음판정...*/
-            if (!player.isDead && target2CenterLen < 1f){
-
+            float target2CenterLen = (centerPos - playerPos).magnitude;
+            if (!player.isDead && target2CenterLen < 1f)
+            {
                 player.controller.enabled = true;
                 PlayerIsDead = true;
                 player.isDead = true;
             }
+            return;
         }
 
         /**플레이어가 땅을 밟지 않았을 경우의 처리...*/
-        else{
-
-            PlayerOnSand = false;
-            PlayerIsDead = false;
-        }
+        PlayerOnSand = false;
+        PlayerIsDead = false;
 
         #endregion
     }
