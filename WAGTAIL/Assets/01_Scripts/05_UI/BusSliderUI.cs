@@ -12,9 +12,11 @@ public sealed class BusSliderUI : MonoBehaviour
     //======================================
     /////      property and Felds       ////
     //======================================
-    [SerializeField] FModBusType busType;
+    [SerializeField] 
+    public FModBusType busType;
 
     private UnityEngine.UI.Slider _slider;
+
 
 
     //===========================================
@@ -36,6 +38,13 @@ public sealed class BusSliderUI : MonoBehaviour
     private void ValueChanged()
     {
         /**슬라이더의 값이 바뀌면 FMod Bus의 볼륨을 바꾼다...*/
+        FModAudioManager.SetBusVolume(busType, _slider.value);
+    }
+
+    public void AddVolume(float volume)
+    {
+        /**슬라이더의 값을 volume값만큼 더한다...*/
+        _slider.value = Mathf.Clamp01(_slider.value+volume);
         FModAudioManager.SetBusVolume(busType, _slider.value);
     }
 }

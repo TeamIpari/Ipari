@@ -2,6 +2,8 @@ using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 /***************************************************
  *  플레이어가 무언가를 당기는 상태가 구현된 클래스입니다.
@@ -38,6 +40,8 @@ public sealed class PullInOutState : State
     private Transform      _LForearm, _RForearm;
     private Transform      _LHand, _RHand;
     private float          _arm2ForearmLen, _forearm2HandLen;
+
+    private bool _padIsVibration = false;
 
 
 
@@ -201,43 +205,68 @@ public sealed class PullInOutState : State
         /*******************************************************
          *   해당 PullableObject를 잡고, 끊어질 때까지 당긴다.....
          * ***/
-        _applyIK = true;
-
-        float fullLen     = PulledTarget.MaxLength;
-        float fullLenDiv  = (1f/fullLen);
-        float limitLenDiv = (1f / PulledTarget.MaxScale);
-        bool isMove       = false;
-
-        /**대상을 잡는다...*/
         PulledTarget.HoldingPoint = _GrabPos;
-        while(PulledTarget.IsBroken==false)
+
+        float fullLen       = PulledTarget.MaxLength;
+        float fullLenDiv    = (1f / fullLen);
+        float limitLenDiv   = (1f / PulledTarget.MaxScale);
+        bool isMove         = false;
+        _applyIK            = true;
+
+        while (PulledTarget.IsBroken==false)
         {
             /******************************************
              *   당기는 동작에 필요한 계산들을 모두 구한다...
              * ***/
             Vector3 playerDir    = playerTr.forward;
             Vector3 lookDir      = (rootPoint - playerTr.position).normalized;
-            Vector3 moveDir      = new Vector3(input.x, 0f, input.y);
+            Vector3 moveDir      = new Vector3(input.x, 0f, input.y).normalized;
             bool isPulling       = Vector3.Dot(moveDir, lookDir) <= 0;
             float normalizedLen  = PulledTarget.NormalizedLength;
             float nearLimitRatio = (normalizedLen * limitLenDiv);
             float deltaTime      = Time.deltaTime * 2f;
             float speed          = fullLen;
 
-            /**당겨질 때에만 저항력을 적용한다....*/
-            if (isPulling && normalizedLen>=.95f){
 
+            /**********************************************
+             *    키입력을 통해 당기고 있다면, 저항력에 따른 
+             *    속도감소 및 패드진동을 적용한다...
+             * *****/
+            if (isPulling && moveDir.sqrMagnitude>0f && normalizedLen >= .95f)
+            {
                 speed -= (fullLen * Mathf.Clamp(nearLimitRatio, 0f, .9f));
+
+                /**게임패드를 진동시킨다...*/
+                if(!_padIsVibration && normalizedLen>=1f){
+
+                    _padIsVibration = true;
+                    Gamepad.current?.SetMotorSpeeds(0.0123f, 0.0134f);
+                }
+            }
+
+            /**진동을 마무리 짓는다...*/
+            else if (_padIsVibration){
+
+                _padIsVibration = false;
+                Gamepad.current?.SetMotorSpeeds(0f, 0f);
             }
             speed = Mathf.Clamp(speed, 0f, 4.1f);
 
-            /**바라볼 방향을 향하는 쿼터니언을 구한다...*/
+
+            /****************************************************
+             *   플레이어가 바라볼 방향을 향하는 쿼터니언을 구한다...
+             * ***/
             lookDir.y = 0f;
             Quaternion rotQuat  = IpariUtility.GetQuatBetweenVector(playerDir, lookDir);
 
-            /**상호작용키를 입력시 손을 놓는다...*/
-            if(Input.GetKeyDown(KeyCode.F))
+            
+
+            /**********************************************
+             *   상호작용키가 입력되면 당기기를 그만둔다...
+             * ****/
+            if(interactAction.triggered)
             {
+                GamePadShake(.1f, .1f, .1f);
                 _applyIK = false;
                 animator.SetFloat("speed", 0f);
 
@@ -248,15 +277,14 @@ public sealed class PullInOutState : State
                 yield break;
             }
 
-            /**최종 적용...*/
+            
+            /*********************************************
+             *   계산한 이동량 및 애니메이션을 최종적용한다...
+             * ***/
             playerCon.SimpleMove(moveDir * speed * 2f);
             playerTr.rotation = (rotQuat * playerTr.rotation);
 
-
-            /**이동에 따른 애니메이션 적용...*/
             SetMoveAnim(ref isMove, input.sqrMagnitude);
-
-            /**이동속도*/
             animator.SetFloat("speed", speed * fullLenDiv);
 
             yield return null;
@@ -266,6 +294,8 @@ public sealed class PullInOutState : State
         /**********************************************
          *   줄이 끊어지고 플레이어가 넘어진다.....
          * ****/
+        GamePadShake(1f, 1f, .1f);
+
         _applyIK = false;
         animator.SetFloat("speed", 0f);
         animator.Play(PullAnimation.PUT);
@@ -275,6 +305,31 @@ public sealed class PullInOutState : State
 
         player.isPull = false;
         player.movementSM.ChangeState(player.idle);
+        #endregion
+    }
+
+    private void GamePadShake(float leftMoter, float rightMoter, float time)
+    {
+        #region Omit
+        Gamepad current;
+        if((current= Gamepad.current)!=null)
+        {
+            current.SetMotorSpeeds(leftMoter, rightMoter);
+            player.StartCoroutine(GamePadShakeProgress(leftMoter, rightMoter, time));
+        }
+        #endregion
+    }
+
+    private IEnumerator GamePadShakeProgress(float leftMoter, float rightMoter, float time)
+    {
+        #region Omit
+
+        while((time-=Time.deltaTime)>0f)
+        {
+            yield return null;
+        }
+
+        Gamepad.current.SetMotorSpeeds(0f, 0f);
         #endregion
     }
 

@@ -36,6 +36,7 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
         private SerializedProperty EnterProperty;
         private SerializedProperty ExitProperty;
         private SerializedProperty TagListProperty;
+        private SerializedProperty ColorProperty;
 
         private bool             _foldout = true;
         private static GUIStyle  _boldStyle;
@@ -54,6 +55,8 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
             /*********************************
              *  모든 Property들을 표시한다....
              * ***/
+            GUI_ShowColor();
+
             GUI_ShowTagList();
 
             GUI_DrawLine(10f);
@@ -91,6 +94,11 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
             if(TagListProperty==null){
 
                 TagListProperty = serializedObject.FindProperty("_InspectorAddTags");
+            }
+
+            if(ColorProperty==null){
+
+                ColorProperty = serializedObject.FindProperty("GizmosColor");
             }
 
             /**모든 Style들을 초기화한다...*/
@@ -191,6 +199,15 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
             #endregion
         }
 
+        private void GUI_ShowColor()
+        {
+            #region Omit
+            if (ColorProperty == null) return;
+
+            ColorProperty.colorValue = EditorGUILayout.ColorField("Trigger Color", ColorProperty.colorValue);
+            #endregion
+        }
+
         private void GUI_DrawLine(float space = 0f, float subOffset = 0f)
         {
             #region Omit
@@ -214,6 +231,10 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
     [SerializeField] public UnityEventTrigger OnTriggerEnterEvent;
     [SerializeField] public UnityEventTrigger OnTriggerExitEvent;
 
+#if UNITY_EDITOR
+    [SerializeField] private Color GizmosColor = Color.red;
+#endif
+
 
 
     //==========================================
@@ -221,7 +242,6 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
     //==========================================
 #if UNITY_EDITOR
     private Collider     _collider;
-    private static Color _color = new Color(1f, 0f, 0f, .2f);
 #endif
     /**Trigger Tag 관련...*/
     [SerializeField] private string[] _InspectorAddTags;
@@ -291,8 +311,10 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
         {
             Bounds bounds = _collider.bounds;
             Vector3 pos   = transform.position;
+            Color   color = GizmosColor;
+            color.a = .5f;
 
-            Gizmos.color = _color;
+            Gizmos.color = color;
             Gizmos.DrawCube(bounds.center, bounds.size);
 
             Gizmos.color = Color.black;
