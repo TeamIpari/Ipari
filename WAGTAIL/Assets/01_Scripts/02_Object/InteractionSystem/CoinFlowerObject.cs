@@ -129,7 +129,7 @@ public sealed class CoinFlowerObject : MonoBehaviour
                 newCoin.MagnetMoveDelayTime = 1.3f;
 
                 Vector3 flyPow = Random.onUnitSphere;
-                flyPow.y = Random.Range(2f, 3f);
+                flyPow.y       = Random.Range(2f, 3f);
                 newCoin.Body.velocity = (flyPow * CoinExplodePower);
 
                 /**코인의 위치지정...*/
