@@ -151,13 +151,13 @@ public sealed class FlowerObject : MonoBehaviour
             for (int i = 0; i < CointSpawnCount; i++)
             {
                 /**货肺款 内牢阑 积己茄促.....*/
-                GameObject newCoin = GameObject.Instantiate(CoinPrefab);
+                ScoreObject newCoin = GameObject.Instantiate(CoinPrefab).GetComponent<ScoreObject>();
+                newCoin.SetTime(CoinFlightTime, 2f);
+                newCoin.UseMagnetMovement = true;
+                newCoin.ItemGetType       = ScoreObject.GetKind.None;
 
-                Rigidbody coinBody = newCoin.AddComponent<Rigidbody>();
-                coinBody.velocity  = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime);
-
-                ScoreObject coinScore = newCoin.GetComponent<ScoreObject>();
-                coinScore.SetTime(CoinFlightTime, 2f);
+                newCoin.UseRigidbody(true,true);
+                newCoin.Body.velocity = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime);
 
                 Transform coinTr = newCoin.transform;
                 Vector3 coinPos = flowerPos;

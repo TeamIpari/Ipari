@@ -13,19 +13,21 @@ public sealed class CoinFlowerObject : MonoBehaviour
     //================================================
     ////                 Property                 ////
     //================================================
-    public int   CointSpawnCount { get { return _CointSpawnCount; } set { _CointSpawnCount = (value<0?0:value); } }
+    public int   CoinSpawnCount  { get { return _CoinSpawnCount; } set { _CoinSpawnCount = (value<0?0:value); } }
     public float CoinFlightTime  { get { return _CoinFlightTime; } set { _CoinFlightTime = (value < 0f ? 0f : value); } }
     public float CoinSpawnRadian { get { return _CoinSpawnRadian; } set { _CoinSpawnRadian = (value < 0f ? 0f : value); } }
+    public float CoinExplodePower{ get { return _CoinExpldePower; } set { _CoinExpldePower = (value < 0f ? 0f : value); } }
     public bool  IsExplosion     { get; private set; } = false;
 
     [SerializeField] public  GameObject  CoinPrefab;
     [SerializeField] public  GameObject  ExplodeSFX;
-    [SerializeField] public  bool        ExplodeCollision   = false;
+    [SerializeField] public bool         ExplodeCollision   = true;
     [SerializeField] public  bool        UseCoinMagnet      = false;
-    [SerializeField] public string       FlowerExplodeAnim  = string.Empty;
+    [SerializeField] public  string      FlowerExplodeAnim  = string.Empty;
     [SerializeField] private float       _CoinFlightTime    = 2f;
     [SerializeField] private float       _CoinSpawnRadian   = 1f;
-    [SerializeField] private int         _CointSpawnCount   = 3;
+    [SerializeField] private float       _CoinExpldePower = 1f;
+    [SerializeField] private int         _CoinSpawnCount   = 3;
 
 
     
@@ -34,6 +36,7 @@ public sealed class CoinFlowerObject : MonoBehaviour
     //===============================================
     private ThrowObject _throwObj;
     private Animator    _animator;
+    private bool        _pickUp = false;
 
 
 
@@ -45,6 +48,7 @@ public sealed class CoinFlowerObject : MonoBehaviour
         #region Omit
         _animator = GetComponent<Animator>();
         _throwObj = GetComponent<ThrowObject>();
+        _throwObj.OnThrow.AddListener(() => { _pickUp = true; });
         #endregion
     }
 
@@ -52,11 +56,11 @@ public sealed class CoinFlowerObject : MonoBehaviour
     {
         #region Omit
         /**플레이어 이외의 콜라이더와 충돌했을 경우....*/
-        if (!IsExplosion && !other.gameObject.CompareTag("Player"))
+        if (_pickUp && !IsExplosion && !other.gameObject.CompareTag("Player"))
         {
             if (ExplodeCollision) ExplostionFlower();
 
-            _animator?.Play("");
+            if(_animator!=null) _animator.Play("");
             IsExplosion = true;
         }
         #endregion
@@ -81,6 +85,19 @@ public sealed class CoinFlowerObject : MonoBehaviour
         #endregion
     }
 
+    private void IgnoreOtherCoins(ScoreObject target, params ScoreObject[] others)
+    {
+        #region Omit
+        int Count = others.Length;
+        for(int i=0; i<Count; i++ )
+        {
+            if (others[i] == target) continue;
+            Physics.IgnoreCollision(target.Collider, others[i].Collider);
+        }
+
+        #endregion
+    }
+
     public void ExplostionFlower()
     {
         #region Omit
@@ -97,27 +114,38 @@ public sealed class CoinFlowerObject : MonoBehaviour
          * ***/
         if (CoinPrefab != null){
 
-            Vector3 flowerPos = transform.position;
-            for (int i = 0; i < CointSpawnCount; i++)
+            Vector3       flowerPos = transform.position;
+            ScoreObject[] coins     = new ScoreObject[_CoinSpawnCount];    
+
+            for (int i = 0; i < CoinSpawnCount; i++)
             {
-                /**새로운 코인을 생성한다.....*/
-                GameObject newCoin = GameObject.Instantiate(CoinPrefab);
+                /**새로운 코인을 생성후, 자석효과와 튀어오르는 가속도를 준다...*/
+                ScoreObject newCoin   = GameObject.Instantiate(CoinPrefab).GetComponent<ScoreObject>();
+                Transform   coinTr    = newCoin.transform;
 
-                Rigidbody coinBody = newCoin.AddComponent<Rigidbody>();
-                coinBody.velocity  = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime);
+                newCoin.UseRigidbody(false,true);
+                newCoin.ItemGetType         = ScoreObject.GetKind.RaiseUp;
+                newCoin.UseMagnetMovement   = UseCoinMagnet;
+                newCoin.MagnetMoveDelayTime = 1.3f;
 
-                /**코인에 자석 기능을 여부에 따라 적용한다...*/
-                if(UseCoinMagnet){
+                Vector3 flyPow = Random.onUnitSphere;
+                flyPow.y = Random.Range(2f, 3f);
+                newCoin.Body.velocity = (flyPow * CoinExplodePower);
 
-                    ScoreObject coinScore = newCoin.GetComponent<ScoreObject>();
-                    coinScore.SetTime(CoinFlightTime, 2f);
-                }
-
-                Transform coinTr    = newCoin.transform;
+                /**코인의 위치지정...*/
                 Vector3 coinPos     = flowerPos;
                 Quaternion coinQuat = Quaternion.Euler(90f, 0f, 0f);
                 coinTr.SetPositionAndRotation(coinPos, coinQuat);
+
+                coins[i] = newCoin;
             }
+
+            /**각각 충돌을 무시하도록 한다...*/
+            for(int i=0; i<CoinSpawnCount; i++){
+
+                IgnoreOtherCoins(coins[i], coins);
+            }
+
         }
 
 
