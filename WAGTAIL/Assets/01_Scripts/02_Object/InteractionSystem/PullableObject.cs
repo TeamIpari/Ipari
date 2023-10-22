@@ -604,7 +604,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     //=========================================
     /////            Property             /////
     //=========================================
-    public string       InteractionPrompt { get; set; } = "당긴다";
+    public string       InteractionPrompt   { get; set; } = "당긴다";
     public Vector3      InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
     public float        MaxLength
     {
@@ -659,9 +659,9 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             return (HoldingPoint.transform.position - _datas[0].Tr.position).magnitude;
         }
     }
-    public bool         IsBroken { get; private set; } = false;
-    public bool         IsDestroy { get; private set; } = false;
-    public int          BoneCount { get { return _dataCount; } }
+    public bool         IsBroken            { get; private set; } = false;
+    public bool         IsDestroy           { get; private set; } = false;
+    public int          BoneCount           { get { return _dataCount; } }
     public Vector3      StartPosition
     {
         get

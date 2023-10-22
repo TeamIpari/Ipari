@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class SaySpeaker : MonoBehaviour/*, IInteractable*/
+public class SaySpeaker : MonoBehaviour, IInteractable
 {
     [SerializeField] private bool IsSaying = false;
     // 말을 하였는가? 하지 않았을 경우 !를 띄워줌.
@@ -19,6 +19,8 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
     public CutScene CutScenePlayer;         // 있으면 재생.
     public Dialogue Dialogue;
 
+    public string  InteractionPrompt   { get; set; } = "대화한다";
+    public Vector3 InteractPopupOffset { get; set; } = (Vector3.up * 1.5f);
 
     private void Start()
     {
@@ -104,12 +106,17 @@ public class SaySpeaker : MonoBehaviour/*, IInteractable*/
         }
     }
 
-    public bool Interact(Interactor interactor)
+    public bool Interact(GameObject interactor)
     {
+        if (!interactor.CompareTag("Player")) return false;
 
-
-        return false;
+        PlaySay();
+        Destroy(this);
+        return true;
     }
 
-
+    bool IInteractable.AnimEvent()
+    {
+        return false;
+    }
 }

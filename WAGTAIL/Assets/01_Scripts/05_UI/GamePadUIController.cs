@@ -29,8 +29,8 @@ public sealed class GamePadUIController : MonoBehaviour
 
     public enum GamePadInputType
     {
-        Interaction,
-        Jump
+        OK,
+        Cancel
     }
     #endregion
 
@@ -88,6 +88,9 @@ public sealed class GamePadUIController : MonoBehaviour
         {
             serializedObject.Update();
 
+            /************************************
+             *   모든 프로퍼티들을 표시한다....
+             * ***/
             GUI_Initialized();
 
             GUI_ShowStartSelectAndUseMoveLock();
@@ -311,8 +314,8 @@ public sealed class GamePadUIController : MonoBehaviour
         {
             #region Omit
             if (UsedEventLayerProperty == null || toggleOptions == null) return;
-            int layer = (1 << eventIndex);
-            bool eventIsUsed = (UsedEventLayerProperty.intValue & layer) != 0;
+            int layer           = (1 << eventIndex);
+            bool eventIsUsed    = (UsedEventLayerProperty.intValue & layer) != 0;
             Color returnBgColor = GUI.backgroundColor;
 
             /****************************************************
@@ -377,7 +380,8 @@ public sealed class GamePadUIController : MonoBehaviour
         {
             #region Omit
             if (UsedEventLayerProperty == null || eventProperty == null) return;
-            int layer = (1 << eventIndex);
+
+            int layer        = (1 << eventIndex);
             bool eventIsUsed = (UsedEventLayerProperty.intValue & layer) != 0;
 
             if (eventIsUsed) EditorGUILayout.PropertyField(eventProperty);
@@ -449,11 +453,9 @@ public sealed class GamePadUIController : MonoBehaviour
     private void OnDestroy()
     {
         #region Omit
-        UIManager manager = UIManager.GetInstance();
-        if (manager != null && Current == this)
+        if (Current == this)
         {
             Current = null;
-            manager.StopCoroutine(UICoroutine);
             UICoroutine = null;
         }
         #endregion
@@ -558,31 +560,31 @@ public sealed class GamePadUIController : MonoBehaviour
     private bool ButtonIsDown(Gamepad currPad, GamePadInputType type)
     {
         #region Omit
-        string padName = currPad.name;
+        string padName = currPad.displayName;
 
         /**Xbox Controller의 경우...*/
-        if(padName.ToLower().Contains("xbox"))
+        if(padName.Contains("Xbox", System.StringComparison.OrdinalIgnoreCase))
         {
-           if(type==GamePadInputType.Interaction) return (currPad.xButton.value!=0f);
-           else return (currPad.aButton.value!=0f);
+           if(type==GamePadInputType.OK) return (currPad.aButton.value!=0f);
+           else return (currPad.bButton.value!=0f);
         }
 
         /**듀얼쇼크의 경우...*/
-        if (padName.ToLower().Contains("playstation"))
+        if (padName.Contains("Playstation", System.StringComparison.OrdinalIgnoreCase))
         {
-            if (type == GamePadInputType.Interaction) return (currPad.squareButton.value!= 0f);
+            if (type == GamePadInputType.OK) return (currPad.circleButton.value!= 0f);
             else return (currPad.crossButton.value != 0f);
         }
 
         /**닌텐도 Controller의 경우...*/
-        if (padName.ToLower().Contains("Nintendo"))
+        if (padName.Contains("Nintendo", System.StringComparison.OrdinalIgnoreCase))
         {
-            if (type == GamePadInputType.Interaction) return (currPad.yButton.value != 0f);
-            else return (currPad.aButton.value != 0f);
+            if (type == GamePadInputType.OK) return (currPad.aButton.value != 0f);
+            else return (currPad.bButton.value != 0f);
         }
 
-        if (type == GamePadInputType.Interaction) return (currPad.bButton.value != 0f);
-        else return (currPad.aButton.value != 0f);
+        if (type == GamePadInputType.OK) return (currPad.aButton.value != 0f);
+        else return (currPad.bButton.value != 0f);
         #endregion
     }
 
@@ -623,7 +625,7 @@ public sealed class GamePadUIController : MonoBehaviour
             /****************************************************
              *   확인 버튼을 눌렀을 때의 처리를 한다....
              * ****/
-            bool pressOkBtn = ButtonIsDown(currPad, GamePadInputType.Jump);
+            bool pressOkBtn = ButtonIsDown(currPad, GamePadInputType.OK);
             if(Current != null && pressOkBtn && lastOk==false){
 
                 bool lastMoveLock = Current.UseMoveLock;
@@ -651,7 +653,7 @@ public sealed class GamePadUIController : MonoBehaviour
             /****************************************************
              *    취소 버튼을 눌렀을 때의 처리를 한다....
              * ****/
-            bool pressCancelBtn = ButtonIsDown(currPad, GamePadInputType.Interaction);
+            bool pressCancelBtn = ButtonIsDown(currPad, GamePadInputType.Cancel);
             if (Current != null && pressCancelBtn && lastCancel==false){
 
                 bool lastMoveLock = Current.UseMoveLock;

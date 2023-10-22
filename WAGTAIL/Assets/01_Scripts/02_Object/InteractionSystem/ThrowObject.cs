@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using IPariUtility;
 using UnityEngine.Serialization;
+using UnityEngine.Events;
 
 //=================================================
 // 플레이어가 들고 던질 수 있는 오브젝트의 기반이 되는 클래스.
@@ -11,6 +12,13 @@ using UnityEngine.Serialization;
 [AddComponentMenu("InteractionSystem/ThrowObject")]
 public class ThrowObject : MonoBehaviour, IInteractable
 {
+    #region Define
+    [System.Serializable]
+    public sealed class ThrowObjectEvent : UnityEvent
+    { 
+    }
+    #endregion
+
     //==========================================================
     //                  Properties And Fields                 //
     //==========================================================
@@ -78,6 +86,9 @@ public class ThrowObject : MonoBehaviour, IInteractable
             return PhysicsCheck;
         }
     }
+
+    [SerializeField] public ThrowObjectEvent OnPickUp;
+    [SerializeField] public ThrowObjectEvent OnThrow;
 
 
     //=================================================================
@@ -255,6 +266,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             yield return new WaitForSecondsRealtime(0.017f);
         }
         _transform.SetParent(_playerHead.transform);
+        OnPickUp?.Invoke();
         #endregion
     }
 
@@ -310,6 +322,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
         if (_animator == null)
             flight = true;
 
+        OnThrow?.Invoke();
         yield return new WaitForSecondsRealtime(0.3f);
         _collider.isTrigger = false;
         isReady = true;

@@ -46,6 +46,7 @@ public sealed class UIPointerEmulator : MonoBehaviour
 
         #endregion
     }
+    
 
 
     //============================================
@@ -59,7 +60,7 @@ public sealed class UIPointerEmulator : MonoBehaviour
     {
         #region Omit
         if (DropDown == null) return;
-        _index = 1;
+        _index = (DropDown.value+1);
         DropDown.Show();
         #endregion
     }

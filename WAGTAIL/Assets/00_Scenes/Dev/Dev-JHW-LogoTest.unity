@@ -22028,7 +22028,7 @@ MonoBehaviour:
   OnCancelLock:
     m_PersistentCalls:
       m_Calls: []
-  StartSelect: 1
+  StartSelect: 0
   UseMoveLock: 0
   UsedEventLayer: 7
 --- !u!1 &8110014536718057860
@@ -23036,6 +23036,7 @@ GameObject:
   - component: {fileID: 8110014537885793810}
   - component: {fileID: 8110014537885793812}
   - component: {fileID: 8110014537885793811}
+  - component: {fileID: 8110014537885793813}
   m_Layer: 5
   m_Name: Img_Title
   m_TagString: Untagged
@@ -23101,6 +23102,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8110014537885793809}
   m_CullTransparentMesh: 1
+--- !u!114 &8110014537885793813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8110014537885793809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e637f0ecf6c63f1499a268d427f41903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpTarget: {fileID: 8110014536530770301}
+  DownTarget: {fileID: 8110014536530770301}
+  LeftTarget: {fileID: 8110014536530770301}
+  RightTarget: {fileID: 8110014536530770301}
+  CancelTarget: {fileID: 0}
+  SelectTarget: {fileID: 0}
+  OnSelect:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDisSelect:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPressd:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCancel:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRight:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPressdLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeftLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRightLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUpLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDownLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCancelLock:
+    m_PersistentCalls:
+      m_Calls: []
+  StartSelect: 1
+  UseMoveLock: 0
+  UsedEventLayer: 0
 --- !u!1 &8110014537923810576
 GameObject:
   m_ObjectHideFlags: 0
