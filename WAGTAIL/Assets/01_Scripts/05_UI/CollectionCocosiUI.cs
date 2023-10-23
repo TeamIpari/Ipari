@@ -47,7 +47,11 @@ public class CollectionCocosiUI : MonoBehaviour
 
     public void SetCanvas(int index, bool isOn)
     {
-        canvas[index].SetActive(isOn);
+        for (int i = 0; i < 3; i++)
+        {
+            if(i == index) canvas[index].SetActive(isOn);
+            else canvas[i].SetActive(false);
+        }
     }
     
 }

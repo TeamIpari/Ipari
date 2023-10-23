@@ -47,7 +47,8 @@ public class BossRoomFieldManager :MonoBehaviour
     public GameObject ReActionObject;
     
     private GameObject[] reActionPools;
-    [SerializeField] private Deathzone deathZone; 
+    [SerializeField] private GameObject deathZone; 
+    [SerializeField] private GameObject potal; 
     public float spawnDelay;
     public int Count;
     private bool reAction = false;
@@ -217,9 +218,7 @@ public class BossRoomFieldManager :MonoBehaviour
         }
         CameraShake(EndShakePower, EndShakeTime);
 
-        deathZone.enabled = false;
-        Potal pt = deathZone.GetComponent<Potal>();
-        pt.enabled = true;
-        pt.nextChapterName = nextScene;
+        deathZone.SetActive(false);
+        potal.SetActive(true);
     }
 }

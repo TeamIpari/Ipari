@@ -107,6 +107,11 @@ public class SceneLoader : Singleton<SceneLoader>
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
             }
 
+            if (_loadSceneName == "Chapter04_mini2")
+            {
+                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+            }
+
             if (_loadSceneName == "EndCredits")
             {
                 GameManager.GetInstance().Test();
