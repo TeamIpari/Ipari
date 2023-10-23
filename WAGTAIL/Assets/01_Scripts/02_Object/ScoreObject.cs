@@ -2,13 +2,319 @@ using System;
 using UnityEngine;
 using IPariUtility;
 using UnityEngine.Serialization;
+using UnityEngine.Rendering.PostProcessing;
+using UnityEditor.Rendering;
+
+#if UNITY_EDITOR
+using UnityEditor;
 using UnityEditor.SceneManagement;
+#endif
+
+#region Define
+[System.Serializable]
+public struct CocosiCollection
+{
+    //===========================================
+    //////            Property            ///////
+    //===========================================
+    public int  Data            { get { return _value; } }
+    public int  CompleteData    { get { return GetCompleteCollection(_chapterCount, _chapterCocosiNum); } }
+    public bool IsCompleted     { get { return (_value==GetCompleteCollection(_chapterCount, _chapterCocosiNum)); } }
+
+
+
+    //===========================================
+    ///////             Fields              /////
+    //===========================================
+    private int _value;
+    private int _chapterCocosiNum;
+    private int _chapterCount;
+
+    
+
+    //=============================================
+    /////           Public methods            /////
+    //=============================================
+    public CocosiCollection(int chapterCount,int cocosiCount)
+    {
+        #region Omit
+        _value            = 0;
+        _chapterCount     = chapterCount;
+        _chapterCocosiNum = cocosiCount;
+        #endregion
+    }
+
+    private int GetCompleteCollection(int chapterCount, int cocosiCount)
+    {
+        #region Omit
+        int maxValue      = (sizeof(int)*8);
+        int completeCount = System.Math.Clamp((chapterCount * cocosiCount), 0, maxValue);
+
+        return (1 << completeCount)-1;
+        #endregion
+    }
+
+    public void ClearCollection()
+    {
+        _value = 0;
+    }
+
+    public void SetCocosiCollect(int chapter, int index, bool isCollect)
+    {
+        #region Omit
+        if (chapter < 1 || chapter > _chapterCount || index < 1 || index > _chapterCocosiNum)
+            return;
+
+        int flagNum = (chapter-1)*_chapterCocosiNum + (index-1);
+
+        if(isCollect) _value |= (1 << flagNum);
+        else _value &= ~(1 << flagNum);
+
+        #endregion
+    }
+
+    public bool GetCocosiCollect(int chapter, int index)
+    {
+        #region Omit
+        if (chapter < 1 || chapter > _chapterCount || index < 1 || index > _chapterCocosiNum)
+            return false;
+
+        int flagNum = (chapter - 1) * _chapterCocosiNum + index;
+
+        return (_value & (1 << flagNum))!=0;
+
+        #endregion
+    }
+
+    public bool ChapterIsComplete(params int[] chapters)
+    {
+        #region Omit
+        {
+            int chapter = (1 << _chapterCocosiNum) - 1;
+            int Count = chapters.Length;
+            int left = Count;
+
+            for (int i = 0; i < Count; i++){
+
+                int checkFlags = (chapter << (_chapterCocosiNum * chapters[i]));
+                if ((_value & checkFlags) != 0) left--;
+            }
+
+            return (left == 0);
+        }
+        #endregion
+    }
+
+};
+#endregion
 
 /*********************************************************************
  *    상호작용시, 특정 수집요소를 카운팅하는 기능이 구현된 컴포넌트입니다...
  * *****/
 public sealed class ScoreObject : MonoBehaviour, IEnviroment
 {
+    #region Editor_Extension
+#if UNITY_EDITOR
+    [CustomEditor(typeof(ScoreObject))]
+    private sealed class ScoreObjectEditor : Editor
+    {
+        //===========================================
+        /////               Fields              /////
+        //===========================================
+        private SerializedProperty UseMagnetMovementProperty;
+        private SerializedProperty ItemGetTypeProperty;
+        private SerializedProperty ScoreTypeProperty;
+        private SerializedProperty CocosiIndexProperty;
+        private SerializedProperty MagnetMoveDelayTimeProperty;
+        private SerializedProperty GetRaiseUpTimeProperty;
+        private SerializedProperty InteractionVFXProperty;
+
+
+
+        //====================================================
+        ///////           Override methods              //////
+        //====================================================
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+
+            /*******************************************
+             *    모든 프로퍼티들을 표시한다....
+             * ***/
+            GUI_Initialized();
+
+            GUI_ShowUseMagnetMovement();
+
+            GUI_ShowScoreType();
+
+            GUI_ShowGetKind();
+
+            GUI_ShowVFX();
+
+            /**값이 변화했다면 갱신한다...*/
+            if(GUI.changed){ 
+
+                serializedObject.ApplyModifiedProperties(); 
+            }
+        }
+
+
+
+        //=================================================
+        ////////            GUI methods             ///////
+        //=================================================
+        private void GUI_Initialized()
+        {
+            #region Omit
+            /***********************************
+             *   모든 프로퍼티들을 초기화한다...
+             * ***/
+            if(UseMagnetMovementProperty==null){
+
+                UseMagnetMovementProperty = serializedObject.FindProperty("UseMagnetMovement");
+            }
+
+            if(ItemGetTypeProperty==null){
+
+                ItemGetTypeProperty = serializedObject.FindProperty("ItemGetType");
+            }
+
+            if(ScoreTypeProperty==null){
+
+                ScoreTypeProperty = serializedObject.FindProperty("ScoreType");
+            }
+
+            if ( CocosiIndexProperty== null){
+
+                CocosiIndexProperty = serializedObject.FindProperty("_CocosiIndex");
+            }
+
+            if (MagnetMoveDelayTimeProperty == null){
+
+                MagnetMoveDelayTimeProperty = serializedObject.FindProperty("_MagnetMoveDelayTime");
+            }
+
+            if ( GetRaiseUpTimeProperty == null){
+
+               GetRaiseUpTimeProperty = serializedObject.FindProperty("_GetRaiseUpTime");
+            }
+
+            if ( InteractionVFXProperty== null){
+
+                InteractionVFXProperty = serializedObject.FindProperty("InteractionVFX");
+            }
+
+            #endregion
+        }
+
+        private void GUI_ShowUseMagnetMovement()
+        {
+            #region Omit
+            /**********************************************
+             *   자석 움직임과 관련된 프로퍼티들을 표시한다...
+             * ***/
+            if (UseMagnetMovementProperty == null) return;
+
+            SerializedProperty umm = UseMagnetMovementProperty;
+            if(umm.boolValue = EditorGUILayout.ToggleLeft("Use Magnet Movement", umm.boolValue))
+            {
+                /**자석 움직임을 사용할 경우, 관련 프로퍼티들을 표시한다...*/
+                float value = EditorGUILayout.FloatField("Magnet Move DelayTime", MagnetMoveDelayTimeProperty.floatValue);
+                MagnetMoveDelayTimeProperty.floatValue = Mathf.Clamp(value, 0f, float.MaxValue);
+                EditorGUILayout.Space(6f);
+            }
+
+            #endregion
+        }
+
+        private void GUI_ShowScoreType()
+        {
+            #region Omit
+            /**********************************************
+             *   자석 움직임과 관련된 프로퍼티들을 표시한다...
+             * ***/
+            if (ScoreTypeProperty== null || CocosiIndexProperty==null) return;
+
+            using(var scope = new EditorGUI.ChangeCheckScope())
+            {
+                ScoreType scoreValue = ScoreTypeProperty.GetEnumValue<ScoreType>();
+                System.Enum value    = EditorGUILayout.EnumPopup("Score Type", scoreValue);
+
+                /**값이 변화하였다면 갱신한다...*/
+                if(scope.changed){
+
+                    ScoreTypeProperty.SetEnumValue(value);
+                }
+            }
+
+            /*************************************************
+             *  코코시가 지정된 경우, 관련 프로퍼티를 표시한다...
+             * ***/
+            if(ScoreTypeProperty.GetEnumValue<ScoreType>()==ScoreType.Cocosi)
+            {
+                int value = EditorGUILayout.IntField("Cocosi Index",CocosiIndexProperty.intValue);
+                CocosiIndexProperty.intValue = System.Math.Clamp(value, 0, 4);
+
+                EditorGUILayout.Space(7f);
+            }
+
+            #endregion
+        }
+
+        private void GUI_ShowGetKind()
+        {
+            #region Omit
+            /****************************************************
+             *   획득했을 때의 효과와 관련된 프로퍼티들을 표시한다...
+             * ***/
+            if (ItemGetTypeProperty == null || GetRaiseUpTimeProperty == null) return;
+
+            using (var scope = new EditorGUI.ChangeCheckScope())
+            {
+                GetKind scoreValue = ItemGetTypeProperty.GetEnumValue<GetKind>();
+                System.Enum value = EditorGUILayout.EnumPopup("Get Type", scoreValue);
+
+                /**값이 변화하였다면 갱신한다...*/
+                if (scope.changed){
+
+                    ItemGetTypeProperty.SetEnumValue(value);
+                }
+            }
+
+            /*************************************************
+             *  코코시가 지정된 경우, 관련 프로퍼티를 표시한다...
+             * ***/
+            if (ItemGetTypeProperty.GetEnumValue<GetKind>() == GetKind.RaiseUp)
+            {
+                float value = EditorGUILayout.FloatField("Raise Up Duration",GetRaiseUpTimeProperty.floatValue);
+                GetRaiseUpTimeProperty.floatValue = Mathf.Clamp(value, 0f, float.MaxValue);
+
+                EditorGUILayout.Space(7f);
+            }
+
+            #endregion
+        }
+
+        private void GUI_ShowVFX()
+        {
+            #region Omit
+            if (InteractionVFXProperty == null) return;
+
+            InteractionVFXProperty.objectReferenceValue = EditorGUILayout.ObjectField(
+                   "Interaction VFX",
+                   InteractionVFXProperty.objectReferenceValue,
+                   typeof(GameObject),
+                   true
+
+            );
+
+            #endregion
+        }
+
+    }
+#endif
+    #endregion
+
     public enum GetKind
     {
         None,
@@ -24,6 +330,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     public float     GetRaiseUpTime       { get { return _GetRaiseUpTime; } set { _GetRaiseUpTime = (value < 0f ? 0f : value); } }
     public string    EnviromentPrompt     { get; }=String.Empty;
     public bool      IsHit                { get; set; } = false;
+    public int       CocosiIndex          { get { return _CocosiIndex; } set { _CocosiIndex = System.Math.Clamp(value, 0, 4); } }
 
     [SerializeField] 
     public bool     UseMagnetMovement = false;
@@ -34,10 +341,13 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     [SerializeField, FormerlySerializedAs("scoreType")]
     public ScoreType ScoreType   = ScoreType.Coin;
 
-    [SerializeField,Min(0f)]
+    [SerializeField,MinMax(0,4)]
+    private int     _CocosiIndex = 0;
+
+    [SerializeField,MinMax(0f, float.MaxValue)]
     private float       _MagnetMoveDelayTime  = 0f;
 
-    [SerializeField, Min(0f)]
+    [SerializeField,MinMax(0f, float.MaxValue)]
     private float       _GetRaiseUpTime       = .25f;
 
     [SerializeField,FormerlySerializedAs("_interactionVFX")] 
@@ -78,6 +388,18 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         }
 
         _isValid = (_body != null || _collider != null || _playerTr != null);
+
+        CocosiCollection collection = new CocosiCollection(4, 3);
+        collection.SetCocosiCollect(1, 1, true);
+        collection.SetCocosiCollect(1, 2, true);
+        collection.SetCocosiCollect(1, 3, true);
+
+        collection.SetCocosiCollect(2, 1, true);
+        //collection.SetCocosiCollect(2, 2, true);
+        collection.SetCocosiCollect(2, 3, true);
+
+
+        Debug.Log($"챕터 1~2 클리어: {collection.ChapterIsComplete(1,2)}/ Data: {Convert.ToString(collection.Data,2)}");
         #endregion
     }
 
@@ -147,6 +469,11 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                 /**코코시를 획득하였을 경우...*/
                 case (ScoreType.Cocosi):
                 {
+                    FModAudioManager.PlayOneShotSFX(
+                          FModSFXEventType.Put_KoKoShi
+                    );
+
+
 
                     break;
                 }
