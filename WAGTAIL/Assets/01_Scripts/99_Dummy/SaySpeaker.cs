@@ -114,20 +114,21 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         }
         catch 
         {
-            if (boxAnim != null) 
+            if (boxAnim != null)
+            {
                 boxAnim.Play("TextBox_FadeOut");
-
+            }
             player.movementSM.ChangeState(player.idle);
             player.currentInteractable = null;
             Debug.LogWarning("SaySpeaker -> LoadManager: 출력할 대화내역이 존재하지않습니다..");
             yield break;
         }
 
-        /**컷씬이 존재한다면 활성화시킨다....*/
-        if (CutScenePlayer != null){
+        ///**컷씬이 존재한다면 활성화시킨다....*/
+        //if (CutScenePlayer != null){
 
-            CutScenePlayer.gameObject.SetActive(true);
-        }
+        //    CutScenePlayer.gameObject.SetActive(true);
+        //}
 
 
 
@@ -139,38 +140,43 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         {
             /**상호작용키를 눌렀다가 뗏을 때...*/
             if (!interact.triggered || isPressed){
-
                 if (!interact.triggered && isPressed) isPressed = false;
                 yield return null;
                 continue;
             }
-
             /**더 이상 진행할 수 있는 대화내역이 존재하지 않을경우 대화를 마친다...*/
             if (LoadManager.GetInstance().EndDialogue()) break;
 
 
             isPressed = true;
 
-            /**컷씬이 존재할 경우, 다음 컷씬으로 이동한다..*/
-            if (CutScenePlayer != null){
-
-                CutScenePlayer.gameObject.SetActive(true);
-                CutScenePlayer.PlayCutScene();
-                continue;
-            }
 
             /**다음 대화내역을 출력한다...*/
             LoadManager.GetInstance().DisplayNextSentence();
         }
 
-
         /*******************************************
          *    대화창을 닫고 마무리 짓는다....
          * ****/
+        Debug.Log($"{boxAnim.name}");
         if (boxAnim!=null){
 
+            TextBoxPrefab.SetActive(false);
             boxAnim.Play("TextBox_FadeOut");
         }
+
+        while (CutScenePlayer)
+        {
+            /**컷씬이 존재할 경우, 다음 컷씬으로 이동한다..*/
+            if (CutScenePlayer != null)
+            {
+                CutScenePlayer.gameObject.SetActive(true);
+                CutScenePlayer.PlayCutScene();
+            }
+            if (CutScenePlayer.GetisCutScene)
+                break;
+        }
+
 
         player.movementSM.ChangeState(player.idle);
         player.currentInteractable = null;

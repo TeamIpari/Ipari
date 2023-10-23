@@ -23,6 +23,7 @@ public class CutScene : MonoBehaviour
     private float colorValue = 255;
 
     private bool isCutScene;
+    public bool GetisCutScene { get { return isCutScene; } }
     private int sceneCount;
     [SerializeField] private Dialogue dialogue = new Dialogue();
 
@@ -86,7 +87,7 @@ public class CutScene : MonoBehaviour
         }
 
         // 글자를 점점 사라지게 하는 기능.
-        if (sceneCount >= CutScenes.Length)
+        if (sceneCount >= CutScenes.Length && TextViewer != null)
         {
             if (WaitTime > WaitTimer)
                 WaitTimer  += Time.deltaTime;
