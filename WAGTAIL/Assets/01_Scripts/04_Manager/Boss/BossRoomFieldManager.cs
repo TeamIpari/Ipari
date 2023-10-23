@@ -23,7 +23,7 @@ public class BossRoomFieldManager :MonoBehaviour
 
     // 생성할 타일을 저장함.
     [SerializeField] private GameObject _interactionVFX;
-    public GameObject[] Tiles;
+    public GameObject DefaultTileMap;
     public GameObject[] OddTile;
     public GameObject[] EvenTile;
     public int XSize;
@@ -72,6 +72,7 @@ public class BossRoomFieldManager :MonoBehaviour
         // 돌들을 배치
         Initialized();
         CreateReActionObject();
+        DefaultTileMap.SetActive(false);
     }
 
 
