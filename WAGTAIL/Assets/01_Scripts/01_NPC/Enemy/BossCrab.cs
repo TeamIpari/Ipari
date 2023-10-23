@@ -663,7 +663,7 @@ public sealed class BossCrab : Enemy
         AiDie = new BossCrabDieState(AiSM);
         AiAttack = new BossCrabSowingSeedsState(AiSM, ref sowingSeedsDesc, this);
         AiAttack2 = new BossCrabEgoStampState(AiSM, newHand, this);
-        AiAttack3 = new BossCrabSandWaveState(AiSM, SandWavePrefab);
+        AiAttack3 = new BossCrabSandWaveState(AiSM, this, SandWavePrefab);
         AiAttack4 = new BossCrabAntHellState(AiSM, AntHellPrefab, _AntHellDuration);
 
         #endregion

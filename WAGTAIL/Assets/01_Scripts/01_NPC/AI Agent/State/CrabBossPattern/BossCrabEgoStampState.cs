@@ -65,8 +65,9 @@ public sealed class BossCrabEgoStampState : AIAttackState
                         }
 
                         /**상태를 빠져나간다...*/
-                        case (5):
+                        case (6):
                         {
+                            AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsEgoTongAttack);
                             AISM.NextPattern();
                             break;
                         }
@@ -84,7 +85,7 @@ public sealed class BossCrabEgoStampState : AIAttackState
                 /**애니메이션 속도를 빠르게 한다....*/
                 case (0):
                 {
-                    AISM.Animator.speed = 1f;
+                    AISM.Animator.speed = 2f;
                     break;
                 }
 
@@ -96,7 +97,8 @@ public sealed class BossCrabEgoStampState : AIAttackState
                     if (_handIns != null){
 
                         _handIns.gameObject.SetActive(true);
-                        _handIns.targetTransform = Player.Instance.transform;
+                        _handIns.targetTransform    = Player.Instance.transform;
+                        _handIns.transform.position = _bossCrab.transform.position + (Vector3.up * 3f) + (_bossCrab.transform.forward * -2f);
                         _handIns?.StartCrabHand(AISM.character.transform.position);
                     }
                     break;
@@ -131,6 +133,7 @@ public sealed class BossCrabEgoStampState : AIAttackState
 
     public override void Exit()
     {
+        AISM.Animator.ResetTrigger(BossCrabAnimation.Trigger_IsEgoTongAttack);
     }
 
     public override void OntriggerEnter(Collider other)
