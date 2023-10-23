@@ -26,6 +26,7 @@ public sealed class StiffenState : State
     public override void Enter()
     {
         base.Enter();
+        player.animator.SetFloat("speed", 0f);
         StiffenLeft = StiffenTime;
     }
 
