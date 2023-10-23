@@ -99,9 +99,7 @@ public class CameraManager : Singleton<CameraManager>
         // 없어서 추가함.
         GameObject obj = GameObject.Find("BossRoomCM");
         CinemachineVirtualCamera vcam = obj.GetComponent<CinemachineVirtualCamera>();
-        Debug.Log($"{vcam.gameObject.name}");
         CinemachineBasicMultiChannelPerlin vcamperl = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        Debug.Log($"{vcamperl.gameObject.name}");
         vcamperl.m_AmplitudeGain = value;
         shakeTimer = time;
         StartCoroutine(Shaking(vcamperl, shakeTimer)); ;

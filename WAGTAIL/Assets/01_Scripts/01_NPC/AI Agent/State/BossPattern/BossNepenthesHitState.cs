@@ -31,9 +31,9 @@ public class BossNepenthesHitState : AIHitState
     {
         base.Enter();
         // 맞는 상태임을 인지
-        AISM.Animator.SetTrigger("IsHit");
-        if(animLeftVine != null) animLeftVine.SetTrigger("IsHit");
-        if(animRightVine != null) animRightVine.SetTrigger("IsHit");
+        AISM.Animator.SetTrigger("isHit");
+        if(animLeftVine != null) animLeftVine.SetTrigger("isHit");
+        if(animRightVine != null) animRightVine.SetTrigger("isHit");
         if (AISM.character.IsHit)
             AISM.character.HP -= 10;
         if(AISM.character.HP <= nextPhaseHp)

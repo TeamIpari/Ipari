@@ -37,7 +37,7 @@ public class BossNepenthes : Enemy
     [Header("Attack1 Parameter")]
     public GameObject LeftVine;
     public GameObject RightVine;
-    public GameObject VinePrefab;
+    //public GameObject VinePrefab;
 
     [Header("Attack2 Parameter")]
     private const float flyTime = 2f;
