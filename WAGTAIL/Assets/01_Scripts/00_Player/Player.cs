@@ -86,6 +86,7 @@ public class Player : MonoBehaviour
     public DropState drop;
     public PullInOutState pullInout;
     public DeathState death;
+    public StiffenState stiffen;
 
     //============================================//
     // Move
@@ -192,6 +193,7 @@ public class Player : MonoBehaviour
         drop        = new DropState(this, movementSM);
         pullInout   = new PullInOutState(this, movementSM, HoldingPoint);
         death       = new DeathState(this, movementSM);
+        stiffen     = new StiffenState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);

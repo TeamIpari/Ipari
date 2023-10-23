@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /*******************************************************************
- *   플레이어가 들고 던지고 충돌이 일어나면 코인이 나오는 컴포넌트입니다.
+ *   플레이어가 들고 던진 후, 충돌이 일어나면 코인이 나오는 컴포넌트입니다.
  * ****/
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ThrowObject))]

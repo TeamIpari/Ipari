@@ -44,7 +44,7 @@ public sealed class InterativeUI : MonoBehaviour
     {
         get
         {
-            if(_ins==null) return Vector3.zero;
+            if(_ins== null || _ins._mainCam == null) return Vector3.zero;
             return _ins._mainCam.ScreenToWorldPoint(_ins._rectTr.position);   
         }
         set
@@ -132,6 +132,12 @@ public sealed class InterativeUI : MonoBehaviour
             _ins._show = showType;
             _ins._animator.Play(_anims[(int)showType], 0, 0f);
             _ins._image.color = new Color(1f, 1f, 1f, 1f);
+        }
+
+        /**카메라가 유효하지 않다면 갱신한다....*/
+        if(_ins._mainCam==null){
+
+            _ins._mainCam = Camera.main;
         }
 
         _ins._text.text       = msg;
