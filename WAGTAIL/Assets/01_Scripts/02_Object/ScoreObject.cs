@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using IPariUtility;
 using UnityEngine.Serialization;
+
 using UnityEngine.Rendering.PostProcessing;
 using UnityEditor.Rendering;
 
@@ -109,7 +110,7 @@ public struct CocosiCollection
 #endregion
 
 /*********************************************************************
- *    »óÈ£ÀÛ¿ë½Ã, Æ¯Á¤ ¼öÁı¿ä¼Ò¸¦ Ä«¿îÆÃÇÏ´Â ±â´ÉÀÌ ±¸ÇöµÈ ÄÄÆ÷³ÍÆ®ÀÔ´Ï´Ù...
+ *    ìƒí˜¸ì‘ìš©ì‹œ, íŠ¹ì • ìˆ˜ì§‘ìš”ì†Œë¥¼ ì¹´ìš´íŒ…í•˜ëŠ” ê¸°ëŠ¥ì´ êµ¬í˜„ëœ ì»´í¬ë„ŒíŠ¸ì…ë‹ˆë‹¤...
  * *****/
 public sealed class ScoreObject : MonoBehaviour, IEnviroment
 {
@@ -139,7 +140,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             serializedObject.Update();
 
             /*******************************************
-             *    ¸ğµç ÇÁ·ÎÆÛÆ¼µéÀ» Ç¥½ÃÇÑ´Ù....
+             *    ëª¨ë“  í”„ë¡œí¼í‹°ë“¤ì„ í‘œì‹œí•œë‹¤....
              * ***/
             GUI_Initialized();
 
@@ -151,7 +152,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
             GUI_ShowVFX();
 
-            /**°ªÀÌ º¯È­Çß´Ù¸é °»½ÅÇÑ´Ù...*/
+            /**ê°’ì´ ë³€í™”í–ˆë‹¤ë©´ ê°±ì‹ í•œë‹¤...*/
             if(GUI.changed){ 
 
                 serializedObject.ApplyModifiedProperties(); 
@@ -167,7 +168,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         {
             #region Omit
             /***********************************
-             *   ¸ğµç ÇÁ·ÎÆÛÆ¼µéÀ» ÃÊ±âÈ­ÇÑ´Ù...
+             *   ëª¨ë“  í”„ë¡œí¼í‹°ë“¤ì„ ì´ˆê¸°í™”í•œë‹¤...
              * ***/
             if(UseMagnetMovementProperty==null){
 
@@ -211,14 +212,14 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         {
             #region Omit
             /**********************************************
-             *   ÀÚ¼® ¿òÁ÷ÀÓ°ú °ü·ÃµÈ ÇÁ·ÎÆÛÆ¼µéÀ» Ç¥½ÃÇÑ´Ù...
+             *   ìì„ ì›€ì§ì„ê³¼ ê´€ë ¨ëœ í”„ë¡œí¼í‹°ë“¤ì„ í‘œì‹œí•œë‹¤...
              * ***/
             if (UseMagnetMovementProperty == null) return;
 
             SerializedProperty umm = UseMagnetMovementProperty;
             if(umm.boolValue = EditorGUILayout.ToggleLeft("Use Magnet Movement", umm.boolValue))
             {
-                /**ÀÚ¼® ¿òÁ÷ÀÓÀ» »ç¿ëÇÒ °æ¿ì, °ü·Ã ÇÁ·ÎÆÛÆ¼µéÀ» Ç¥½ÃÇÑ´Ù...*/
+                /**ìì„ ì›€ì§ì„ì„ ì‚¬ìš©í•  ê²½ìš°, ê´€ë ¨ í”„ë¡œí¼í‹°ë“¤ì„ í‘œì‹œí•œë‹¤...*/
                 float value = EditorGUILayout.FloatField("Magnet Move DelayTime", MagnetMoveDelayTimeProperty.floatValue);
                 MagnetMoveDelayTimeProperty.floatValue = Mathf.Clamp(value, 0f, float.MaxValue);
                 EditorGUILayout.Space(6f);
@@ -231,7 +232,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         {
             #region Omit
             /**********************************************
-             *   ÀÚ¼® ¿òÁ÷ÀÓ°ú °ü·ÃµÈ ÇÁ·ÎÆÛÆ¼µéÀ» Ç¥½ÃÇÑ´Ù...
+             *   ìì„ ì›€ì§ì„ê³¼ ê´€ë ¨ëœ í”„ë¡œí¼í‹°ë“¤ì„ í‘œì‹œí•œë‹¤...
              * ***/
             if (ScoreTypeProperty== null || CocosiIndexProperty==null) return;
 
@@ -240,7 +241,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                 ScoreType scoreValue = ScoreTypeProperty.GetEnumValue<ScoreType>();
                 System.Enum value    = EditorGUILayout.EnumPopup("Score Type", scoreValue);
 
-                /**°ªÀÌ º¯È­ÇÏ¿´´Ù¸é °»½ÅÇÑ´Ù...*/
+                /**ê°’ì´ ë³€í™”í•˜ì˜€ë‹¤ë©´ ê°±ì‹ í•œë‹¤...*/
                 if(scope.changed){
 
                     ScoreTypeProperty.SetEnumValue(value);
@@ -248,7 +249,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             }
 
             /*************************************************
-             *  ÄÚÄÚ½Ã°¡ ÁöÁ¤µÈ °æ¿ì, °ü·Ã ÇÁ·ÎÆÛÆ¼¸¦ Ç¥½ÃÇÑ´Ù...
+             *  ì½”ì½”ì‹œê°€ ì§€ì •ëœ ê²½ìš°, ê´€ë ¨ í”„ë¡œí¼í‹°ë¥¼ í‘œì‹œí•œë‹¤...
              * ***/
             if(ScoreTypeProperty.GetEnumValue<ScoreType>()==ScoreType.Cocosi)
             {
@@ -265,7 +266,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         {
             #region Omit
             /****************************************************
-             *   È¹µæÇßÀ» ¶§ÀÇ È¿°ú¿Í °ü·ÃµÈ ÇÁ·ÎÆÛÆ¼µéÀ» Ç¥½ÃÇÑ´Ù...
+             *   íšë“í–ˆì„ ë•Œì˜ íš¨ê³¼ì™€ ê´€ë ¨ëœ í”„ë¡œí¼í‹°ë“¤ì„ í‘œì‹œí•œë‹¤...
              * ***/
             if (ItemGetTypeProperty == null || GetRaiseUpTimeProperty == null) return;
 
@@ -274,7 +275,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                 GetKind scoreValue = ItemGetTypeProperty.GetEnumValue<GetKind>();
                 System.Enum value = EditorGUILayout.EnumPopup("Get Type", scoreValue);
 
-                /**°ªÀÌ º¯È­ÇÏ¿´´Ù¸é °»½ÅÇÑ´Ù...*/
+                /**ê°’ì´ ë³€í™”í•˜ì˜€ë‹¤ë©´ ê°±ì‹ í•œë‹¤...*/
                 if (scope.changed){
 
                     ItemGetTypeProperty.SetEnumValue(value);
@@ -282,7 +283,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             }
 
             /*************************************************
-             *  ÄÚÄÚ½Ã°¡ ÁöÁ¤µÈ °æ¿ì, °ü·Ã ÇÁ·ÎÆÛÆ¼¸¦ Ç¥½ÃÇÑ´Ù...
+             *  ì½”ì½”ì‹œê°€ ì§€ì •ëœ ê²½ìš°, ê´€ë ¨ í”„ë¡œí¼í‹°ë¥¼ í‘œì‹œí•œë‹¤...
              * ***/
             if (ItemGetTypeProperty.GetEnumValue<GetKind>() == GetKind.RaiseUp)
             {
@@ -361,7 +362,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     private const float Height    = 1.7f;
     private const float FlightDiv = 4.0f;
 
-    private float     _currTime        = 0f;    //°æ°ú ½Ã°£....
+    private float     _currTime        = 0f;    //ê²½ê³¼ ì‹œê°„....
     private bool      _isValid         = false;
 
     private Rigidbody _body;
@@ -381,7 +382,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
         gameObject.tag = "Platform";
 
-        /**ÇÃ·¹ÀÌ¾îÀÇ Æ®·£½ºÆû Ä³½Ì...*/
+        /**í”Œë ˆì´ì–´ì˜ íŠ¸ëœìŠ¤í¼ ìºì‹±...*/
         Player player = Player.Instance;
         if (player != null){
             _playerTr = player.transform;
@@ -399,7 +400,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         collection.SetCocosiCollect(2, 3, true);
 
 
-        Debug.Log($"Ã©ÅÍ 1~2 Å¬¸®¾î: {collection.ChapterIsComplete(1,2)}/ Data: {Convert.ToString(collection.Data,2)}");
+        Debug.Log($"ì±•í„° 1~2 í´ë¦¬ì–´: {collection.ChapterIsComplete(1,2)}/ Data: {Convert.ToString(collection.Data,2)}");
         #endregion
     }
 
@@ -408,20 +409,20 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         #region Omit
 
         /**********************************************
-         *   Áö¿¬½Ã°£ ¸¸Å­ ´ë±âÈÄ, ÀÚ¼® È¿°ú¸¦ Àû¿ëÇÑ´Ù...
+         *   ì§€ì—°ì‹œê°„ ë§Œí¼ ëŒ€ê¸°í›„, ìì„ íš¨ê³¼ë¥¼ ì ìš©í•œë‹¤...
          * ***/
         if(_currTime<MagnetMoveDelayTime){
 
             if ((_currTime+=Time.deltaTime) >= MagnetMoveDelayTime)
             {
-                /**Áö¿¬½Ã°£ÀÌ ³¡³µÀ» °æ¿ì...*/
+                /**ì§€ì—°ì‹œê°„ì´ ëë‚¬ì„ ê²½ìš°...*/
                 ApplyTimeout();
             }
             else return;
         }
 
         /**************************************
-         *   ÀÚ¼®ÀÇ ¿òÁ÷ÀÓ ·ÎÁ÷À» Àû¿ëÇÑ´Ù....
+         *   ìì„ì˜ ì›€ì§ì„ ë¡œì§ì„ ì ìš©í•œë‹¤....
          * ****/
         if (UseMagnetMovement == false || _body==null) return;
 
@@ -455,7 +456,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
         switch (ScoreType){
 
-                /**ÄÚÀÎÀ» È¹µæÇÏ¿´À» °æ¿ì...*/
+                /**ì½”ì¸ì„ íšë“í•˜ì˜€ì„ ê²½ìš°...*/
                 case (ScoreType.Coin):
                 {
                     FModAudioManager.PlayOneShotSFX(
@@ -466,7 +467,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                     break;
                 }
 
-                /**ÄÚÄÚ½Ã¸¦ È¹µæÇÏ¿´À» °æ¿ì...*/
+                /**ì½”ì½”ì‹œë¥¼ íšë“í•˜ì˜€ì„ ê²½ìš°...*/
                 case (ScoreType.Cocosi):
                 {
                     FModAudioManager.PlayOneShotSFX(
@@ -478,7 +479,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                     break;
                 }
 
-                /**²ÉÀ» È¹µæÇÏ¿´À» °æ¿ì....*/
+                /**ê½ƒì„ íšë“í•˜ì˜€ì„ ê²½ìš°....*/
                 case (ScoreType.Flower):
                 {
                     FModAudioManager.PlayOneShotSFX(
@@ -490,7 +491,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                 }
         }
 
-        /**¾ÆÀÌÅÛ È¹µæ½Ã ¶°¿À¸£´Â È¿°ú¸¦ ±¸ÇöÇÑ´Ù...*/
+        /**ì•„ì´í…œ íšë“ì‹œ ë– ì˜¤ë¥´ëŠ” íš¨ê³¼ë¥¼ êµ¬í˜„í•œë‹¤...*/
         if (ItemGetType == GetKind.RaiseUp)
         {
             UseRigidbody();
@@ -505,7 +506,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             return;
         }
 
-        /**¾ÆÀÌÅÛÀÌ ÆÄ±«µÇ¸é¼­ ÀÌÆåÆ®¸¦ »ı¼ºÇÑ´Ù...*/
+        /**ì•„ì´í…œì´ íŒŒê´´ë˜ë©´ì„œ ì´í™íŠ¸ë¥¼ ìƒì„±í•œë‹¤...*/
         SpawnVFX();
         Destroy(gameObject);
 
@@ -516,10 +517,10 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     {
         #region Omit
         /**********************************************
-         *   Æ¯Á¤ Áö¿¬½Ã°£ÀÌ Áö³­ÈÄ, ÁöÁ¤ÇÑ È¿°ú¸¦ Àû¿ëÇÑ´Ù...
+         *   íŠ¹ì • ì§€ì—°ì‹œê°„ì´ ì§€ë‚œí›„, ì§€ì •í•œ íš¨ê³¼ë¥¼ ì ìš©í•œë‹¤...
          * ***/
 
-        /**È¹µæµÇ¾úÀ» °æ¿ì...*/
+        /**íšë“ë˜ì—ˆì„ ê²½ìš°...*/
         if(_collider!=null && _collider.enabled==false){
 
             SpawnVFX();
@@ -527,7 +528,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             return;
         }
 
-        /**ÀÚ¼®È¿°ú¸¦ Àû¿ëÇÒ °æ¿ì...*/
+        /**ìì„íš¨ê³¼ë¥¼ ì ìš©í•  ê²½ìš°...*/
         if(UseMagnetMovement && _body!=null && _collider!=null)
         {
             _body.velocity      = Vector3.zero;
