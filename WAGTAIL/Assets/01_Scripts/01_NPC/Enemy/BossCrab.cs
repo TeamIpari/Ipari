@@ -528,6 +528,10 @@ public sealed class BossCrab : Enemy
     private float        _AntHellDuration;
 
 
+    [SerializeField]
+    public bool StartPatternOnAwake = false;
+
+
 
     //===============================================
     //////          Magic methods               /////
@@ -539,13 +543,16 @@ public sealed class BossCrab : Enemy
 
         StateSetting();
         SettingPattern(CharacterMovementPattern[GetCurPhaseHpArray].EPatterns);
-        AiSM.CurrentState = AiSM.Pattern[0];
+        if(StartPatternOnAwake) AiSM.CurrentState = AiSM.Pattern[0];
         #endregion
     }
 
     private void Update()
     {
-       AiSM?.CurrentState.Update();
+        if(AiSM.CurrentState!=null){
+
+            AiSM?.CurrentState.Update();
+        }
     }
 
 
@@ -553,15 +560,22 @@ public sealed class BossCrab : Enemy
     //============================================
     ////////         Core methods           //////
     //============================================
+    public void CrabBossAweaking()
+    {
+        if(AiSM.CurrentState==null)
+        AiSM.CurrentState = AiSM.Pattern[0];
+    }
+
     private void StateSetting()
     {
         #region Omit
         /**********************************************
          *   상태 초기화에 필요한 요소들을 초기화한다...
          * ***/
-        EgoCrabHand newHand = (CrabHandPrefab!=null? GameObject.Instantiate(CrabHandPrefab).GetComponent<EgoCrabHand>():null);
-        if(newHand!=null)
+        EgoCrabHand newHand = null;
+        if(CrabHandPrefab != null)
         {
+            newHand = GameObject.Instantiate(CrabHandPrefab).GetComponent<EgoCrabHand>();
             newHand.AttackDuration      = EgoAtkCompleteRate;
             newHand.AttackRange         = EgoAtkRange;
             newHand.AttackReadyDuration = EgoAtkWaitTime;
@@ -587,7 +601,7 @@ public sealed class BossCrab : Enemy
         AiSM      = AIStateMachine.CreateFormGameObject(gameObject);
         AiIdle    = new BossCrabIdleState(AiSM, IdleRate);
         AiWait    = new BossNepenthesWaitState(AiSM, WaitRate);
-        AiHit     = new BossNepenthesHitState(AiSM);
+        AiHit     = new BossCrabHitState(AiSM);
         AiDie     = new BossCrabDieState(AiSM);
         AiAttack  = new BossCrabSowingSeedsState(AiSM, ref sowingSeedsDesc);
         AiAttack2 = new BossCrabEgoStampState(AiSM, newHand);

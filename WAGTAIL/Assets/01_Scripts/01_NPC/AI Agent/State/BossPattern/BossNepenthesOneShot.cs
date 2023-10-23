@@ -35,7 +35,7 @@ public class BossNepenthesOneShot: AIAttackState
         this.bullet = profile.BulletPrefab;
         this.time = time;
         this.bombSize = size;
-        this.delayTime = 0.5f;
+        this.delayTime = 1f;
     }
 
     public override void Enter()
@@ -94,12 +94,12 @@ public class BossNepenthesOneShot: AIAttackState
     private void CreateMarker()
     {
         target = new Vector3(Player.Instance.transform.position.x,
-            0.1f,
+            -0.5f,
             Player.Instance.transform.position.z);
         
         GameObject _obj = GameObject.Instantiate(circleObj);
         _obj.transform.localScale = Vector3.one * bombSize;
-        _obj.transform.position = new Vector3(target.x , 0.1f, target.z);
+        _obj.transform.position = new Vector3(target.x , -0.5f, target.z);
         _obj.transform.rotation = Quaternion.Euler(-90, 0, 0);
         marker = _obj;
     }

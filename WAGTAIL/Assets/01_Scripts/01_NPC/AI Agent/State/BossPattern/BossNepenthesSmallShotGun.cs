@@ -32,7 +32,7 @@ public class BossNepenthesSmallShotGun : AIAttackState
         this.time = flightTime;
         this.rad = rad;
         this.circleObj = Profile.ShotMarker;
-        this.delayTime = 0.5f;
+        this.delayTime = 1f;
     }
 
     //====================================================
@@ -121,13 +121,13 @@ public class BossNepenthesSmallShotGun : AIAttackState
     {
         // Random.onUnitSphere : 반경 1을 갖는 구의 표면상에서 임의의 지점을 반환함
         Vector3 getPoint = Random.onUnitSphere;
-        getPoint.y = 0.1f;
+        getPoint.y = -0.5f;
 
         // 0.0f 부터 지정한 반지름의 길이 사이의 랜덤 값을 산출함.
         float r = Random.Range(0.0f, rad);
         Vector3 vec = (getPoint * r) + Player.Instance.transform.position;
 
-        return new Vector3(vec.x, 0.1f, vec.z);
+        return new Vector3(vec.x, -0.5f, vec.z);
     }
 
     public void ShootDelay()

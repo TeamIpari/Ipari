@@ -3,7 +3,6 @@ using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 public sealed class BossCrabSowingSeedsState : AIAttackState
 {
@@ -26,6 +25,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         public Collider   collider;
         public GameObject marker;
         public Vector3    goalPos;
+        public Vector3    goalNormal;
     }
     #endregion
 
@@ -53,15 +53,25 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
 
     public override void Enter()
     {
+        #region Omit
         AISM.Animator.SetTrigger("isAttack");
         _changeTimeDiv = (1f / _desc.changeTime);
         curTimer       = 0f;
         _isShoot       = false;
         _ignoreRelease = false;
+        #endregion
     }
 
     public override void Exit()
     {
+        #region Omit
+        /**积己等 葛电 付农甫 力芭茄促...*/
+        for (int i=0; i<_desc.count; i++){
+
+            ref ThrowDesc desc = ref _targets[i];
+            GameObject.Destroy(desc.marker);
+        }
+        #endregion
     }
 
     public override void Update()
@@ -115,7 +125,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
          * ****/
         for (int i=0; i<_desc.count; i++){
 
-            _targets[i].goalPos = Search();
+           Search(ref _targets[i]);
         }
 
 
@@ -124,13 +134,14 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
          * ****/
         for(int i=0; i<_desc.count; i++)
         {
-            GameObject newMarker = GameObject.Instantiate(_desc.MarkerPrefab);
-            newMarker.GetComponentInChildren<Transform>().localScale = Vector3.one*.3f;
-            newMarker.transform.SetPositionAndRotation(
+            ref ThrowDesc desc = ref _targets[i];
 
-                  _targets[i].goalPos,
-                  Quaternion.Euler(-90f, 0f, 0f)
-            );
+            GameObject newMarker    = GameObject.Instantiate(_desc.MarkerPrefab);
+            Transform  newMarkerTr  = newMarker.transform;
+            Quaternion newQuat      = IpariUtility.GetQuatBetweenVector(newMarkerTr.up, -desc.goalNormal);
+
+            newMarker.GetComponentInChildren<Transform>().localScale = (Vector3.one*.3f);
+            newMarker.transform.SetPositionAndRotation( _targets[i].goalPos, newQuat);
 
             _targets[i].marker = newMarker;
         }
@@ -148,7 +159,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
             Vector3 vel = IpariUtility.CaculateVelocity(
                 desc.goalPos, 
                 _desc.shootPoint.position, 
-                _desc.flightTime * Random.Range(.5f,1f)
+                (_desc.flightTime * Random.Range(.5f,1f))
             );
 
 
@@ -166,7 +177,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
             {
                 float torquePow = Random.Range(1f, 5f);
 
-                desc.collider = obj.GetComponent<Collider>();
+                desc.collider           = obj.GetComponent<Collider>();
                 desc.throwBody.velocity = vel;
                 desc.throwBody.AddTorque(vel*torquePow);
             }
@@ -186,7 +197,6 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         if (desc.collider != null)
         {
             int Count = _desc.count;
-
             for(int i=0; i<Count; i++){
 
                 ref ThrowDesc other = ref _targets[i];
@@ -196,7 +206,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         #endregion
     }
 
-    private Vector3 Search()
+    private void Search(ref ThrowDesc desc)
     {
         #region Omit
         /*************************************************************
@@ -205,10 +215,17 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         Vector3 unitDir  = Random.onUnitSphere;
         float   randRad  = Random.Range(0.0f, _desc.rad);
 
-        Vector3 result = (unitDir * randRad) + Player.Instance.transform.position;
-        result.y = .1f;
+        RaycastHit result;
+        IpariUtility.GetPlayerFloorinfo(
 
-        return result;
+            out result, 
+            ~(1 << LayerMask.NameToLayer("Player")), 
+            (unitDir * randRad), 
+            1f
+        );
+
+        desc.goalPos    = result.point + (result.normal*.03f);
+        desc.goalNormal = result.normal;
         #endregion
     }
 
@@ -218,9 +235,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         if (!_isShoot && curTimer >= _desc.delayTime)
         {
             FModAudioManager.PlayOneShotSFX(
-                FModSFXEventType.Broken,
-                Vector3.zero,
-                FModParamLabel.BrokenType.Wall
+                FModSFXEventType.Broken
             );
 
             CreateMarker();

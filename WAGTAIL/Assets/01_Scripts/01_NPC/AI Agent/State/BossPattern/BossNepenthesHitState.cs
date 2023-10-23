@@ -7,15 +7,23 @@ public class BossNepenthesHitState : AIHitState
     //=========================================
     /////       Property And Fields         /////
     //=========================================
-    float delayTimer = 5.0f;
-    int nextPhaseHp = 0;
+    private GameObject leftVine;
+    private GameObject rightVine;
+    private Animator animLeftVine;
+    private Animator animRightVine;
+    private float delayTimer = 5.0f;
+    private int nextPhaseHp = 0;
   
     //=========================================
     /////       Magic Mathods               /////
     //=========================================
-    public BossNepenthesHitState(AIStateMachine stateMachine) : base(stateMachine)
+    public BossNepenthesHitState(AIStateMachine stateMachine, GameObject LeftVine = null, GameObject RightVine = null) : base(stateMachine)
     {
         nextPhaseHp = stateMachine.GetNextPhaseTargetHp();
+        this.leftVine = LeftVine;
+        this.rightVine = RightVine;
+        animLeftVine = LeftVine.GetComponent<Animator>();
+        animRightVine = rightVine.GetComponent<Animator>();
     }
 
 
@@ -24,6 +32,8 @@ public class BossNepenthesHitState : AIHitState
         base.Enter();
         // 맞는 상태임을 인지
         AISM.Animator.SetTrigger("IsHit");
+        if(animLeftVine != null) animLeftVine.SetTrigger("IsHit");
+        if(animRightVine != null) animRightVine.SetTrigger("IsHit");
         if (AISM.character.IsHit)
             AISM.character.HP -= 10;
         if(AISM.character.HP <= nextPhaseHp)

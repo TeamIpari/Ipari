@@ -22,6 +22,7 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
+        player.isDead = false;
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.GameOver);
         _isAlive = false;
         isGrounded = player.controller.isGrounded;
@@ -33,9 +34,9 @@ public class DeathState : State
         _respawnTime = player.respawnTime;
         _currentTime = 0;
 
-        // ChapterRestart ¸¸µç ÈÄ Àû¿ë ÇØ¾ßÇÔ.
+        // ChapterRestart ë§Œë“  í›„ ì ìš© í•´ì•¼í•¨.
         //RemoveCheckPoint();
-        // changeStateÀÇ player.idleÀº AliveState·Î ¹Ù²ãÁà¾ßÇÔ or Alive Animation Ãâ·Â.
+        // changeStateì˜ player.idleì€ AliveStateë¡œ ë°”ê¿”ì¤˜ì•¼í•¨ or Alive Animation ì¶œë ¥.
         // stateMachine.ChangeState(player.idle);
     }
 
@@ -72,7 +73,7 @@ public class DeathState : State
         gravityVelocity.y += gravityValue * Time.deltaTime;
         isGrounded = player.controller.isGrounded;
 
-        // ¹Ù´Ú°ú ´ê¾Æ ÀÖÀ» ¶§´Â Áß·Â Àû¿ë X
+        // ë°”ë‹¥ê³¼ ë‹¿ì•„ ìˆì„ ë•ŒëŠ” ì¤‘ë ¥ ì ìš© X
         if (isGrounded && gravityVelocity.y < 0)
         {
             gravityVelocity.y = 0f;
@@ -102,19 +103,19 @@ public class DeathState : State
         _currentTime = 0;
     }
 
-    // Ã¼Å©Æ÷ÀÎÆ®·Î º¸³¾ ½Ã
+    // ì²´í¬í¬ì¸íŠ¸ë¡œ ë³´ë‚¼ ì‹œ
     private void RemoveCheckPoint()
     {
         //player.UIManager.ActiveGameUI(GameUIType.Death, true);
         player.animator.Rebind();
         player.GameManager.Coin -= 5;
-        //Ã¼Å© Æ÷ÀÎÆ®·Î ÀÌµ¿ ±¸Çö ÇØ¾ßÇÔ
+        //ì²´í¬ í¬ì¸íŠ¸ë¡œ ì´ë™ êµ¬í˜„ í•´ì•¼í•¨
         player.GameManager.Respawn();
     }
     
-    // Ã©ÅÍ·Î º¸³¾ ½Ã
+    // ì±•í„°ë¡œ ë³´ë‚¼ ì‹œ
     private void RemoveChapter()
     {
-        // Ã©ÅÍ Àç½ÃÀÛ ±¸ÇöÇØ¾ßÇÔ
+        // ì±•í„° ì¬ì‹œì‘ êµ¬í˜„í•´ì•¼í•¨
     }
 }

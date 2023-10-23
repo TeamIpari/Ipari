@@ -15,7 +15,8 @@ public enum CheckPointType
 public enum ScoreType
 {
     Coin,
-    Flower
+    Flower,
+    Cocosi
 }
 
 public enum ChapterType
@@ -24,7 +25,8 @@ public enum ChapterType
     Chapter01,
     Chapter02,
     BossRoom,
-    EndCredits
+    EndCredits,
+    Test
 }
 
 public class GameManager : Singleton<GameManager>
@@ -44,11 +46,15 @@ public class GameManager : Singleton<GameManager>
     private List<ScoreObject> _scoreObjectList;
     private int _coin = 0;
     private int _flower = 0;
+
+    public bool[] cocosi;
     //================================================
     // Chapter
     private List<Chapter> _chapterList;
     private Chapter _lastActiveChapter;
     
+    //================================================
+
     protected override void Awake()
     {
         base.Awake();
@@ -66,15 +72,12 @@ public class GameManager : Singleton<GameManager>
         //_scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
         Coin = 0;
         Flower = 0;
+        IsKeyboard = true;
+        IsGamepad = false;
         
         // Chapter
         _chapterList = GetComponentsInChildren<Chapter>().ToList();
         _chapterList.ForEach(x => x.gameObject.SetActive(false));
-    }
-
-    public void Start()
-    {
-        //SoundTest.GetInstance().PlayBGM("isTitle",true);
     }
 
     public void Respawn()
@@ -169,5 +172,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
     
+    public bool IsKeyboard { get; set; }
+
+    public bool IsGamepad { get; set; }
+
     #endregion
 }

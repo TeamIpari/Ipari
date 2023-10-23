@@ -26,14 +26,21 @@ public class LoadManager : Singleton<LoadManager>
                     chapter = int.Parse(str[1]);
                 if (str[2] != "")
                     sayTarget = str[2];
+                //if (str[3] != "")
+                //    wait = int.Parse(str[3]) == 0 ? false : true;
+                //if (str[4] != "")
+                //    Korean = str[4];
+                //if (str[5] != "")
+                //    English = str[5];
+                //if (str[6] != "")
+                //    Japanese = str[6];
                 if (str[3] != "")
-                    wait = int.Parse(str[3]) == 0 ? false : true;
+                    Korean = str[3];
                 if (str[4] != "")
-                    Korean = str[4];
+                    English = str[4];
                 if (str[5] != "")
-                    English = str[5];
-                if (str[6] != "")
-                    Japanese = str[6];
+                    Japanese = str[5];
+
             }
             catch
             {
@@ -50,6 +57,7 @@ public class LoadManager : Singleton<LoadManager>
     //public GameObject
     public int ChapterNum = 0;
     public TextMeshProUGUI Tmps;
+    public TextMeshProUGUI NameTag;
     public ChapterScript Dic_Say;
     public Dialogue dialogue = new Dialogue();
     public bool isSpeedUp = false;
@@ -85,28 +93,35 @@ public class LoadManager : Singleton<LoadManager>
         bool endOfFile = false;
         var data_values = testFile.Split('\n');
         int count1 = 0;
-        while (!endOfFile)
+        try
         {
-            Scriptable scriptable = new Scriptable();
-            if (count1 == 0)
+            while (!endOfFile)
             {
+                Scriptable scriptable = new Scriptable();
+                if (count1 == 0)
+                {
+                    count1++;
+                    continue;
+                }
+                var data_value = data_values[count1].Split(',');
+                if (data_value == null)
+                {
+                    endOfFile = true;
+                    break;
+                }
+                if (data_value[0] == "")
+                {
+                    endOfFile = true;
+                    break;
+                }
+                scriptable.Init(data_value);
+                Dic_Say.Add(int.Parse(data_value[0]), scriptable);
                 count1++;
-                continue;
             }
-            var data_value = data_values[count1].Split(',');
-            if (data_value == null)
-            {
-                endOfFile = true;
-                break;
-            }
-            if (data_value[0] == "")
-            {
-                endOfFile = true;
-                break;
-            }
-            scriptable.Init(data_value);
-            Dic_Say.Add(int.Parse(data_value[0]), scriptable);
-            count1++;
+        }
+        catch
+        {
+
         }
     }
     
@@ -115,16 +130,22 @@ public class LoadManager : Singleton<LoadManager>
         if (num == 0)
             num = ChapterNum;
         Scriptable sc;
+        List<string> nametmp = new List<string>();
         List<string> temp = new List<string>();
         for (int i = 0; i < Dic_Say.Count; i++)
         {
             Dic_Say.TryGetValue(i, out sc);
-            if(sc.chapter == num)
+            if (sc.chapter == num)
+            {
+                nametmp.Add(sc.sayTarget);
                 temp.Add(Language(sc));
+            }
             else if (sc.chapter > num)
                 break;
         }
         dialogue = new Dialogue();
+
+        dialogue.name = nametmp[0];
         dialogue.sentences = new string[temp.Count];
         for(int i = 0; i < temp.Count; i++)
         {
@@ -153,6 +174,9 @@ public class LoadManager : Singleton<LoadManager>
     {
         bTyping = false;
         sentences.Clear();
+        Debug.Log($"{dialogue.name}");
+        if (NameTag != null)
+            NameTag.text = dialogue.name;
         foreach (string sentence in dialogue.sentences)
         {
             sentences.Enqueue(sentence);
@@ -201,6 +225,8 @@ public class LoadManager : Singleton<LoadManager>
         {
             if (letter == '*')
                 Tmps.text += ',';
+            else if (letter == '\\')
+                Tmps.text += '\n';
             else
                 Tmps.text += letter;
             if (isSpeedUp)
@@ -217,6 +243,12 @@ public class LoadManager : Singleton<LoadManager>
             return true;
         //Debug.Log("End of conversation.");
         return false;
+    }
+    
+    public void NameTagSet(TextMeshProUGUI tmp)
+    {
+        NameTag = tmp;
+        NameTag.text = string.Empty;
     }
 
     public void TmpSet(TextMeshProUGUI tmp)

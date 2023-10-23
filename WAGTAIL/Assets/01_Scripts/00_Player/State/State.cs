@@ -123,14 +123,6 @@ public class State
         velocity.y = 0f;
     }
     #endregion
-
-    protected void ResetAnimatorTrigger()
-    {
-        player.animator.ResetTrigger("jump");
-        player.animator.ResetTrigger("landing");
-        player.animator.ResetTrigger("interaction");
-        player.animator.ResetTrigger("death");
-    }
     
     // State 바뀔 때 마다 출력
     public virtual void Enter()
@@ -149,7 +141,11 @@ public class State
     // State 교체 Logic
     public virtual void LogicUpdate()
     {
-
+        if (player.isDead)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
     }
 
     public virtual void PhysicsUpdate()

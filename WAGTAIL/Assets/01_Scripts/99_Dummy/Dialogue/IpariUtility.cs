@@ -113,6 +113,7 @@ namespace IPariUtility
         
         internal static Vector3 GetBezier(ref Vector3 s, ref Vector3 c, ref Vector3 d, float w = 0f)
         {
+            #region Omit
             Vector3 sc = (c - s);
             Vector3 cd = (d - c);
 
@@ -121,16 +122,42 @@ namespace IPariUtility
             Vector3 c2 = (b2 - a2);
 
             return a2 + (c2 * w);
+            #endregion
         }
 
         internal static Quaternion GetQuatBetweenVector(Vector3 from, Vector3 to, float ratio = 1f)
         {
+            #region Omit
+
             /********************************************
              *   주어진 두 벡터사이의 쿼터니언 값을 계산한다...
              * ***/
             float angle         = Vector3.Angle(from, to) * ratio;
             Vector3 cross       = Vector3.Cross(from, to);
             return Quaternion.AngleAxis(angle, cross);
+            #endregion
+        }
+
+        internal static  bool GetPlayerFloorinfo(out RaycastHit result, int layerMask, Vector3 startOffset=default, float extraDistance=0f)
+        {
+            #region Omit
+            CharacterController con = Player.Instance.controller;
+
+            float heightHalf        = con.height;
+            float radius            = con.radius;
+            float heightHalfOffset  = (heightHalf * .5f) - radius;
+            Vector3 playerPos       = con.transform.position;
+            Vector3 center          = (playerPos + con.center + startOffset);
+
+            return Physics.SphereCast(
+                center,
+                radius,
+                Vector3.down,
+                out result,
+                (heightHalf + .1f + extraDistance),
+                layerMask
+            );
+            #endregion
         }
 
         //internal static Vector3 AngleToDirZ(Transform transform, float v)

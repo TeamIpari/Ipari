@@ -14,7 +14,7 @@ public class AutoMoveLarva : MonoBehaviour
     public float DamagedAnimTimer = 1.5f;
     public float Timer = 0;
     
-    public MovePoint MPCenter;
+    public LarvaSpawner MPCenter;
     public Animator Animator;
     private Vector3 temp;
     private bool reverse;
@@ -61,14 +61,14 @@ public class AutoMoveLarva : MonoBehaviour
         transform.rotation = Quaternion.Euler(temp.x , temp.y -45f, temp.z);
     }
 
-    public void SetUp(MovePoint Center, bool delay = false)
+    public void SetUp(LarvaSpawner Center, bool delay = false)
     {
         MPCenter = Center;
         ObjSpeed = Center.MoveSpeed;
         ObjSize = Center.Polygon;
         CircleR = Center.CircleSize;
         reverse = Center.Reverse;
-        Debug.Log(reverse);
+        //Debug.Log(reverse);
         DamagedAnimTimer = Center.DamagedAnimTimer;
         rotAngle = reverse ? 90f : -90f;
         rotDirection = reverse ? 1f : -1f;
@@ -96,13 +96,53 @@ public class AutoMoveLarva : MonoBehaviour
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        /*************************************
+         *   띵호가 추가함.....
+         * ***/
+        if (other.gameObject.CompareTag("Player"))
+        {
+
+            Debug.Log($"사망");
+            other.gameObject.GetComponent<Player>().isDead = true;
+        }
+
+
+        /***************************************
+         *   PlatformObject에 대한 처리...
+         * ***/
+
+        //if (!other.gameObject.CompareTag("Platform")) return;
+
+        //bool isGround = (other.gameObject.GetComponent<Collision>().GetContact(0).normal.y > 0);
+        //bool NoParent = (transform.parent == null);
+        //bool SameParent = (transform.parent == collision.transform);
+
+        //if (isGround && (NoParent || SameParent))
+        //{
+        //    MPCenter.PlatformEnterCount = MPCenter.Larvas.Count; /*애벌레 개수...*/
+
+        //    /***/
+        //    PlatformObject obj = collision.gameObject.GetComponent<PlatformObject>();
+        //    if (obj == null) return;
+
+        //    for (int i = 0; i < MPCenter.PlatformEnterCount; i++)
+        //    {
+
+        //        MPCenter.Larvas[i].transform.parent = collision.transform;
+        //        obj.IgnoreCollisionExit(gameObject);
+        //        obj.IgnoreCollisionEnter(gameObject);
+        //    }
+        //}
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         /*************************************
          *   띵호가 추가함.....
          * ***/
         if (collision.collider.CompareTag("Player")){
-
             collision.collider.GetComponent<Player>().isDead = true;
         }
 

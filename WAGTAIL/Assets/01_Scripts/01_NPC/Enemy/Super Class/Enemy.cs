@@ -65,10 +65,29 @@ public class Enemy : Character
             }
         }
     }
+    public virtual void GoNextChapter()
+    {
+        //SceneLoader.GetInstance().LoadScene(nextChapterName);
+    }
 
     public override void CAttack(Vector3 P)
     {
         base.CAttack(P);
     }
 
+    public virtual void initializeUI()
+    {
+        // Add Hp UI Show Function
+    }
+
+    public virtual void Hit()
+    {
+        IsHit = true;
+    }
+
+    public virtual void DeadEnemy()
+    {
+        // Add Hp UI Hide Function
+
+    }
 }

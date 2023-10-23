@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4604105936163999148}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 282.7665, y: 17.992788, z: 177.13896}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -44,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4604105936163999148}
-  m_Mesh: {fileID: -2907462421268956602, guid: 0fecbec3d9158114f88210caa5b75ea1, type: 3}
+  m_Mesh: {fileID: -7266106996204146108, guid: 45872b49f86a0dd4f91a9703a699f97c, type: 3}
 --- !u!23 &2658792309041998969
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1f8db712aac7f50468b86864b40c21e1, type: 2}
+  - {fileID: 2100000, guid: c53b07ab2aac35245994da1bfdf9cce3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101,7 +101,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 116
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!65 &748995998
 BoxCollider:
@@ -115,7 +115,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1.1905038, y: 0.738371, z: 1.1711354}
-  m_Center: {x: 0, y: 0.3506536, z: -0.000000029802322}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7112770439190747382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,10 +132,16 @@ MonoBehaviour:
   height: 3
   range: 30
   autoTarget: {fileID: 0}
+  isReady: 0
+  isTarget: 0
   isSmall: 0
   Forward: {x: 0, y: 0, z: 0}
   PhysicsCheck: 0
   flight: 0
+  Gravity: 4
+  Rot: 10
+  correctionHeight: 0
+  correctionGravity: 2
 --- !u!1001 &5821376700595402941
 PrefabInstance:
   m_ObjectHideFlags: 0

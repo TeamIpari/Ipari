@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using IPariUtility;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -305,7 +306,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             {
                 #region Call_OnObjectPlatformStay
                 /**만약 해당 객체가 부모가 없을 때만 자식으로 넣는다.*/
-                if (Player.Instance.transform.parent == null && !PreventAddChild) {
+                if (Player.Instance.transform.parent == null && !PreventAddChild && Behaviors.Find(x => x.GetComponent<TrampolinePlatformBehaviour>() != null) == null) {
 
                     Player.Instance.transform.parent = this.transform;
                 }
@@ -342,7 +343,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private void OnCollisionEnter(Collision collision)
     {
         #region Omit
-        if (UsedCollision == false) return;
+        if (UsedCollision == false || collision.gameObject.layer==LayerMask.NameToLayer("Enemies")) return;
 
         /***********************************
          *   enter의 처리를 안하는 경우의 처리.

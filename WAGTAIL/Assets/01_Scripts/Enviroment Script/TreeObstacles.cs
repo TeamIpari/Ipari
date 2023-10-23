@@ -187,7 +187,7 @@ public sealed class TreeObstacles : MonoBehaviour
         _Body.Sleep();
 
         _Collider= GetComponent<Collider>();
-        maxRebound = rebound;
+        maxRebound = rebound = FallDownSpeed*.4f;
         #endregion
     }
 
@@ -196,6 +196,22 @@ public sealed class TreeObstacles : MonoBehaviour
         #region Omit
         if (other.gameObject.CompareTag("Platform"))
         {
+            if (rebound >= 0 && fallDownSpeed > 0f){
+
+                //Tree Sound 재생...
+                FModAudioManager.PlayOneShotSFX(
+                      FModSFXEventType.Tree_Obstacle,
+                      FModLocalParamType.TreeActionType,
+                      FModParamLabel.TreeActionType.TreeCrash,
+                      transform.position
+                  );
+
+                fallDownSpeed = -rebound;
+                fallDownRot -= rebound;
+                rebound -= maxRebound * ReboundValue;
+                if (rebound < 0) rebound = 0;
+            }
+
             //have ShatterObject...
             ShatterObject shatter = other.gameObject.GetComponent<ShatterObject>();
             if(shatter!=null)
@@ -231,8 +247,30 @@ public sealed class TreeObstacles : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         #region Omit
-        _hitColliders.Add(collision.collider);
 
+        /*****************************************
+         *   부딫혔을 때의 반동을 구현한다....
+         * ***/
+        if (rebound >= 0 && fallDownSpeed>0f)
+        {
+            //Tree Sound 재생...
+            FModAudioManager.PlayOneShotSFX(
+                  FModSFXEventType.Tree_Obstacle,
+                  FModLocalParamType.TreeActionType,
+                  FModParamLabel.TreeActionType.TreeCrash,
+                  transform.position
+              );
+
+            fallDownSpeed = -rebound;
+            fallDownRot -= rebound;
+            rebound -= maxRebound * ReboundValue;
+            if (rebound < 0) rebound = 0;
+        }
+
+
+        /********************************************
+         *    충돌한 플랫폼을 파괴한다....
+         * ****/
         if (collision.gameObject.CompareTag("Platform"))
         {
             //have ShatterObject...
@@ -248,26 +286,7 @@ public sealed class TreeObstacles : MonoBehaviour
             Destroy(collision.gameObject);
             return;
         }
-
-        //땅에 닿으면 튕겨난다.
-        if (rebound>=0)
-        {
-            //Tree Sound 재생...
-            FModAudioManager.PlayOneShotSFX(
-                  FModSFXEventType.Tree_Obstacle,
-                  FModLocalParamType.TreeActionType,
-                  FModParamLabel.TreeActionType.TreeCrash,
-                  transform.position,
-
-                  -1,
-                  -1
-              );
-
-            fallDownSpeed = -rebound;
-            fallDownRot -= rebound;
-            rebound -= maxRebound * ReboundValue;
-            if (rebound < 0) rebound = 0;
-        }
+        else _hitColliders.Add(collision.collider);
         #endregion
     }
 

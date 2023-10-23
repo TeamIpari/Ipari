@@ -8,23 +8,34 @@ public class BossNepenthesDieState : AIDieState
     //==========================================
     /////        properties Methods         ////
     //==========================================
-    private float curTimer;
+    private GameObject leftVine;
+    private GameObject rightVine;
+    private Animator animLeftVine;
+    private Animator animRightVine;
     private float brokenTime;
     private bool oneChance;
+    private string nextSceneName;
     //==========================================
     /////           magic Methods           ////
     //==========================================
-    public BossNepenthesDieState(AIStateMachine stateMachine) : base(stateMachine)
+    public BossNepenthesDieState(AIStateMachine stateMachine, GameObject LeftVine, GameObject RightVine, string nextSceneName) : base(stateMachine)
     {
 
+        this.leftVine = LeftVine;
+        this.rightVine = RightVine;
+        animLeftVine = LeftVine.GetComponent<Animator>();
+        animRightVine = rightVine.GetComponent<Animator>();
+        this.nextSceneName = nextSceneName;
     }
 
     public override void Enter()
     {
         base.Enter();
         AISM.Animator.SetTrigger("isDeath");
+        animLeftVine.SetTrigger("isDeath");
+        animRightVine.SetTrigger("isDeath");
         curTimer = 0;
-        brokenTime = 3.2f;
+        brokenTime = 1.5f;
         oneChance = false;
     }
 
@@ -44,7 +55,8 @@ public class BossNepenthesDieState : AIDieState
         curTimer += Time.deltaTime;
         if(curTimer > brokenTime && !oneChance)
         {
-            BossRoomFieldManager.Instance.EnableBrokenPlatformComponent();
+            BossRoomFieldManager.Instance.EnableBrokenPlatformComponent(nextSceneName);
+            //AISM.character.GetComponent<Enemy>().GoNextChapter();
             oneChance = true;
         }
     }

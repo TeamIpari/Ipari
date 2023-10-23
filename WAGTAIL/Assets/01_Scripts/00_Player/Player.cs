@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     // =======================================
     public float slopeSpeed = 0f;
     public float respawnTime;
+    public bool isSwimming = false;
 
     //========================================
     //              지훈 추가               //
@@ -57,9 +58,10 @@ public class Player : MonoBehaviour
     private int _numFound;
     [Header("Interaction")]
     public GameObject Head;
-    public Transform InteractionPoint;
-    public Transform EquipPoint;
-    public Transform ThrowEquipPoint;
+    public GameObject HoldingPoint;
+    public Transform  InteractionPoint;
+    public Transform  EquipPoint;
+    public Transform  ThrowEquipPoint;
     
     [Header("State Check")]
     public bool isIdle = true;
@@ -84,6 +86,7 @@ public class Player : MonoBehaviour
     public DropState drop;
     public PullInOutState pullInout;
     public DeathState death;
+    public StiffenState stiffen;
 
     //============================================//
     // Move
@@ -188,8 +191,9 @@ public class Player : MonoBehaviour
         carry       = new CarryState(this, movementSM);
         pickup      = new PickUpState(this, movementSM);
         drop        = new DropState(this, movementSM);
-        pullInout   = new PullInOutState(this, movementSM);
+        pullInout   = new PullInOutState(this, movementSM, HoldingPoint);
         death       = new DeathState(this, movementSM);
+        stiffen     = new StiffenState(this, movementSM);
 
         // 시작할때 Init 해줄 State 지정
         movementSM.Initialize(idle);
@@ -211,8 +215,6 @@ public class Player : MonoBehaviour
 
         movementSM.currentState.LogicUpdate();
 
-        //Debug.Log(isCarry);
-        // 이거 그냥 Carry State or Throw State 에 넣으면 되는거 아닌가?
         if(isCarry)
         {
             EnemySearching();
@@ -241,14 +243,16 @@ public class Player : MonoBehaviour
         //    currentInteractable = _colliders[0].gameObject;
         //}
         #endregion
+        
+
         if(currentInteractable == null)
         {
-            GameObject obj = FindViewTarget(transform, 3,holdTargetMask);
+            GameObject obj = FindViewTarget(transform, 1.5f ,holdTargetMask);
             if (obj == null)  return;
             var interactable = obj.GetComponent<IInteractable>();
             if (interactable == null)  return;
-            interactable.Interact(gameObject);
-            currentInteractable = obj;
+            if (interactable.Interact(gameObject))
+                currentInteractable = obj;
         }
 
         else

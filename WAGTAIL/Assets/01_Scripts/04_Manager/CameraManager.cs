@@ -7,11 +7,7 @@ using UnityEngine;
 
 public enum CameraType
 {
-    Village,
     Main,
-    Side,
-    Top,
-    Back,
     Death
 }
 
@@ -103,25 +99,24 @@ public class CameraManager : Singleton<CameraManager>
         // 없어서 추가함.
         GameObject obj = GameObject.Find("BossRoomCM");
         CinemachineVirtualCamera vcam = obj.GetComponent<CinemachineVirtualCamera>();
+        Debug.Log($"{vcam.gameObject.name}");
         CinemachineBasicMultiChannelPerlin vcamperl = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        
+        Debug.Log($"{vcamperl.gameObject.name}");
         vcamperl.m_AmplitudeGain = value;
         shakeTimer = time;
-        StartCoroutine(Shaking(vcamperl)); ;
+        StartCoroutine(Shaking(vcamperl, shakeTimer)); ;
     }
 
-    private IEnumerator Shaking(CinemachineBasicMultiChannelPerlin vcam)
+    private void FixedUpdate()
     {
+        
+    }
 
-        while (shakeTimer > 0)
-        {
-            yield return new WaitForSeconds(0.001f);
-            shakeTimer -= Time.deltaTime;
-            if (shakeTimer <= 0f)
-            {
-                vcam.m_AmplitudeGain = 0f;
-            }
-        }
+    private IEnumerator Shaking(CinemachineBasicMultiChannelPerlin vcam, float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        vcam.m_AmplitudeGain = 0;
     }
 
 }

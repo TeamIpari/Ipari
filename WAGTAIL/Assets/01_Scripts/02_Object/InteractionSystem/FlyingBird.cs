@@ -341,19 +341,8 @@ public sealed class FlyingBird : MonoBehaviour
         #region Omit
         Transform birdTr = transform;
 
-        /**회전에 필요한 모든값들을 구한다...*/
-        Vector3 forward = prevDir;
-        Vector3 nextDir = (lookPos - birdTr.position).normalized;
-        Vector3 cross = Vector3.Cross(forward, nextDir);
-        float dirInput = Vector3.Dot(cross, Vector3.up);
-        float rotDir = (dirInput >= 0 ? 1f : -1f);
-
-        float acosInput = Mathf.Clamp(Vector3.Dot(forward, nextDir), -1f, 1f);
-        float radian = Mathf.Acos(acosInput);
-        float degree = (Mathf.Rad2Deg * radian * rotDir);
- 
-        Quaternion rotQuat   = Quaternion.AngleAxis(degree*ratio, Vector3.up);
-        birdTr.rotation = (startQuat * rotQuat);
+        Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(prevDir, lookPos, ratio);
+        birdTr.rotation    = (rotQuat * startQuat);
         #endregion
     }
 

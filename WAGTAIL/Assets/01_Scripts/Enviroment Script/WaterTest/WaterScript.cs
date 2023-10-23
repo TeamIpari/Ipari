@@ -95,16 +95,18 @@ public sealed class WaterScript : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         /*PlayerMask만 체크하여 이동을 시킴.*/
-        if(other.gameObject.CompareTag( "Player")){
-
+        if(other.gameObject.CompareTag( "Player"))
+        {
+            _player.isSwimming = true;
             _player.controller.Move(WaterDir * WaterForce);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player")/* && _player.movementSM.currentState.Equals(_player.jump)*/){
-
+        if (other.gameObject.CompareTag("Player")/* && _player.movementSM.currentState.Equals(_player.jump)*/)
+        {
+            _player.isSwimming = false;
             _player.jumpHeight = _playerDefaultJumPow;
         }
         else return;

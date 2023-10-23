@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using TMPro;
 using UnityEngine;
 
@@ -9,8 +8,7 @@ using UnityEngine;
 public enum CanvasType
 {
     MainMenu,
-    GameUI,
-    EndScreen
+    GameUI
 }
 
 public enum LanguageType
@@ -23,10 +21,11 @@ public enum LanguageType
 
 public enum GameUIType
 {
-    Jump,
     Interactable,
     Tutorial,
-    Score,
+    Coin,
+    CoCosi,
+    TextBox,
     Chapter,
     Death
 }
@@ -47,8 +46,9 @@ public class UIManager : Singleton<UIManager>
 
         _gameUIControllerList = GetCanvas(CanvasType.GameUI).GetComponentsInChildren<GameUIController>().ToList();
         ActiveGameUI(GameUIType.Death, false);
-        ActiveGameUI(GameUIType.Interactable, false);
-        ActiveGameUI(GameUIType.Jump, false);
+        
+        ActiveGameUI(GameUIType.TextBox,false);
+        //ActiveGameUI(GameUIType.Interactable, false);
 
         // 테스트 끝나면 CanvasType.MainMenu로 바꿔야함
         //SwitchCanvas(CanvasType.MainMenu);

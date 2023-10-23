@@ -3,11 +3,23 @@ using IPariUtility;
 
 public class MiniNepenthes : Enemy
 {
+
+    //============================================
+    /////               Fields              //////
+    //============================================
     [Header("MiniNepenthes Inspector")]
     public Bullet BulletPrefab;
     public Transform ShotPosition;
     public float ShotSpeed;
     public int Angle;
+    public bool isLoopAttack;
+
+
+    //============================================
+    /////           Private Fields          //////
+    //============================================
+    [SerializeField] private float delayTime = 0; // 공격 전까지의 딜레이
+    private float curTimer = 0;
 
     [SerializeField] private bool debugMode = false;
 
@@ -53,14 +65,15 @@ public class MiniNepenthes : Enemy
     void Start()
     {
         AiSM = AIStateMachine.CreateFormGameObject(this.gameObject);
-
-        AiIdle = new NepenthesIdleState(AiSM, viewRotateZ, horizontalViewHalfAngle, viewTargetMask,viewObstacleMask);
-        AiAttack = new NepenthesAttackState(AiSM);
-        SetAttackPattern();
-        AiWait = new NepenthesWaitState(AiSM, WaitRate);
-        
-        AiSM.Initialize(AiIdle);
-
+        if (!isLoopAttack)
+            StateSetting();
+        else
+        {
+            AiAttack = new NepenthesAttackState(AiSM, null);
+            AiWait = new NepenthesWaitState(AiSM, WaitRate);
+            
+            AiSM.Initialize(AiAttack);
+        }
         AttackTimer = 0;
         if (ShotSpeed <= 0)
             ShotSpeed = 1.0f;
@@ -71,26 +84,16 @@ public class MiniNepenthes : Enemy
         
     }
 
-    public override void CAttack(Vector3 Pos)
-    {
-
-        // 방향 벡터를 구하고 해당 방향으로 탄환을 쏨.
-        Vector3 PlayerPos = new Vector3(Pos.x, ShotPosition.position.y, Pos.z);
-        Vector3 direction = PlayerPos - ShotPosition.position;
-
-        GameObject Bomb = Instantiate(BulletPrefab.gameObject);
-        Bomb.GetComponent<Bullet>().SetDirection(direction.normalized * ShotSpeed);
-        Bomb.transform.position = ShotPosition.position;
-        Destroy(Bomb, 2f);
-    }
-
-
     // Update is called once per frame
     void Update()
     {
         isAttack();
-        if (AiSM != null)
+        if (AiSM != null && delayTime < curTimer )
+        {
             AiSM.CurrentState.Update();
+        }
+        else if(delayTime >= curTimer)
+            curTimer += Time.deltaTime;
     }
 
     bool GetPlayerFloorInfo(out RaycastHit hit, CharacterController cc, float downMovespeed = 0f)
@@ -116,7 +119,6 @@ public class MiniNepenthes : Enemy
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("AA");
         CharacterController cc = collision.gameObject.GetComponent<CharacterController>();
         if (collision.collider.CompareTag("Player") && cc.velocity.y <= 0)
         {
@@ -132,4 +134,30 @@ public class MiniNepenthes : Enemy
             collision.collider.GetComponent<Player>().isDead = true;
         }
     }
+
+    //===========================================
+    /////          Core Methods             /////
+    //===========================================
+    public override void CAttack(Vector3 Pos)
+    {
+        // 방향 벡터를 구하고 해당 방향으로 탄환을 쏨.
+        Vector3 PlayerPos = new Vector3(Pos.x, ShotPosition.position.y, Pos.z);
+        Vector3 direction = PlayerPos - ShotPosition.position;
+
+        GameObject Bomb = Instantiate(BulletPrefab.gameObject);
+        Bomb.GetComponent<Bullet>().SetDirection(direction.normalized * ShotSpeed);
+        Bomb.transform.position = ShotPosition.position;
+        Destroy(Bomb, 2f);
+    }
+
+    void StateSetting()
+    {
+
+        AiIdle = new NepenthesIdleState(AiSM, viewRotateZ, horizontalViewHalfAngle, viewTargetMask, viewObstacleMask);
+        AiAttack = new NepenthesAttackState(AiSM, AiIdle);
+        AiWait = new NepenthesWaitState(AiSM, WaitRate);
+
+        AiSM.Initialize(AiIdle);
+    }
+
 }

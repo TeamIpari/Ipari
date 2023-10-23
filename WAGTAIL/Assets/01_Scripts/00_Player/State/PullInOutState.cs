@@ -1,9 +1,9 @@
 using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
+using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 /***************************************************
  *  플레이어가 무언가를 당기는 상태가 구현된 클래스입니다.
@@ -34,10 +34,14 @@ public sealed class PullInOutState : State
     private bool        _applyIK     = false;
 
     /**IK 참조 관련...*/
-    private GameObject  _GrabPos;
-    private Transform   _LArm, _RArm;
-    private Transform   _LForearm, _RForearm;
-    private Transform   _bip01Pelvis;
+    private GameObject     _GrabPos;
+    private PullableObject _PulledTarget;
+    private Transform      _LArm, _RArm;
+    private Transform      _LForearm, _RForearm;
+    private Transform      _LHand, _RHand;
+    private float          _arm2ForearmLen, _forearm2HandLen;
+
+    private bool _padIsVibration = false;
 
 
 
@@ -51,9 +55,10 @@ public sealed class PullInOutState : State
         /***********************************************************
          *  플레이어가 잡는 위치 및 양 팔들의 트랜스폼의 참조를 구한다...
          * ***/
-        if(grapPos==null)
-        {
-            _GrabPos = player.transform.Find("HoldingPoint").gameObject;
+        if (grapPos == null){
+
+            Transform bone = player.transform.Find("HoldingPoint");
+            if (bone) _GrabPos = bone.gameObject;
         }
         else _GrabPos = grapPos;
 
@@ -61,14 +66,24 @@ public sealed class PullInOutState : State
         Transform modeling      = playerTr.Find("NewTavuti@Modeling");
         Transform con           = modeling.Find("NewTavuti_Con");
         Transform bip01         = con.Find("Bip001");
-        Transform bip01Pelvis   = _bip01Pelvis = bip01.Find("Bip001 Pelvis");
+        Transform bip01Pelvis   = bip01.Find("Bip001 Pelvis");
         Transform bip01Spine    = bip01Pelvis.Find("Bip001 Spine").Find("Bip001 Spine1");
         Transform bipNeck       = bip01Spine.Find("Bip001 Neck");
 
-        _LArm     = bipNeck.Find("Bip001 L Clavicle");
-        _RArm     = bipNeck.Find("Bip001 R Clavicle");
-        _LForearm = _LArm.transform.Find("Bip001 L UpperArm").Find("Bip001 L Forearm");
-        _RForearm = _RArm.transform.Find("Bip001 R UpperArm").Find("Bip001 R Forearm");
+        _LArm = bipNeck.Find("Bip001 L Clavicle");
+        _RArm = bipNeck.Find("Bip001 R Clavicle");
+
+        _LForearm    = _LArm.Find("Bip001 L UpperArm").Find("Bip001 L Forearm");
+        _LHand       = _LForearm.Find("Bip001 L Hand");
+
+        _RForearm   = _RArm.Find("Bip001 R UpperArm").Find("Bip001 R Forearm");
+        _RHand      = _RForearm.Find("Bip001 R Hand");
+
+        _LForearm = _LForearm.Find("Bip001 L ForeTwist");
+        _RForearm = _RForearm.Find("Bip001 R ForeTwist");
+
+        _arm2ForearmLen  = (_LHand.position - _LArm.position).magnitude;
+        _forearm2HandLen = (_LHand.position - _LForearm.position).magnitude;
 
 
         /*********************************************************************
@@ -85,8 +100,22 @@ public sealed class PullInOutState : State
 
     public override void Enter()
     {
+        #region  Omit
         base.Enter();
+        
+        /***********************************************************
+         *   현재 플레이어가 상호작용한 물체가 없으면 상태를 종료한다...
+         ********/
+        GameObject target;
+        if ((target = player.currentInteractable)==null) return;
+        if ((PulledTarget = target.GetComponent<PullableObject>()) == null) return;
+        
+        /**당기기를 시작한다....*/
+        if(_progressCoroutine!=null) player.StopCoroutine(_progressCoroutine);
+        _progressCoroutine = player.StartCoroutine(PullingProgress());
+        
         player.isPull = true;
+        #endregion
     }
 
     public override void Exit()
@@ -94,6 +123,7 @@ public sealed class PullInOutState : State
         #region Omit
         base.Exit();
         player.isPull = false;
+        player.currentInteractable = null;
 
         if (_progressCoroutine != null){
 
@@ -116,30 +146,9 @@ public sealed class PullInOutState : State
 
     
 
-
-
     //=================================================
     ////////            Core methods            //////
     //=================================================
-    public void HoldTarget(GameObject target)
-    {
-        #region Omit
-        Vector3 targetDistance = (target.transform.position - player.transform.position);
-
-        bool isSameDir  = Vector3.Dot(player.transform.forward, targetDistance) >= 0f;
-        bool isPullable = (PulledTarget = target.GetComponent<PullableObject>());
-
-        /**당길 수 있는 객체라면 당기는 작업을 실행한다..*/
-        if(isPullable){
-
-            player.movementSM.ChangeState(this);
-
-            if(_progressCoroutine!=null) player.StopCoroutine(_progressCoroutine);
-            _progressCoroutine = player.StartCoroutine(PullingProgress());
-        }
-        #endregion
-    }
-
     private IEnumerator PullingProgress()
     {
         #region Omit
@@ -196,39 +205,68 @@ public sealed class PullInOutState : State
         /*******************************************************
          *   해당 PullableObject를 잡고, 끊어질 때까지 당긴다.....
          * ***/
-        _applyIK = true;
-
-        float fullLen    = PulledTarget.MaxLength;
-        float fullLenDiv = (1f/fullLen);
-        bool isMove      = false;
-
-        /**대상을 잡는다...*/
         PulledTarget.HoldingPoint = _GrabPos;
-        while(PulledTarget.IsBroken==false)
+
+        float fullLen       = PulledTarget.MaxLength;
+        float fullLenDiv    = (1f / fullLen);
+        float limitLenDiv   = (1f / PulledTarget.MaxScale);
+        bool isMove         = false;
+        _applyIK            = true;
+
+        while (PulledTarget.IsBroken==false)
         {
             /******************************************
              *   당기는 동작에 필요한 계산들을 모두 구한다...
              * ***/
-            Vector3 playerDir   = playerTr.forward;
-            Vector3 lookDir     = (rootPoint - playerTr.position).normalized;
-            Vector3 moveDir     = new Vector3(input.x, 0f, input.y);
-            bool isPulling      = Vector3.Dot(input, lookDir) < 0;
-            float deltaTime     = Time.deltaTime * 2f;
-            float exLenRatio    = Mathf.Clamp(PulledTarget.NormalizedLength - .7f, 0f, .85f);
-            float speed         = fullLen;
-
-            /**당겨질 때에만 저항력을 적용한다....*/
-            if (isPulling)
-                    speed -= (fullLen * exLenRatio);
+            Vector3 playerDir    = playerTr.forward;
+            Vector3 lookDir      = (rootPoint - playerTr.position).normalized;
+            Vector3 moveDir      = new Vector3(input.x, 0f, input.y).normalized;
+            bool isPulling       = Vector3.Dot(moveDir, lookDir) <= 0;
+            float normalizedLen  = PulledTarget.NormalizedLength;
+            float nearLimitRatio = (normalizedLen * limitLenDiv);
+            float deltaTime      = Time.deltaTime * 2f;
+            float speed          = fullLen;
 
 
-            /**바라볼 방향을 향하는 쿼터니언을 구한다...*/
+            /**********************************************
+             *    키입력을 통해 당기고 있다면, 저항력에 따른 
+             *    속도감소 및 패드진동을 적용한다...
+             * *****/
+            if (isPulling && moveDir.sqrMagnitude>0f && normalizedLen >= .95f)
+            {
+                speed -= (fullLen * Mathf.Clamp(nearLimitRatio, 0f, .9f));
+
+                /**게임패드를 진동시킨다...*/
+                if(!_padIsVibration && normalizedLen>=1f){
+
+                    _padIsVibration = true;
+                    Gamepad.current?.SetMotorSpeeds(0.0123f, 0.0134f);
+                }
+            }
+
+            /**진동을 마무리 짓는다...*/
+            else if (_padIsVibration){
+
+                _padIsVibration = false;
+                Gamepad.current?.SetMotorSpeeds(0f, 0f);
+            }
+            speed = Mathf.Clamp(speed, 0f, 4.1f);
+
+
+            /****************************************************
+             *   플레이어가 바라볼 방향을 향하는 쿼터니언을 구한다...
+             * ***/
             lookDir.y = 0f;
             Quaternion rotQuat  = IpariUtility.GetQuatBetweenVector(playerDir, lookDir);
 
-            /**상호작용키를 입력시 손을 놓는다...*/
-            if(Input.GetKeyDown(KeyCode.F))
+            
+
+            /**********************************************
+             *   상호작용키가 입력되면 당기기를 그만둔다...
+             * ****/
+            if(interactAction.triggered)
             {
+                GamePadShake(.1f, .1f, .1f);
                 _applyIK = false;
                 animator.SetFloat("speed", 0f);
 
@@ -239,16 +277,15 @@ public sealed class PullInOutState : State
                 yield break;
             }
 
-            /**최종 적용...*/
+            
+            /*********************************************
+             *   계산한 이동량 및 애니메이션을 최종적용한다...
+             * ***/
             playerCon.SimpleMove(moveDir * speed * 2f);
             playerTr.rotation = (rotQuat * playerTr.rotation);
 
-
-            /**이동에 따른 애니메이션 적용...*/
             SetMoveAnim(ref isMove, input.sqrMagnitude);
-
-            /**이동속도*/
-            animator.SetFloat("speed", (speed * fullLenDiv));
+            animator.SetFloat("speed", speed * fullLenDiv);
 
             yield return null;
         }
@@ -257,6 +294,8 @@ public sealed class PullInOutState : State
         /**********************************************
          *   줄이 끊어지고 플레이어가 넘어진다.....
          * ****/
+        GamePadShake(1f, 1f, .1f);
+
         _applyIK = false;
         animator.SetFloat("speed", 0f);
         animator.Play(PullAnimation.PUT);
@@ -266,6 +305,31 @@ public sealed class PullInOutState : State
 
         player.isPull = false;
         player.movementSM.ChangeState(player.idle);
+        #endregion
+    }
+
+    private void GamePadShake(float leftMoter, float rightMoter, float time)
+    {
+        #region Omit
+        Gamepad current;
+        if((current= Gamepad.current)!=null)
+        {
+            current.SetMotorSpeeds(leftMoter, rightMoter);
+            player.StartCoroutine(GamePadShakeProgress(leftMoter, rightMoter, time));
+        }
+        #endregion
+    }
+
+    private IEnumerator GamePadShakeProgress(float leftMoter, float rightMoter, float time)
+    {
+        #region Omit
+
+        while((time-=Time.deltaTime)>0f)
+        {
+            yield return null;
+        }
+
+        Gamepad.current.SetMotorSpeeds(0f, 0f);
         #endregion
     }
 
@@ -291,53 +355,65 @@ public sealed class PullInOutState : State
         #region Omit
         if (_applyIK == false) return;
 
-        /*******************************************
-         *   양 팔이 잡을 위치를 구한다....
-         * ***/
-        int     boneIndex = -1;
-        Vector3 forward   = player.transform.forward;
-        for(int i=PulledTarget.BoneCount-2; i>=0; i--)
-        {
-            Vector3 currPos  = PulledTarget.GetBonePosition(i);
-            Vector3 currDir  = (currPos - _bip01Pelvis.position).normalized;
-            
-            /**뒤에 있다면 제외한다...*/
-            if(Vector3.Dot(forward, currDir)<0) 
-                continue;
-
-            boneIndex = i;
-            break;
-        }
-
-        /**실패했을 경우 기본값을 사용한다...*/
-        if (boneIndex < 0) boneIndex = (PulledTarget.BoneCount - 2);
-
-        float boneLen   = PulledTarget.GetBoneLength(boneIndex);
-        Vector3 bonePos = PulledTarget.GetBonePosition(boneIndex);
-        Vector3 boneDir = PulledTarget.GetBoneDir(boneIndex);
-
-        Vector3 right   = Vector3.Cross(boneDir, Vector3.up);
-        Vector3 LgrabPos = (bonePos + boneDir * boneLen*.6f);
-        Vector3 RgrabPos = (bonePos + boneDir * boneLen * .8f) + (right* .04f);
-
-
         /*********************************************
-         *   양 팔을 지정한 위치로 회전시킨다...
+         *   잡게될 지점과, 잡은 본의 방향을 구한다....
          * ******/
-        Vector3 LArmDir    = (_LForearm.position - _LArm.position).normalized;
-        Vector3 LArmTarget = (LgrabPos - _LArm.position).normalized;
 
-        Vector3 RArmDir    = (_RForearm.position - _RArm.position).normalized;
-        Vector3 RArmTarget = (RgrabPos - _RArm.position).normalized;
+        /**손이 잡게될 위치를 얻어온다...*/
+        Vector3 grabPos, grabDir;
+        PulledTarget.GetBonePositionAndDirFromLength(
+            (PulledTarget.MaxLength - .1f), 
+            out grabPos, 
+            out grabDir
+        );
 
-        Quaternion LRotQuat = IpariUtility.GetQuatBetweenVector(LArmDir, LArmTarget);
-        Quaternion RRotQuat = IpariUtility.GetQuatBetweenVector(RArmDir, RArmTarget);
+        /**양손이 향하게될 오프셋을 구한다....*/
+        Vector3 grabRight = -Vector3.Cross(Vector3.up, grabDir);
 
-        /**최종적용*/
-        //Debug.DrawLine(_LArm.position, _LArm.position + LArmTarget * 10f, Color.red);
-        //Debug.DrawLine(_RArm.position, _RArm.position + RArmTarget * 10f, Color.red);
-        _LArm.rotation = (LRotQuat * _LArm.rotation);
-        _RArm.rotation = (RRotQuat * _RArm.rotation);
+
+        /******************************************************
+         *   각 본들이 위치해야할 위치와 회전값과 방향을 구한다...
+         * ******/
+
+        /**Hands...*/
+        Vector3 LHandGoalPos  = grabPos + (grabRight * -.02f);
+        Vector3 LHandDir      = _LHand.transform.up;
+        Vector3 RHandGoalPos  = grabPos + (grabRight * .1f);
+        Vector3 RHandDir      = _RHand.transform.up;
+
+        /**ForeArms....*/
+        Vector3 LForeArmDir     = (_LHand.position - _LForearm.position).normalized;
+        Vector3 LForeArmGoalDir = (LHandGoalPos - _LForearm.position).normalized;
+        Vector3 LForeArmPos     = LHandGoalPos + (_LHand.right*_forearm2HandLen);
+        Vector3 RForeArmDir       = (_RHand.position - _RForearm.position).normalized;
+        Vector3 RForeArmGoalDir   = (RHandGoalPos - _RForearm.position).normalized;
+        Vector3 RForeArmPos       = RHandGoalPos + (_RHand.right * _forearm2HandLen);
+
+        /**Arms...*/
+        Vector3 LArmDir     = (_LForearm.position - _LArm.position).normalized;
+        Vector3 LArmGoalDir = (LHandGoalPos - _LArm.position).normalized;
+        Vector3 LArmPos     = LForeArmPos - (LArmGoalDir * _arm2ForearmLen);
+        Vector3 RArmDir        = (_RForearm.position - _RArm.position).normalized;
+        Vector3 RArmGoalDir    = (RHandGoalPos - _RArm.position).normalized;
+        Vector3 RArmPos        = RForeArmPos - (RArmGoalDir * _arm2ForearmLen);
+
+
+        /************************************************
+         *    각 본들에게 최종 적용을 한다.....
+         * ****/
+        _LArm.rotation = (IpariUtility.GetQuatBetweenVector(LArmDir, LArmGoalDir) * _LArm.rotation);
+        _RArm.rotation = (IpariUtility.GetQuatBetweenVector(RArmDir, RArmGoalDir) * _RArm.rotation);
+
+        //_LForearm.position = LForeArmPos;
+        //_LForearm.rotation = (IpariUtility.GetQuatBetweenVector(LForeArmDir, LForeArmGoalDir) * _LForearm.rotation);
+        //_RForearm.position = RForeArmPos;
+        //_RForearm.rotation = (IpariUtility.GetQuatBetweenVector(RForeArmDir, RForeArmGoalDir) * _RForearm.rotation);
+
+        _LHand.rotation = (IpariUtility.GetQuatBetweenVector(LHandDir, grabRight) * _LHand.transform.rotation);
+        //_LHand.position = LHandGoalPos;
+        _RHand.rotation = (IpariUtility.GetQuatBetweenVector(RHandDir, -grabRight) * _RHand.transform.rotation);
+       // _RHand.position = RHandGoalPos;
+
         #endregion
     }
 }

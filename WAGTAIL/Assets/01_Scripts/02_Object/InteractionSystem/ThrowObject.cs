@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using IPariUtility;
 using UnityEngine.Serialization;
-using FMODUnity;
+using UnityEngine.Events;
 
 //=================================================
 // 플레이어가 들고 던질 수 있는 오브젝트의 기반이 되는 클래스.
@@ -12,6 +12,13 @@ using FMODUnity;
 [AddComponentMenu("InteractionSystem/ThrowObject")]
 public class ThrowObject : MonoBehaviour, IInteractable
 {
+    #region Define
+    [System.Serializable]
+    public sealed class ThrowObjectEvent : UnityEvent
+    { 
+    }
+    #endregion
+
     //==========================================================
     //                  Properties And Fields                 //
     //==========================================================
@@ -35,7 +42,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private Vector3 _endPos;
     Vector3 spawnPoint;
 
-    public string InteractionPrompt { get; } = string.Empty;
+    public string InteractionPrompt    { get; set; } = "던진다";
+    public Vector3 InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
 
     // Player Properties
     private Player _player;
@@ -50,18 +58,25 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private const float LerpTime = 2f;
     private const float PickUpDelayTime = 0.3f;
     private const float PickUpTime = 2.5f;
+    private float flightTime = 0;
 
     //=================================================================
     //                    Test Properties                    
     //=================================================================
     [Header("Test Properties")]
+    [SerializeField] public bool isReady;
     [SerializeField] private bool isTarget;
     [SerializeField] private bool isSmall;
     [SerializeField] private Vector3 Forward;
     [SerializeField] private bool PhysicsCheck = false;
     [SerializeField] private bool flight = false;
+    [SerializeField] private float Gravity = 7;
     private Animator _animator;
-    // 위의 Properties는 테스트용으로 나중에 삭제 예정
+    [SerializeField] private float Rot = 12;
+    [SerializeField] private float correctionHeight = 0f;
+    [SerializeField] private const float correctionForward = 1.5f;
+    [SerializeField] private float correctionGravity = 0f;
+    // 위의 Properties는 테스트용으로 나중에 삭제 예정( 안할수도?)
 
     // Property
     public bool GetPhyscisCheck
@@ -72,15 +87,22 @@ public class ThrowObject : MonoBehaviour, IInteractable
         }
     }
 
+    [SerializeField] public ThrowObjectEvent OnPickUp;
+    [SerializeField] public ThrowObjectEvent OnThrow;
+
+
     //=================================================================
     //                      Magic Methods          
     //=================================================================
     private void Start()
     {
+        isReady = true;
+        flight = true;
         // Caching
         _transform = GetComponent<Transform>();
         _collider = GetComponent<Collider>();
         _rigidbody = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
 
         // Player Caching
         _player = Player.Instance;
@@ -92,16 +114,10 @@ public class ThrowObject : MonoBehaviour, IInteractable
         _playerHeadPos = _playerHead.transform;
         spawnPoint = this.transform.position;
 
-
-        //_center = new GameObject
-        //{
-        //    transform =
-        //    {
-        //        position = _transform.position + (_collider == null ? Vector3.zero : _collider.bounds.center),
-        //        parent = _transform
-        //    },
-        //    name = "Center"
-        //};
+        _center = new GameObject();
+        _center.transform.parent = this.transform;
+        _center.transform.position = (gameObject.GetComponent<Collider>() == null ? Vector3.zero : gameObject.GetComponent<Collider>().bounds.center);
+        _center.name = "Center";
     }
 
     private void FixedUpdate()
@@ -110,12 +126,22 @@ public class ThrowObject : MonoBehaviour, IInteractable
             ResetPoint();
         if (!isTarget)
             PhysicsChecking();
-        else 
-            _rigidbody.velocity += -Vector3.up * .05f;
+        else if(isTarget )
+            _rigidbody.velocity += -Vector3.up * (Gravity * 0.1f);
+
+        FlightRotate();
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Debug.Log($"{collision.gameObject.layer}");
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemies"))
+        {
+            Debug.Log("AA");
+            ResetPoint();
+            return;
+        }
         bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
                        !collision.gameObject.CompareTag("Player");
         if (bTagHit)
@@ -123,6 +149,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             //Debug.Log($"hit name = {collision.gameObject.name}");
             flight = false;
             PhysicsCheck = false;
+            isTarget = false;
             _rigidbody.useGravity = true;
             if (_animator != null)
             {
@@ -131,12 +158,23 @@ public class ThrowObject : MonoBehaviour, IInteractable
             }
             else
                 _rigidbody.freezeRotation = false;
-            _rigidbody.velocity += Physics.gravity * .05f;
+            //_rigidbody.velocity += Physics.gravity * Gravity;
+            //_rigidbody.velocity += -Vector3.up * (Gravity / 10f);
+            flightTime = 1;
         }
         if (_bounceDir == default)
         {
             _bounceDir = RandomDirection().normalized;
             _rigidbody.velocity += _bounceDir;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<Deathzone>() != null)
+        {
+            Debug.Log("BB");
+            ResetPoint();
         }
     }
 
@@ -148,19 +186,28 @@ public class ThrowObject : MonoBehaviour, IInteractable
         // PickUp logic
         if (_player.currentInteractable == null)
         {
+            if (!isReady)
+                return false;
             _rigidbody.useGravity = false;
             _rigidbody.freezeRotation = true;
             _rigidbody.isKinematic = true;
             PhysicsCheck = false;
             flight = false;
             _collider.isTrigger = true;
+            if(_animator != null)
+                _animator.SetTrigger("Caught");
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.velocity = Vector3.zero;
             _player.isPickup = true;
+            isTarget = false;
+            isReady = false;
+            return true;
         }
 
         else
         {
+            _transform.SetParent(null);
+            isReady = false;
             StartCoroutine(Throwing(interactor));
             //_player.isCarry = false;
             return true;
@@ -179,6 +226,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     //=================================================================
     private IEnumerator PickUp(float lerpTime, float pickUpTime)
     {
+        #region Omit
         _player.isPickup = true;
         // Object가 손에 붙어서 움직이지 않도록 설정
         _rigidbody.useGravity = false;
@@ -218,12 +266,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
             yield return new WaitForSecondsRealtime(0.017f);
         }
         _transform.SetParent(_playerHead.transform);
+        OnPickUp?.Invoke();
+        #endregion
     }
 
     private IEnumerator Throwing(GameObject interactor)
     {
         // Object 종속을 풀어줌
-        _transform.SetParent(null);
         if (_player.target != null)
         {
             Player.Instance.GetComponent<CharacterController>().enabled = false;
@@ -233,15 +282,15 @@ public class ThrowObject : MonoBehaviour, IInteractable
                 _player.target.transform.position.z));
             Player.Instance.GetComponent<CharacterController>().enabled = true;
         }
-        Debug.Log($"{_player.target}");
+        //Debug.Log($"{_player.target}");
         yield return new WaitForSecondsRealtime(0.1f);
         if (_animator != null)
             _animator.SetTrigger("Flight");
-
+        
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
         _rigidbody.useGravity = true;
         _rigidbody.freezeRotation = false;
-        _rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        //_rigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _rigidbody.isKinematic = false;
 
         if (_player.target == null)
@@ -254,9 +303,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
         else if (_player.target != null)
         {
             float distance = Vector3.Distance(_player.target.transform.position, this.transform.position);
-            float flightTime = 1f * (distance / _player.throwRange);
+            flightTime = height * (distance / (_player.throwRange));
             isTarget = true;
-            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position, this.transform.position, flightTime);
+            Vector3 correction_value =
+                new Vector3(_player.target.transform.position.x, _player.target.transform.position.y + correctionHeight, _player.target.transform.position.z)
+                + (_player.transform.forward * correctionForward)* (Gravity * flightTime);
+
+            Vector3 val = IpariUtility.CaculateVelocity(correction_value , _player.transform.position, flightTime);
             _rigidbody.velocity = val;
         }
         
@@ -265,12 +318,14 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
         Forward = _playerInteractionPoint.transform.right;
         PhysicsCheck = true;
+        _player.isCarry = false;
         if (_animator == null)
             flight = true;
 
+        OnThrow?.Invoke();
         yield return new WaitForSecondsRealtime(0.3f);
-        _player.isCarry = false;
         _collider.isTrigger = false;
+        isReady = true;
     }
 
     private void PhysicsChecking()
@@ -280,10 +335,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
             _rigidbody.velocity += Physics.gravity * .05f;
         }
 
-        //if (flight)
-        //{
-        //    transform.RotateAround(_center.transform.position, Forward, (1.0f * Time.deltaTime));
-        //}
     }
 
     private Vector3 BezierCurve(Vector3 startPos, Vector3 endPos, Vector3 height, float value)
@@ -300,8 +351,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
     public void ResetPoint()
     {
         // 위치 초기화
-        transform.position = spawnPoint;
+        transform.position = spawnPoint + Vector3.up * 5f;
         transform.rotation = Quaternion.identity;
+        _rigidbody.velocity = Vector3.zero;
+        PhysicsCheck = false;
+        flight = false;
     }
 
     private Vector3 RandomDirection()
@@ -327,5 +381,21 @@ public class ThrowObject : MonoBehaviour, IInteractable
                 return new Vector3(-1, 0, 1);
         }
         return Vector3.zero;
+    }
+
+    private void FlightRotate()
+    {
+        if (flight && _animator == null)
+        {
+            transform.RotateAround(_center.transform.position, Forward, (Rot / flightTime));
+        }
+        else if (!flight && _animator != null)
+        {
+            ;
+        }
+        else
+        {
+            _rigidbody.velocity += -Vector3.up * (correctionGravity * 1.4f);
+        }
     }
 }

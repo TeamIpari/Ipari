@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Drawing;
-using UnityEngine.UIElements;
 using IPariUtility;
 
 #if UNITY_EDITOR
@@ -13,7 +11,7 @@ using UnityEditor;
 /***********************************************
  *   당겨질 수 있는 효과를 제공하는 컴포넌트입니다...
  * **/
-public sealed class PullableObject : MonoBehaviour
+public sealed class PullableObject : MonoBehaviour, IInteractable
 {
     #region Editor_Extension
     /****************************************
@@ -98,11 +96,17 @@ public sealed class PullableObject : MonoBehaviour
 
         /**Serialized Properties...*/
         private SerializedProperty dataListProperty;
-        private SerializedProperty BeginSnappedProperty;
         private SerializedProperty GrabTargetProperty;
-        private SerializedProperty FullyExtendedProperty;
+
+        private SerializedProperty OnPullReleaseProperty;
+        private SerializedProperty OnFullyExtendedProperty;
+        private SerializedProperty OnPullStartProperty;
+        private SerializedProperty OnBreakProperty;
+
         private SerializedProperty BreakLengthRatioProperty;
-        private SerializedProperty UsedStrongVibrationProperty;
+        private SerializedProperty StrechVibePowProperty;
+        private SerializedProperty UseFixedVibeProperty;
+        private SerializedProperty ApplyUpdateProperty;
 
 
         //=====================================================
@@ -269,10 +273,13 @@ public sealed class PullableObject : MonoBehaviour
 
             GUI_ShowBreakLengthRatio();
 
+            GUI_ShowStrechVibe();
+
             EditorGUILayout.Space(10f);
 
 
             GUI_ShowResetRotateButton();
+            GUI_ShowAutoSetDatasButton();
 
             GUI_ShowDataList();
 
@@ -320,10 +327,15 @@ public sealed class PullableObject : MonoBehaviour
                 targetObj                       = (target as PullableObject);
                 dataListProperty                = serializedObject.FindProperty("_datas");
                 GrabTargetProperty              = serializedObject.FindProperty("_GrabTarget");
-                BeginSnappedProperty            = serializedObject.FindProperty("OnPullRelease");
-                FullyExtendedProperty           = serializedObject.FindProperty("OnFullyExtended");
                 BreakLengthRatioProperty        = serializedObject.FindProperty("MaxScale");
-                UsedStrongVibrationProperty     = serializedObject.FindProperty("UseStrongShake");
+                ApplyUpdateProperty             = serializedObject.FindProperty("ApplyUpdate");
+                StrechVibePowProperty           = serializedObject.FindProperty("StrechVibePow");
+                UseFixedVibeProperty            = serializedObject.FindProperty("UseFixedVibe");
+
+        OnPullReleaseProperty            = serializedObject.FindProperty("OnPullRelease");
+                OnFullyExtendedProperty          = serializedObject.FindProperty("OnFullyExtended");
+                OnPullStartProperty              = serializedObject.FindProperty("OnPullStart");
+                OnBreakProperty                  = serializedObject.FindProperty("OnBreak");
             }
             #endregion
         }
@@ -395,7 +407,7 @@ public sealed class PullableObject : MonoBehaviour
         private void GUI_ShowResetRotateButton()
         {
             #region Omit
-            if (targetObj == null) return;
+            if (targetObj == null || targetObj._datas==null) return;
 
             /*************************************
              *   모든 본의 회전량을 초기화한다.
@@ -404,6 +416,7 @@ public sealed class PullableObject : MonoBehaviour
             {
                 int Count        = targetObj._datas.Length;
                 BoneData[] datas = targetObj._datas;
+                if (targetObj._datas.Length == 0 || targetObj._datas[0].Tr==null) return;
 
                 Undo.RegisterChildrenOrderUndo(targetObj._datas[0].Tr, "Changed All bones transform");
                 for (int i=1; i<Count; i++){
@@ -413,6 +426,52 @@ public sealed class PullableObject : MonoBehaviour
                 }
             }
 
+            #endregion
+        }
+
+        private void GUI_ShowAutoSetDatasButton()
+        {
+            #region Omit
+            if (dataListProperty == null) return;
+
+            if(GUILayout.Button("Add Children Bones By RootBone"))
+            {
+                if(dataListProperty.arraySize==0){
+
+                    Debug.LogError("RootBone is not exist!");
+                    return;
+                }
+
+                if (targetObj._datas[0].Tr==null){
+
+                    Debug.LogError("RootBone transform is not valid!");
+                    return;
+                }
+
+
+                /*****************************************************
+                 *   계층구조가 존재하는 대상만 모두 bone으로 추가한다...
+                 * ***/
+                int index = 1;
+                dataListProperty.arraySize = 1;
+
+
+                Transform parent = targetObj._datas[0].Tr;
+                Transform result;
+
+                /**나머지 자식 본들을 추가한다....*/
+                while ((result=FindChildManyChildren(parent))!=null)
+                {
+                    dataListProperty.arraySize++;
+
+                    SerializedProperty newData      = dataListProperty.GetArrayElementAtIndex(index++);
+                    SerializedProperty newDataTr    = newData.FindPropertyRelative("Tr");
+                    newDataTr.objectReferenceValue  = result;
+                    parent = result;
+                }
+
+                return;
+            }
             #endregion
         }
 
@@ -440,26 +499,77 @@ public sealed class PullableObject : MonoBehaviour
                     if (scope.changed) GrabTargetProperty.objectReferenceValue = value;
                 }
 
-                /**루트모션 사용여부...*/
-                using ( var scope = new EditorGUI.ChangeCheckScope()){
-
-                    bool value = EditorGUILayout.ToggleLeft("Use Strong Shake", UsedStrongVibrationProperty.boolValue, GUILayout.Width(130f));
-                    if(scope.changed) UsedStrongVibrationProperty.boolValue = value;
-                }
-
             }
             EditorGUILayout.EndHorizontal();
+
+            /**IK적용 여부...*/
+            ApplyUpdateProperty.boolValue = EditorGUILayout.Toggle("Apply Update", ApplyUpdateProperty.boolValue);
             #endregion
         }
 
         private void GUI_ShowEvents()
         {
             #region Omit
-            if (BeginSnappedProperty == null || FullyExtendedProperty == null) return;
+            if (OnPullStartProperty==null || OnPullReleaseProperty==null || OnFullyExtendedProperty==null || OnBreakProperty==null) 
+                return;
 
-            EditorGUILayout.PropertyField(BeginSnappedProperty);
-            EditorGUILayout.PropertyField(FullyExtendedProperty);
+            EditorGUILayout.PropertyField(OnPullStartProperty);
+            EditorGUILayout.PropertyField(OnPullReleaseProperty);
+            EditorGUILayout.PropertyField(OnFullyExtendedProperty);
+            EditorGUILayout.PropertyField(OnBreakProperty);
 
+            #endregion
+        }
+
+        private void GUI_ShowStrechVibe()
+        {
+            #region Omit
+            if (StrechVibePowProperty == null || UseFixedVibeProperty == null) return;
+
+            /******************************************************
+             *   줄이 완전히 펴졌을 때의 프로퍼티들을 모두 표시한다...
+             * ***/
+            EditorGUILayout.BeginHorizontal();
+            {
+                /**진동의 힘을 결정하는 프로퍼티를 표시한다...*/
+                using (var scope = new EditorGUI.ChangeCheckScope()){
+
+                    float value = EditorGUILayout.FloatField("Strech Vibration Pow", StrechVibePowProperty.floatValue);
+                    if (scope.changed) 
+                        StrechVibePowProperty.floatValue = Mathf.Clamp(value, 0f, float.MaxValue);
+                }
+
+                /**고정 힘을 사용하는지에 대한 여부를 결정한다....*/
+                UseFixedVibeProperty.boolValue = EditorGUILayout.ToggleLeft("Use Fixed Pow", UseFixedVibeProperty.boolValue, GUILayout.Width(130f));
+            }
+            EditorGUILayout.EndHorizontal();
+            #endregion
+        }
+
+
+
+        //============================================
+        /////           Utility methods           ////
+        //============================================
+        private Transform FindChildManyChildren(Transform parent)
+        {
+            #region Omit
+            int childrenNum = parent.childCount;
+            int       maxCount    = -1;
+            Transform result      = null;
+
+            for(int i=0; i<childrenNum; i++)
+            {
+                Transform child = parent.GetChild(i);
+                
+                /**더 자식수가 많은 대상만을 추가한다...*/
+                if(maxCount<child.childCount){
+
+                    maxCount = child.childCount;
+                    result = child;
+                }
+            }
+            return result;
             #endregion
         }
 
@@ -490,10 +600,12 @@ public sealed class PullableObject : MonoBehaviour
         [System.NonSerialized] public float     lengthRatio;
     }
     #endregion
-
+    
     //=========================================
     /////            Property             /////
     //=========================================
+    public string       InteractionPrompt   { get; set; } = "당긴다";
+    public Vector3      InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
     public float        MaxLength
     {
         get
@@ -501,6 +613,8 @@ public sealed class PullableObject : MonoBehaviour
             /*************************************
              *   각 본들의 길이의 총합을 구한다.
              * ***/
+            if(_fullyExtendedLen>0f) return _fullyExtendedLen;
+
             float len = 0f;
             int Count = _datas.Length;
 
@@ -508,6 +622,7 @@ public sealed class PullableObject : MonoBehaviour
 
                 len += (_datas[i].Tr.position - _datas[i - 1].Tr.position).magnitude;
             }
+            _fullyExtendedLen = len;
 
             return len;
         }
@@ -544,9 +659,9 @@ public sealed class PullableObject : MonoBehaviour
             return (HoldingPoint.transform.position - _datas[0].Tr.position).magnitude;
         }
     }
-    public bool         IsBroken { get; private set; } = false;
-    public bool         IsDestroy { get; private set; } = false;
-    public int          BoneCount { get { return _dataCount; } }
+    public bool         IsBroken            { get; private set; } = false;
+    public bool         IsDestroy           { get; private set; } = false;
+    public int          BoneCount           { get { return _dataCount; } }
     public Vector3      StartPosition
     {
         get
@@ -576,13 +691,23 @@ public sealed class PullableObject : MonoBehaviour
         set
         {
             _GrabTarget = value;
+            if (_GrabTarget != null)
+            {
+                ApplyUpdate = true;
+                OnPullStart?.Invoke();
+            }
+            else OnPullRelease?.Invoke();
         }
     }
 
-    [SerializeField] public float            MaxScale = 1.5f;
-    [SerializeField] public bool             UseStrongShake = false;
+    [SerializeField] public float            MaxScale       = 1.5f;
+    [SerializeField] public float            StrechVibePow  = 3f;
+    [SerializeField] public bool             UseFixedVibe   = false;
+    [SerializeField] public bool             ApplyUpdate    = true;
     [SerializeField] private GameObject       _GrabTarget; 
     [SerializeField] public  PullableObjEvent OnPullRelease;
+    [SerializeField] public  PullableObjEvent OnBreak;
+    [SerializeField] public  PullableObjEvent OnPullStart;
     [SerializeField] public  PullableObjEvent OnFullyExtended;
 
 
@@ -624,20 +749,11 @@ public sealed class PullableObject : MonoBehaviour
         _boneCountDiv          = (1f/(_datas.Length-1));
         _brokenDiv             = (1f/_brokenTime);
 
-        gameObject.layer = LayerMask.NameToLayer("Pullable");
-
-        /**************************************
-         *   이벤트 대리자 초기화....
-         * ***/
-        if (OnPullRelease == null){
-
-            OnPullRelease = new PullableObjEvent();
-        }
-
-        if (OnFullyExtended == null){
-
-            OnFullyExtended = new PullableObjEvent();
-        }
+        gameObject.layer = LayerMask.NameToLayer("Interactable");
+        if (OnPullStart == null)     OnPullStart = new PullableObjEvent();
+        if (OnFullyExtended == null) OnFullyExtended = new PullableObjEvent();
+        if (OnPullRelease == null)   OnPullRelease = new PullableObjEvent();
+        if (OnBreak == null)         OnBreak = new PullableObjEvent();
 
 
         /**************************************
@@ -675,9 +791,9 @@ public sealed class PullableObject : MonoBehaviour
         #endregion
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (_dataCount < 2) return;
+        if (_dataCount < 2 || ApplyUpdate==false) return;
 
         /*************************************
          *   외부로부터 당겨질 경우의 처리를 한다..
@@ -761,7 +877,7 @@ public sealed class PullableObject : MonoBehaviour
         {
             /**루트본을 원래 위치에 붙여놓는다...*/
             rootBone.Tr.position = rootBone.OriginPos;
-            
+
             for(int i=1; i<_dataCount-1; i++){
 
                 ref BoneData prev = ref _datas[i-1];
@@ -858,9 +974,8 @@ public sealed class PullableObject : MonoBehaviour
             /**줄이 당겨져서 완전히 펴졌을 때의 처리...*/
             if(_lastExtendedLen>0){
 
-                _Yspeed = (root2TargetLen - _lastExtendedLen) * (UseStrongShake ? 12f : 3f);
+                _Yspeed = StrechVibePow * (!UseFixedVibe? (root2TargetLen - _lastExtendedLen): 1f);
                _lastExtendedLen = 0;
-                StretchFull();
                 OnFullyExtended?.Invoke();
             }
 
@@ -883,7 +998,7 @@ public sealed class PullableObject : MonoBehaviour
             Vector3 cp = root.OriginPos + (forward*.5f) + (up*_Yspeed);
             Vector3 b  = HoldingPoint.transform.position;
 
-            //Debug.DrawLine(cp, cp + up * _Yspeed, UnityEngine.Color.red);
+
 
             /**********************************************
              *   배지어 곡선을 기반으로하여 본을 업데이트 한다....
@@ -899,8 +1014,6 @@ public sealed class PullableObject : MonoBehaviour
                 Vector3 nextBezier = IpariUtility.GetBezier(ref a, ref cp, ref b, (ratio += curr.lengthRatio));
                 Vector3 curr2Next  = (nextBezier-currBezier).normalized;
                 Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(curr.originDir, curr2Next);
-
-                //Debug.DrawLine(currBezier, nextBezier, UnityEngine.Color.blue);
 
                 next.Tr.position = nextBezier;
                 curr.Tr.rotation = (rotQuat * curr.OriginQuat);
@@ -973,7 +1086,7 @@ public sealed class PullableObject : MonoBehaviour
         /**모두 줄어들었을 경우의 처리를 한다...*/
         if(progressRatio<=0f){
 
-            OnPullRelease?.Invoke();
+            OnBreak?.Invoke();
             IsDestroy = true;
             Destroy(gameObject);
         }
@@ -1003,6 +1116,11 @@ public sealed class PullableObject : MonoBehaviour
     //============================================
     //////          Public methods           /////
     //============================================
+    public void UsePullableUpdate(bool apply=true)
+    {
+        ApplyUpdate = apply;
+    }
+
     public void StretchFull()
     {
         #region Omit
@@ -1038,7 +1156,7 @@ public sealed class PullableObject : MonoBehaviour
         #region Omit
         if (_dataCount == 0 || _datas == null) return Vector3.zero;
 
-        index = Mathf.Clamp(index, 0, _dataCount - 1);
+        index = Mathf.Clamp(index, 0, _dataCount - 2);
         ref BoneData curr = ref _datas[index];
         ref BoneData next = ref _datas[index+1];
 
@@ -1054,4 +1172,92 @@ public sealed class PullableObject : MonoBehaviour
         return _datas[index].originLength;
         #endregion
     }
+
+    public Vector3 GetBonePositionFromLength(float length)
+    {
+        #region Omit
+        for(int i=0; i<_dataCount; i++)
+        {
+            ref BoneData data = ref _datas[i];
+
+            /**해당 본의 길이를 반환한다....*/
+            if(length<=data.originLength){
+
+                Vector3 dataDir = GetBoneDir(i);
+                float lenRatio  = (length * data.originLengthDiv);
+
+                return data.Tr.position + (dataDir * lenRatio * data.originLength);
+            }
+
+            length -= data.originLength;
+        }
+
+        return Vector3.zero;
+        #endregion
+    }
+
+    public Vector3 GetBoneDirFromLength(float length)
+    {
+        #region Omit
+        for (int i = 0; i < _dataCount; i++)
+        {
+            ref BoneData data = ref _datas[i];
+
+            /**해당 본의 길이를 반환한다....*/
+            if (length <= data.originLength){
+
+                Vector3 dataDir = GetBoneDir(i);
+                float lenRatio = (length * data.originLengthDiv);
+
+                return dataDir;
+            }
+
+            length -= data.originLength;
+        }
+
+        return Vector3.zero;
+        #endregion
+    }
+
+    public void GetBonePositionAndDirFromLength(float length, out Vector3 outPos, out Vector3 outDir)
+    {
+        #region Omit
+        for (int i = 0; i < _dataCount; i++)
+        {
+            ref BoneData data = ref _datas[i];
+
+            /**해당 본의 길이를 반환한다....*/
+            if (length <= data.originLength){
+
+                Vector3 dataDir = GetBoneDir(i);
+                float lenRatio = (length * data.originLengthDiv);
+
+                outPos = data.Tr.position + (dataDir * lenRatio * data.originLength);
+                outDir = dataDir;
+                return;
+            }
+
+            length -= data.originLength;
+        }
+
+        outPos = Vector3.zero;
+        outDir = Vector3.zero;
+        #endregion
+    }
+    
+    public bool Interact(GameObject interactor)
+    {
+        #region Omit
+        if (!interactor.CompareTag("Player")) return false;
+
+        /**플레이어가 당기기 상태로 전환되도록 한다.....*/
+        Player player              = Player.Instance;
+        player.currentInteractable = gameObject;
+        player.movementSM.ChangeState(player.pullInout);
+
+        return true;
+        #endregion
+    }
+
+    public bool AnimEvent() { return false; }
 }
