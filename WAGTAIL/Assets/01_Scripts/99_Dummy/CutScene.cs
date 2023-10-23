@@ -71,7 +71,8 @@ public class CutScene : MonoBehaviour
                 Player.Instance.playerInput.enabled = true;
                 HideCutScenes();
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
-
+                UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
+                    .SetCanvas(0, true);
                 FModAudioManager.SetBusMute(FModBusType.Player, false);
                 FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
             }

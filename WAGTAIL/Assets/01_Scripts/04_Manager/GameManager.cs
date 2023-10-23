@@ -47,7 +47,7 @@ public class GameManager : Singleton<GameManager>
     private int _coin = 0;
     private int _flower = 0;
 
-    public bool[] cocosi;
+    public bool[][] cocosi;
     //================================================
     // Chapter
     private List<Chapter> _chapterList;
@@ -72,6 +72,11 @@ public class GameManager : Singleton<GameManager>
         //_scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
         Coin = 0;
         Flower = 0;
+        cocosi = new bool[3][];
+        cocosi[0] = new bool[] { false, false, false, false, false };
+        cocosi[1] = new bool[] { false, false, false };
+        cocosi[2] = new bool[] { false, false, false };
+        
         IsKeyboard = true;
         IsGamepad = false;
         
@@ -102,6 +107,7 @@ public class GameManager : Singleton<GameManager>
         // ==================================================================================
         _scoreObjectList = desiredChapter.GetComponentsInChildren<ScoreObject>().ToList();
         _scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
+        
         // ==================================================================================
 
         desiredChapter.gameObject.SetActive(true);

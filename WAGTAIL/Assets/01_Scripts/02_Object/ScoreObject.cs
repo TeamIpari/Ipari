@@ -126,6 +126,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         private SerializedProperty ItemGetTypeProperty;
         private SerializedProperty ScoreTypeProperty;
         private SerializedProperty CocosiIndexProperty;
+        private SerializedProperty CocosiChapterProperty;
         private SerializedProperty MagnetMoveDelayTimeProperty;
         private SerializedProperty GetRaiseUpTimeProperty;
         private SerializedProperty InteractionVFXProperty;
@@ -188,6 +189,11 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             if ( CocosiIndexProperty== null){
 
                 CocosiIndexProperty = serializedObject.FindProperty("_CocosiIndex");
+            }
+
+            if (CocosiChapterProperty == null)
+            {
+                CocosiChapterProperty = serializedObject.FindProperty("_CocosiChapter");
             }
 
             if (MagnetMoveDelayTimeProperty == null){
@@ -255,6 +261,8 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             {
                 int value = EditorGUILayout.IntField("Cocosi Index",CocosiIndexProperty.intValue);
                 CocosiIndexProperty.intValue = System.Math.Clamp(value, 0, 4);
+                int chaptervalue = EditorGUILayout.IntField("Cocosi Chapter", CocosiChapterProperty.intValue);
+                CocosiChapterProperty.intValue = System.Math.Clamp(chaptervalue, 0, 2);
 
                 EditorGUILayout.Space(7f);
             }
@@ -332,6 +340,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     public string    EnviromentPrompt     { get; }=String.Empty;
     public bool      IsHit                { get; set; } = false;
     public int       CocosiIndex          { get { return _CocosiIndex; } set { _CocosiIndex = System.Math.Clamp(value, 0, 4); } }
+    public int       CocosiChapter        { get { return _CocosiChapter; } set { _CocosiChapter = System.Math.Clamp(value, 0, 2); } }
 
     [SerializeField] 
     public bool     UseMagnetMovement = false;
@@ -344,6 +353,9 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
     [SerializeField,MinMax(0,4)]
     private int     _CocosiIndex = 0;
+
+    [SerializeField, MinMax(0, 2)]
+    private int     _CocosiChapter = 0;
 
     [SerializeField,MinMax(0f, float.MaxValue)]
     private float       _MagnetMoveDelayTime  = 0f;
@@ -390,17 +402,11 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
         _isValid = (_body != null || _collider != null || _playerTr != null);
 
-        CocosiCollection collection = new CocosiCollection(4, 3);
-        collection.SetCocosiCollect(1, 1, true);
-        collection.SetCocosiCollect(1, 2, true);
-        collection.SetCocosiCollect(1, 3, true);
-
-        collection.SetCocosiCollect(2, 1, true);
-        //collection.SetCocosiCollect(2, 2, true);
-        collection.SetCocosiCollect(2, 3, true);
-
-
-        Debug.Log($"챕터 1~2 클리어: {collection.ChapterIsComplete(1,2)}/ Data: {Convert.ToString(collection.Data,2)}");
+        if (ScoreType == ScoreType.Cocosi)
+        {
+            Debug.Log(CocosiChapter);
+            Debug.Log(CocosiIndex);
+        }
         #endregion
     }
 
@@ -474,7 +480,9 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                           FModSFXEventType.Put_KoKoShi
                     );
 
-
+                    gm.cocosi[CocosiChapter][CocosiIndex] = true;
+                    UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
+                        .SetCocosiUI(CocosiChapter, CocosiIndex, true);
 
                     break;
                 }
