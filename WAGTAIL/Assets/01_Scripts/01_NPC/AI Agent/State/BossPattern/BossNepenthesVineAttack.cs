@@ -68,7 +68,7 @@ public class BossNepenthesVineAttack : AIAttackState
         ShowVine();
         myState = VineState.STATE_MOVE;
         vineAnim = vine.GetComponent<Animator>();
-        vineAnim.SetTrigger("isReady");
+        //vineAnim.SetTrigger("isReady");
 
     }
 
@@ -97,26 +97,28 @@ public class BossNepenthesVineAttack : AIAttackState
                 break;
             case VineState.STATE_MOVE:
                 {
+                    vineAnim.SetTrigger("isAttack");
+                    Debug.Log($"StateName : StateMove");
                     MovementVine(vine.transform.position, spawnPos);
                     break;
                 }
             case VineState.STATE_ATTACK:
                 {
+                    Debug.Log($"StateName : StateAttack");
                     //// 공격하게 함.
                     //// 바로 공격
                     if (!isThread)
                     {
                         isThread = true;
-                        vineAnim.SetTrigger("isAttack");
                         myThread = new Thread(new ThreadStart(ThreadFunction));
                         myThread.Start();
-                        Debug.Log($"{spawnPos}");
                         BossRoomFieldManager.Instance.BreakingPlatform(spawnPos.x, true);
                     }
                 }
                 break;
             case VineState.STATE_ORIGINBACK:
                 {
+                    Debug.Log($"StateName : StateReturn");
                     GotoMoveOrigin();
                     isThread = false;
                 }
@@ -162,7 +164,7 @@ public class BossNepenthesVineAttack : AIAttackState
     {
         if (vine != null && Vector3.Distance(vine.transform.position, targetPos) >= 0.001f)
         {
-            vine.transform.position = Vector3.MoveTowards(originPos, targetPos, Time.deltaTime * 3.5f);
+            vine.transform.position = Vector3.MoveTowards(originPos, targetPos, Time.deltaTime * 7f);
             if (Vector3.Distance(vine.transform.position, targetPos) < 0.001f)
             {
                 eStateChange();

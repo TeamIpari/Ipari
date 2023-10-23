@@ -130,7 +130,7 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         int x, z;
 
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.95f);
         CameraShake(ShakePower, ShakeTime);
         if (reActionPools[0] == null)
             CreateReActionObject();
