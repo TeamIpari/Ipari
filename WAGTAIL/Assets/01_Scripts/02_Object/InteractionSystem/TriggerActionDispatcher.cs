@@ -230,10 +230,7 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
     //==========================================
     [SerializeField] public UnityEventTrigger OnTriggerEnterEvent;
     [SerializeField] public UnityEventTrigger OnTriggerExitEvent;
-
-#if UNITY_EDITOR
     [SerializeField] private Color GizmosColor = Color.red;
-#endif
 
 
 

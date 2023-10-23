@@ -15,6 +15,34 @@ using UnityEditor;
 [RequireComponent(typeof(Animator))]
 public sealed class BossCrab : Enemy
 {
+    #region Define
+    public sealed class BossCrabAnimation
+    {
+        public const string Idle = "Idle";
+        public const string Hit  = "Hit";
+        public const string Die  = "Die";
+
+        public const string SpitSeedsReady   = "Attack1Ready";
+        public const string SpittingSeeds    = "Attack1Spit";
+
+        public const string EgoTongAttack_TongRise   = "Attack2TongsRise";
+        public const string EgoTongAttack_RiseIdle   = "Attack2TongsRiseIdle";
+        public const string EgoTongAttack_Down       = "Attack2TongsDown";
+
+        public const string MakeSandWave_TongsRise = "Attack3TongsRise";
+        public const string MakeSandWave_Smash     = "Attack3TongsSmash";
+
+        public const string MakeAntHell_Ready     = "Attack4Ready";
+
+        public const string Trigger_IsHit           = "IsHit";
+        public const string Trigger_IsIdle          = "IsIdle";
+        public const string Trigger_IsSpitSeeds     = "IsSpitSeeds";
+        public const string Trigger_IsEgoTongAttack = "IsEgoTongAttack";
+        public const string Trigger_IsSandWave      = "IsSandWave";
+        public const string Trigger_IsMakeAntHell   = "IsMakeAntHell";
+    }
+    #endregion
+
     #region Editor_Extension
 #if UNITY_EDITOR
     [CustomEditor(typeof(BossCrab))]
@@ -531,6 +559,16 @@ public sealed class BossCrab : Enemy
     [SerializeField]
     public bool StartPatternOnAwake = false;
 
+    [SerializeField]
+    public bool StateTrigger = false;
+
+
+    //==================================================
+    ///////              Fields                   //////
+    //==================================================
+    private Animator         _HPAnim;
+    private Stack<Transform> _HPstack;
+
 
 
     //===============================================
@@ -541,6 +579,7 @@ public sealed class BossCrab : Enemy
         #region Omit
         gameObject.tag = "Boss";
 
+        InitHPUI();
         StateSetting();
         SettingPattern(CharacterMovementPattern[GetCurPhaseHpArray].EPatterns);
         if(StartPatternOnAwake) AiSM.CurrentState = AiSM.Pattern[0];
@@ -560,10 +599,29 @@ public sealed class BossCrab : Enemy
     //============================================
     ////////         Core methods           //////
     //============================================
-    public void CrabBossAweaking()
+    private void InitHPUI()
     {
-        if(AiSM.CurrentState==null)
-        AiSM.CurrentState = AiSM.Pattern[0];
+        #region Omit
+        /****************************************
+         *   보스 UI가 있을 경우 초기화한다....
+         * ***/
+        GameObject BossCanvas = GameObject.Find("Boss_Canvas");
+        if (BossCanvas != null)
+        {
+            Transform hp            = BossCanvas.transform.Find("HP");
+            Transform area          = hp.Find("HPArea");
+            Stack<Transform> HPbars = _HPstack = new Stack<Transform>();
+
+            int Count = area.childCount;
+            for (int i = 0; i < Count; i++){
+
+                HPbars.Push(area.GetChild(i));
+            }
+
+            hp.gameObject.SetActive(false);
+            _HPAnim = hp.GetComponent<Animator>();
+        }
+        #endregion
     }
 
     private void StateSetting()
@@ -573,24 +631,24 @@ public sealed class BossCrab : Enemy
          *   상태 초기화에 필요한 요소들을 초기화한다...
          * ***/
         EgoCrabHand newHand = null;
-        if(CrabHandPrefab != null)
+        if (CrabHandPrefab != null)
         {
             newHand = GameObject.Instantiate(CrabHandPrefab).GetComponent<EgoCrabHand>();
-            newHand.AttackDuration      = EgoAtkCompleteRate;
-            newHand.AttackRange         = EgoAtkRange;
+            newHand.AttackDuration = EgoAtkCompleteRate;
+            newHand.AttackRange = EgoAtkRange;
             newHand.AttackReadyDuration = EgoAtkWaitTime;
         }
 
         BossCrabSowingSeedsDesc sowingSeedsDesc = new BossCrabSowingSeedsDesc()
         {
-            SeedPrefab   = SeedPrefab,
+            SeedPrefab = SeedPrefab,
             MarkerPrefab = MarkerPrefab,
-            changeTime   = 7f,
-            delayTime    = 2f,
-            count        = SeedCount,
-            flightTime   = _SeedFlightTime,
-            rad          = SeedSpawnRange,
-            shootPoint   = SeedShotPosition
+            changeTime = 7f,
+            delayTime = 2f,
+            count = SeedCount,
+            flightTime = _SeedFlightTime,
+            rad = SeedSpawnRange,
+            shootPoint = SeedShotPosition
         };
 
 
@@ -598,16 +656,81 @@ public sealed class BossCrab : Enemy
         /*****************************************
          *   상태머신 및 패턴들을 초기화한다....
          * ***/
-        AiSM      = AIStateMachine.CreateFormGameObject(gameObject);
-        AiIdle    = new BossCrabIdleState(AiSM, IdleRate);
-        AiWait    = new BossNepenthesWaitState(AiSM, WaitRate);
-        AiHit     = new BossCrabHitState(AiSM);
-        AiDie     = new BossCrabDieState(AiSM);
-        AiAttack  = new BossCrabSowingSeedsState(AiSM, ref sowingSeedsDesc);
+        AiSM = AIStateMachine.CreateFormGameObject(gameObject);
+        AiIdle = new BossCrabIdleState(AiSM, IdleRate);
+        AiWait = new BossNepenthesWaitState(AiSM, WaitRate);
+        AiHit = new BossCrabHitState(AiSM, this);
+        AiDie = new BossCrabDieState(AiSM);
+        AiAttack = new BossCrabSowingSeedsState(AiSM, ref sowingSeedsDesc, this);
         AiAttack2 = new BossCrabEgoStampState(AiSM, newHand);
-        AiAttack3 = new BossCrabSandWaveState(AiSM,SandWavePrefab);
+        AiAttack3 = new BossCrabSandWaveState(AiSM, SandWavePrefab);
         AiAttack4 = new BossCrabAntHellState(AiSM, AntHellPrefab, _AntHellDuration);
 
+        #endregion
+    }
+
+    public override void Hit()
+    {
+        base.Hit();
+        AiSM.ChangeState(AiSM.character.AiHit);
+    }
+
+
+
+    //=====================================================
+    ////////           Public methods                //////
+    //=====================================================
+    public void PopHPStack()
+    {
+        #region Omit
+        if (_HPstack == null || _HPstack.Count==0) return;
+
+        Animator hpAnim = _HPstack.Pop().GetComponent<Animator>();  
+        if(hpAnim){
+
+            hpAnim.SetTrigger("isDamaged");
+        }
+        #endregion
+    }
+
+    public void SetAnimTrigger(string triggerName)
+    {
+        #region Omit
+        if (AiSM.Animator == null) return;
+
+        AiSM.Animator.SetTrigger(triggerName);
+        #endregion
+    }
+
+    public void SetStateTrigger()
+    {
+        StateTrigger = true;
+    }
+
+    public void ExitCurrentState()
+    {
+        #region Omit
+        if (AiSM != null && AiSM.CurrentState!=null)
+        {
+            AiSM.CurrentState.Exit();   
+        }
+        #endregion
+    }
+
+    public void CrabBossAweaking()
+    {
+        #region Omit
+        if (AiSM.CurrentState == null){
+
+            AiSM.CurrentState = AiSM.Pattern[0];
+        }
+
+
+        if(_HPAnim!=null)
+        {
+            _HPAnim.gameObject.SetActive(true);
+            _HPAnim.Play("HP_FadeIn");
+        }
         #endregion
     }
 }

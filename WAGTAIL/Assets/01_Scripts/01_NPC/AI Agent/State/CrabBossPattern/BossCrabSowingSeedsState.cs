@@ -3,6 +3,7 @@ using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static BossCrab;
 
 public sealed class BossCrabSowingSeedsState : AIAttackState
 {
@@ -34,31 +35,33 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
     //======================================
     private BossCrabSowingSeedsDesc _desc;
     private readonly ThrowDesc[]    _targets;
+    private BossCrab                _bossCrab;
 
     private float _changeTimeDiv = 1f;
     private bool  _isShoot       = false;
     private bool  _ignoreRelease = false;
-
-
+    private int   _progress      = 0;
 
     //========================================
     //////        Override methods        ////
     //========================================
-    public BossCrabSowingSeedsState( AIStateMachine stateMachine, ref BossCrabSowingSeedsDesc desc )
+    public BossCrabSowingSeedsState( AIStateMachine stateMachine, ref BossCrabSowingSeedsDesc desc, BossCrab bossCrab )
     :base( stateMachine )
     {
         _desc = desc;
         _targets = new ThrowDesc[_desc.count];
+        _bossCrab = bossCrab;
     }
 
     public override void Enter()
     {
         #region Omit
-        AISM.Animator.SetTrigger("isAttack");
+        AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsSpitSeeds);
         _changeTimeDiv = (1f / _desc.changeTime);
         curTimer       = 0f;
         _isShoot       = false;
         _ignoreRelease = false;
+        _progress      = 0;
         #endregion
     }
 
@@ -79,13 +82,36 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         base.Update();
         if (Player.Instance.isDead) return;
 
-        /***********************************
-         *   타이머에 따른 상태변화 적용...
+        /**************************************
+         *   로직을 갱신한다....
          * ***/
-        curTimer += Time.deltaTime;
-        ShootDelay();
-        ChangeState();
         ApplySeedsIgonre();
+
+
+        /*************************************
+         *   상태 트리거에 따른 로직 적용....
+         * ***/
+        if (!_bossCrab.StateTrigger) return;
+
+        switch (_progress++){
+
+                /**씨앗을 뱉는다...*/
+                case (0):
+                {
+                    CreateMarker();
+                    PositionLuncher();
+                    break;
+                }
+
+                /**상태를 탈출한다...*/
+                case (1):
+                {
+                    AISM.NextPattern();
+                    break;
+                }
+        }
+
+        _bossCrab.StateTrigger = false;
     }
 
 
