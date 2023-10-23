@@ -315,7 +315,7 @@ public class SandWave : MonoBehaviour
         /******************************************
          *   Rigidbody를 가지고 있을 때의 처리...
          * ****/
-        else if(other.CompareTag("interactable") && (body=other.attachedRigidbody)!=null){
+        else if(other.CompareTag("interactable") && !other.CompareTag("Boss") && (body=other.attachedRigidbody)!=null){
 
             float dst   = (compareLen - center2TargetLen);
             Vector3 pow = (-center2Target.normalized * dst * body.mass*30);
