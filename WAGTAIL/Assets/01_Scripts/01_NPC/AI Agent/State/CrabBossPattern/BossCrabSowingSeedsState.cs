@@ -74,6 +74,8 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
             ref ThrowDesc desc = ref _targets[i];
             GameObject.Destroy(desc.marker);
         }
+
+        AISM.Animator.ResetTrigger(BossCrabAnimation.Trigger_IsSpitSeeds);
         #endregion
     }
 
@@ -85,7 +87,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         /**************************************
          *   로직을 갱신한다....
          * ***/
-        ApplySeedsIgonre();
+        //ApplySeedsIgonre();
 
 
         /*************************************
@@ -100,6 +102,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 {
                     CreateMarker();
                     PositionLuncher();
+                    AISM.NextPattern();
                     break;
                 }
 

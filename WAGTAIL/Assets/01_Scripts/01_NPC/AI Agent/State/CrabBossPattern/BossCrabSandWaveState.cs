@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static BossCrab;
 
 public class BossCrabSandWaveState : AIAttackState
 {
@@ -8,18 +9,20 @@ public class BossCrabSandWaveState : AIAttackState
     /////           Fields            ////
     //====================================
     private SandWave[] _waves;
+    private BossCrab   _bossCrab;
     private int        _waveCount = 0;
     private int        _waveLeft  = 0;
-
+    private int        _progress  = 0;
 
 
     //==================================================
     //////        Public and Override methods       ////
     //==================================================
-    public BossCrabSandWaveState(AIStateMachine stateMachine, params GameObject[] waves)
+    public BossCrabSandWaveState(AIStateMachine stateMachine, BossCrab bossCrab, params GameObject[] waves)
     : base(stateMachine)
     {
         #region Omit
+        _bossCrab = bossCrab; 
         /**프리팹들을 추가한다...*/
         int length = waves.Length;
         if (!(length > 0)) return;
@@ -37,6 +40,10 @@ public class BossCrabSandWaveState : AIAttackState
     public override void Enter()
     {
         _waveLeft = _waveCount;
+        _progress = 0;
+        curTimer  = 0f;
+        AISM.Animator.speed = .5f;
+        AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsSandWave);
     }
 
     public override void Update()
@@ -44,22 +51,52 @@ public class BossCrabSandWaveState : AIAttackState
         #region Omit
         base.Update();
 
+        if(curTimer>0f)
+        {
+            if((curTimer-=Time.deltaTime)<=0f){
+
+                AISM.NextPattern();
+            }
+        }
+
         /*******************************************************
          *   TODO: 추후, 꽃게 애니메이션에 의해서 발생하도록 수정예정.
          * ***/
-        if ((curTimer -= Time.deltaTime) <= 0f && _waveLeft > 0)
-        {
-            curTimer = 1f;
-            _waves[--_waveLeft]?.StartWave();
+        if (_bossCrab.StateTrigger == false) return;
 
-            /**모든 충격파를 발생시켰다면, 다음 패턴으로 넘어간다...*/
-            if (_waveLeft <= 0) AISM.NextPattern();
+        switch(_progress++){
+
+                /**속도를 조절한다....*/
+                case (0):
+                {
+                    AISM.Animator.speed = 1f;
+                    break;
+                }
+
+                /**모래폭풍을 생성한다....*/
+                case (1):
+                {
+                    curTimer = 1f;
+                    _waves[--_waveLeft]?.StartWave();
+                    break;
+                }
+
+                /**패턴이 마무리 되었다면 탈출대기...*/
+                case (2):
+                {
+                    AISM.Animator.speed = 1f;
+                    curTimer = 2f;
+                    break;
+                }
         }
+
+        _bossCrab.StateTrigger = false;
         #endregion
     }
 
     public override void Exit()
     {
+        AISM.Animator.ResetTrigger(BossCrabAnimation.Trigger_IsSandWave);
     }
 
     public override void OntriggerEnter(Collider other)

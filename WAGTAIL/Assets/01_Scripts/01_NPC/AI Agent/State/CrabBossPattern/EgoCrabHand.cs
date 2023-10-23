@@ -2,6 +2,7 @@ using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static IPariUtility.IpariUtility;
 
 /*****************************************************
  *   분신 집게팔로 내려찍는 기능이 구현된 컴포넌트입니다...
@@ -19,6 +20,7 @@ public sealed class EgoCrabHand : MonoBehaviour
 
     [SerializeField] public  Transform      targetTransform;
     [SerializeField] public  GameObject     MarkerPrefab;
+    [SerializeField] public  GameObject     SpawnSFXprefab;
     [SerializeField] public  AnimationCurve curve;
     [SerializeField] private float          _AttackReadyDuration = 1f;
     [SerializeField] private float          _AttackDuration = .5f;
@@ -85,10 +87,20 @@ public sealed class EgoCrabHand : MonoBehaviour
     //========================================
     public void StartCrabHand( Vector3 startPos )
     {
-        if(_progressCoroutine!=null) StopCoroutine(_progressCoroutine);
+        #region Omit
+        if (_progressCoroutine!=null) StopCoroutine(_progressCoroutine);
         transform.position = startPos;
         _progressCoroutine = StartCoroutine(AttackProgress());
         IsAttack = false;
+
+        if(SpawnSFXprefab!=null){
+
+            GameObject newSFX = GameObject.Instantiate(SpawnSFXprefab);
+            newSFX.transform.position   = transform.position;
+            newSFX.transform.localScale = (Vector3.one*1.3f);
+            Destroy(newSFX, .8f);
+        }
+        #endregion
     }
 
     private IEnumerator AttackProgress()
@@ -135,6 +147,9 @@ public sealed class EgoCrabHand : MonoBehaviour
             float deltaTime   = Time.fixedDeltaTime;
             Vector3 goalPos   = targetTransform.position + (Vector3.up * 3f);
             Vector3 updatePos = (goalPos - tr.position) * (deltaTime * 3f);
+
+            Vector3 tong2Player = (goalPos-transform.position).normalized;
+            tr.rotation =  (IPariUtility.IpariUtility.GetQuatBetweenVector(transform.forward, tong2Player, deltaTime) * tr.rotation);
             tr.position += updatePos;
 
             yield return waitTime;
@@ -172,6 +187,8 @@ public sealed class EgoCrabHand : MonoBehaviour
             progressRatio = (1f - Mathf.Clamp(timeLeft * attackDiv, 0f, 1f));
             float updatePos = (hit.point.y - startPos.y) * curve.Evaluate(progressRatio);
 
+            Vector3 tong2Player = (Player.Instance.transform.position - transform.position).normalized;
+            tr.rotation = (IPariUtility.IpariUtility.GetQuatBetweenVector(transform.forward, tong2Player, deltaTime) * tr.rotation);
             tr.position = startPos + (Vector3.down * updatePos);
             yield return null;
 
