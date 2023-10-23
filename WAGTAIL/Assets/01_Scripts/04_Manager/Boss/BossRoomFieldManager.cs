@@ -86,9 +86,10 @@ public class BossRoomFieldManager :MonoBehaviour
     //======================================
     private IEnumerator BrokenDelayCo(float x, float y)
     {
-        yield return new WaitForSeconds(0.85f);
+        yield return new WaitForSeconds(0.1f);
         //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
         Vector3 pos = BossFild[new Vector2(x, y)].transform.position;
+        Debug.Log("AA");
 
         GameObject obj = GameObject.Instantiate<GameObject>(_interactionVFX, new Vector3(pos.x, pos.y + 0.5f, pos.z - 1f), _interactionVFX.transform.rotation);
         Destroy(obj, 1);
@@ -130,7 +131,7 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         int x, z;
 
-        yield return new WaitForSeconds(0.95f);
+        yield return new WaitForSeconds(0.1f);
         CameraShake(ShakePower, ShakeTime);
         if (reActionPools[0] == null)
             CreateReActionObject();
@@ -165,10 +166,10 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         // 내려 찍기 -> 2.5초 후 내려 찍음.
         // .Attack Delay = 2.5f
-        float X = (xPos - Offset.x ) + 9, Y = 0;
-        float FindY = Y * (-StoneYSize);
+        int X = (int)(xPos - Offset.x ) + 9, Y = 0;
+        int FindY = Y * (-StoneYSize);
 
-
+        Debug.Log($"{X}, {FindY}");
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
             StartCoroutine(BrokenDelayCo(X, FindY));

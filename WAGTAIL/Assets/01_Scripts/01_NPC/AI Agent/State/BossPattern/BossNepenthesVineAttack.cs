@@ -97,7 +97,7 @@ public class BossNepenthesVineAttack : AIAttackState
                 break;
             case VineState.STATE_MOVE:
                 {
-                    vineAnim.SetTrigger("isAttack");
+                    vineAnim.SetBool("isAttack", true);
                     Debug.Log($"StateName : StateMove");
                     MovementVine(vine.transform.position, spawnPos);
                     break;
@@ -105,6 +105,7 @@ public class BossNepenthesVineAttack : AIAttackState
             case VineState.STATE_ATTACK:
                 {
                     Debug.Log($"StateName : StateAttack");
+                    vineAnim.SetBool("isAttack", false);
                     //// 공격하게 함.
                     //// 바로 공격
                     if (!isThread)
@@ -212,7 +213,7 @@ public class MyThreedClass
 
     public void Run()
     {
-        Thread.Sleep(3000);
+        Thread.Sleep(1000);
         vineAttack.eStateChange();
         
     }
