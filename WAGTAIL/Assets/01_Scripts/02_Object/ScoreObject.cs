@@ -20,7 +20,6 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     //=================================================
     public Rigidbody Body                 { get { return _body; } }
     public Collider  Collider             { get { return _collider;  }}
-    public float     MagnetMoveSpeed      { get { return _MagnetSpeed; } set { _MagnetSpeed = (value < 0f ? 0f : value); } }
     public float     MagnetMoveDelayTime  { get { return _MagnetMoveDelayTime; } set { _MagnetMoveDelayTime = (value < 0f ? 0.01f : value); } }
     public float     GetRaiseUpTime       { get { return _GetRaiseUpTime; } set { _GetRaiseUpTime = (value < 0f ? 0f : value); } }
     public string    EnviromentPrompt     { get; }=String.Empty;
@@ -30,19 +29,16 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     public bool     UseMagnetMovement = false;
 
     [SerializeField] 
-    public GetKind  ItemGetType       = GetKind.RaiseUp;
+    public GetKind  ItemGetType  = GetKind.RaiseUp;
 
     [SerializeField, FormerlySerializedAs("scoreType")]
-    public ScoreType ScoreType        = ScoreType.Coin;
-
-    [SerializeField,Min(0f)] 
-    private float       _MagnetSpeed          = 1.1f;
+    public ScoreType ScoreType   = ScoreType.Coin;
 
     [SerializeField,Min(0f)]
     private float       _MagnetMoveDelayTime  = 0f;
 
     [SerializeField, Min(0f)]
-    private float       _GetRaiseUpTime         = .25f;
+    private float       _GetRaiseUpTime       = .25f;
 
     [SerializeField,FormerlySerializedAs("_interactionVFX")] 
     public GameObject   InteractionVFX;
