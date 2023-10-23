@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8877598135421004755}
   - component: {fileID: 6689929287776116505}
   - component: {fileID: 6434156790701909051}
-  - component: {fileID: 8877598135421004754}
+  - component: {fileID: 3507611289213106995}
   m_Layer: 0
   m_Name: CoCoSi
   m_TagString: Untagged
@@ -104,7 +104,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1.1236542
   m_Center: {x: 0.047099978, y: 1.1236542, z: -0.039184123}
---- !u!114 &8877598135421004754
+--- !u!114 &3507611289213106995
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -113,12 +113,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 5176777056612990668}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 521c76e9cbdb8514691d503bcd11c6f9, type: 3}
+  m_Script: {fileID: 11500000, guid: b6840f7fa79877f4b8ea75d3b4b53f1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactionVFX: {fileID: 5886839673618709422, guid: 642a73e5bab53c9488d1e52c9fe7ff9f,
-    type: 3}
-  index: 0
+  UseMagnetMovement: 0
+  ItemGetType: 0
+  ScoreType: 2
+  _CocosiIndex: 0
+  _CocosiChapter: 0
+  _MagnetMoveDelayTime: 0
+  _GetRaiseUpTime: 0.25
+  InteractionVFX: {fileID: 0}
 --- !u!1001 &3613334472061777640
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -380,6 +380,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     private Rigidbody _body;
     private Collider  _collider;
     private Transform _playerTr;
+    private Animator  _animator;
 
 
 
@@ -391,6 +392,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         #region Omit
         _body     = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
+        _animator = GetComponent<Animator>();
 
         gameObject.tag = "Platform";
 
@@ -483,6 +485,8 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                     gm.cocosi[CocosiChapter][CocosiIndex] = true;
                     UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
                         .SetCocosiUI(CocosiChapter, CocosiIndex, true);
+                    transform.GetChild(2).gameObject.SetActive(false);
+                    _animator.SetTrigger("escape");
 
                     break;
                 }
@@ -516,7 +520,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
         /**아이템이 파괴되면서 이펙트를 생성한다...*/
         SpawnVFX();
-        Destroy(gameObject);
+        if (_animator == null) Destroy(gameObject);
 
         #endregion
     }
@@ -587,6 +591,12 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     {
         GetItem();
         return true;
+    }
+
+    public void AnimationEvent()
+    {
+        SpawnVFX();
+        Destroy(gameObject);
     }
 
     public void ExecutionFunction(float time)

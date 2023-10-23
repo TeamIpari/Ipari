@@ -25,6 +25,7 @@ public enum ChapterType
     Chapter01,
     Chapter02,
     BossRoom,
+    Chapter03,
     EndCredits,
     Test
 }

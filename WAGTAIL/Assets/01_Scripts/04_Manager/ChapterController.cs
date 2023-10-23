@@ -34,12 +34,22 @@ public class ChapterController : MonoBehaviour
         {
             GameManager.GetInstance().StartChapter(ChapterType.Chapter02);
             CameraManager.GetInstance().CameraSetting();
+            UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>().SetCanvas(1,true);
         }
 
         if (Type == ChapterType.BossRoom)
         {
             GameManager.GetInstance().StartChapter(ChapterType.BossRoom);
             CameraManager.GetInstance().CameraSetting();
+            UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, false);
+        }
+
+        if (Type == ChapterType.Chapter03)
+        {
+            GameManager.GetInstance().StartChapter(ChapterType.Chapter03);
+            CameraManager.GetInstance().CameraSetting();
+            UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, true);
+            UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>().SetCanvas(2,true);
         }
 
         if (Type == ChapterType.EndCredits)
