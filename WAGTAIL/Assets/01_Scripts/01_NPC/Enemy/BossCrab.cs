@@ -662,7 +662,7 @@ public sealed class BossCrab : Enemy
         AiHit = new BossCrabHitState(AiSM, this);
         AiDie = new BossCrabDieState(AiSM);
         AiAttack = new BossCrabSowingSeedsState(AiSM, ref sowingSeedsDesc, this);
-        AiAttack2 = new BossCrabEgoStampState(AiSM, newHand);
+        AiAttack2 = new BossCrabEgoStampState(AiSM, newHand, this);
         AiAttack3 = new BossCrabSandWaveState(AiSM, SandWavePrefab);
         AiAttack4 = new BossCrabAntHellState(AiSM, AntHellPrefab, _AntHellDuration);
 
@@ -729,7 +729,8 @@ public sealed class BossCrab : Enemy
         if(_HPAnim!=null)
         {
             _HPAnim.gameObject.SetActive(true);
-            _HPAnim.Play("HP_FadeIn");
+            _HPAnim.speed = .8f;
+            _HPAnim.Play("HP_FadeIn", 0, 0f);
         }
         #endregion
     }

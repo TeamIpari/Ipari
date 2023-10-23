@@ -104,7 +104,7 @@ public sealed class InterativeUI : MonoBehaviour
         _text     = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         _rectTr   = _animator.GetComponent<RectTransform>();
 
-        _rectTr.position = new Vector3(999f, 999f);
+        _rectTr.position = new Vector3(99999f, 99999f);
         #endregion
     }
 

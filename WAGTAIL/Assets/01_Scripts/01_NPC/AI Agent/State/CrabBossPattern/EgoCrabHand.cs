@@ -23,12 +23,12 @@ public sealed class EgoCrabHand : MonoBehaviour
     [SerializeField] private float          _AttackReadyDuration = 1f;
     [SerializeField] private float          _AttackDuration = .5f;
     [SerializeField] private float          _AttackRange = 1f;
+    [SerializeField] public  bool           IsAttack = false;
 
 
     private Animator  _animator;
     private Coroutine _progressCoroutine;
     private Vector3   _startScale = Vector3.one;
-    private bool      _isAttack = false;
 
 
 
@@ -63,7 +63,7 @@ public sealed class EgoCrabHand : MonoBehaviour
     {
         #region Omit
         /**충돌했는지 체크를 한다...*/
-        if (!_isAttack) return;
+        if (!IsAttack) return;
 
 
         /****************************************
@@ -88,7 +88,7 @@ public sealed class EgoCrabHand : MonoBehaviour
         if(_progressCoroutine!=null) StopCoroutine(_progressCoroutine);
         transform.position = startPos;
         _progressCoroutine = StartCoroutine(AttackProgress());
-        _isAttack = false;
+        IsAttack = false;
     }
 
     private IEnumerator AttackProgress()
@@ -96,7 +96,6 @@ public sealed class EgoCrabHand : MonoBehaviour
         #region Omit
         if (targetTransform == null) yield break;
 
-        _isAttack = false;
 
         /***************************************
          *   계산에 필요한 것들을 구한다...
@@ -131,26 +130,21 @@ public sealed class EgoCrabHand : MonoBehaviour
         /******************************************
          *    대상을 추적한다...
          * ***/
-        timeLeft = _AttackReadyDuration;
         do
         {
-            float deltaTime = Time.fixedDeltaTime;
-            timeLeft -= deltaTime;
-
-            progressRatio = (1f - Mathf.Clamp(timeLeft * attackReadyDiv, 0f, 1f));
-            Vector3 goalPos = targetTransform.position + (Vector3.up * 3f);
+            float deltaTime   = Time.fixedDeltaTime;
+            Vector3 goalPos   = targetTransform.position + (Vector3.up * 3f);
             Vector3 updatePos = (goalPos - tr.position) * (deltaTime * 3f);
             tr.position += updatePos;
 
             yield return waitTime;
 
-        } while (progressRatio < 1f);
+        } while (IsAttack == false);
 
 
         /******************************************
          *    대상을 향해 내려찍는다...
          * ***/
-        _isAttack = true;
         timeLeft = _AttackDuration;
 
         /**내려찍는 곳까지의 거리를 구한다...*/
@@ -184,7 +178,7 @@ public sealed class EgoCrabHand : MonoBehaviour
         } while (progressRatio < 1f);
 
 
-        _isAttack = false;
+        IsAttack = false;
         CameraManager.GetInstance()?.CameraShake(3f, .2f);
 
 

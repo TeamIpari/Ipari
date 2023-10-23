@@ -24,7 +24,7 @@ public sealed class BossCrabHitState : AIHitState
     {
        base.Enter();
 
-        curTimer = .7f;
+        curTimer = .5f;
         AISM.character.HP -= 10;
         AISM.Animator.Play(BossCrabAnimation.Hit, 0, 0f);
         _bossCrab.PopHPStack();

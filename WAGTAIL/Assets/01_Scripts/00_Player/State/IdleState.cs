@@ -128,6 +128,23 @@ public class IdleState : State
         {
             player.transform.rotation = Quaternion.LookRotation(velocity);
         }
+
+        /************************************
+         *   탐지된 물체가 업을 경우....
+         * *****/
+        if (_lastInteract.Collider != null)
+        {
+            /**상호작용 UI를 종료시킨다...*/
+            InterativeUI.PopupUI(
+
+                InterativeUI.ShowType.InVisible,
+                InterativeUI.Text,
+                InterativeUI.WorldPosition
+            );
+
+            _lastInteract.Collider = null;
+            _lastInteract.Interactable = null;
+        }
         #endregion
     }
 
