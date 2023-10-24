@@ -43,21 +43,13 @@ public class BossCrabSandWaveState : AIAttackState
         _progress = 0;
         curTimer  = 0f;
         AISM.Animator.speed = .5f;
-        AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsSandWave);
+        AISM.Animator.CrossFade(BossCrabAnimation.MakeSandWave_TongsRise, .4f);
     }
 
     public override void Update()
     {
         #region Omit
         base.Update();
-
-        if(curTimer>0f)
-        {
-            if((curTimer-=Time.deltaTime)<=0f){
-
-                AISM.NextPattern();
-            }
-        }
 
         /*******************************************************
          *   TODO: 추후, 꽃게 애니메이션에 의해서 발생하도록 수정예정.
@@ -66,6 +58,14 @@ public class BossCrabSandWaveState : AIAttackState
 
         switch(_progress++){
 
+                /**준비동작 애니메이션을 재생한다...*/
+                case (-1):
+                {
+                    AISM.Animator.speed = (Random.Range(0f,1f)>.5f?1f:2f);
+                    AISM.Animator.CrossFade(BossCrabAnimation.MakeSandWave_TongsRise, .4f);
+                    break;
+                }
+
                 /**속도를 조절한다....*/
                 case (0):
                 {
@@ -73,21 +73,45 @@ public class BossCrabSandWaveState : AIAttackState
                     break;
                 }
 
-                /**모래폭풍을 생성한다....*/
+                /**빠르게 내려친다...*/
                 case (1):
                 {
-                    curTimer = 1f;
-                    _waves[--_waveLeft]?.StartWave();
+                    AISM.Animator.speed = 2f;
+                    AISM.Animator.CrossFade(BossCrabAnimation.MakeSandWave_Smash, .3f);
                     break;
                 }
 
-                /**패턴이 마무리 되었다면 탈출대기...*/
+                /**모래폭풍을 생성한다....*/
                 case (2):
                 {
-                    AISM.Animator.speed = 1f;
-                    curTimer = 2f;
+                    _waves[--_waveLeft]?.StartWave();
+
+                    if(_waveLeft>0)
+                    {
+                        AISM.Animator.speed = 0f;
+                        _progress = -1;
+                        _bossCrab.SetStateTrigger(Random.Range(.1f, .2f));
+                    }
                     break;
                 }
+
+                /**패턴이 마무리 되었다면 */
+                case (3):
+                {
+                    AISM.Animator.speed = 1f;
+                    AISM.Animator.CrossFade(BossCrabAnimation.Idle, .3f);
+
+                    _bossCrab.SetStateTrigger(1f);
+                    break;
+                }
+
+                /*다음 패턴으로 넘어간다....*/
+                case (4):
+                {
+                    AISM.NextPattern();
+                    break;
+                }
+
         }
 
         _bossCrab.StateTrigger = false;

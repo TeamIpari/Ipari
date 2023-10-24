@@ -127,8 +127,8 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
 
         if (_currPullSpeed > 0f && (_shakeTime -= deltaTime) <= 0f){
 
-            CameraManager.GetInstance().CameraShake(1.5f, .1f);
-            _shakeTime = .1f;
+            CameraManager.GetInstance().CameraShake(2.5f, 2f);
+            _shakeTime = 2.1f;
         }
 
 

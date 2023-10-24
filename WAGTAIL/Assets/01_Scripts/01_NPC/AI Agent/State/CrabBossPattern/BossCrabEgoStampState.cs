@@ -15,22 +15,24 @@ public sealed class BossCrabEgoStampState : AIAttackState
     private float       _power    = 0f;
     private float       _progress = 0;
 
-    private float _idleDuration = 2f;
-
 
     //==================================================
     //////        Public and Override methods       ////
     //==================================================
     public BossCrabEgoStampState(AIStateMachine stateMachine, EgoCrabHand handIns, BossCrab bossCrab)
-    : base(stateMachine)
+    :base(stateMachine)
     {
         #region Omit
         _handIns = handIns;
         _bossCrab = bossCrab;
 
-        Transform arm      = AISM.Transform.Find("Boss_Crab_Con").Find("Crab_Body_Bone").Find("L_Tong01");
-        Transform tong     = arm.Find("Bone011").Find("Bone012").Find("Bone012_internal");
-        _renderer = tong.GetComponent<Renderer>();
+        try
+        {
+            Transform arm = AISM.Transform.Find("Boss_Crab_Con").Find("Crab_Body_Bone").Find("L_Tong01");
+            Transform tong = arm.Find("Bone011").Find("Bone012").Find("Bone012_internal");
+            _renderer = tong.GetComponent<Renderer>();
+        }
+        catch { Debug.LogWarning("BossCrabEgoStampState: Material을 가져올 집게가 존재하지 않습니다."); }
 
         #endregion
     }
@@ -40,41 +42,12 @@ public sealed class BossCrabEgoStampState : AIAttackState
         _progress = 0;
         curTimer  = 0;
         AISM.Animator.speed = .5f;
-        AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsEgoTongAttack);
+        AISM.Animator.CrossFade(BossCrabAnimation.EgoTongAttack_TongRise, .3f);
     }
 
     public override void Update()
     {
-        /*******************************************
-         *   일정시간 후 내려친다...
-         * ****/
-        if(curTimer>0)
-        {
-            curTimer -= Time.deltaTime;
-
-            /**타이머가 완료되었을 경우...*/
-            if (curTimer <= 0f){
-
-                switch (_progress++)
-                {
-                        /**내려찍는 애니메이션을 재생한다....*/
-                        case (3):
-                        {
-                            AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsEgoTongAttack);
-                            break;
-                        }
-
-                        /**상태를 빠져나간다...*/
-                        case (6):
-                        {
-                            AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsEgoTongAttack);
-                            AISM.NextPattern();
-                            break;
-                        }
-                }
-            }
-        }
-
+        #region Omit
         /****************************************
          *   상태 트리거에 따라서 효과를 적용한다...
          * ***/
@@ -107,7 +80,15 @@ public sealed class BossCrabEgoStampState : AIAttackState
                 /**내려찍을 때의 딜레이를 준다...*/
                 case (2):
                 {
-                    curTimer = _idleDuration;
+                    AISM.Animator.CrossFade(BossCrabAnimation.EgoTongAttack_RiseIdle, .1f);
+                    _bossCrab.SetStateTrigger(2f);
+                    break;
+                }
+
+                /**내려찍는 애니메이션을 재생한다....*/
+                case (3):
+                {
+                    AISM.Animator.CrossFade(BossCrabAnimation.EgoTongAttack_Down, .1f);
                     break;
                 }
 
@@ -115,20 +96,27 @@ public sealed class BossCrabEgoStampState : AIAttackState
                 case (4):
                 {
                     _handIns.IsAttack = true;
-                    curTimer = 1f;
                     break;
                 }
 
-                /**최종 대기시간 부여.*/
+                /**Idle로 지정한다...*/
                 case (5):
                 {
-                    curTimer = 1f;
+                    AISM.Animator.CrossFade(BossCrabAnimation.Idle, .3f);
+                    _bossCrab.SetStateTrigger(1f);
+                    break;
+                }
+
+                /**상태를 빠져나간다...*/
+                case (6):
+                {
+                    AISM.NextPattern();
                     break;
                 }
         }
 
         _bossCrab.StateTrigger = false;
-
+        #endregion
     }
 
     public override void Exit()

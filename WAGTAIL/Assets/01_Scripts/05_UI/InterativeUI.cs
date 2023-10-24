@@ -131,7 +131,6 @@ public sealed class InterativeUI : MonoBehaviour
 
             _ins._show = showType;
             _ins._animator.Play(_anims[(int)showType], 0, 0f);
-            _ins._image.color = new Color(1f, 1f, 1f, 1f);
         }
 
         /**카메라가 유효하지 않다면 갱신한다....*/
@@ -142,6 +141,15 @@ public sealed class InterativeUI : MonoBehaviour
 
         _ins._text.text       = msg;
         _ins._rectTr.position = _ins._mainCam.WorldToScreenPoint(worldPosition);
+        #endregion
+    }
+
+    public static void HideUI()
+    {
+        #region Omit
+        if (_ins == null) return;
+
+        _ins._rectTr.position = new Vector3(99999f, 99999f, 99999f);
         #endregion
     }
 

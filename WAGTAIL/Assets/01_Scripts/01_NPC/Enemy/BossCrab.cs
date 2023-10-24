@@ -569,6 +569,8 @@ public sealed class BossCrab : Enemy
     private Animator         _HPAnim;
     private Stack<Transform> _HPstack;
 
+    private float _stateTriggerDelay = 0f;
+
 
 
     //===============================================
@@ -588,10 +590,21 @@ public sealed class BossCrab : Enemy
 
     private void Update()
     {
-        if(AiSM.CurrentState!=null){
+        #region Omit
+        if (AiSM.CurrentState!=null){
+
+            if(_stateTriggerDelay>0f)
+            {
+                /**딜레이가 끝나면 StateTrigger를 발생시킨다...*/
+                if((_stateTriggerDelay-=Time.deltaTime)<=0f){
+
+                    StateTrigger = true;
+                }
+            }
 
             AiSM?.CurrentState.Update();
         }
+        #endregion
     }
 
 
@@ -702,9 +715,18 @@ public sealed class BossCrab : Enemy
         #endregion
     }
 
-    public void SetStateTrigger()
+    public void SetStateTrigger(float delay=0f)
     {
+        #region Omit
+        if (delay>0f)
+        {
+            _stateTriggerDelay = delay;
+            StateTrigger = false;
+            return;
+        }
+
         StateTrigger = true;
+        #endregion
     }
 
     public void ExitCurrentState()

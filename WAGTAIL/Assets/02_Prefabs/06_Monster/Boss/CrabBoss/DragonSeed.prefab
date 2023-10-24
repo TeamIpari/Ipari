@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 3892508794640542915}
   - component: {fileID: 655227102186083113}
   - component: {fileID: 694961260085318179}
-  - component: {fileID: 655227102186083124}
   - component: {fileID: 655227102186083126}
   m_Layer: 6
   m_Name: DragonSeed
@@ -31,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 655227102186083125}
   m_LocalRotation: {x: 0.00000008146034, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -3.4520755, y: 12.23, z: -27.478401}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2060315086289261233}
@@ -119,26 +118,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5048958354532707899, guid: d7a593a37ea4e844ea3c2f0c3682da8b, type: 3}
---- !u!114 &655227102186083124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 655227102186083125}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ad146e28cf27bd4d90bd7efb4cc9539, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  explosionRange: 2
-  explosionTime: 5
-  explosionVFX: {fileID: 7873947948240952929, guid: d0c98e46a95c4564781abcc7366f489a,
-    type: 3}
-  _isStart: 0
 --- !u!114 &655227102186083126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,11 +134,22 @@ MonoBehaviour:
   height: 3
   range: 30
   autoTarget: {fileID: 0}
+  isReady: 0
   isTarget: 0
   isSmall: 0
   Forward: {x: 0, y: 0, z: 0}
   PhysicsCheck: 0
   flight: 0
+  Gravity: 7
+  Rot: 12
+  correctionHeight: 0
+  correctionGravity: 0
+  OnPickUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnThrow:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1029032526319514155
 GameObject:
   m_ObjectHideFlags: 0

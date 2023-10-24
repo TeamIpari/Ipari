@@ -218,13 +218,6 @@ public class SandWave : MonoBehaviour
 
         _collider.radius = currRadius;
 
-        /**점점 빨라지는 화면 흔들림을 구현한다....*/
-        if((_shakeTime-= deltaTime) <=0f){
-
-            CameraManager.GetInstance().CameraShake(3f, .5f);
-            _shakeTime = Mathf.Clamp(_shakeTime -= 1f, 0f, _shakeMaxTime);
-        }
-
 
         /********************************************
          *    이펙트들을 진행된 구간으로 이동시킨다...
@@ -268,7 +261,7 @@ public class SandWave : MonoBehaviour
         if (progressRatio >= 1.5f){
 
             Vector3 thisPos = transform.position;
-            for (int i = 0; i < Pricision; i++){ 
+            for (int i = 0; i < Pricision; i++){
 
                 GameObject sandFX = _FXLists[i];
                 sandFX.SetActive(false);
@@ -356,7 +349,9 @@ public class SandWave : MonoBehaviour
         _shakeTime = _shakeMaxTime;
         _delayTime = .1f;
         IsSpeading = true;
-#endregion
+
+        CameraManager.GetInstance().CameraShake(3f, WaveDuration);
+        #endregion
     }
 
     private bool CheckHitWave( Vector3 worldPos )

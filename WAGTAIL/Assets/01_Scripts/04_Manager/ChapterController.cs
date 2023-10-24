@@ -62,6 +62,8 @@ public class ChapterController : MonoBehaviour
             //GameManager.GetInstance().StartChapter(ChapterType.Test);
             UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
         }
+
+        InterativeUI.HideUI();
     }
 
 }
