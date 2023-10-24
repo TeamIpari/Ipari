@@ -1,4 +1,5 @@
 using DG.Tweening.Core.Easing;
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -187,8 +188,9 @@ public sealed class EgoCrabHand : MonoBehaviour
             progressRatio = (1f - Mathf.Clamp(timeLeft * attackDiv, 0f, 1f));
             float updatePos = (hit.point.y - startPos.y) * curve.Evaluate(progressRatio);
 
-            Vector3 tong2Player = (Player.Instance.transform.position - transform.position).normalized;
-            tr.rotation = (IPariUtility.IpariUtility.GetQuatBetweenVector(transform.forward, tong2Player, deltaTime) * tr.rotation);
+            Vector3 lookPos     = new Vector3( startPos.x, updatePos, startPos.z );
+            Vector3 tong2Player = (lookPos - transform.position).normalized;
+            tr.rotation = (IPariUtility.IpariUtility.GetQuatBetweenVector(transform.forward, tong2Player, deltaTime*5f) * tr.rotation);
             tr.position = startPos + (Vector3.down * updatePos);
             yield return null;
 
@@ -201,7 +203,11 @@ public sealed class EgoCrabHand : MonoBehaviour
 
         /**공격을 마친 후 대기...*/
         timeLeft = .7f;
-        while ((timeLeft -= Time.deltaTime) > 0f) yield return null;
+        while ((timeLeft -= Time.deltaTime) > 0f)
+        {
+            tr.rotation = (IpariUtility.GetQuatBetweenVector(transform.forward, Vector3.right, Time.deltaTime)*tr.rotation);
+            yield return null;
+        }
 
 
         /****************************************

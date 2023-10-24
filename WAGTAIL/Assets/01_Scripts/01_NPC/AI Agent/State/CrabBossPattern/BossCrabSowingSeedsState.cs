@@ -56,7 +56,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
     public override void Enter()
     {
         #region Omit
-        AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsSpitSeeds);
+        AISM.Animator.CrossFade(BossCrabAnimation.SpitSeedsReady, .3f);
         _changeTimeDiv = (1f / _desc.changeTime);
         curTimer       = 0f;
         _isShoot       = false;
@@ -81,13 +81,14 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
 
     public override void Update()
     {
+        #region Omit
         base.Update();
         if (Player.Instance.isDead) return;
 
         /**************************************
          *   로직을 갱신한다....
          * ***/
-        //ApplySeedsIgonre();
+        ApplySeedsIgonre();
 
 
         /*************************************
@@ -102,12 +103,20 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 {
                     CreateMarker();
                     PositionLuncher();
-                    AISM.NextPattern();
+                    _bossCrab.SetStateTrigger(.05f);
                     break;
                 }
 
                 /**상태를 탈출한다...*/
                 case (1):
+                {
+                    AISM.Animator.CrossFade(BossCrabAnimation.Idle, .4f);
+                    _bossCrab.SetStateTrigger(.3f);
+                    break;
+                }
+
+                /**다음 패턴으로 넘어간다...*/
+                case (2):
                 {
                     AISM.NextPattern();
                     break;
@@ -115,6 +124,8 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         }
 
         _bossCrab.StateTrigger = false;
+
+        #endregion
     }
 
 
@@ -249,8 +260,8 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
 
             out result, 
             ~(1 << LayerMask.NameToLayer("Player")), 
-            (unitDir * randRad), 
-            1f
+            (unitDir * randRad),
+             1f
         );
 
         desc.goalPos    = result.point + (result.normal*.03f);

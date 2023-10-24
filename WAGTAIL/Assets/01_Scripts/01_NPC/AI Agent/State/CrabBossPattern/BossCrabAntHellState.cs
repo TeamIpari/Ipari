@@ -36,9 +36,9 @@ public class BossCrabAntHellState : AIAttackState
         if(_targetSand!=null)
         {
             #region Deprecate
-            _targetSand.SandIntakeCenterOffset.y = -7f;
-            _targetSand.SandIdleCenterOffset = _targetSand.SandIntakeCenterOffset;
-            _targetSand.SandIdleCenterOffset.y = -4.5f;
+            //_targetSand.SandIntakeCenterOffset.y = -7f;
+            //_targetSand.SandIdleCenterOffset = _targetSand.SandIntakeCenterOffset;
+            //_targetSand.SandIdleCenterOffset.y = -4.5f;
             #endregion
 
             _targetSand.IntakeSand(true);
