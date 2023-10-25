@@ -604,7 +604,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     //=========================================
     /////            Property             /////
     //=========================================
-    public string       InteractionPrompt   { get; set; } = "당긴다";
+    public string       InteractionPrompt   { get; set; } = "당기기";
     public Vector3      InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
     public float        MaxLength
     {
