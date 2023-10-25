@@ -38,6 +38,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private float curTime;
     private float shakeDelay;
     private Vector3[] PosList;
+    [HideInInspector] public bool isBroken = false;
 
     public string EnviromentPrompt => throw new System.NotImplementedException();
 
@@ -162,7 +163,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     {
         if(Light != null)
             Light.SetActive(true);
-
+        isBroken = true;
         shake = true;
         yield return new WaitForSeconds(delayTime);
         BasePlatform.SetActive(false);
@@ -203,26 +204,26 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     public void ReSetPlatform()
     {
-        Vector3 v = new Vector3(-90, 0, 0);
-
-        for (int i = 0; i < PlatformPiece.transform.childCount; i++)
-        {
-            var piece = PlatformPiece.transform.GetChild(i);
-            if (piece.GetComponent<Rigidbody>() != null)
-            {
-                piece.GetComponent<Rigidbody>().useGravity = false;
-                piece.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                piece.GetComponent<Rigidbody>().isKinematic = true;
-                //piece.gameObject.layer = LayerMask.NameToLayer("Defualt");
-
-                piece.rotation = Quaternion.Euler(v);
-                piece.position = PosList[i];
-            }
-        }
-        if (col != null) col.enabled = true;
-        if (mesh != null) mesh.enabled = true;
-        PlatformPiece.SetActive(false);
+        //Vector3 v = new Vector3(-90, 0, 0);
+        Debug.Log($"AAA{this.gameObject.name}");
         BasePlatform.SetActive(true);
+
+        //for (int i = 0; i < PlatformPiece.transform.childCount; i++)
+        //{
+        //    var piece = PlatformPiece.transform.GetChild(i);
+        //    if (piece.GetComponent<Rigidbody>() != null)
+        //    {
+        //        piece.GetComponent<Rigidbody>().useGravity = false;
+        //        piece.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        //        piece.GetComponent<Rigidbody>().isKinematic = true;
+
+        //        piece.rotation = Quaternion.Euler(v);
+        //        piece.position = PosList[i];
+        //    }
+        //}
+        //if (col != null) col.enabled = true;
+        //if (mesh != null) mesh.enabled = true;
+        //PlatformPiece.SetActive(false);
 
         IsHit = false;
     }
@@ -253,6 +254,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         if (mesh != null) mesh.enabled = true;
         PlatformPiece.SetActive(false);
         BasePlatform.SetActive(true);
+        isBroken = false;
 
         IsHit = false;
     }
