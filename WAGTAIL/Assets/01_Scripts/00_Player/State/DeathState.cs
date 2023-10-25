@@ -21,6 +21,10 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
+        if (player.currentInteractable != null)
+        {
+            player.currentInteractable.GetComponent<ThrowObject>().ResetPoint();
+        }
         player.isDead = false;
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.GameOver);
         _isAlive = false;
@@ -79,6 +83,7 @@ public class DeathState : State
     public override void Exit()
     {
         base.Exit();
+        player.UIManager.GetGameUI(GameUIType.Death).GetComponent<Animator>().SetTrigger("fadeout");
         player.isCarry = false;
         player.isFlight = false;
         player.isIdle = false;

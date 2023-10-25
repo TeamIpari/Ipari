@@ -141,7 +141,7 @@ public class State
     // State ±³Ã¼ Logic
     public virtual void LogicUpdate()
     {
-        if (player.isDead)
+        if (player.isDead && player.movementSM.currentState != player.death)
         {
             stateMachine.ChangeState(player.death);
             return;
