@@ -353,6 +353,16 @@ public class ThrowObject : MonoBehaviour, IInteractable
     public void ResetPoint()
     {
         // 위치 초기화
+        if (_player.currentInteractable != null)
+        {
+            _transform.SetParent(null);
+            _rigidbody.useGravity = true;
+            _rigidbody.freezeRotation = false;
+            _rigidbody.isKinematic = false;
+            _collider.isTrigger = false;
+            _player.currentInteractable = null;
+            isReady = true;
+        }
         transform.position = spawnPoint + Vector3.up * 5f;
         transform.rotation = Quaternion.identity;
         _rigidbody.velocity = Vector3.zero;
