@@ -17,6 +17,8 @@ public class CameraManager : Singleton<CameraManager>
     private CameraController _currentCamera;
     private CameraController _prevCamera;
 
+    private CinemachineImpulseSource source;
+
     [SerializeField] private GameObject _testCamera;
     private float shakeTimer = 0;
 
@@ -29,6 +31,8 @@ public class CameraManager : Singleton<CameraManager>
 
     private void Start()
     {
+        source  = GetComponent<CinemachineImpulseSource>();
+        
         SwitchCamera(CameraType.Main);
     }
 
@@ -91,6 +95,12 @@ public class CameraManager : Singleton<CameraManager>
     public CameraController GetPrevCamera()
     {
         return _prevCamera;
+    }
+
+    public void CamShake()
+    {
+        Debug.Log($"CamShake: source is null? = {source != null}");
+        source.GenerateImpulse();
     }
 
     public void CameraShake(float value, float time)

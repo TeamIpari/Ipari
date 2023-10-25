@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using UnityEngine;
 
@@ -53,6 +54,7 @@ public class BossRoomFieldManager :MonoBehaviour
     public int Count;
     private bool reAction = false;
 
+
     public Vector3 PlayerOnTilePos
     {
         get { return TargetPos; }
@@ -63,7 +65,7 @@ public class BossRoomFieldManager :MonoBehaviour
     //=======================================
     //////        Magic Methods          ////
     //=======================================
-    void Awake()
+    private void Awake()
     {
         if (instance == null)
         {
@@ -74,6 +76,11 @@ public class BossRoomFieldManager :MonoBehaviour
         Initialized();
         CreateReActionObject();
         DefaultTileMap.SetActive(false);
+    }
+
+    private void Start()
+    {
+        
     }
 
 
@@ -88,7 +95,6 @@ public class BossRoomFieldManager :MonoBehaviour
     private IEnumerator BrokenDelayCo(float x, float y)
     {
         yield return new WaitForSeconds(0.1f);
-        //BossFild[new Vector2(x, y)].GetComponentInChildren<MovingPlatformBehavior>().OnObjectPlatformEnter(null, null, null, default, default);
         Vector3 pos = BossFild[new Vector2(x, y)].transform.position;
         Debug.Log("AA");
 
@@ -152,7 +158,8 @@ public class BossRoomFieldManager :MonoBehaviour
 
     private void CameraShake(float shakePower, float shakeTime )
     {
-        CameraManager.GetInstance().CameraShake(shakePower, shakeTime);
+        //CameraManager.GetInstance().CameraShake(shakePower, shakeTime);
+        CameraManager.GetInstance().CamShake();
     }
 
     //======================================
@@ -209,10 +216,7 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         foreach(var curTile in BossFild)
         {
-            //curTile.Value.gameObject.GetComponentInChildren<PlatformObject>().enabled = false;
-            //curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().enabled = false;
             curTile.Value.gameObject.GetComponentInChildren<IEnviroment>().ExecutionFunction(0.5f);
-            //curTile.Value.gameObject.GetComponentInChildren<BrokenPlatform>().HideOnly(false);
         }
         CameraShake(EndShakePower, EndShakeTime);
 
