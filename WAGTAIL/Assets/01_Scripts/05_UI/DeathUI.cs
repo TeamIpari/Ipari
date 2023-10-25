@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DeathUI : MonoBehaviour
 {
+    /*
     [SerializeField] private GameObject _spriteMask;
     [SerializeField] private float _startScale;
     [SerializeField] private float _endScale;
@@ -79,5 +80,5 @@ public class DeathUI : MonoBehaviour
         {
             _isChange = true;
         }
-    }
+    }*/
 }

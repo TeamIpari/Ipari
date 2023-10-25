@@ -47,6 +47,11 @@ public sealed class AnimatorHelper : MonoBehaviour
         HelperAnimator.SetLayerWeight(index, weight);
     }
 
+    public void SetActive()
+    {
+        gameObject.SetActive(false);
+    }
+
 
 
     //==========================================
