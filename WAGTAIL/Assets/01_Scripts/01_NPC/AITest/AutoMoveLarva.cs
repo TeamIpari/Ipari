@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class AutoMoveLarva : MonoBehaviour
 {
@@ -15,7 +17,7 @@ public class AutoMoveLarva : MonoBehaviour
     public float Timer = 0;
     
     public LarvaSpawner MPCenter;
-    public Animator Animator;
+    public Animator animator;
     private Vector3 temp;
     private bool reverse;
     private float rotAngle;
@@ -61,33 +63,43 @@ public class AutoMoveLarva : MonoBehaviour
         transform.rotation = Quaternion.Euler(temp.x , temp.y -45f, temp.z);
     }
 
-    public void SetUp(LarvaSpawner Center, bool delay = false)
+    public void SetUp(LarvaSpawner center,/* bool delay = false*/ float delay, float animSpeed)
     {
-        MPCenter = Center;
-        ObjSpeed = Center.MoveSpeed;
-        ObjSize = Center.Polygon;
-        CircleR = Center.CircleSize;
-        reverse = Center.Reverse;
+        MPCenter = center;
+        ObjSpeed = center.MoveSpeed;
+        ObjSize = center.Polygon;
+        CircleR = center.CircleSize;
+        reverse = center.Reverse;
         //Debug.Log(reverse);
-        DamagedAnimTimer = Center.DamagedAnimTimer;
+        DamagedAnimTimer = center.DamagedAnimTimer;
         rotAngle = reverse ? 90f : -90f;
         rotDirection = reverse ? 1f : -1f;
         Deg = 0;
-        Animator = GetComponent<Animator>();
-        if (delay && Animator != null)
-        {
-            Invoke("WalkAnimPlay", 1f);
-        }
-        else if (!delay && Animator != null)
-        {
-            WalkAnimPlay();
-        }
+        animator = GetComponent<Animator>();
+        animator.speed = animSpeed;
+        //if (delay && Animator != null)
+        //{
+        //    StartCoroutine(WalkAnimCo(0.3f));
+        //    //Invoke("WalkAnimPlay", 1f);
+        //}
+        //else if (!delay && Animator != null)
+        //{
+        //    StartCoroutine(WalkAnimCo(0f));
+        //}
+
+        StartCoroutine(WalkAnimCo(delay));
     }
 
-    private void WalkAnimPlay()
+    IEnumerator WalkAnimCo(float delay)
     {
-        Animator.SetTrigger("isWalk");
+        yield return new WaitForSeconds(delay);
+        animator.Play("Walk");
     }
+
+    //private void WalkAnimPlay()
+    //{
+    //    Animator.SetTrigger("isWalk");
+    //}
 
     public void OnDamage()
     {

@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -20,6 +17,7 @@ namespace IPariUtility
         /// <returns></returns>
         internal static Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
         {
+            #region Omit
             // define the distance x and y first;
             Vector3 distance = target - origin;
             Vector3 distanceXZ = distance; // x와 z의 평면이면 기본적으로 거리는 같은 벡터.
@@ -37,6 +35,7 @@ namespace IPariUtility
             result *= Vxz;
             result.y = Vy;
             return result;
+            #endregion
         }
 
         /// <summary>
@@ -45,6 +44,7 @@ namespace IPariUtility
         /// <returns></returns>
         internal static Vector3 RandomDirection()
         {
+            #region Omit
             Vector3 Direction = Vector3.zero;
             // 8방향으로 이동이 가능하게 할 예정.
             switch (UnityEngine.Random.Range(0, 8))
@@ -68,6 +68,7 @@ namespace IPariUtility
             }
             //Debug.Log(Direction);
             return Direction.normalized;
+            #endregion
         }
 
         /// <summary>
@@ -78,8 +79,10 @@ namespace IPariUtility
         /// <returns></returns>
         internal static Vector3 AngleToDirZ(Transform transform,float angleInDegree)
         {
+            #region Omit
             float radian = (angleInDegree - transform.eulerAngles.z) * Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(radian), 0f, Mathf.Cos(radian));
+            #endregion 
         }
 
         /// <summary>
@@ -90,8 +93,10 @@ namespace IPariUtility
         /// <returns></returns>
         internal static Vector3 AngleToDirX(Transform transform, float angleInDegree)
         {
+            #region Omit
             float radian = (angleInDegree - transform.eulerAngles.x) * Mathf.Deg2Rad;
             return new Vector3(0f, Mathf.Sin(radian), Mathf.Cos(radian));
+            #endregion
         }
 
         /// <summary>
@@ -102,15 +107,19 @@ namespace IPariUtility
         /// <returns></returns>
         internal static Vector3 AngleToDirY(Transform transform, float angleInDegree)
         {
+            #region Omit
             float radian = (angleInDegree + transform.eulerAngles.y) * Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(radian), 0f, Mathf.Cos(radian));
+            #endregion
         }
         internal static Vector3 AngleToDirY(Vector3 position, float angleInDegree)
         {
+            #region Omit   
             float radian = (angleInDegree + position.y) * Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(radian), 0f, Mathf.Cos(radian));
+            #endregion 
         }
-        
+
         internal static Vector3 GetBezier(ref Vector3 s, ref Vector3 c, ref Vector3 d, float w = 0f)
         {
             #region Omit

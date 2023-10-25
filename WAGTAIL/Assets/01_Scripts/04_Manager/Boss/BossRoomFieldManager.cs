@@ -170,6 +170,7 @@ public class BossRoomFieldManager :MonoBehaviour
         Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
         return new Vector3(vec.x, 13f, vec.z);
     }
+
     public void BreakingPlatform(float xPos, bool reAction = false)
     {
         // 내려 찍기 -> 2.5초 후 내려 찍음.
@@ -209,6 +210,14 @@ public class BossRoomFieldManager :MonoBehaviour
                 CreateTile.transform.localPosition = new Vector3(spawnPos.x, 0, spawnPos.y) + Offset;
                 CreateTile.GetComponentInChildren<BrokenPlatform>().ShakeSpeed = ShakeSpeed;
             }
+        }
+    }
+
+    public void ResetField()
+    {
+        foreach(var tile in BossFild)
+        {
+            tile.Value.GetComponent<BrokenPlatform>().ReSetPlatform();
         }
     }
 
