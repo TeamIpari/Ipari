@@ -100,7 +100,10 @@ public class DeathState : State
         player.animator.Rebind();
         player.GameManager.Coin -= 5;
         //체크 포인트로 이동 구현 해야함
-        player.GameManager.Respawn();
+        if (BossRoomFieldManager.Instance != null)
+            player.GameManager.WrapPlayerPosition(BossRoomFieldManager.Instance.GetSafetyTile().position + new Vector3(0,5,0));
+        else
+            player.GameManager.Respawn();
     }
     
     // 챕터로 보낼 시

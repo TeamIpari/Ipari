@@ -85,20 +85,6 @@ public class BossRoomFieldManager :MonoBehaviour
         
     }
 
-    private void Update()
-    {
-        if(Player.Instance.movementSM.currentState == Player.Instance.death && !dontUpdate)
-        {
-            dontUpdate = true;
-            ResetField();
-        }
-        else if(Player.Instance.movementSM.currentState != Player.Instance.death && dontUpdate)
-        {
-            dontUpdate = false;
-        }
-    }
-
-
     //======================================
     /////         Core Methods         /////
     //======================================
@@ -250,16 +236,12 @@ public class BossRoomFieldManager :MonoBehaviour
     public Transform GetSafetyTile()
     {
         BrokenPlatform bp;
-
         // ¸ÖÂÄÇÑ ÇÃ·§ÆûÀ» ¹ÝÈ¯.
         do
         {
             bp = BossField.GetRandomValue<Vector2, GameObject>(BossField).GetComponent<BrokenPlatform>();
-        } while (!bp.isBroken);
+        } while (bp.isBroken);
 
         return bp.transform;
-        
     }
-
-
 }
