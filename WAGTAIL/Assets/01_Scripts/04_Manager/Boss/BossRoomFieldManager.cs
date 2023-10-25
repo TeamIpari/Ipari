@@ -174,17 +174,15 @@ public class BossRoomFieldManager :MonoBehaviour
         while (BossFild.ContainsKey(new Vector2(X, FindY)))
         {
             StartCoroutine(BrokenDelayCo(X, FindY));
-            //BrokenDelay(X, FindY);
             Y++;
             FindY = Y * (-StoneYSize);
         }
         this.reAction = reAction;
         
-        //Invoke("CameraShake", ShakeTiming);
-        if (reAction)
+        if (this.reAction)
         {
             StartCoroutine(SpawnReActionObject());
-            reAction = false;
+            this.reAction = false;
         }
     }
 
