@@ -219,11 +219,20 @@ public class LoadManager : Singleton<LoadManager>
 
     private IEnumerator TypeSentence(string sentence)
     {
+        bool strType = false;
         bTyping = true;
         Tmps.text = string.Empty;
         foreach (char letter in sentence.ToCharArray())
         {
-            if (letter == '*')
+            if(letter == '<' || strType == true)
+            {
+                strType = true;
+                Tmps.text += letter;
+                if (letter == '>')
+                    strType = false;
+                continue;
+            }
+            else if (letter == '*')
                 Tmps.text += ',';
             else if (letter == '\\')
                 Tmps.text += '\n';

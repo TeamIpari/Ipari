@@ -201,6 +201,32 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         return direction * 1.5f;
     }
 
+    public void ReSetPlatform()
+    {
+        Vector3 v = new Vector3(-90, 0, 0);
+
+        for (int i = 0; i < PlatformPiece.transform.childCount; i++)
+        {
+            var piece = PlatformPiece.transform.GetChild(i);
+            if (piece.GetComponent<Rigidbody>() != null)
+            {
+                piece.GetComponent<Rigidbody>().useGravity = false;
+                piece.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                piece.GetComponent<Rigidbody>().isKinematic = true;
+                //piece.gameObject.layer = LayerMask.NameToLayer("Defualt");
+
+                piece.rotation = Quaternion.Euler(v);
+                piece.position = PosList[i];
+            }
+        }
+        if (col != null) col.enabled = true;
+        if (mesh != null) mesh.enabled = true;
+        PlatformPiece.SetActive(false);
+        BasePlatform.SetActive(true);
+
+        IsHit = false;
+    }
+
     private IEnumerator ShowPlatform()
     {
         if (Light != null) Light.SetActive(false);

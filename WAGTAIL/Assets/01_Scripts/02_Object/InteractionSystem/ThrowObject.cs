@@ -173,8 +173,10 @@ public class ThrowObject : MonoBehaviour, IInteractable
     {
         if (other.GetComponent<Deathzone>() != null)
         {
-            Debug.Log("BB");
-            ResetPoint();
+            if (this.GetComponent<BombObject>() != null)
+                this.GetComponent<BombObject>().Explosion();
+            else
+                ResetPoint();
         }
     }
 

@@ -13,21 +13,25 @@ public class LarvaSpawner : MonoBehaviour
     public Transform Center;
     public Vector3[] SpawnVertices;
     public List<GameObject> Objs;
+    public const float Caculate = 3.85f;  // defualt 6.25f -> 4.75f
+
+    [Header("Larva Properties")]
     public List<GameObject> Larvas;
     public Vector3 Offset = new Vector3(0, 0, 0);
-    public const float Caculate = 3.85f;  // defualt 6.25f -> 4.75f
     public float InitPrefabSize = 1.0f;
-
-    public int CreatePoint;
     public int SpawnEA;
-    public float MoveSpeed = 0; 
+    public float MoveSpeed = 0;
+    [Tooltip("각 다리마다의 딜레이")]
+    public float AnimDelay = 0.25f;
+    public float AnimSpeed = 1f;
 
     public GameObject[] LarvaPrefabs;
     public bool Reverse = false;
     
     public float DamagedAnimTimer = 1.5f;
+    
     //public int tails;
-    [HideInInspector] public float CircleSize = 1.0f;
+    /*[HideInInspector]*/ public float CircleSize = 1.0f;
     private int count = 1;
 
     public int PlatformEnterCount = 0;
@@ -39,13 +43,12 @@ public class LarvaSpawner : MonoBehaviour
         if (Center == null)
             Center = this.transform;
         CircleSize = Polygon / (Caculate / InitPrefabSize);
-        CreatePoint = Polygon / CreatePoint;
         if (MoveSpeed == 0)
             MoveSpeed = 50f;
         if (SpawnEA == 0 || SpawnEA > Polygon - LarvaPrefabs.Length)
             SpawnEA = 1;
+        AnimSpeed = CircleSize / Caculate;
         SetVertices(CircleSize, Polygon);
-
     }
 
     private void SetVertices(float size, int polygon)
@@ -74,24 +77,10 @@ public class LarvaSpawner : MonoBehaviour
             obj.transform.position = createPos;
             obj.transform.parent = this.transform;
             Objs.Add(obj);
-
-            if ((ver1 % (CreatePoint * count)) == 0.0f)
-            {
-                count += 1;
-                // ver2는 -- 연산자임에 반해 LarvaCur은 ++인 이유
-                // 개발자들이 Inspector에는 머리 - 몸통 - 꼬리 순으로 넣을 것이기 때문에 반대로 연산하게 만듬.
-                //for (int ver2 = ver1, LarvaCur = LarvaPrefabs.Length - 1; ver2 > ver1 - LarvaPrefabs.Length; ver2--)
-                //{
-                //    GameObject obj2 = Instantiate(LarvaPrefabs[LarvaCur--]);
-                //    obj2.transform.rotation = Quaternion.Euler(0f , 0f ,0f);
-                //    obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? false: true);
-                //    obj2.transform.localScale = new Vector3(InitPrefabSize, InitPrefabSize, InitPrefabSize);
-                //    obj2.transform.position = Objs[ver2 - 1].transform.position;
-                //    obj2.transform.parent = this.transform;
-                //    Larvas.Add(obj2);
-                //}
-            }
         }
+
+        float delayTime = 0;
+
         for(int i = 1; i <= SpawnEA; i++)
         {
             for (int ver2 = polygon / i, LarvaCur = LarvaPrefabs.Length - 1; ver2 > (polygon / i)- LarvaPrefabs.Length/* - (polygon / i)*/; ver2--)
@@ -99,11 +88,14 @@ public class LarvaSpawner : MonoBehaviour
                 //Debug.Log($"{ver2}");
                 GameObject obj2 = Instantiate(LarvaPrefabs[LarvaCur--]);
                 obj2.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                obj2.AddComponent<AutoMoveLarva>().SetUp(this, ver2 % 2 == 0 ? false : true);
+                Debug.Log($"{ver2} % {2} = {ver2 % 2}");
+             
+                obj2.AddComponent<AutoMoveLarva>().SetUp(this, delayTime, AnimSpeed);
                 obj2.transform.localScale = new Vector3(InitPrefabSize, InitPrefabSize, InitPrefabSize);
                 obj2.transform.position = Objs[ver2 - 1].transform.position;
                 obj2.transform.parent = this.transform;
                 Larvas.Add(obj2);
+                delayTime += AnimDelay;
             }
         }
     }
