@@ -99,7 +99,6 @@ public class CameraManager : Singleton<CameraManager>
 
     public void CamShake()
     {
-        Debug.Log($"CamShake: source is null? = {source != null}");
         source.GenerateImpulse();
     }
 

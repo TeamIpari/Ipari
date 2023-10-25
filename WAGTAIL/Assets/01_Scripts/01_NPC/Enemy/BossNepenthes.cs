@@ -106,7 +106,6 @@ public class BossNepenthes : Enemy
             var piece = obj.transform.GetChild(i);
             if (piece != null)
             {
-                Debug.Log($"{piece}");
                 HpCanvas.Push(piece.gameObject);
             }
         }

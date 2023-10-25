@@ -98,13 +98,11 @@ public class BossNepenthesVineAttack : AIAttackState
             case VineState.STATE_MOVE:
                 {
                     vineAnim.SetBool("isAttack", true);
-                    Debug.Log($"StateName : StateMove");
                     MovementVine(vine.transform.position, spawnPos);
                     break;
                 }
             case VineState.STATE_ATTACK:
                 {
-                    Debug.Log($"StateName : StateAttack");
                     vineAnim.SetBool("isAttack", false);
                     //// 공격하게 함.
                     //// 바로 공격
@@ -119,7 +117,6 @@ public class BossNepenthesVineAttack : AIAttackState
                 break;
             case VineState.STATE_ORIGINBACK:
                 {
-                    Debug.Log($"StateName : StateReturn");
                     GotoMoveOrigin();
                     isThread = false;
                 }

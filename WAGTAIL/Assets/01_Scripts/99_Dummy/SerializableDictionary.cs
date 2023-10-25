@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -31,5 +32,15 @@ public class SerializableDictionary<TKey, TValue> :Dictionary<TKey, TValue>, ISe
         }
 
     }
+
+    public TValue GetRandomValue<TKey, TValue>(IDictionary<TKey, TValue> dict)
+    {
+        System.Random rand = new System.Random();
+        List<TValue> values = Enumerable.ToList(dict.Values);
+        int size = dict.Count;
+
+        return values[rand.Next(size)];
+    }
+
 
 }

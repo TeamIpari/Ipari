@@ -45,6 +45,10 @@ public abstract class AIState
         {
             AISM.ChangeState(AISM.character.AiHit);
         }
+        if (Player.Instance.movementSM.currentState == Player.Instance.death)
+        {
+            return;
+        }
     }
 
     public abstract void Exit();

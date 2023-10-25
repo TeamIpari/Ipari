@@ -1,5 +1,6 @@
 using Cinemachine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BossRoomFieldManager :MonoBehaviour
@@ -34,7 +35,7 @@ public class BossRoomFieldManager :MonoBehaviour
     public Vector3 Offset;
     public float ShakeSpeed = 0.0f;
     
-    public TileMap BossFild;
+    public TileMap BossField;
 
     public Vector3 TargetPos;
 
@@ -53,6 +54,7 @@ public class BossRoomFieldManager :MonoBehaviour
     public float spawnDelay;
     public int Count;
     private bool reAction = false;
+    private bool dontUpdate = false;
 
 
     public Vector3 PlayerOnTilePos
@@ -83,6 +85,19 @@ public class BossRoomFieldManager :MonoBehaviour
         
     }
 
+    private void Update()
+    {
+        if(Player.Instance.movementSM.currentState == Player.Instance.death && !dontUpdate)
+        {
+            dontUpdate = true;
+            ResetField();
+        }
+        else if(Player.Instance.movementSM.currentState != Player.Instance.death && dontUpdate)
+        {
+            dontUpdate = false;
+        }
+    }
+
 
     //======================================
     /////         Core Methods         /////
@@ -95,8 +110,7 @@ public class BossRoomFieldManager :MonoBehaviour
     private IEnumerator BrokenDelayCo(float x, float y)
     {
         yield return new WaitForSeconds(0.1f);
-        Vector3 pos = BossFild[new Vector2(x, y)].transform.position;
-        Debug.Log("AA");
+        Vector3 pos = BossField[new Vector2(x, y)].transform.position;
 
         GameObject obj = GameObject.Instantiate<GameObject>(_interactionVFX, new Vector3(pos.x, pos.y + 0.5f, pos.z - 1f), _interactionVFX.transform.rotation);
         Destroy(obj, 1);
@@ -117,7 +131,7 @@ public class BossRoomFieldManager :MonoBehaviour
 
     private void BrokenDelay(float x, float y)
     {
-        BossFild[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
+        BossField[new Vector2(x, y)].GetComponentInChildren<IEnviroment>().ExecutionFunction(0);
     }
 
     private void CreateReActionObject()
@@ -158,7 +172,6 @@ public class BossRoomFieldManager :MonoBehaviour
 
     private void CameraShake(float shakePower, float shakeTime )
     {
-        //CameraManager.GetInstance().CameraShake(shakePower, shakeTime);
         CameraManager.GetInstance().CamShake();
     }
 
@@ -167,7 +180,7 @@ public class BossRoomFieldManager :MonoBehaviour
     //======================================
     public Vector3 GetTilePos(int x, int y)
     {
-        Vector3 vec = this.BossFild[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
+        Vector3 vec = this.BossField[new Vector2(x * StoneXSize, y * (-StoneYSize))].transform.position;
         return new Vector3(vec.x, 13f, vec.z);
     }
 
@@ -179,7 +192,7 @@ public class BossRoomFieldManager :MonoBehaviour
         int FindY = Y * (-StoneYSize);
 
         Debug.Log($"{X}, {FindY}");
-        while (BossFild.ContainsKey(new Vector2(X, FindY)))
+        while (BossField.ContainsKey(new Vector2(X, FindY)))
         {
             StartCoroutine(BrokenDelayCo(X, FindY));
             Y++;
@@ -206,7 +219,7 @@ public class BossRoomFieldManager :MonoBehaviour
                 if ((x + y) % 2 == 0) CreateTile = GameObject.Instantiate(EvenTile[Random.Range(0, EvenTile.Length)], this.transform);
                 else CreateTile = GameObject.Instantiate(OddTile[Random.Range(0, OddTile.Length)], this.transform);
 
-                BossFild.Add(spawnPos, CreateTile);
+                BossField.Add(spawnPos, CreateTile);
                 CreateTile.transform.localPosition = new Vector3(spawnPos.x, 0, spawnPos.y) + Offset;
                 CreateTile.GetComponentInChildren<BrokenPlatform>().ShakeSpeed = ShakeSpeed;
             }
@@ -215,7 +228,8 @@ public class BossRoomFieldManager :MonoBehaviour
 
     public void ResetField()
     {
-        foreach(var tile in BossFild)
+        //StopAllCoroutines();
+        foreach(var tile in BossField)
         {
             tile.Value.GetComponent<BrokenPlatform>().ReSetPlatform();
         }
@@ -223,7 +237,7 @@ public class BossRoomFieldManager :MonoBehaviour
 
     public void EnableBrokenPlatformComponent(string nextScene = "")
     {
-        foreach(var curTile in BossFild)
+        foreach(var curTile in BossField)
         {
             curTile.Value.gameObject.GetComponentInChildren<IEnviroment>().ExecutionFunction(0.5f);
         }
@@ -232,4 +246,20 @@ public class BossRoomFieldManager :MonoBehaviour
         deathZone.SetActive(false);
         potal.SetActive(true);
     }
+
+    public Transform GetSafetyTile()
+    {
+        BrokenPlatform bp;
+
+        // ¸ÖÂÄÇÑ ÇÃ·§ÆûÀ» ¹ÝÈ¯.
+        do
+        {
+            bp = BossField.GetRandomValue<Vector2, GameObject>(BossField).GetComponent<BrokenPlatform>();
+        } while (!bp.isBroken);
+
+        return bp.transform;
+        
+    }
+
+
 }
