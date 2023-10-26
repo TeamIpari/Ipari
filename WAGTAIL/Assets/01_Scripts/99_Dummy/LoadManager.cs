@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Text.RegularExpressions;
 
 public class LoadManager : Singleton<LoadManager>
 {
@@ -35,11 +36,17 @@ public class LoadManager : Singleton<LoadManager>
                 //if (str[6] != "")
                 //    Japanese = str[6];
                 if (str[3] != "")
-                    Korean = str[3];
+                {
+                    Korean = str[3].Replace('\\', '\n');
+                }
                 if (str[4] != "")
-                    English = str[4];
+                {       
+                    English = str[4].Replace('\\', '\n');
+                }
                 if (str[5] != "")
-                    Japanese = str[5];
+                {
+                    Japanese = str[5].Replace('\\', '\n');
+                }
 
             }
             catch
@@ -220,24 +227,29 @@ public class LoadManager : Singleton<LoadManager>
     private IEnumerator TypeSentence(string sentence)
     {
         bool strType = false;
+        string tmp = "";
         bTyping = true;
         Tmps.text = string.Empty;
         foreach (char letter in sentence.ToCharArray())
         {
-            if(letter == '<' || strType == true)
+            if (letter == '<' || strType == true)
             {
                 strType = true;
-                Tmps.text += letter;
+                tmp += letter;
                 if (letter == '>')
+                {
                     strType = false;
+                    Tmps.text += tmp;
+                    tmp = "";
+                }
                 continue;
             }
             else if (letter == '*')
                 Tmps.text += ',';
-            else if (letter == '\\')
-                Tmps.text += '\n';
             else
+            {
                 Tmps.text += letter;
+            }
             if (isSpeedUp)
                 yield return new WaitForSeconds(GetLanguageRate() * 0.5f);      // time setting;
             else if (!isSpeedUp)

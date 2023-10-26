@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 /**************************************************
 *   상호작용 할 경우, 대화를 실행하는 컴포넌트입니다...
@@ -30,6 +32,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
     [SerializeField] private bool           _IsSaying   = false;
     [SerializeField] private bool           _IsTalkable  = true;
+    [SerializeField] private bool           _IsMoving = false;
     [SerializeField] public  int            SayType     = 1;
 
     [SerializeField] public TextMeshProUGUI TextViewer;
@@ -66,6 +69,19 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
             TextViewer    = TextBoxPrefab.GetComponent<TextBoxUI>().textBox;
             NameTag       = TextBoxPrefab.GetComponent<TextBoxUI>().nameTag;
             Debug.LogWarning(gameObject.name + ": Not Have A TextViewer at SeapkerController");
+        }
+
+        #endregion
+    }
+
+    private void Update()
+    {
+        // 닿았을 경우 Player를 이동시키고 이동이 끝나면 대화를 바로 진행시킬 예정.
+        #region Omit
+
+        if(_IsMoving)
+        {
+            MoveToArrivalPoint();
         }
 
         #endregion
@@ -123,14 +139,6 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
             Debug.LogWarning("SaySpeaker -> LoadManager: 출력할 대화내역이 존재하지않습니다..");
             yield break;
         }
-
-        ///**컷씬이 존재한다면 활성화시킨다....*/
-        //if (CutScenePlayer != null){
-
-        //    CutScenePlayer.gameObject.SetActive(true);
-        //}
-
-
 
         /**********************************************************
          *   대화내역이 존재하지 않을 때까지 출력한다....
@@ -220,5 +228,54 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     public bool AnimEvent()
     {
         return false;
+    }
+
+    public void MoveToArrivalPoint()
+    {
+        #region Omit
+        // 접촉된 객체를 특정 지점으로 강제로 이동시켜주는 스크립트.
+
+        Player player = Player.Instance;
+        if (player.movementSM.currentState != player.idle) return;
+
+        // 목표지점은 어떻게 지정할 것인가? 
+        Vector3 ArrivalPoint = transform.localPosition + transform.forward * 1.5f;
+
+        // 족장을 바라보라우 
+        player.transform.LookAt(this.transform);
+
+        // 방향 벡터를 구하고 속도를 조절
+        player.controller.Move((ArrivalPoint - player.transform.position).normalized * Time.deltaTime * (player.playerSpeed * 0.5f));
+
+        // 애니메이션은 일단 보류 
+        //player.animator.SetFloat("Speed", 1.0f, player.speedDampTime, Time.deltaTime);    
+
+        // 거리에 따른 속도 변화 Max를 넘어가면 Max값으로 고정하고 가까워질수록 느려지게
+
+        if (Vector3.Distance(ArrivalPoint, transform.position) < 0.01f)
+        {
+            _IsMoving = false;
+
+            PlaySay();
+        }
+        
+
+        #endregion
+    }
+
+    public void PlayingCutScene()
+    {
+        #region Omit    
+        // 강제로 이동시키기 위해 InputSystem을 꺼줌.
+        Player.Instance.playerInput.enabled = false;
+        // 내 앞까지 와라
+        GameObject point = GameObject.Instantiate(new GameObject(), transform.position + transform.forward * 1.5f, Quaternion.identity, this.transform);
+        //Player.Instance.controller.enabled = false;
+
+        Destroy(point, 10f);
+        _IsMoving = true;
+
+
+        #endregion
     }
 }
