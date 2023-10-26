@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2449144342835423297}
+  - component: {fileID: 7227378439690262995}
   m_Layer: 0
   m_Name: stone6_moss
   m_TagString: Untagged
@@ -25,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 3077871013446071035}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 272.98392, y: 16.509083, z: 88.233635}
-  m_LocalScale: {x: 0.7244779, y: 0.7244779, z: 0.7244779}
+  m_LocalScale: {x: 1.4883243, y: 1.4883243, z: 1.4883243}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1063579343646000802}
@@ -33,6 +34,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &7227378439690262995
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3077871013446071035}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &5664438597482494320
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,7 +109,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c94ad4272175aef4d84324289e6887fa, type: 2}
+  - {fileID: 2100000, guid: 4a2734faf0932494faa010c0927fe8af, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,6 +142,7 @@ GameObject:
   - component: {fileID: 936611577346219377}
   - component: {fileID: 7219539776028218061}
   - component: {fileID: 4271471720283160494}
+  - component: {fileID: 1006318307}
   m_Layer: 0
   m_Name: 6stone
   m_TagString: Untagged
@@ -199,3 +215,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1006318307
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304313251886380108}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7300906900677979835, guid: 8020d9a8ab3d5d746b6f2bcf1ab35d7f, type: 3}
