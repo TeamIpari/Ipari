@@ -233,8 +233,8 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     public void MoveToArrivalPoint()
     {
         #region Omit
-        // 접촉된 객체를 특정 지점으로 강제로 이동시켜주는 스크립트.
 
+        // 접촉된 객체를 특정 지점으로 강제로 이동시켜주는 스크립트.
         Player player = Player.Instance;
         if (player.movementSM.currentState != player.idle) return;
 
@@ -248,17 +248,16 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         player.controller.Move((ArrivalPoint - player.transform.position).normalized * Time.deltaTime * (player.playerSpeed * 0.5f));
 
         // 애니메이션은 일단 보류 
-        //player.animator.SetFloat("Speed", 1.0f, player.speedDampTime, Time.deltaTime);    
+        player.animator.SetFloat("speed", Vector3.Distance(ArrivalPoint, player.transform.position) - 0.2f, player.speedDampTime, Time.deltaTime);
 
         // 거리에 따른 속도 변화 Max를 넘어가면 Max값으로 고정하고 가까워질수록 느려지게
-
-        if (Vector3.Distance(ArrivalPoint, transform.position) < 0.01f)
+        Debug.Log($"{Vector3.Distance(ArrivalPoint, player.transform.position)}");
+        if (Vector3.Distance(ArrivalPoint, player.transform.position) < 0.2f)
         {
             _IsMoving = false;
-
+            Player.Instance.playerInput.enabled = true;
             PlaySay();
         }
-        
 
         #endregion
     }
