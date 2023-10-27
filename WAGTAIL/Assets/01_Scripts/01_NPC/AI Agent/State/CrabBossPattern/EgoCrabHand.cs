@@ -1,3 +1,4 @@
+using AmplifyShaderEditor;
 using DG.Tweening.Core.Easing;
 using IPariUtility;
 using System.Collections;
@@ -98,7 +99,7 @@ public sealed class EgoCrabHand : MonoBehaviour
 
             GameObject newSFX = GameObject.Instantiate(SpawnSFXprefab);
             newSFX.transform.position   = transform.position;
-            newSFX.transform.localScale = (Vector3.one*1.3f);
+            newSFX.transform.localScale = (Vector3.one*.5f);
             Destroy(newSFX, .8f);
         }
         #endregion
@@ -150,7 +151,7 @@ public sealed class EgoCrabHand : MonoBehaviour
             Vector3 updatePos = (goalPos - tr.position) * (deltaTime * 3f);
 
             Vector3 tong2Player = (goalPos-transform.position).normalized;
-            tr.rotation =  (IPariUtility.IpariUtility.GetQuatBetweenVector(transform.forward, tong2Player, deltaTime) * tr.rotation);
+            tr.rotation =  (IPariUtility.IpariUtility.GetQuatBetweenVector(-transform.forward, tong2Player, deltaTime*3f) * tr.rotation);
             tr.position += updatePos;
 
             yield return waitTime;
@@ -185,12 +186,14 @@ public sealed class EgoCrabHand : MonoBehaviour
             float deltaTime = Time.deltaTime;
             timeLeft -= deltaTime;
 
-            progressRatio = (1f - Mathf.Clamp(timeLeft * attackDiv, 0f, 1f));
-            float updatePos = (hit.point.y - startPos.y) * curve.Evaluate(progressRatio);
+            progressRatio    = (1f - Mathf.Clamp(timeLeft * attackDiv, 0f, 1f));
+            float curveValue = curve.Evaluate(progressRatio);
+            float updatePos  = (hit.point.y - startPos.y) * curveValue;
 
-            Vector3 lookPos     = new Vector3( startPos.x, updatePos, startPos.z );
-            Vector3 tong2Player = (lookPos - transform.position).normalized;
-            tr.rotation = (IPariUtility.IpariUtility.GetQuatBetweenVector(transform.forward, tong2Player, deltaTime*5f) * tr.rotation);
+            Vector3 lookPos = Vector3.Cross(Vector3.up, hit.normal);
+            lookPos.y += (.5f * Mathf.Clamp(curveValue, 0f, float.MaxValue));
+
+            tr.rotation = (IPariUtility.IpariUtility.GetQuatBetweenVector(-transform.forward, lookPos, deltaTime*3f) * tr.rotation);
             tr.position = startPos + (Vector3.down * updatePos);
             yield return null;
 
@@ -200,14 +203,14 @@ public sealed class EgoCrabHand : MonoBehaviour
         IsAttack = false;
         CameraManager.GetInstance()?.CameraShake(3f, .2f);
 
+        /**집게가 완전히 땅의 면에 맞닿도록 설정한다...*/
+        Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(-transform.forward, Vector3.Cross(Vector3.up, hit.normal));
+        tr.rotation        = (rotQuat * tr.rotation);
+
 
         /**공격을 마친 후 대기...*/
         timeLeft = .7f;
-        while ((timeLeft -= Time.deltaTime) > 0f)
-        {
-            tr.rotation = (IpariUtility.GetQuatBetweenVector(transform.forward, Vector3.right, Time.deltaTime)*tr.rotation);
-            yield return null;
-        }
+        while ((timeLeft -= Time.deltaTime) > 0f) yield return null;
 
 
         /****************************************

@@ -33,13 +33,6 @@ public sealed class BossCrab : Enemy
         public const string MakeSandWave_Smash     = "Attack3TongsSmash";
 
         public const string MakeAntHell_Ready     = "Attack4Ready";
-
-        public const string Trigger_IsHit           = "IsHit";
-        public const string Trigger_IsIdle          = "IsIdle";
-        public const string Trigger_IsSpitSeeds     = "IsSpitSeeds";
-        public const string Trigger_IsEgoTongAttack = "IsEgoTongAttack";
-        public const string Trigger_IsSandWave      = "IsSandWave";
-        public const string Trigger_IsMakeAntHell   = "IsMakeAntHell";
     }
     #endregion
 
@@ -677,7 +670,7 @@ public sealed class BossCrab : Enemy
         AiAttack = new BossCrabSowingSeedsState(AiSM, ref sowingSeedsDesc, this);
         AiAttack2 = new BossCrabEgoStampState(AiSM, newHand, this);
         AiAttack3 = new BossCrabSandWaveState(AiSM, this, SandWavePrefab);
-        AiAttack4 = new BossCrabAntHellState(AiSM, AntHellPrefab, _AntHellDuration);
+        AiAttack4 = new BossCrabAntHellState(AiSM, AntHellPrefab, _AntHellDuration, this);
 
         #endregion
     }
@@ -685,7 +678,7 @@ public sealed class BossCrab : Enemy
     public override void Hit()
     {
         base.Hit();
-        AiSM.ChangeState(AiSM.character.AiHit);
+        AiSM.ChangeState(AiHit);
     }
 
 

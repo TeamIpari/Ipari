@@ -123,7 +123,7 @@ public sealed class FlowerObject : MonoBehaviour
         Vector3   goalPos      = _PullableStem.GetBonePosition(_lookAtBoneIndex);
         Vector3   flowerPos    = transform.position;
         Vector3   pullingDir   = (goalPos - flowerPos).normalized;
-        Quaternion rotQuat     = IpariUtility.GetQuatBetweenVector(_upLeafs[0].leafTr.forward, pullingDir, LookRotationRatio);
+        Quaternion rotQuat     = IpariUtility.GetQuatBetweenVector(_upLeafs[0].leafTr.forward, pullingDir, Time.deltaTime*50f);
    
         _upLeafs[0].leafTr.rotation = (rotQuat * _upLeafs[0].leafTr.rotation);
         _upLeafs[1].leafTr.rotation = (rotQuat * _upLeafs[1].leafTr.rotation);

@@ -148,6 +148,7 @@ public class SandWave : MonoBehaviour
     private void Awake()
     {
         #region Omit
+
         /**콜라이더를 초기화한다...*/
         if(_collider = GetComponent<SphereCollider>()){
 

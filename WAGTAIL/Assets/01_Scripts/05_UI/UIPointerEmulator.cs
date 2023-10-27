@@ -13,7 +13,9 @@ public sealed class UIPointerEmulator : MonoBehaviour
         Pointer_Enter,
         Pointer_Click,
         Pointer_Move,
-        Pointer_Exit
+        Pointer_Exit,
+        Pointer_Down,
+        Pointer_Up
     }
 
     //=======================================================
@@ -157,6 +159,14 @@ public sealed class UIPointerEmulator : MonoBehaviour
             case (PointerEventType.Pointer_Click):
                 ExecuteEvents.Execute(target, _newEven, ExecuteEvents.pointerClickHandler);
                 break;
+
+            case (PointerEventType.Pointer_Down):
+                ExecuteEvents.Execute(target, _newEven, ExecuteEvents.pointerDownHandler);
+                break;
+
+            case (PointerEventType.Pointer_Up):
+                ExecuteEvents.Execute(target, _newEven, ExecuteEvents.pointerUpHandler);
+                break;
         }
         #endregion
     }
@@ -179,6 +189,16 @@ public sealed class UIPointerEmulator : MonoBehaviour
     public void InvokeMoveEvent(GameObject target)
     {
         InvokeEvent(PointerEventType.Pointer_Move, target);
+    }
+
+    public void InvokeDownEvent(GameObject target)
+    {
+        InvokeEvent(PointerEventType.Pointer_Down, target);
+    }
+
+    public void InvokeUpEvent(GameObject target)
+    {
+        InvokeEvent(PointerEventType.Pointer_Up, target);
     }
 
     public int ClampRepeat(int value, int min, int max)
