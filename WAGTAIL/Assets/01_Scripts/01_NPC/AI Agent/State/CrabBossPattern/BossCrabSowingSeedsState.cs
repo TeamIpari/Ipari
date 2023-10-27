@@ -74,8 +74,6 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
             ref ThrowDesc desc = ref _targets[i];
             GameObject.Destroy(desc.marker);
         }
-
-        AISM.Animator.ResetTrigger(BossCrabAnimation.Trigger_IsSpitSeeds);
         #endregion
     }
 

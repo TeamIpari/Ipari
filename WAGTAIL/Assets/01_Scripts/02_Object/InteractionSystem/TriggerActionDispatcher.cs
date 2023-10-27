@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System;
+using System.Collections.Specialized;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -238,7 +239,7 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
     /////            Fields               /////
     //==========================================
 #if UNITY_EDITOR
-    private Collider     _collider;
+    private BoxCollider     _collider;
 #endif
     /**Trigger Tag 관련...*/
     [SerializeField] private string[] _InspectorAddTags;
@@ -303,19 +304,21 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
         /************************************
          *  화면에 Trigger 범위를 출력한다...
          * **/
-        if (_collider==null) _collider = GetComponent<Collider>();
+        if (_collider==null) _collider = GetComponent<BoxCollider>();
         if (_collider != null)
         {
-            Bounds bounds = _collider.bounds;
-            Vector3 pos   = transform.position;
-            Color   color = GizmosColor;
-            color.a = .5f;
+            Color     color  = new Color { r=GizmosColor.r, g=GizmosColor.g, b=GizmosColor.b, a=.5f };
+            Bounds    bounds = _collider.bounds;
+            Matrix4x4 mat    = Matrix4x4.Translate(bounds.center - transform.position) * transform.localToWorldMatrix;
+            Vector3   size   = _collider.size;
 
             Gizmos.color = color;
-            Gizmos.DrawCube(bounds.center, bounds.size);
+            Gizmos.matrix = mat;
+            Gizmos.DrawCube(Vector3.zero, size);
 
             Gizmos.color = Color.black;
-            Gizmos.DrawWireCube(bounds.center, bounds.size);
+            Gizmos.matrix = mat;
+            Gizmos.DrawWireCube(Vector3.zero, size);
         }
         #endregion
     }

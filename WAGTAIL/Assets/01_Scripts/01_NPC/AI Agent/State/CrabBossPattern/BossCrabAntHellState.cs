@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static BossCrab;
 
 public class BossCrabAntHellState : AIAttackState
 {
@@ -8,17 +9,20 @@ public class BossCrabAntHellState : AIAttackState
     //////          Property            //////
     //========================================
     private SandScriptBase _targetSand;
+    private BossCrab       _bossCrab;
     private float          _duration = 0f;
+    private int            _progress = 0;
 
 
     //==================================================
     //////        Public and Override methods       ////
     //==================================================
-    public BossCrabAntHellState(AIStateMachine stateMachine, GameObject andhellPrefab, float duration)
+    public BossCrabAntHellState(AIStateMachine stateMachine, GameObject andhellPrefab, float duration, BossCrab bossCrab)
     : base(stateMachine)
     {
         #region Omit
         _duration = duration;
+        _bossCrab = bossCrab;
 
         if (andhellPrefab != null){
 
@@ -30,19 +34,13 @@ public class BossCrabAntHellState : AIAttackState
     public override void Enter()
     {
         #region Omit
-        AISM.Animator.SetTrigger("");
-        curTimer = 0f;
-        
-        if(_targetSand!=null)
-        {
-            #region Deprecate
-            //_targetSand.SandIntakeCenterOffset.y = -7f;
-            //_targetSand.SandIdleCenterOffset = _targetSand.SandIntakeCenterOffset;
-            //_targetSand.SandIdleCenterOffset.y = -4.5f;
-            #endregion
+        _progress = 0;
+        AISM.Animator.CrossFade(BossCrabAnimation.MakeAntHell_Ready, .3f);
 
-            _targetSand.IntakeSand(true);
-        }
+        //if(_targetSand!=null){
+
+        //    _targetSand.IntakeSand(true);
+        //}
         #endregion
     }
 
@@ -51,12 +49,48 @@ public class BossCrabAntHellState : AIAttackState
         #region Omit
         base.Update();
 
-        curTimer += Time.deltaTime;
-        if(curTimer > _duration) {
+        /*****************************************
+         *   상태 트리거가 참일 경우에만 로직 적용...
+         * ***/
+        if (_bossCrab.StateTrigger == false) return;
 
-            _targetSand?.IntakeSand(false);
-            AISM.NextPattern();
+        switch (_progress++){
+
+                /**모래지옥을 생성한다...*/
+                case (0):
+                {
+                    if (_targetSand != null)
+                        _targetSand.IntakeSand(true);
+                    break;
+                }
+
+                /**Idle로 복귀후 대기한다...*/
+                case (1):
+                {
+                    AISM.Animator.CrossFade(BossCrabAnimation.Idle, .4f);
+                    _bossCrab.SetStateTrigger(6f);
+                    break;
+                }
+
+                /**모래 지옥을 파괴한다.*/
+                case (2):
+                {
+                    if (_targetSand != null)
+                        _targetSand.IntakeSand(false);
+
+                    _bossCrab.SetStateTrigger(.5f);
+                    break;
+                }
+
+                /**해당 상태를 탈출한다...*/
+                case (3):
+                {
+                    AISM.NextPattern();
+                    break;
+                }
         }
+
+        _bossCrab.StateTrigger = false;
         #endregion
     }
 

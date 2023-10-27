@@ -22,26 +22,30 @@ public sealed class BossCrabHitState : AIHitState
 
     public override void Enter()
     {
-       base.Enter();
+        #region Omit
+        base.Enter();
 
-        curTimer = .5f;
-        AISM.character.HP -= 10;
-        AISM.Animator.Play(BossCrabAnimation.Hit, 0, 0f);
+        _bossCrab.StateTrigger = false;
+        _bossCrab.SetStateTrigger(.7f);
         _bossCrab.PopHPStack();
+
+        AISM.character.HP -= 10;
+        AISM.Animator.Play(BossCrabAnimation.Hit);
+        #endregion
     }
 
     public override void Exit()
     {
         base.Exit();
         AISM.character.IsHit = false;
-        AISM.Animator.SetTrigger(BossCrabAnimation.Trigger_IsIdle);
     }
 
     public override void Update()
     {
-        if((curTimer-=Time.deltaTime)<=0f){
-
+        if(_bossCrab.StateTrigger)
+        {
             AISM.NextPattern();
+            _bossCrab.StateTrigger = false;  
         }
     }
 }

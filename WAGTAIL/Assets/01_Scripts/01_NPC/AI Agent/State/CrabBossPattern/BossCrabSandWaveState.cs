@@ -120,7 +120,6 @@ public class BossCrabSandWaveState : AIAttackState
 
     public override void Exit()
     {
-        AISM.Animator.ResetTrigger(BossCrabAnimation.Trigger_IsSandWave);
     }
 
     public override void OntriggerEnter(Collider other)
