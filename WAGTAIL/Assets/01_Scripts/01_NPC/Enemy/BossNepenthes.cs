@@ -81,6 +81,7 @@ public class BossNepenthes : Enemy
 
     private void OnTriggerEnter(Collider other)
     {
+        #region Omit
         // 공격을 받음.
         if (other.CompareTag("Bullet"))
         {
@@ -95,8 +96,12 @@ public class BossNepenthes : Enemy
                 AiSM.ChangeState(AiDie);
             }
         }
+        #endregion
     }
 
+    //===========================================
+    /////           Vitrual Methods         /////
+    //===========================================
     public override void initializeUI()
     {
         GameObject obj = GameObject.Find("HPArea");

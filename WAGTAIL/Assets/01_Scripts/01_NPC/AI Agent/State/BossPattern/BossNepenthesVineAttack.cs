@@ -54,12 +54,13 @@ public class BossNepenthesVineAttack : AIAttackState
     public BossNepenthesVineAttack(
         AIStateMachine stateMachine, GameObject leftVine, GameObject rightVine) : base(stateMachine)
     {
+        #region Omit
         this.AISM = stateMachine;
         this.leftVine = leftVine;
         leftOriginPos = leftVine.transform.position;
         this.rightVine = rightVine;
         rightOriginPos = rightVine.transform.position;
-        //curAnim = 0;
+        #endregion
     }
 
     public override void Enter()
@@ -68,18 +69,11 @@ public class BossNepenthesVineAttack : AIAttackState
         ShowVine();
         myState = VineState.STATE_MOVE;
         vineAnim = vine.GetComponent<Animator>();
-        //vineAnim.SetTrigger("isReady");
-
     }
 
 
     public override void Exit()
     {
-        //GameObject.Destroy(Vine);
-        // 오브젝트 풀 개념으로 한번의 생성 이후 그 다리만 씀.
-        // move to transform // 어떻게 움직일 것인가?
-        
-
     }
 
     public override void OntriggerEnter(Collider other)
@@ -89,8 +83,35 @@ public class BossNepenthesVineAttack : AIAttackState
 
     public override void Update()
     {
+        #region Omit
         base.Update();
         if (Player.Instance.isDead == true) return;
+        VineStateChange();
+        ChangeState();
+        #endregion
+    }
+
+    protected override void ChangeState()
+    {
+        if(myState != VineState.STATE_ATTACK && myState != VineState.STATE_MOVE)
+            curTimer += Time.deltaTime;
+        if (curTimer > delayTime)
+            base.ChangeState();
+    }
+
+    //=================================================
+    /////               Core Methods              /////
+    //=================================================
+
+    // Thread
+    private void ThreadFunction() 
+    {
+        MyThreedClass myThreadClassObject = new MyThreedClass(this);
+        myThreadClassObject.Run();
+    }
+
+    private void VineStateChange()
+    {
         switch (myState)
         {
             case VineState.STATE_NONE:
@@ -124,32 +145,6 @@ public class BossNepenthesVineAttack : AIAttackState
             default:
                 break;
         }
-
-        ChangeState();
-    }
-
-    protected override void ChangeState()
-    {
-        if(myState != VineState.STATE_ATTACK && myState != VineState.STATE_MOVE)
-            curTimer += Time.deltaTime;
-        if (curTimer > delayTime)
-            base.ChangeState();
-    }
-
-    //=================================================
-    /////               Core Methods              /////
-    //=================================================
-
-    // Thread
-    private void ThreadFunction() 
-    {
-        MyThreedClass myThreadClassObject = new MyThreedClass(this);
-        myThreadClassObject.Run();
-    }
-
-    private void VineAttack()
-    {
-        BossRoomFieldManager.Instance.BreakingPlatform(attackPoint, true);
     }
 
     private void GotoMoveOrigin()
@@ -192,8 +187,6 @@ public class BossNepenthesVineAttack : AIAttackState
         //else
         //    vine.SetActive(true);
         vine.transform.parent = BossRoomFieldManager.Instance.transform;
-
-
 
         // 몇 초 후 떨어지게 하기.
         spawnPos = BossRoomFieldManager.Instance.transform.position + new Vector3(spawnPos.x, vine.transform.position.y + 2.8f, vine.transform.position.z);
