@@ -99,7 +99,8 @@ public class CameraManager : Singleton<CameraManager>
 
     public void CamShake()
     {
-        source.GenerateImpulse();
+        if(source != null)
+            source.GenerateImpulse();
     }
 
     public void CameraShake(float value, float time)
