@@ -721,6 +721,11 @@ public sealed class BossCrab : Enemy
         #endregion
     }
 
+    public void ClearStateTriggerDelay()
+    {
+        _stateTriggerDelay = 0f;
+    }
+
     public void ExitCurrentState()
     {
         #region Omit

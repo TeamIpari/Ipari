@@ -26,6 +26,7 @@ public sealed class BossCrabHitState : AIHitState
         base.Enter();
 
         _bossCrab.StateTrigger = false;
+        _bossCrab.ClearStateTriggerDelay();
         _bossCrab.PopHPStack();
 
         AISM.Animator.speed = 1f;

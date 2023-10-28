@@ -259,23 +259,15 @@ public sealed class EgoCrabHand : MonoBehaviour
 
         /**계산에 필요한 것들을 모조리 구한다....*/
         timeLeft             = .7f;
-        float waitTimeDiv    = (1f / timeLeft);
         Quaternion startQuat = transform.rotation;
         Vector3    startDir  = -transform.forward;
         Vector3    right     = -Vector3.Cross(-transform.forward, hit.normal);
-        Vector3    forward   = Vector3.Cross(right, hit.normal) + (Vector3.up*.7f);
+        Vector3    forward   = Vector3.Cross(right, hit.normal);
 
-        do{
+        Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(startDir, forward);
+        tr.rotation = (rotQuat * startQuat);
 
-            timeLeft -= Time.deltaTime;
-
-            progressRatio      = Mathf.Clamp01(1f - (timeLeft * waitTimeDiv));
-            Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(startDir, forward, progressRatio);
-            tr.rotation        = (rotQuat * startQuat);
-
-            yield return null;
-        }
-        while (timeLeft>0f);
+        while ((timeLeft -= Time.deltaTime)>0f) yield return null;
 
 
         /****************************************
