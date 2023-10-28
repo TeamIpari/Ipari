@@ -9,13 +9,12 @@ public class TimelineController : MonoBehaviour
     private CharacterController _playerCtrl;
     private GameObject _timeline;
     private bool _isStart;
-
-    [Header("Objects")]
+    
     // Timeline 동작시 보여줄 FakeObject
-    [Tooltip("컷씬에 사용되는 FakeObject")]
+    [Header("컷씬에 사용되는 FakeObject")]
     [SerializeField] private GameObject _fakeObject;
     // Timeline 동작시 안보여줄 Object;
-    [Tooltip("컷씬에 등장하지 않을 Objects")]
+    [Header("컷씬에 등장하지 않을 Objects")]
     [SerializeField] private GameObject[] _object;
 
     [Header("PlayerMove")]

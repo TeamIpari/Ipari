@@ -17784,6 +17784,48 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8723170690497991491, guid: e800e7ad6229a9049a5e8dd48dae2730, type: 3}
+--- !u!21 &1009786884
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Grass(Clone)
+  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
+    type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blend: 0
+    - _BlendMult: 1
+    - _BlendOff: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1001 &1022867096
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33387,7 +33429,7 @@ MonoBehaviour:
     normal: {x: 0, y: 1, z: 0}
     length: {x: 0.277, y: 0.01}
     color: {x: 0.63576895, y: 0.90434986, z: 1.5297618}
-  m_InstantiatedMaterial: {fileID: 1947630366}
+  m_InstantiatedMaterial: {fileID: 1009786884}
 --- !u!4 &1305550751
 Transform:
   m_ObjectHideFlags: 0
@@ -46569,48 +46611,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!21 &1947630366
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Grass(Clone)
-  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
-    type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Blend: 0
-    - _BlendMult: 1
-    - _BlendOff: 0
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1951282450 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5328395966391428935, guid: 198ff30deeec8214f95ba12de6bc9d49,
@@ -49309,7 +49309,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2105288916}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7463605b5f039d14089373577c51e4cb, type: 3}
   m_Name: 
@@ -55925,7 +55925,6 @@ GameObject:
   - component: {fileID: 3721331663856585089}
   - component: {fileID: 3721331663856585102}
   - component: {fileID: 3721331663856585101}
-  - component: {fileID: 3721331663856585103}
   - component: {fileID: 3721331663856585104}
   m_Layer: 7
   m_Name: NewPlayer (1)
@@ -55983,68 +55982,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &3721331663856585103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3721331663856585095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a35ab18742638d54087e7313412aa0e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerSpeed: 10
-  jumpHeight: 1.2
-  gravityMultiplier: 2
-  rotationSpeed: 5
-  climbingSpeed: 3.2
-  pullingSpeed: 3.5
-  slopeSpeed: 0
-  respawnTime: 1.2
-  isSwimming: 0
-  rotateAngle: 0
-  m_viewRotateZ: 0
-  holdTargetMask:
-    serializedVersion: 2
-    m_Bits: 0
-  throwTargetMask:
-    serializedVersion: 2
-    m_Bits: 0
-  throwRange: 10
-  target: {fileID: 0}
-  speedDampTime: 0.1
-  velocityDampTime: 0.1
-  rotationDampTime: 0.2
-  airControl: 1
-  Head: {fileID: 8032893414989892498}
-  HoldingPoint: {fileID: 5997057754612309679}
-  InteractionPoint: {fileID: 3721331665648166513}
-  EquipPoint: {fileID: 3721331663755915949}
-  ThrowEquipPoint: {fileID: 2819294160554927773}
-  isIdle: 1
-  isJump: 0
-  isPickup: 0
-  isCarry: 0
-  isThrow: 0
-  isFlight: 0
-  isDead: 0
-  isPull: 0
-  gravityValue: -9.81
-  normalColliderHeight: 0
-  normalColliderCenter: {x: 0, y: 0, z: 0}
-  normalColliderRadius: 0
-  controller: {fileID: 0}
-  playerInput: {fileID: 0}
-  cameraTransform: {fileID: 0}
-  animator: {fileID: 0}
-  playerVelocity: {x: 0, y: 0, z: 0}
-  currentInteractable: {fileID: 0}
-  MoveFX: {fileID: 8243465153623455491}
-  UIManager: {fileID: 0}
-  GameManager: {fileID: 0}
-  CameraManager: {fileID: 0}
 --- !u!95 &3721331663856585104
 Animator:
   serializedVersion: 5
@@ -68982,12 +68919,6 @@ Transform:
 --- !u!4 &8032893414989892497 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6575403722025366996, guid: 2c859fe54df13bd41b62f47a58b1a39b,
-    type: 3}
-  m_PrefabInstance: {fileID: 8032893414989892483}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8032893414989892498 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -2104197566515533676, guid: 2c859fe54df13bd41b62f47a58b1a39b,
     type: 3}
   m_PrefabInstance: {fileID: 8032893414989892483}
   m_PrefabAsset: {fileID: 0}
