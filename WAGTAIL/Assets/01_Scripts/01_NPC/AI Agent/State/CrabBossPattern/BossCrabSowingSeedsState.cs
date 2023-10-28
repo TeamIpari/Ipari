@@ -22,11 +22,11 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
 
     private struct ThrowDesc
     {
-        public Rigidbody  throwBody;
-        public Collider   collider;
-        public GameObject marker;
-        public Vector3    goalPos;
-        public Vector3    goalNormal;
+        public Rigidbody      throwBody;
+        public ParticleSystem marker;
+        public Collider       collider;
+        public Vector3        goalPos;
+        public Vector3        goalNormal;
     }
     #endregion
 
@@ -41,6 +41,8 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
     private bool  _isShoot       = false;
     private bool  _ignoreRelease = false;
     private int   _progress      = 0;
+
+
 
     //========================================
     //////        Override methods        ////
@@ -67,14 +69,6 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
 
     public override void Exit()
     {
-        #region Omit
-        /**积己等 葛电 付农甫 力芭茄促...*/
-        for (int i=0; i<_desc.count; i++){
-
-            ref ThrowDesc desc = ref _targets[i];
-            GameObject.Destroy(desc.marker);
-        }
-        #endregion
     }
 
     public override void Update()
@@ -109,7 +103,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 case (1):
                 {
                     AISM.Animator.CrossFade(BossCrabAnimation.Idle, .4f);
-                    _bossCrab.SetStateTrigger(.3f);
+                    _bossCrab.SetStateTrigger(3f);
                     break;
                 }
 
@@ -142,7 +136,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
 
         for( int i=0; i<Count; i++ )
         {
-            GameObject marker = _targets[i].marker;
+            GameObject marker = _targets[i].marker.gameObject;
             if (marker == null) continue;
 
             marker.transform.localScale = (Vector3.one * progressRatio);
@@ -174,14 +168,16 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         {
             ref ThrowDesc desc = ref _targets[i];
 
-            GameObject newMarker    = GameObject.Instantiate(_desc.MarkerPrefab);
-            Transform  newMarkerTr  = newMarker.transform;
+            if(desc.marker==null){
+                desc.marker = GameObject.Instantiate(_desc.MarkerPrefab).GetComponent<ParticleSystem>();
+            }
+
+            Transform  newMarkerTr  = desc.marker.transform;
             Quaternion newQuat      = IpariUtility.GetQuatBetweenVector(newMarkerTr.up, -desc.goalNormal);
 
-            newMarker.GetComponentInChildren<Transform>().localScale = (Vector3.one*.3f);
-            newMarker.transform.SetPositionAndRotation( _targets[i].goalPos, newQuat);
-
-            _targets[i].marker = newMarker;
+            desc.marker.Play(true);
+            desc.marker.GetComponentInChildren<Transform>().localScale = (Vector3.one*.3f);
+            desc.marker.transform.SetPositionAndRotation( _targets[i].goalPos, newQuat);
         }
         #endregion
     }

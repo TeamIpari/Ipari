@@ -23,8 +23,13 @@ public sealed class GamePadUIController : MonoBehaviour
 
     public enum InputDeviceType
     {
-        Keyboard,
+        Keyboard_Mouse,
         GamePad
+    }
+
+    public enum GamePadKind
+    {
+        Unknown, XBox, PS, Nintendo
     }
 
     public enum GamePadInputType
@@ -396,8 +401,9 @@ public sealed class GamePadUIController : MonoBehaviour
     //=======================================================
     //////            Property and fields               /////
     //=======================================================
-    public static GamePadUIController Current         { get; set; }
-    public InputDeviceType            LastInputDevice { get; private set; } = InputDeviceType.Keyboard;
+    public static GamePadUIController Current              { get; set; }
+    public static InputDeviceType     LastInputDevice      { get; private set; } = InputDeviceType.Keyboard_Mouse;
+    public static GamePadKind         LastInputGamePadKind { get; private set; } = GamePadKind.XBox;
 
     [SerializeField] public GamePadUIController UpTarget;
     [SerializeField] public GamePadUIController DownTarget;
@@ -464,7 +470,7 @@ public sealed class GamePadUIController : MonoBehaviour
 
 
     //====================================================
-    //////               Core methods               //////
+    //////              Public methods               /////
     //====================================================
     public void ClearCurrent()
     {
@@ -484,6 +490,11 @@ public sealed class GamePadUIController : MonoBehaviour
         #endregion
     }
 
+
+
+    //====================================================
+    //////               Core methods               //////
+    //====================================================
     private void SelectUI(Vector2 dir)
     {
         #region Omit
@@ -494,9 +505,10 @@ public sealed class GamePadUIController : MonoBehaviour
         );
 
         /**좌측 클릭*/
-        if (dir.x<0 ){
+        if (dir.x < 0)
+        {
 
-            if(Current.UseMoveLock) Current.OnDPadLeftLock?.Invoke();
+            if (Current.UseMoveLock) Current.OnDPadLeftLock?.Invoke();
             else Current.OnDPadLeft?.Invoke();
 
             if (Current.LeftTarget != null && !Current.UseMoveLock)
@@ -508,12 +520,13 @@ public sealed class GamePadUIController : MonoBehaviour
         }
 
         /**우측 클릭*/
-        else if (dir.x > 0){
+        else if (dir.x > 0)
+        {
 
             if (Current.UseMoveLock) Current.OnDPadRightLock?.Invoke();
             else Current.OnDPadRight?.Invoke();
 
-            if(Current.RightTarget != null && !Current.UseMoveLock)
+            if (Current.RightTarget != null && !Current.UseMoveLock)
             {
                 Current.OnDisSelect?.Invoke();
                 Current = Current.RightTarget;
@@ -522,12 +535,13 @@ public sealed class GamePadUIController : MonoBehaviour
         }
 
         /**상측 클릭*/
-        else if (dir.y > 0){
+        else if (dir.y > 0)
+        {
 
             if (Current.UseMoveLock) Current.OnDPadUpLock?.Invoke();
             else Current.OnDPadUp?.Invoke();
 
-            if(Current.UpTarget != null && !Current.UseMoveLock)
+            if (Current.UpTarget != null && !Current.UseMoveLock)
             {
                 Current.OnDisSelect?.Invoke();
                 Current = Current.UpTarget;
@@ -536,12 +550,13 @@ public sealed class GamePadUIController : MonoBehaviour
         }
 
         /**하측 클릭*/
-        else if (dir.y < 0){
+        else if (dir.y < 0)
+        {
 
             if (Current.UseMoveLock) Current.OnDPadDownLock?.Invoke();
             else Current.OnDPadDown?.Invoke();
 
-            if(Current.DownTarget != null && !Current.UseMoveLock)
+            if (Current.DownTarget != null && !Current.UseMoveLock)
             {
                 Current.OnDisSelect?.Invoke();
                 Current = Current.DownTarget;
@@ -550,34 +565,50 @@ public sealed class GamePadUIController : MonoBehaviour
         }
 
         /**자기자신이 선택될 경우...*/
-        else if(Current==this){
+        else if (Current == this)
+        {
 
             Current.OnSelect?.Invoke();
         }
         #endregion
     }
 
+    private GamePadKind GetGamePadKind(string name)
+    {
+        #region Omit
+        if (name.Contains("Xbox", System.StringComparison.OrdinalIgnoreCase))
+            return GamePadKind.XBox;
+
+        if (name.Contains("Playstation", System.StringComparison.OrdinalIgnoreCase))
+            return GamePadKind.PS;
+
+        if (name.Contains("Nintendo", System.StringComparison.OrdinalIgnoreCase))
+            return GamePadKind.Nintendo;
+
+        return GamePadKind.Unknown;
+        #endregion
+    }
+
     private bool ButtonIsDown(Gamepad currPad, GamePadInputType type)
     {
         #region Omit
-        string padName = currPad.displayName;
 
         /**Xbox Controller의 경우...*/
-        if(padName.Contains("Xbox", System.StringComparison.OrdinalIgnoreCase))
+        if (LastInputGamePadKind == GamePadKind.XBox)
         {
-           if(type==GamePadInputType.OK) return (currPad.aButton.value!=0f);
-           else return (currPad.bButton.value!=0f);
+            if (type == GamePadInputType.OK) return (currPad.aButton.value != 0f);
+            else return (currPad.bButton.value != 0f);
         }
 
         /**듀얼쇼크의 경우...*/
-        if (padName.Contains("Playstation", System.StringComparison.OrdinalIgnoreCase))
+        if (LastInputGamePadKind == GamePadKind.PS)
         {
-            if (type == GamePadInputType.OK) return (currPad.circleButton.value!= 0f);
+            if (type == GamePadInputType.OK) return (currPad.circleButton.value != 0f);
             else return (currPad.crossButton.value != 0f);
         }
 
         /**닌텐도 Controller의 경우...*/
-        if (padName.Contains("Nintendo", System.StringComparison.OrdinalIgnoreCase))
+        if (LastInputGamePadKind == GamePadKind.Nintendo)
         {
             if (type == GamePadInputType.OK) return (currPad.aButton.value != 0f);
             else return (currPad.bButton.value != 0f);
@@ -594,18 +625,46 @@ public sealed class GamePadUIController : MonoBehaviour
         /************************************************
          *    게임패드의 DPad 입력을 받고, UI를 움직인다...
          * ****/
-        Vector2 lastInput = Vector2.zero;
-        Vector2 dpadDir   = Vector2.zero;
-        bool lastOk     = false;
-        bool lastCancel = false;
+        Vector2 lastInput     = Vector2.zero;
+        Vector2 dpadDir       = Vector2.zero;
+        bool    lastOk        = false;
+        bool    lastCancel    = false;
+        Gamepad lastUsedPad   = null;
+        Vector2 lastCursorPos = Vector2.zero;
 
         while (true)
         {
+            Keyboard currKeyboard = Keyboard.current;
+            Gamepad  currPad      = Gamepad.current;
+            Mouse    currMouse    = Mouse.current;
+
+            /********************************************
+             *   마지막으로 입력된 기기를 갱신한다....
+             * ***/
+            if (LastInputDevice!=InputDeviceType.Keyboard_Mouse && (currKeyboard!=null && currKeyboard.anyKey.value>0f || currMouse!=null && currMouse.position.value!=lastCursorPos) ){
+
+                /**패드를 사용하였을 경우...*/
+                LastInputDevice = InputDeviceType.Keyboard_Mouse;
+                Current?.OnDisSelect?.Invoke();
+
+                lastCursorPos = currMouse.position.value;
+                lastInput     = Vector2.zero;
+                lastOk        = false;
+            }
+            else if(currPad!=null && currPad.wasUpdatedThisFrame && (lastUsedPad!=currPad || LastInputDevice != InputDeviceType.GamePad)){
+
+                /**패드를 입력하였을 경우....*/
+                lastUsedPad          = currPad;
+                LastInputDevice      = InputDeviceType.GamePad;
+                LastInputGamePadKind = GetGamePadKind(currPad.displayName);
+                Current?.OnSelect?.Invoke();
+            }
+
+
             /***********************************************************
              *   현재 연결된 게임패드 또는 선택된 UI가 존재하는지 체크한다...
              * ****/
-            Gamepad currPad = Gamepad.current;
-            if(currPad==null || Current == null)
+            if(LastInputDevice != InputDeviceType.GamePad || currPad == null || Current == null)
             {
                 yield return null;
                 continue;

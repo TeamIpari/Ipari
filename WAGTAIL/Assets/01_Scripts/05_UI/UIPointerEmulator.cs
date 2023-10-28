@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 
+/************************************************
+ *   Pointer 관련 이벤트를 발생시키는 컴포넌트입니다.
+ * ***/
 public sealed class UIPointerEmulator : MonoBehaviour
 {
     public enum PointerEventType

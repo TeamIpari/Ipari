@@ -26,11 +26,19 @@ public sealed class BossCrabHitState : AIHitState
         base.Enter();
 
         _bossCrab.StateTrigger = false;
-        _bossCrab.SetStateTrigger(.7f);
         _bossCrab.PopHPStack();
 
-        AISM.character.HP -= 10;
-        AISM.Animator.Play(BossCrabAnimation.Hit);
+        AISM.Animator.speed = 1f;
+
+        /**보스가 체력이 모두 닳아서 죽을 경우...*/
+        if((AISM.character.HP-=10)<=0f)
+        {
+            AISM.Animator.CrossFade(BossCrabAnimation.Die, .1f);
+            return;
+        }
+        else AISM.Animator.CrossFade(BossCrabAnimation.Hit, .1f);
+
+        _bossCrab.SetStateTrigger(.3f);
         #endregion
     }
 
@@ -44,8 +52,8 @@ public sealed class BossCrabHitState : AIHitState
     {
         if(_bossCrab.StateTrigger)
         {
+            _bossCrab.StateTrigger = false;
             AISM.NextPattern();
-            _bossCrab.StateTrigger = false;  
         }
     }
 }

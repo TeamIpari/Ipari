@@ -23,6 +23,7 @@ public sealed class EgoCrabHand : MonoBehaviour
     [SerializeField] public  Transform      targetTransform;
     [SerializeField] public  GameObject     MarkerPrefab;
     [SerializeField] public  GameObject     SpawnSFXprefab;
+    [SerializeField] public  GameObject     AttackSFXPrefab;
     [SerializeField] public  AnimationCurve curve;
     [SerializeField] private float          _AttackReadyDuration = 1f;
     [SerializeField] private float          _AttackDuration = .5f;
@@ -30,9 +31,10 @@ public sealed class EgoCrabHand : MonoBehaviour
     [SerializeField] public  bool           IsAttack = false;
 
 
-    private Animator  _animator;
-    private Coroutine _progressCoroutine;
-    private Vector3   _startScale = Vector3.one;
+    private Animator       _animator;
+    private Coroutine      _progressCoroutine;
+    private Vector3        _startScale = Vector3.one;
+    private ParticleSystem _attackSFXIns;
 
 
 
@@ -105,6 +107,27 @@ public sealed class EgoCrabHand : MonoBehaviour
         #endregion
     }
 
+    private void SetCurrentMarkerTransform( GameObject marker )
+    {
+        #region Omit
+        RaycastHit hit;
+        if(Physics.Raycast( transform.position,
+                            Vector3.down,
+                            out hit,
+                            5f,
+                            1<<LayerMask.NameToLayer("Platform"),
+                            QueryTriggerInteraction.Ignore ))
+        {
+
+            Transform  markerTr = marker.transform;
+            Vector3    newPos   = hit.point + (hit.normal * .5f);
+            Quaternion newQuat =  IpariUtility.GetQuatBetweenVector(markerTr.forward, hit.normal); 
+
+            markerTr.SetPositionAndRotation(newPos, newQuat);
+        }
+        #endregion
+    }
+
     private IEnumerator AttackProgress()
     {
         #region Omit
@@ -141,12 +164,17 @@ public sealed class EgoCrabHand : MonoBehaviour
         } while (progressRatio < 1f);
 
 
+
+
         /******************************************
          *    대상을 추적한다...
          * ***/
+        timeLeft = AttackReadyDuration;
         do
         {
             float deltaTime   = Time.fixedDeltaTime;
+            progressRatio     = (1f - Mathf.Clamp((timeLeft-=deltaTime) * attackReadyDiv, 0f, 1f));
+
             Vector3 goalPos   = targetTransform.position + (Vector3.up * 3f);
             Vector3 updatePos = (goalPos - tr.position) * (deltaTime * 3f);
 
@@ -156,7 +184,7 @@ public sealed class EgoCrabHand : MonoBehaviour
 
             yield return waitTime;
 
-        } while (IsAttack == false);
+        } while (IsAttack == false && progressRatio<1f);
 
 
         /******************************************
@@ -166,21 +194,22 @@ public sealed class EgoCrabHand : MonoBehaviour
 
         /**내려찍는 곳까지의 거리를 구한다...*/
         RaycastHit hit;
-        if (!Physics.SphereCast(
+        LayerMask  layer = LayerMask.GetMask("Platform");
+
+        bool isHit = Physics.SphereCast(
             
             tr.position,
             2f,
             Vector3.down,
             out hit,
             (targetTransform.position - tr.position).magnitude * 1.5f,
-             1 << LayerMask.NameToLayer("Platform")))
-        {
-            yield break;
-        }
+            layer
+        );
 
-        /**내려찍는 동작을 실행한다...*/
-        Vector3 startPos = tr.position;
-
+        /**내려찍을 곳이 있다면, 내려찍는 동작을 실행한다...*/
+        if (!isHit) yield break;
+        Vector3   startPos = tr.position;
+        Transform playerTr = Player.Instance.transform;
         do
         {
             float deltaTime = Time.deltaTime;
@@ -190,47 +219,83 @@ public sealed class EgoCrabHand : MonoBehaviour
             float curveValue = curve.Evaluate(progressRatio);
             float updatePos  = (hit.point.y - startPos.y) * curveValue;
 
-            Vector3 lookPos = Vector3.Cross(Vector3.up, hit.normal);
-            lookPos.y += (.5f * Mathf.Clamp(curveValue, 0f, float.MaxValue));
+            Vector3 lookPos = (playerTr.position - transform.position).normalized;
+            lookPos.y += Mathf.Clamp(curveValue, 0f, float.MaxValue);
 
-            tr.rotation = (IPariUtility.IpariUtility.GetQuatBetweenVector(-transform.forward, lookPos, deltaTime*3f) * tr.rotation);
+            tr.rotation = (IPariUtility.IpariUtility.GetQuatBetweenVector(-transform.forward, lookPos, deltaTime*10f) * tr.rotation);
             tr.position = startPos + (Vector3.down * updatePos);
             yield return null;
 
         } while (progressRatio < 1f);
 
 
+        /********************************************************
+         *   집게가 내려쳤을 때 발생하는 이펙트와 진동을 적용한다...
+         * ****/
         IsAttack = false;
         CameraManager.GetInstance()?.CameraShake(3f, .2f);
 
-        /**집게가 완전히 땅의 면에 맞닿도록 설정한다...*/
-        Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(-transform.forward, Vector3.Cross(Vector3.up, hit.normal));
-        tr.rotation        = (rotQuat * tr.rotation);
+        /**이펙트가 없다면 생성한다...*/
+        if(_attackSFXIns==null && AttackSFXPrefab != null){
+
+            _attackSFXIns = GameObject.Instantiate(AttackSFXPrefab).GetComponent<ParticleSystem>();
+            _attackSFXIns.transform.localScale = (Vector3.one * .5f);
+
+            ParticleSystem.MainModule main = _attackSFXIns.main;
+            main.loop = false;
+        }
+
+        Transform  sfxTr   = _attackSFXIns.transform;
+        Vector3    newPos  = hit.point + (hit.normal * .5f);
+        Quaternion newQuat = IpariUtility.GetQuatBetweenVector(sfxTr.up, hit.normal);
+
+        sfxTr.SetPositionAndRotation(newPos, newQuat);
+        _attackSFXIns.Play(true);
 
 
-        /**공격을 마친 후 대기...*/
-        timeLeft = .7f;
-        while ((timeLeft -= Time.deltaTime) > 0f) yield return null;
+        /************************************************
+         *   집게가 땅의 면과 맞닿도록 회전시킨다....
+         * ****/
+
+        /**계산에 필요한 것들을 모조리 구한다....*/
+        timeLeft             = .7f;
+        float waitTimeDiv    = (1f / timeLeft);
+        Quaternion startQuat = transform.rotation;
+        Vector3    startDir  = -transform.forward;
+        Vector3    right     = -Vector3.Cross(-transform.forward, hit.normal);
+        Vector3    forward   = Vector3.Cross(right, hit.normal) + (Vector3.up*.7f);
+
+        do{
+
+            timeLeft -= Time.deltaTime;
+
+            progressRatio      = Mathf.Clamp01(1f - (timeLeft * waitTimeDiv));
+            Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(startDir, forward, progressRatio);
+            tr.rotation        = (rotQuat * startQuat);
+
+            yield return null;
+        }
+        while (timeLeft>0f);
 
 
         /****************************************
          *   손이 사라진다...
          * ****/
         timeLeft = .3f;
-        do
-        {
+
+        do{
+
             float deltaTime = Time.deltaTime;
             timeLeft -= deltaTime;
 
-            progressRatio = (Mathf.Clamp(timeLeft * sizeupDiv, 0f, 1f));
+            progressRatio = Mathf.Clamp01(timeLeft * sizeupDiv);
             tr.localScale = (goalScale * progressRatio);
 
             yield return null;
 
-        } while (progressRatio < 1f);
+        } 
+        while (progressRatio < 1f);
 
-
-        yield break;
         #endregion
     }
 

@@ -27,11 +27,26 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         }
     }
 
-    [SerializeField] private bool   _PlayerOnSand = false;
-    [SerializeField] public bool    IntakeOnAwake = false;
-    [SerializeField] public float   IntakePower = 6f;
-    [SerializeField] public Vector3 SandIdleCenterOffset   = Vector3.zero;
-    [SerializeField] public Vector3 SandIntakeCenterOffset = Vector3.zero;
+    [SerializeField] 
+    private bool   _PlayerOnSand = false;
+
+    [SerializeField] 
+    public bool    IntakeOnAwake = false;
+
+    [SerializeField, Min(0f)] 
+    public float   IntakePower = 6f;
+
+    [SerializeField, Min(0f)]
+    public float   IntakeStopDuration = -1f;
+
+    [SerializeField] 
+    public Vector3 SandIdleCenterOffset   = Vector3.zero;
+
+    [SerializeField] 
+    public Vector3 SandIntakeCenterOffset = Vector3.zero;
+
+    [SerializeField]
+    public GameObject IntakeObjectFX;
 
 
 
@@ -49,6 +64,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
     /*****************************************
      *   침식 로직과 관련된 필드들...
      * ***/
+    private float   _currStopTime       = 0f;
     private float   _intakeDuration     = 1f;
     private float   _intakeDiv          = 0f;
     private float   _currIntakeTime     = 0f;
@@ -125,10 +141,20 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
          * *****/
         if(_SandMat) _SandMat.SetFloat("_Speed", _totalTime += (deltaTime * _currPullSpeed));
 
-        if (_currPullSpeed > 0f && (_shakeTime -= deltaTime) <= 0f){
+        if(_currPullSpeed>0f)
+        {
+            /**카메라 진동 효과를 적용한다....*/
+            if ((_shakeTime -= deltaTime) <= 0f){
 
-            CameraManager.GetInstance().CameraShake(2.5f, 2f);
-            _shakeTime = 2.1f;
+                CameraManager.GetInstance().CameraShake(2.5f, 2f);
+                _shakeTime = 2.1f;
+            }
+
+            /**가라앉는 효과를 중단한다....*/
+            if(_currStopTime>0f && (_currStopTime-=deltaTime)<=0f)
+            {
+                IntakeSand(false);
+            }
         }
 
 
@@ -146,10 +172,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
             return;
         }
 
-
-        /***********************************************
-         *   플레이어가 모래를 밟고 있는 동안의 처리를 한다.
-         * ***/
+        /**플레이어가 모래에 밟고 있는 동안에 대한 처리를 한다....*/
         RaycastHit hit;
         if (!(IpariUtility.GetPlayerFloorinfo(out hit, 1<<gameObject.layer)))
         {
@@ -240,8 +263,17 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
             /**모래의 중심으로 빨려들어갔을 경우*/
             if (target2CenterLen < 1f)
             {
+                if(IntakeObjectFX!=null)
+                {
+                    GameObject newFX = GameObject.Instantiate(IntakeObjectFX);
+                    newFX.transform.position   = centerPos + (Vector3.down*.5f);
+                    newFX.transform.localScale = (Vector3.one * 1f);
+                    newFX.SetActive(true);  
+                    Destroy(newFX, 1f);
+                }
+
                 Physics.IgnoreCollision(collision.collider, _collider);
-                body.velocity = Vector3.zero;
+                body.velocity = (Vector3.down*10f*body.mass);
                 GameObject.Destroy(body.gameObject, 2f);
             }
         }
@@ -274,6 +306,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         _goalCenterOffset   = (apply ? SandIntakeCenterOffset : SandIdleCenterOffset);
         _goalPullSpeed      = (apply ? 1f : 0f);
 
+        _currStopTime       = IntakeStopDuration;
         _currIntakeTime     = _intakeDuration;
         _intakeDiv          = (1f / _intakeDuration);
         _startCenterOffset  = _currCenterOffset;

@@ -37,11 +37,11 @@ public sealed class BossCrabEgoStampState : AIAttackState
     :base(stateMachine)
     {
         #region Omit
-        _handIns     = handIns;
         _glowTimeDiv = (1f / collectDuration);
         _bossCrab = bossCrab;
 
         _handIns = handIns;
+        _handIns.AttackReadyDuration = 3f;
         _handIns.transform.position += (Vector3.up*100f);
 
 
@@ -178,6 +178,8 @@ public sealed class BossCrabEgoStampState : AIAttackState
 
     public override void Exit()
     {
+        _EgoMat.SetFloat("_alpha", 0f);
+
     }
 
     public override void OntriggerEnter(Collider other)
