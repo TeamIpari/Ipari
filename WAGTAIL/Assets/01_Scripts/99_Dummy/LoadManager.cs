@@ -30,13 +30,21 @@ public class LoadManager : Singleton<LoadManager>
                 if (str[2] != "")
                     sayTarget = str[2];
                 if (str[3] != "")
+                {
                     Korean = str[3].Replace('\\', '\n');
+                    Korean = Korean.Replace('*', ',');
+                }
                 if (str[4] != "")
+                {
                     English = str[4].Replace('\\', '\n');
+                    English = English.Replace('*', ',');
+                }
                 if (str[5] != "")
+                {
                     Japanese = str[5].Replace('\\', '\n');
-
-            }
+                    Japanese = Japanese.Replace('*', ',');
+                }
+                }
             catch
             {
                 Debug.Log($"{number} contents is null;");
@@ -245,8 +253,6 @@ public class LoadManager : Singleton<LoadManager>
                 }
                 continue;
             }
-            else if (letter == '*')
-                Tmps.text += ',';
             else
                 Tmps.text += letter;
             if (isSpeedUp)
