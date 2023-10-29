@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 655227102186083113}
   - component: {fileID: 694961260085318179}
   - component: {fileID: 655227102186083126}
+  - component: {fileID: 2151449774341550660}
   m_Layer: 6
   m_Name: DragonSeed
   m_TagString: interactable
@@ -149,7 +150,39 @@ MonoBehaviour:
       m_Calls: []
   OnThrow:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2151449774341550660}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+--- !u!114 &2151449774341550660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655227102186083125}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ad146e28cf27bd4d90bd7efb4cc9539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  explosionRange: 2
+  explosionTime: 100000000
+  explosionVFX: {fileID: 6701463487037332305, guid: 075e694b6e9812f4b87a0ca0153760fc,
+    type: 3}
+  _isStart: 0
 --- !u!1 &1029032526319514155
 GameObject:
   m_ObjectHideFlags: 0

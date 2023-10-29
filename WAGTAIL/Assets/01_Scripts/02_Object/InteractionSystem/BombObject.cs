@@ -111,6 +111,8 @@ public class BombObject : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        if (enabled == false) return;
+
         if (other.gameObject.CompareTag("Platform"))
         {
             StartCoroutine(StartTimeBomb(explosionTime));

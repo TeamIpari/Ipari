@@ -22,21 +22,22 @@ public class BossNepenthesHitState : AIHitState
         nextPhaseHp = stateMachine.GetNextPhaseTargetHp();
         this.leftVine = LeftVine;
         this.rightVine = RightVine;
-        animLeftVine = LeftVine.GetComponent<Animator>();
+        animLeftVine = leftVine.GetComponent<Animator>();
         animRightVine = rightVine.GetComponent<Animator>();
     }
 
 
     public override void Enter()
     {
+        #region Omit
         base.Enter();
         // 맞는 상태임을 인지
         AISM.Animator.SetTrigger("isHit");
-        if(animLeftVine != null) animLeftVine.SetTrigger("isHit");
-        if(animRightVine != null) animRightVine.SetTrigger("isHit");
+        if (animLeftVine != null) animLeftVine.SetTrigger("isHit");
+        if (animRightVine != null) animRightVine.SetTrigger("isHit");
         if (AISM.character.IsHit)
             AISM.character.HP -= 10;
-        if(AISM.character.HP <= nextPhaseHp)
+        if (AISM.character.HP <= nextPhaseHp)
         {
             // 다음 패턴
             SetPhaseHp();
@@ -44,6 +45,7 @@ public class BossNepenthesHitState : AIHitState
         }
         AISM.character.IsHit = false;
         curTimer = 0;
+        #endregion
     }
 
     public override void Exit()
@@ -70,7 +72,6 @@ public class BossNepenthesHitState : AIHitState
     //===========================================
     public void SetPhaseHp()
     {
-        Debug.Log($"다음 페이즈 돌입.");
         if (AISM.IsNextTargetPhaseHp())
         {
             nextPhaseHp = AISM.GetNextPhaseTargetHp();

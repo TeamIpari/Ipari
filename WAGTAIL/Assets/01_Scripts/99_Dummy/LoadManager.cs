@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 public class LoadManager : Singleton<LoadManager>
 {
+    #region DialogueScriptes
     [System.Serializable]
     public class Scriptable
     {
@@ -19,6 +20,7 @@ public class LoadManager : Singleton<LoadManager>
 
         public void Init(string[] str)
         {
+            #region Omit
             try
             {
                 if (str[0] != "")
@@ -27,41 +29,41 @@ public class LoadManager : Singleton<LoadManager>
                     chapter = int.Parse(str[1]);
                 if (str[2] != "")
                     sayTarget = str[2];
-                //if (str[3] != "")
-                //    wait = int.Parse(str[3]) == 0 ? false : true;
-                //if (str[4] != "")
-                //    Korean = str[4];
-                //if (str[5] != "")
-                //    English = str[5];
-                //if (str[6] != "")
-                //    Japanese = str[6];
                 if (str[3] != "")
                 {
                     Korean = str[3].Replace('\\', '\n');
+                    Korean = Korean.Replace('*', ',');
                 }
                 if (str[4] != "")
-                {       
+                {
                     English = str[4].Replace('\\', '\n');
+                    English = English.Replace('*', ',');
                 }
                 if (str[5] != "")
                 {
                     Japanese = str[5].Replace('\\', '\n');
+                    Japanese = Japanese.Replace('*', ',');
                 }
-
-            }
+                }
             catch
             {
                 Debug.Log($"{number} contents is null;");
             }
+            #endregion
         }
     }
+    #endregion
+
+    #region Properties_N_Fields
     [System.Serializable]
-    public class ChapterScript : SerializableDictionary<int , Scriptable>
+    public class ChapterScript : SerializableDictionary<int, Scriptable>
     {
 
     }
 
-    //public GameObject
+    //===================================================
+    /////               Fields                      /////
+    //===================================================
     public int ChapterNum = 0;
     public TextMeshProUGUI Tmps;
     public TextMeshProUGUI NameTag;
@@ -72,11 +74,12 @@ public class LoadManager : Singleton<LoadManager>
     public float EngTypingRate = 0.05f;
     public float JpTypingRate = 0.1f;
     public float CnTypingRate = 0.1f;
-    private float typingRate = .1f;
 
+    private float typingRate = .1f;
     private Queue<string> sentences = new Queue<string>();
     private string sentence;
     private bool bTyping = false;
+    #endregion
 
     //====================================================
     /////               magic Methods               /////
@@ -95,6 +98,7 @@ public class LoadManager : Singleton<LoadManager>
     //====================================================
     public void IO_GetSayer()
     {
+        #region Omit
         TextAsset _text = (TextAsset)Resources.Load("subtitleExcelFileCSV");
         string testFile = _text.text;
         bool endOfFile = false;
@@ -128,14 +132,15 @@ public class LoadManager : Singleton<LoadManager>
         }
         catch
         {
-
+            Debug.LogWarning("설정된 CSV의 다음 대사가 존재하지 않음.");
         }
+        #endregion
     }
     
     public Dialogue IO_GetScriptable(int num = 0)
     {
-        if (num == 0)
-            num = ChapterNum;
+        #region Omit
+        if (num == 0) num = ChapterNum;
         Scriptable sc;
         List<string> nametmp = new List<string>();
         List<string> temp = new List<string>();
@@ -147,22 +152,21 @@ public class LoadManager : Singleton<LoadManager>
                 nametmp.Add(sc.sayTarget);
                 temp.Add(Language(sc));
             }
-            else if (sc.chapter > num)
-                break;
+            else if (sc.chapter > num) break;
         }
         dialogue = new Dialogue();
-
         dialogue.name = nametmp[0];
         dialogue.sentences = new string[temp.Count];
-        for(int i = 0; i < temp.Count; i++)
-        {
-            dialogue.sentences[i] = temp[i];
-        }
+
+        for (int i = 0; i < temp.Count; i++) dialogue.sentences[i] = temp[i];
+
         return dialogue;
+        #endregion
     }
 
     private string Language(Scriptable sc)
     {
+        #region Omit        
         switch (UIManager.GetInstance().GetLanguageType)
         {
             case LanguageType.KOR:
@@ -175,24 +179,26 @@ public class LoadManager : Singleton<LoadManager>
                 break;
         }
         throw new System.NotImplementedException();
+        #endregion
     }
 
     public void StartDialogue(Dialogue dialogue)
     {
+        #region Omit
         bTyping = false;
         sentences.Clear();
-        Debug.Log($"{dialogue.name}");
-        if (NameTag != null)
-            NameTag.text = dialogue.name;
-        foreach (string sentence in dialogue.sentences)
-        {
-            sentences.Enqueue(sentence);
-        }
+
+        if (NameTag != null) NameTag.text = dialogue.name;
+
+        foreach (string sentence in dialogue.sentences) sentences.Enqueue(sentence);
+
         DisplayNextSentence();
+        #endregion
     }
 
     public void DisplayNextSentence()
     {
+        #region Omit
         if (bTyping)
         {
             StopAllCoroutines();
@@ -200,14 +206,15 @@ public class LoadManager : Singleton<LoadManager>
             bTyping = false;
             return;
         }
-        if (EndDialogue())
-            return;
+        if (EndDialogue()) return;
         sentence = sentences.Dequeue();
         StartCoroutine(TypeSentence(sentence));
+        #endregion
     }
 
     private float GetLanguageRate()
     {
+        #region Omit
         switch (UIManager.GetInstance().GetLanguageType)
         {
             case LanguageType.KOR:
@@ -222,10 +229,12 @@ public class LoadManager : Singleton<LoadManager>
                 break;
         }
         throw new System.NotImplementedException();
+        #endregion
     }
 
     private IEnumerator TypeSentence(string sentence)
     {
+        #region Omit    
         bool strType = false;
         string tmp = "";
         bTyping = true;
@@ -244,25 +253,22 @@ public class LoadManager : Singleton<LoadManager>
                 }
                 continue;
             }
-            else if (letter == '*')
-                Tmps.text += ',';
             else
-            {
                 Tmps.text += letter;
-            }
             if (isSpeedUp)
                 yield return new WaitForSeconds(GetLanguageRate() * 0.5f);      // time setting;
             else if (!isSpeedUp)
                 yield return new WaitForSeconds(GetLanguageRate());
         }
         bTyping = false;
+        #endregion 
     }
 
     public bool EndDialogue()
     {
         if (sentences.Count == 0)
             return true;
-        //Debug.Log("End of conversation.");
+
         return false;
     }
     

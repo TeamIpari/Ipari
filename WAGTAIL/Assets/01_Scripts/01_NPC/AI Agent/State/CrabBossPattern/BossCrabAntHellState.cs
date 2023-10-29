@@ -27,6 +27,7 @@ public class BossCrabAntHellState : AIAttackState
         if (andhellPrefab != null){
 
             _targetSand = andhellPrefab.GetComponent<SandScriptBase>();
+            _targetSand.IntakeStopDuration = 7f;
         }
         #endregion
     }
@@ -36,11 +37,6 @@ public class BossCrabAntHellState : AIAttackState
         #region Omit
         _progress = 0;
         AISM.Animator.CrossFade(BossCrabAnimation.MakeAntHell_Ready, .3f);
-
-        //if(_targetSand!=null){
-
-        //    _targetSand.IntakeSand(true);
-        //}
         #endregion
     }
 

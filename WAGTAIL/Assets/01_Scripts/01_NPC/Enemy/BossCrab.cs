@@ -20,7 +20,7 @@ public sealed class BossCrab : Enemy
     {
         public const string Idle = "Idle";
         public const string Hit  = "Hit";
-        public const string Die  = "Die";
+        public const string Die  = "die";
 
         public const string SpitSeedsReady   = "Attack1Ready";
         public const string SpittingSeeds    = "Attack1Spit";
@@ -677,7 +677,6 @@ public sealed class BossCrab : Enemy
 
     public override void Hit()
     {
-        base.Hit();
         AiSM.ChangeState(AiHit);
     }
 
@@ -720,6 +719,11 @@ public sealed class BossCrab : Enemy
 
         StateTrigger = true;
         #endregion
+    }
+
+    public void ClearStateTriggerDelay()
+    {
+        _stateTriggerDelay = 0f;
     }
 
     public void ExitCurrentState()
