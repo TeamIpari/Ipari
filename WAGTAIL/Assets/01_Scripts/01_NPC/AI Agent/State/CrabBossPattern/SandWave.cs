@@ -350,8 +350,6 @@ public class SandWave : MonoBehaviour
         _shakeTime = _shakeMaxTime;
         _delayTime = .1f;
         IsSpeading = true;
-
-        CameraManager.GetInstance().CameraShake(3f, WaveDuration);
         #endregion
     }
 

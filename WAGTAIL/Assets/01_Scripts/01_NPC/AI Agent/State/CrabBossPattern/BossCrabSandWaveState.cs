@@ -84,6 +84,13 @@ public class BossCrabSandWaveState : AIAttackState
                 /**¸ð·¡ÆøÇ³À» »ý¼ºÇÑ´Ù....*/
                 case (2):
                 {
+                    CameraManager.GetInstance().CameraShake(
+                                
+                        .4f,
+                        CameraManager.ShakeDir.ROTATE,
+                        .5f
+                    );
+
                     _waves[--_waveLeft]?.StartWave();
 
                     if(_waveLeft>0)

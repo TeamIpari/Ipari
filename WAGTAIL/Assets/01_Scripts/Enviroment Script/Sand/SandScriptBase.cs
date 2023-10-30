@@ -143,13 +143,6 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
 
         if(_currPullSpeed>0f)
         {
-            /**카메라 진동 효과를 적용한다....*/
-            if ((_shakeTime -= deltaTime) <= 0f){
-
-                CameraManager.GetInstance().CameraShake(2.5f, 2f);
-                _shakeTime = 2.1f;
-            }
-
             /**가라앉는 효과를 중단한다....*/
             if(_currStopTime>0f && (_currStopTime-=deltaTime)<=0f)
             {
