@@ -312,8 +312,7 @@ public class SandWave : MonoBehaviour
         else if(other.CompareTag("interactable") && !other.CompareTag("Boss") && (body=other.attachedRigidbody)!=null){
 
             float dst   = (compareLen - center2TargetLen);
-            Vector3 pow = (-center2Target.normalized * dst * body.mass*30);
-            pow.y = 0f;
+            Vector3 pow = (-center2Target.normalized * dst *.3f * body.mass);
 
             body.velocity = pow;
         }

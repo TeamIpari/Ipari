@@ -161,6 +161,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         /**플레이어가 빨려들어갔을 경우...*/
         if (PlayerIsDead){
 
+            if (player.isDead == false) PlayerIsDead = false;
             player.transform.position += (Vector3.down * .025f);
             return;
         }
@@ -194,8 +195,17 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
 
             /**플레이어가 모래 가운데로 들어왔다면 죽음판정...*/
             float target2CenterLen = (centerPos - playerPos).magnitude;
-            if (!player.isDead && target2CenterLen < 1f)
+            if (!player.isDead && target2CenterLen < 1f && _currPullSpeed>=.8f)
             {
+                if (IntakeObjectFX != null)
+                {
+                    GameObject newFX = GameObject.Instantiate(IntakeObjectFX);
+                    newFX.transform.position = centerPos + (Vector3.down * .5f);
+                    newFX.transform.localScale = (Vector3.one * 1f);
+                    newFX.SetActive(true);
+                    Destroy(newFX, 1f);
+                }
+
                 player.controller.enabled = true;
                 PlayerIsDead = true;
                 player.isDead = true;
