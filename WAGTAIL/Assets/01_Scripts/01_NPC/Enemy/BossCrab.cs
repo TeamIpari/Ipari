@@ -741,6 +741,9 @@ public sealed class BossCrab : Enemy
         #region Omit
         if (AiSM.CurrentState == null){
 
+            FModAudioManager.UsedBGMAutoFade     = true;
+            FModAudioManager.BGMAutoFadeDuration = 3f;
+
             AiSM.CurrentState = AiSM.Pattern[0];
         }
 

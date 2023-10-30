@@ -58,6 +58,7 @@ public class BossCrabAntHellState : AIAttackState
                     if (_targetSand != null)
                         _targetSand.IntakeSand(true);
 
+                    FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Roar);
                     CameraManager.GetInstance().CameraShake(
                         .3f, 
                         CameraManager.ShakeDir.ROTATE, 
