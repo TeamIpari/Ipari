@@ -233,7 +233,7 @@ public sealed class EgoCrabHand : MonoBehaviour
          *   집게가 내려쳤을 때 발생하는 이펙트와 진동을 적용한다...
          * ****/
         IsAttack = false;
-        CameraManager.GetInstance()?.CameraShake(3f, .2f);
+        CameraManager.GetInstance()?.CameraShake(.4f, CameraManager.ShakeDir.ROTATE, .6f);
 
         /**이펙트가 없다면 생성한다...*/
         if(_attackSFXIns==null && AttackSFXPrefab != null){

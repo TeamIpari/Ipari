@@ -21,6 +21,8 @@ public sealed class GamePadUIController : MonoBehaviour
     {
     }
 
+    public delegate void OnDeviceChangeEvent(InputDeviceType prevDevice, InputDeviceType changeDevice);
+
     public enum InputDeviceType
     {
         Keyboard_Mouse,
@@ -405,6 +407,9 @@ public sealed class GamePadUIController : MonoBehaviour
     public static InputDeviceType     LastInputDevice      { get; private set; } = InputDeviceType.Keyboard_Mouse;
     public static GamePadKind         LastInputGamePadKind { get; private set; } = GamePadKind.XBox;
 
+    public static OnDeviceChangeEvent  OnDeviceChange;
+    
+
     [SerializeField] public GamePadUIController UpTarget;
     [SerializeField] public GamePadUIController DownTarget;
     [SerializeField] public GamePadUIController LeftTarget;
@@ -565,8 +570,7 @@ public sealed class GamePadUIController : MonoBehaviour
         }
 
         /**자기자신이 선택될 경우...*/
-        else if (Current == this)
-        {
+        else if (Current == this){
 
             Current.OnSelect?.Invoke();
         }
@@ -644,6 +648,7 @@ public sealed class GamePadUIController : MonoBehaviour
             if (LastInputDevice!=InputDeviceType.Keyboard_Mouse && (currKeyboard!=null && currKeyboard.anyKey.value>0f || currMouse!=null && currMouse.position.value!=lastCursorPos) ){
 
                 /**패드를 사용하였을 경우...*/
+                OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.Keyboard_Mouse);
                 LastInputDevice = InputDeviceType.Keyboard_Mouse;
                 Current?.OnDisSelect?.Invoke();
 
@@ -654,6 +659,7 @@ public sealed class GamePadUIController : MonoBehaviour
             else if(currPad!=null && currPad.wasUpdatedThisFrame && (lastUsedPad!=currPad || LastInputDevice != InputDeviceType.GamePad)){
 
                 /**패드를 입력하였을 경우....*/
+                OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.GamePad);
                 lastUsedPad          = currPad;
                 LastInputDevice      = InputDeviceType.GamePad;
                 LastInputGamePadKind = GetGamePadKind(currPad.displayName);

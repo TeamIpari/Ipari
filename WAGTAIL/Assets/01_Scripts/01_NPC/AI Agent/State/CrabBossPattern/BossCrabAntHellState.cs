@@ -57,6 +57,14 @@ public class BossCrabAntHellState : AIAttackState
                 {
                     if (_targetSand != null)
                         _targetSand.IntakeSand(true);
+
+                    CameraManager.GetInstance().CameraShake(
+                        .3f, 
+                        CameraManager.ShakeDir.ROTATE, 
+                        14f,
+                        .035f
+                    );
+
                     break;
                 }
 
