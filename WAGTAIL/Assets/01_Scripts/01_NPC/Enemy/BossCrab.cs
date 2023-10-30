@@ -685,7 +685,7 @@ public sealed class BossCrab : Enemy
     //=====================================================
     ////////           Public methods                //////
     //=====================================================
-    public void PopHPStack()
+    public void PopHPUIStack()
     {
         #region Omit
         if (_HPstack == null || _HPstack.Count==0) return;
@@ -695,6 +695,22 @@ public sealed class BossCrab : Enemy
 
             hpAnim.SetTrigger("isDamaged");
         }
+        #endregion
+    }
+
+    public void ShowHPUI(bool isShow, float speed=1f)
+    {
+        #region
+        if (_HPAnim == null) return;
+
+        _HPAnim.speed = speed;
+        if (isShow)
+        {
+            _HPAnim.Play("HP_FadeIn");
+            return;
+        }
+
+        _HPAnim.Play("HP_FadeOut");
         #endregion
     }
 

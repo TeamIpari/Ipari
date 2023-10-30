@@ -193,7 +193,6 @@ public class CameraManager : Singleton<CameraManager>
 
         float waitTime  = cycleDuration;
         float sub       = (shakePow / loopCount);
-        int goal        = (shakeDir == ShakeDir.ROTATE ? 4 : 2);
         Transform camTr = targetCam.VirtualCameraGameObject.transform;
 
 
@@ -238,7 +237,7 @@ public class CameraManager : Singleton<CameraManager>
 
                     while ((waitTime -= Time.deltaTime) > 0f) yield return null;
                     waitTime = cycleDuration;
-                    dir2 = Vector3.Cross(camTr.forward, dir2);
+                    dir2     = Vector3.Cross(camTr.forward, dir2);
                 }
 
                 shakePow -= (sub*4f);

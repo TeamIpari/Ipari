@@ -30,11 +30,13 @@ public sealed class BossCrabHitState : AIHitState
 
         _bossCrab.StateTrigger = false;
         _bossCrab.ClearStateTriggerDelay();
-        _bossCrab.PopHPStack();
+        _bossCrab.PopHPUIStack();
 
         AISM.Animator.speed = 1f;
 
-        /**보스가 체력이 모두 닳아서 죽을 경우...*/
+        /************************************
+         *   보스가 죽을 경우....
+         * ****/
         if((AISM.character.HP-=10)<=0f)
         {
             _progress = 1;
@@ -44,8 +46,12 @@ public sealed class BossCrabHitState : AIHitState
             _bossCrab.SetStateTrigger(1f);
             return;
         }
-        else AISM.Animator.CrossFade(BossCrabAnimation.Hit, .1f, 0, 0f);
 
+
+        /****************************************
+         *   보스가 데미지를 입었을 경우...
+         * ****/
+        AISM.Animator.CrossFade(BossCrabAnimation.Hit, .1f, 0, 0f);
         _progress = 0;
         _bossCrab.SetStateTrigger(.3f);
         CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, .6f, .022f);
@@ -78,6 +84,7 @@ public sealed class BossCrabHitState : AIHitState
                 /**데미지를 입고 몸을 올린다...*/
                 case (1):
                 {
+                    _bossCrab.ShowHPUI(false, .6f);
                     AISM.Animator.speed = .8f;
                     CameraManager.GetInstance().CameraShake(1f, CameraManager.ShakeDir.ROTATE, .5f);
                     break;
