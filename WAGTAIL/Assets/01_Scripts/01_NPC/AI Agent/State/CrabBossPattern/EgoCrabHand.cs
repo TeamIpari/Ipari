@@ -1,5 +1,3 @@
-using AmplifyShaderEditor;
-using DG.Tweening.Core.Easing;
 using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;

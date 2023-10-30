@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
-
 /**************************************************
 *   상호작용 할 경우, 대화를 실행하는 컴포넌트입니다...
 *******/

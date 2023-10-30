@@ -71,7 +71,6 @@ public class PickUpState : State
             yield return new WaitForSecondsRealtime(Time.deltaTime);
         }
         _currentInteractableTransform.rotation = Quaternion.Euler(0f,player.transform.rotation.y,0f);
-        Debug.Log(_currentInteractableTransform.rotation);
         yield return new WaitForSecondsRealtime(PickUpDelayTime);
         
         // BezierCurve를 위한 3개의 점 구하기 StartPos, Height, EndPos
@@ -90,6 +89,7 @@ public class PickUpState : State
             yield return new WaitForSecondsRealtime(Time.deltaTime);
         }
         _currentInteractableTransform.SetParent(player.Head.transform);
+        _currentInteractableTransform.position = new Vector3(player.ThrowEquipPoint.position.x, player.ThrowEquipPoint.position.y - 0.25f, player.ThrowEquipPoint.position.z);
         player.isCarry = true;
     }
     
