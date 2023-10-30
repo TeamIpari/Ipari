@@ -93,6 +93,9 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 /**¾¾¾ÑÀ» ¹ñ´Â´Ù...*/
                 case (0):
                 {
+                    FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
+                    CameraManager.GetInstance().CameraShake(.2f, CameraManager.ShakeDir.HORIZONTAL, .4f);
+
                     CreateMarker();
                     PositionLuncher();
                     _bossCrab.SetStateTrigger(.05f);

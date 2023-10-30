@@ -232,6 +232,7 @@ public sealed class EgoCrabHand : MonoBehaviour
          * ****/
         IsAttack = false;
         CameraManager.GetInstance()?.CameraShake(.4f, CameraManager.ShakeDir.ROTATE, .6f);
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Atk3Smash);
 
         /**이펙트가 없다면 생성한다...*/
         if(_attackSFXIns==null && AttackSFXPrefab != null){

@@ -124,6 +124,9 @@ public sealed class BossCrabEgoStampState : AIAttackState
 
                     if (_handIns != null){
 
+                        CameraManager.GetInstance().CameraShake(.3f, CameraManager.ShakeDir.ROTATE, .5f);
+                        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
+
                         _handIns.gameObject.SetActive(true);
                         _handIns.targetTransform    = Player.Instance.transform;
                         _handIns.transform.position = new Vector3(-2.57999992f, 6.17999983f, -5.75f);
