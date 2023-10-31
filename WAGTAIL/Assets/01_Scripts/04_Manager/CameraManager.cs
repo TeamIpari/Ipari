@@ -123,11 +123,6 @@ public class CameraManager : Singleton<CameraManager>
         #endregion
     }
 
-    public void Test()
-    {
-        _cameraControllerList.ForEach(x => x.gameObject.SetActive(false));
-    }
-
     public CameraController GetCurrentCamera()
     {
         return _currentCamera;

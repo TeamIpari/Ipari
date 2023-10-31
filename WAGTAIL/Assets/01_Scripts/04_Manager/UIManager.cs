@@ -27,7 +27,8 @@ public enum GameUIType
     CoCosi,
     TextBox,
     Chapter,
-    Death
+    Death,
+    Fade
 }
 
 public class UIManager : Singleton<UIManager>

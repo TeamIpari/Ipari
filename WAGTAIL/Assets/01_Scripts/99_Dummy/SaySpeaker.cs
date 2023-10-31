@@ -150,7 +150,10 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
                 continue;
             }
             /**더 이상 진행할 수 있는 대화내역이 존재하지 않을경우 대화를 마친다...*/
-            if (LoadManager.GetInstance().EndDialogue()) break;
+            if (LoadManager.GetInstance().EndDialogue())
+            {
+                break;
+            }
 
 
             isPressed = true;
@@ -167,6 +170,10 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         if (boxAnim!=null){
 
             TextBoxPrefab.SetActive(false);
+            if (UIManager.GetInstance().GetGameUI(GameUIType.Fade).gameObject.activeSelf)
+            {
+                UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeOut(FadeType.LetterBox);
+            }
             boxAnim.Play("TextBox_FadeOut");
         }
 
@@ -261,7 +268,9 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
     public void PlayingCutScene()
     {
-        #region Omit    
+        #region Omit
+        // 연출이라는걸 알리기 위한 LetterBox 추가
+        UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
         // 강제로 이동시키기 위해 InputSystem을 꺼줌.
         Player.Instance.playerInput.enabled = false;
         // 내 앞까지 와라

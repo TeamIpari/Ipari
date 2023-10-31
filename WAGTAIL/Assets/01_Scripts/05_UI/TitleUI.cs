@@ -28,7 +28,29 @@ public class TitleUI : MonoBehaviour
 
     public void GameStart()
     {
+        GameManager.GetInstance().RestartGame();
         SceneLoader.GetInstance().LoadScene("Chapter01_Heejin4");
+    }
+    
+    public void LoadGame()
+    {
+        var loadChapter = GameManager.GetInstance().LastActiveChapter.ChapterType;
+        
+        switch (loadChapter)
+        {
+            case ChapterType.Chapter01:
+                SceneLoader.GetInstance().LoadScene("Chapter01_Heejin4");
+                break;
+            case ChapterType.Chapter02 or ChapterType.MiddleBossRoom:
+                SceneLoader.GetInstance().LoadScene("Chapter02_Heejin");
+                break;
+            case ChapterType.Chapter03:
+                SceneLoader.GetInstance().LoadScene("Chapter04_mini2");
+                break;
+            case ChapterType.BossRoom:
+                SceneLoader.GetInstance().LoadScene("Boss_Crap_FINAL_Front");
+                break;
+        }
     }
 
     public void GameEnd()
@@ -39,6 +61,4 @@ public class TitleUI : MonoBehaviour
         Application.Quit();
 #endif
     }
-    
-    
 }

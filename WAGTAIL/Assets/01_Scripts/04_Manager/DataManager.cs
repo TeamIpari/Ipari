@@ -31,7 +31,7 @@ public class DataManager : MonoBehaviour
     public GameData data = new GameData();
     
     // 불러오기
-    public void LoadGameData()
+    public bool LoadGameData()
     {
         string filePath = Application.persistentDataPath + "/" + _gameDataFileName;
         
@@ -41,14 +41,23 @@ public class DataManager : MonoBehaviour
             // 저장된 파일을 읽어옴
             string fromJsonData = File.ReadAllText(filePath);
             data = JsonUtility.FromJson<GameData>(fromJsonData);
+            data.Load();
 #if UNITY_EDITOR
             Debug.Log("Load GameData Finish");
 #endif
+            return true;
+        }
+
+        else
+        {
+            return false;
         }
     }
 
     public void SaveGameDate()
     {
+        // 저장할 데이터 Init
+        data.Init();
         // Json으로 변환
         string toJsonData = JsonUtility.ToJson(data, true);
         string filePath = Application.persistentDataPath + "/" + _gameDataFileName;

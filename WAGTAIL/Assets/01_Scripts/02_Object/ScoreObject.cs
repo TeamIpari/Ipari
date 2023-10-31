@@ -490,17 +490,6 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
                     break;
                 }
-
-                /**꽃을 획득하였을 경우....*/
-                case (ScoreType.Flower):
-                {
-                    FModAudioManager.PlayOneShotSFX(
-                        FModSFXEventType.Get_Flower
-                    );
-
-                    gm.Flower++;
-                    break;
-                }
         }
 
         /**아이템 획득시 떠오르는 효과를 구현한다...*/

@@ -45,9 +45,9 @@ public class GameUI : MonoBehaviour
     public void ReStart()
     {
         Continue();
-        GameManager.GetInstance().Coin = 0;
-        GameManager.GetInstance().Flower = 0;
-        SceneLoader.GetInstance().LoadScene(SceneManager.GetActiveScene().name);
+        GameManager.GetInstance().RestartGame();
+        SceneLoader.GetInstance().LoadScene("Chapter01_Heejin4");
+        FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
     }
 
     public void GoMain()
