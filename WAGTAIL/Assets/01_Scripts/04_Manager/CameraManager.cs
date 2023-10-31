@@ -189,6 +189,7 @@ public class CameraManager : Singleton<CameraManager>
          *   카메라 흔들림을 적용하는데, 필요한 요소들을 모두 구한다...
          * ******/
         ICinemachineCamera targetCam = MainCamBrain.ActiveVirtualCamera;
+        Debug.Log($"{targetCam.VirtualCameraGameObject.name}");
         if (targetCam == null) yield break;
 
         float waitTime  = cycleDuration;
@@ -200,7 +201,7 @@ public class CameraManager : Singleton<CameraManager>
          *   수직, 수평 흔들림에 대한 로직 처리....
          * ****/
         if (shakeDir != ShakeDir.ROTATE){
-
+            Debug.Log("AA");
             Vector3 dir = (shakeDir == ShakeDir.HORIZONTAL ? camTr.right : camTr.up);
 
             while (targetCam != null && loopCount>0)
@@ -234,7 +235,7 @@ public class CameraManager : Singleton<CameraManager>
 
                     /**대상 virtual Camera를 움직이고, 다음 로직 적용까지 대기한다.....*/
                     targetCam.OnTargetObjectWarped(targetCam.Follow, (dir2 * shakePow));
-
+                    Debug.Log("In Function");
                     while ((waitTime -= Time.deltaTime) > 0f) yield return null;
                     waitTime = cycleDuration;
                     dir2     = Vector3.Cross(camTr.forward, dir2);

@@ -158,7 +158,8 @@ public class BossRoomFieldManager :MonoBehaviour
 
     private void CameraShake(float shakePower, float shakeTime )
     {
-        CameraManager.GetInstance().CamShake();
+        //Debug.Log("AA");
+        CameraManager.GetInstance().CameraShake(100f, CameraManager.ShakeDir.ROTATE, .8f, .025f);
     }
 
     //======================================

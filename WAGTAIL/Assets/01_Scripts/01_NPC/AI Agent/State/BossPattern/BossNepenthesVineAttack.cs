@@ -28,7 +28,7 @@ public class BossNepenthesVineAttack : AIAttackState
     //=================================================
     // data type Property
     //=================================================
-    private float delayTime = 5f;
+    private float delayTime = 4f;
     private float attackPoint = 0;
     private bool isLeft = false;
     private bool isThread = false;
@@ -193,6 +193,7 @@ public class BossNepenthesVineAttack : AIAttackState
     }
 }
 
+// 몰래 넣은 스레드
 public class MyThreedClass
 {
     BossNepenthesVineAttack vineAttack;
