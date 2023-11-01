@@ -43,6 +43,7 @@ public class BossNepenthesHitState : AIHitState
             SetPhaseHp();
             SetNextPhase();
         }
+        //FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNep);
         AISM.character.IsHit = false;
         curTimer = 0;
         #endregion

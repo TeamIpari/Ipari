@@ -577,6 +577,21 @@ PrefabInstance:
       objectReference: {fileID: 1702531910}
     - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
         type: 3}
+      propertyPath: _ShootArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+        type: 3}
+      propertyPath: _ShootCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+        type: 3}
+      propertyPath: _ShootPoint
+      value: 
+      objectReference: {fileID: 1195387963}
+    - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+        type: 3}
       propertyPath: FX_Hitprefab
       value: 
       objectReference: {fileID: 5511224925818579906, guid: 2ed2bfb74e336534e9628ff62cc6f01f,
@@ -588,9 +603,37 @@ PrefabInstance:
       objectReference: {fileID: 841679817}
     - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
         type: 3}
+      propertyPath: _AcidBombPrefab
+      value: 
+      objectReference: {fileID: 5455426074365179286, guid: 790b1140a4c10aa4a89c97ea7be93a81,
+        type: 3}
+    - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+        type: 3}
+      propertyPath: _LeftVinePrefab
+      value: 
+      objectReference: {fileID: 182067119}
+    - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+        type: 3}
       propertyPath: nextChapterName
       value: Chapter04_mini2
       objectReference: {fileID: 0}
+    - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+        type: 3}
+      propertyPath: _RightVinePrefab
+      value: 
+      objectReference: {fileID: 1702531910}
+    - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+        type: 3}
+      propertyPath: _AcidBombBigMarker
+      value: 
+      objectReference: {fileID: 600570602006235447, guid: 06bdbe551f12d20459fc6777e24cb764,
+        type: 3}
+    - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+        type: 3}
+      propertyPath: _AcidBombSmallMarker
+      value: 
+      objectReference: {fileID: 7852820074993072773, guid: e504230fe5e2a5049be03404724cd5f2,
+        type: 3}
     - target: {fileID: 4486150771801486263, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
         type: 3}
       propertyPath: CharacterMovementPattern.Array.data[0].EPatterns.Array.size
@@ -11314,7 +11357,6 @@ GameObject:
   m_Component:
   - component: {fileID: 288312514}
   - component: {fileID: 288312513}
-  - component: {fileID: 288312515}
   m_Layer: 0
   m_Name: BossRoomFildManager
   m_TagString: Boss
@@ -11334,7 +11376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25d2dfb84bf1fff43b4d7aa6b5e07cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactionVFX: {fileID: 8300852182436229471, guid: c516c2a9d24aaba469cd77ad54c1346c,
+  _interactionVFX: {fileID: 7158735444649316134, guid: b48132578951f72449ea411119b4f4b4,
     type: 3}
   DefaultTileMap: {fileID: 1870245537}
   OddTile:
@@ -11375,59 +11417,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &288312515
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 288312512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ImpulseDefinition:
-    m_ImpulseChannel: 1
-    m_ImpulseShape: 0
-    m_CustomImpulseShape:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_ImpulseDuration: 0.2
-    m_ImpulseType: 3
-    m_DissipationRate: 0.25
-    m_RawSignal: {fileID: 11400000, guid: 0c2f9372372b63e4e821023bc7e0e0fb, type: 2}
-    m_AmplitudeGain: 1
-    m_FrequencyGain: 1
-    m_RepeatMode: 0
-    m_Randomize: 1
-    m_TimeEnvelope:
-      m_AttackShape:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      m_DecayShape:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      m_AttackTime: 0
-      m_SustainTime: 0.2
-      m_DecayTime: 0.7
-      m_ScaleWithImpact: 1
-      m_HoldForever: 0
-    m_ImpactRadius: 100
-    m_DirectionMode: 0
-    m_DissipationMode: 2
-    m_DissipationDistance: 100
-    m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: 0, y: -1, z: 0}
 --- !u!1001 &290574116
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19440,9 +19429,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_NoiseProfile: {fileID: 0}
+  m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
   m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 1
+  m_AmplitudeGain: 0
   m_FrequencyGain: 1
   mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1001 &448164359
@@ -52306,7 +52295,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1177439648}
   - component: {fileID: 1177439647}
-  - component: {fileID: 1177439649}
   m_Layer: 0
   m_Name: BossRoomCM
   m_TagString: Untagged
@@ -52346,7 +52334,7 @@ MonoBehaviour:
     m_SensorSize: {x: 1, y: 1}
   m_Transitions:
     m_BlendHint: 0
-    m_InheritPosition: 0
+    m_InheritPosition: 1
     m_OnCameraLive:
       m_PersistentCalls:
         m_Calls: []
@@ -52368,29 +52356,6 @@ Transform:
   m_Father: {fileID: 333655080}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 30.1, y: 0, z: 0}
---- !u!114 &1177439649
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1177439646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ApplyAfter: 2
-  m_ChannelMask: 1
-  m_Gain: 1
-  m_Use2DDistance: 0
-  m_UseCameraSpace: 1
-  m_ReactionSettings:
-    m_SecondaryNoise: {fileID: 0}
-    m_AmplitudeGain: 1
-    m_FrequencyGain: 1
-    m_Duration: 1
-    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1001 &1185342377
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52792,6 +52757,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5e6ca0d36a65a4b4bb332f79c34f7b75,
     type: 3}
   m_PrefabInstance: {fileID: 1194825824}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1195387963 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 147434932965934240, guid: 73e2d6ac699d6f645927b235d9ea4d3e,
+    type: 3}
+  m_PrefabInstance: {fileID: 26057140}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1200769193
 PrefabInstance:
