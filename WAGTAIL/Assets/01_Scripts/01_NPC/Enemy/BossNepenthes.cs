@@ -564,6 +564,4 @@ public sealed class BossNepenthes : Enemy
     {
         BossProfile.SetProfile(_AcidBombPrefab, _ShootPoint, ShotMarker);
     }
-    
-
 }
