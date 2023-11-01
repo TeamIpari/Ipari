@@ -353,7 +353,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     public void ResetPoint()
     {
         // 위치 초기화
-        if (_player.currentInteractable != null)
+        if (_player.currentInteractable == gameObject)
         {
             _transform.SetParent(null);
             _rigidbody.useGravity = true;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,13 +25,20 @@ public class TimelineController : MonoBehaviour
     [Tooltip("플레이어를 특정 위치로 옮길거면 체크")]
     [SerializeField] private bool _isPlayerMoveToFakeTavuti;
 
+    [Header("Debug")] 
+    [SerializeField] private bool _isDebug = false;
+
     private void Start()
     {
-        _playerCtrl = Player.Instance.GetComponent<CharacterController>();
+        _player = Player.Instance.gameObject;
+        _playerCtrl = _player.GetComponent<CharacterController>();
         _timeline = GetComponentInChildren<PlayableDirector>().gameObject;
         _timeline.SetActive(false);
         _fakeObject.SetActive(false);
         _isStart = false;
+        var collider = GetComponent<BoxCollider>();
+        if(collider == null)
+            StartTimeline();
     }
 
     // Player 충돌 시 timeline 실행.
@@ -38,12 +46,19 @@ public class TimelineController : MonoBehaviour
     {
         if(other.CompareTag("Player") && !_isStart)
         {
-            _isStart = true;
-            SetActiveObjects(false);
-            if (_fakeObject != null) _fakeObject.SetActive(true);
-            _timeline.SetActive(true);
-            _playerCtrl.enabled = false;
+            GetComponent<BoxCollider>().enabled = false;
+            StartTimeline();
         }
+    }
+
+    public void StartTimeline()
+    {
+        _isStart = true;
+        SetActiveObjects(false);
+        if (_fakeObject != null) _fakeObject.SetActive(true);
+        _timeline.SetActive(true);
+        _playerCtrl.enabled = false;
+        _player.SetActive(false);
     }
 
     // Timeline 끝났을때 호출해줄 Func()
@@ -51,16 +66,17 @@ public class TimelineController : MonoBehaviour
     {
         if(_isStart)
         {
-            GetComponent<BoxCollider>().enabled = false;
-            if (_fakeObject != null) _fakeObject.SetActive(false);
-            _timeline.SetActive(false);
-            SetActiveObjects(true);
-
             if (_isPlayerMoveToFakeTavuti)
             {
                 Player.Instance.gameObject.transform.position = _fakeTavuti.transform.position;
                 Player.Instance.gameObject.transform.rotation = _fakeTavuti.transform.rotation;
             }
+            
+            if (_fakeObject != null) _fakeObject.SetActive(false);
+            _timeline.SetActive(false);
+            SetActiveObjects(true);
+            
+            _player.SetActive(true);
             _playerCtrl.enabled = true;
         }
     }

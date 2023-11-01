@@ -56,7 +56,13 @@ public class FlightState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
+        
+        if (player.isDead && player.movementSM.currentState != player.death)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
+        
         if (_jump)
         {
             stateMachine.ChangeState(player.jump);

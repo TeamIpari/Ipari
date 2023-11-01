@@ -41,6 +41,13 @@ public class CarryState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        
+        if (player.isDead && player.movementSM.currentState != player.death)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
+        
         if(player.currentInteractable == null) stateMachine.ChangeState(player.idle);
         player.animator.SetFloat(Speed, input.magnitude, player.speedDampTime, Time.deltaTime);
 

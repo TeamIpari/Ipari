@@ -12,7 +12,6 @@ public class GameUI : MonoBehaviour
 
     public GameObject RestartTutorialUI;
     // Update is called once per frame
-
     void Update()
     {
         if (Input.GetKeyDown("escape"))

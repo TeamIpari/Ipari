@@ -44,6 +44,13 @@ public class PickUpState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        
+        if (player.isDead && player.movementSM.currentState != player.death)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
+        
         // 물건을 들고 일정 시간 후 현재 상태를 carry(들고 움직이기)로 바꿔줌.
         if(player.isCarry)
         {
