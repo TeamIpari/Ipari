@@ -22,6 +22,7 @@ public sealed class EgoCrabHand : MonoBehaviour
     [SerializeField] public  GameObject     MarkerPrefab;
     [SerializeField] public  GameObject     SpawnSFXprefab;
     [SerializeField] public  GameObject     AttackSFXPrefab;
+    [SerializeField] public  GameObject     SonicBoomSFXPrefab;
     [SerializeField] public  AnimationCurve curve;
     [SerializeField] private float          _AttackReadyDuration = 1f;
     [SerializeField] private float          _AttackDuration = .5f;
@@ -32,7 +33,9 @@ public sealed class EgoCrabHand : MonoBehaviour
     private Animator       _animator;
     private Coroutine      _progressCoroutine;
     private Vector3        _startScale = Vector3.one;
-    private ParticleSystem _attackSFXIns;
+    private ParticleSystem _attackSFXIns, _sonicBoomSFXIns;
+    private Material       _glowMat;
+    private Transform      _ringTr;
 
 
 
@@ -60,6 +63,9 @@ public sealed class EgoCrabHand : MonoBehaviour
             curve.AddKey(.810f, .405f);
             curve.AddKey(1f, -1f);
         }
+
+        /**집게 머터리얼을 가져온다....*/
+        _glowMat = transform.GetChild(0).GetComponent<Renderer>().material;
         #endregion
     }
 
@@ -155,7 +161,8 @@ public sealed class EgoCrabHand : MonoBehaviour
             timeLeft -= deltaTime;
 
             progressRatio = (1f - Mathf.Clamp(timeLeft * sizeupDiv, 0f, 1f));
-            tr.localScale = (goalScale * progressRatio);
+            //tr.localScale = (goalScale * progressRatio);
+            _glowMat.SetFloat("_alpha", progressRatio );
 
             yield return null;
 
@@ -233,8 +240,13 @@ public sealed class EgoCrabHand : MonoBehaviour
         IsAttack = false;
         CameraManager.GetInstance()?.CameraShake(.4f, CameraManager.ShakeDir.ROTATE, .6f);
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Atk3Smash);
+        IpariUtility.PlayGamePadVibration(.1f, .1f, .2f);
 
-        /**이펙트가 없다면 생성한다...*/
+        /************************************************
+         *   내려찍었을 때의 모래먼지 이펙트를 실행한다....
+         * ****/
+
+        /**내려찍는 이펙트가 없다면 생성한다...*/
         if(_attackSFXIns==null && AttackSFXPrefab != null){
 
             _attackSFXIns = GameObject.Instantiate(AttackSFXPrefab).GetComponent<ParticleSystem>();
@@ -250,6 +262,38 @@ public sealed class EgoCrabHand : MonoBehaviour
 
         sfxTr.SetPositionAndRotation(newPos, newQuat);
         _attackSFXIns.Play(true);
+
+
+        /************************************************
+         *    소닉붐 이펙트를 실행한다....
+         * *****/
+
+        /**소닉붐 이펙트가 없다면 생성한다...*/
+        if(_sonicBoomSFXIns==null && SonicBoomSFXPrefab!=null){
+
+            _sonicBoomSFXIns = GameObject.Instantiate(SonicBoomSFXPrefab).GetComponent<ParticleSystem>();
+
+            Transform sonicSFXTr  = _sonicBoomSFXIns.transform;
+            _ringTr               = sonicSFXTr.Find("FX_SonicBoom_Ring");
+            sonicSFXTr.rotation   = (IpariUtility.GetQuatBetweenVector(sonicSFXTr.forward, sonicSFXTr.up)*sonicSFXTr.rotation);
+
+            int childCount = sonicSFXTr.childCount;
+            for(int i=0; i<childCount; i++){
+
+                sonicSFXTr.GetChild(i).localScale = (Vector3.one * 4f);
+            }
+
+            ParticleSystem.MainModule main = _sonicBoomSFXIns.main;
+            main.loop = false;
+        }
+
+        Transform  sonicSFXTr2   = _sonicBoomSFXIns.transform;
+        Vector3    sonicNewPos   = transform.position + (hit.normal * 2f);
+        Quaternion sonicNewQuat  = (IpariUtility.GetQuatBetweenVector(sonicSFXTr2.up, hit.normal) * sonicSFXTr2.rotation); 
+        sonicSFXTr2.SetPositionAndRotation(sonicNewPos, sonicNewQuat);
+
+        _ringTr.position = hit.point + (hit.normal * .5f); 
+        _sonicBoomSFXIns.Play(true);
 
 
         /************************************************
@@ -280,7 +324,8 @@ public sealed class EgoCrabHand : MonoBehaviour
             timeLeft -= deltaTime;
 
             progressRatio = Mathf.Clamp01(timeLeft * sizeupDiv);
-            tr.localScale = (goalScale * progressRatio);
+            //tr.localScale = (goalScale * progressRatio);
+            _glowMat.SetFloat("_alpha", progressRatio);
 
             yield return null;
 

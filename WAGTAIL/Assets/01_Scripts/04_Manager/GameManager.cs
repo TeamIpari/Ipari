@@ -1,3 +1,4 @@
+using IPariUtility;
 using Polybrush;
 using System;
 using System.Collections;
@@ -153,7 +154,13 @@ public class GameManager : Singleton<GameManager>
     {
         _chapterList.Find(x => x.ChapterType == ChapterType.Chapter01).gameObject.SetActive(false);
     }
-    
+
+    protected override void OnSigletonDestroy()
+    {
+        IpariUtility.ClearUtilityState();
+    }
+
+
     #region Property
 
     public int Coin

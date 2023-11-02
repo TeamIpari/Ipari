@@ -146,6 +146,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
             /**가라앉는 효과를 중단한다....*/
             if(_currStopTime>0f && (_currStopTime-=deltaTime)<=0f)
             {
+                IpariUtility.StopGamePadVibration(10);
                 IntakeSand(false);
             }
         }

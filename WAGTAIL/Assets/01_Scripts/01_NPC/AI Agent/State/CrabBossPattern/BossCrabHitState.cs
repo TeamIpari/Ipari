@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using static BossCrab;
 using UnityEngine;
+using IPariUtility;
 
 public sealed class BossCrabHitState : AIHitState
 {
@@ -27,6 +28,7 @@ public sealed class BossCrabHitState : AIHitState
         base.Enter();
 
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
+        IpariUtility.PlayGamePadVibration(1f, 1f, .08f);
 
         _bossCrab.StateTrigger = false;
         _bossCrab.ClearStateTriggerDelay();
@@ -87,6 +89,7 @@ public sealed class BossCrabHitState : AIHitState
                     _bossCrab.ShowHPUI(false, .6f);
                     AISM.Animator.speed = .8f;
                     CameraManager.GetInstance().CameraShake(1f, CameraManager.ShakeDir.ROTATE, .5f);
+                    IpariUtility.PlayGamePadVibration(1f, 1f, .1f);
                     break;
                 }
 
@@ -108,6 +111,7 @@ public sealed class BossCrabHitState : AIHitState
                     );
 
                     FModAudioManager.ApplyBGMFade(0f, 3f, 0, true);
+                    IpariUtility.PlayGamePadVibration(.6f, .6f, .5f);
                     CameraManager.GetInstance().CameraShake(.6f, CameraManager.ShakeDir.ROTATE, 1f);
                     break;
                 }

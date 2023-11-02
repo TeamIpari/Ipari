@@ -95,6 +95,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 {
                     FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
                     CameraManager.GetInstance().CameraShake(.2f, CameraManager.ShakeDir.HORIZONTAL, .4f);
+                    IpariUtility.PlayGamePadVibration(.1f, .1f, .1f);
 
                     CreateMarker();
                     PositionLuncher();
