@@ -345,7 +345,6 @@ GameObject:
   - component: {fileID: 8563367811064571991}
   - component: {fileID: 8563367811064571988}
   - component: {fileID: 8563367811064571989}
-  - component: {fileID: 8563367811064571990}
   m_Layer: 6
   m_Name: InteractorPoint
   m_TagString: interactable
@@ -431,29 +430,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 6}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8563367811064571990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8563367811064571995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9351589bb2beaaa46aa209c729d55bcc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _promt: 
-  _playerEquipPoint: {fileID: 0}
-  _root: {fileID: 8226872696938183968}
-  _interactable: {fileID: 0}
-  _movePos: {fileID: 8563367810275411679}
-  _shatterObject: {fileID: 8797316188958381846}
-  animator: {fileID: 8563367811268045377}
-  blendTarget: 1
-  targetPercent: 80
-  _skMesh: {fileID: 3647531938760670832}
-  value: 0
 --- !u!1 &8797316188958381846
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,7 +442,7 @@ GameObject:
   - component: {fileID: 8563367811268045377}
   - component: {fileID: 8563367811268045379}
   m_Layer: 0
-  m_Name: Flower
+  m_Name: OldFlower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -530,14 +506,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CoinPrefab: {fileID: 6194149063077610279, guid: 41c10a69ad133f149a74d2e42d8a6074,
     type: 3}
-  FlowerTransform: {fileID: 3676228919599798758}
-  targets: []
-  pointRadian: 3
-  InitCount: 5
-  FlightTIme: 3
-  IsDance: 1
-  _explosionVFX: {fileID: 408462118140608147, guid: 51ee9cb973c1b644e8f6227053a4ef25,
-    type: 3}
+  PullableObj: {fileID: 0}
+  FoldoutSFX: {fileID: 0}
+  LookTargetRatio: 0.1
+  LookRotationRatio: 0.1
+  CoinSpawnRadian: 0.5
+  CoinFlightTime: 2
+  CointSpawnCount: 5
+  FlowerDestroyDuration: 0.3
 --- !u!1001 &5292719910261913912
 PrefabInstance:
   m_ObjectHideFlags: 0
