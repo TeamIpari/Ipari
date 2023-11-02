@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6786651623943743450}
   - component: {fileID: 7576763717402748991}
   - component: {fileID: 5630044281168877496}
+  - component: {fileID: -1157122006510658989}
   m_Layer: 0
   m_Name: LeafPlatform_leaf
   m_TagString: Untagged
@@ -98,15 +99,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bddf0544d16af64386c99d66d23ab23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartQuat: {x: 0, y: 0, z: 0, w: 1}
   UpdateQuat: {x: 0, y: 0, z: 0, w: 1}
-  StartPosition: {x: 0, y: 0, z: 0}
-  PlayerRideOn: 0
+  OffsetQuat: {x: 0, y: 0, z: 0, w: 1}
+  UpdatePosition: {x: 0, y: 0, z: 0}
+  OffsetPosition: {x: 0, y: 0, z: 0}
+  PrevPosition: {x: 0, y: 0, z: 0}
+  PreventAddChild: 0
+  _PlayerOnPlatform: 0
   UsedCollision: 0
   CheckGroundOffset: 0
+  CheckGroundDownOffset: 0
   Behaviors:
   - {fileID: 7576763717402748991}
   - {fileID: 5630044281168877496}
+  _ObjectOnPlatformCount: 0
 --- !u!114 &7576763717402748991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,6 +126,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Yspeed: 0
+  Rotspeed: 0
+  sinkDepth: 0.1
   SpinPow: 50
 --- !u!114 &5630044281168877496
 MonoBehaviour:
@@ -133,5 +141,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c95bb0440328e7a4890d5441e82e0492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotateAtObjectOnPlatform: 0
-  _RotateSpeedRatio: 0.1
+  ApplyRotateAtObjectEnter: 0
+  ApplyStandingObjectRotate: 0
+  RotateCenterOffset: {x: 0, y: 0, z: 0}
+  RotateAngleUntilStop: 90
+  _PauseInterval: 1.5
+  _PauseDuration: 0
+--- !u!64 &-1157122006510658989
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2216981813785187478}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7647463442239531939, guid: 4029721f2adce474694507b5dc913b0b, type: 3}
