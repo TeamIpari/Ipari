@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,6 +60,7 @@ public class BossCrabAntHellState : AIAttackState
                         _targetSand.IntakeSand(true);
 
                     FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Roar);
+                    IpariUtility.PlayGamePadVibration(.005f, .005f, 14f, 10);
                     CameraManager.GetInstance().CameraShake(
                         .3f, 
                         CameraManager.ShakeDir.ROTATE, 
@@ -83,6 +85,7 @@ public class BossCrabAntHellState : AIAttackState
                     if (_targetSand != null)
                         _targetSand.IntakeSand(false);
 
+                    IpariUtility.StopGamePadVibration(10);
                     _bossCrab.SetStateTrigger(.5f);
                     break;
                 }

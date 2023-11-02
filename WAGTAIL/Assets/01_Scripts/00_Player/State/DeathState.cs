@@ -31,6 +31,8 @@ public class DeathState : State
         _gravityValue = player.gravityValue;
         _playerSpeed = player.playerSpeed;
 
+        if (player.UIManager == null) return;
+
         player.UIManager.ActiveGameUI(GameUIType.Death, true);
         _respawnTime = player.respawnTime;
         _currentTime = 0;
@@ -83,7 +85,11 @@ public class DeathState : State
     public override void Exit()
     {
         base.Exit();
-        player.UIManager.GetGameUI(GameUIType.Death).GetComponent<Animator>().SetTrigger("fadeout");
+
+
+
+        if (player.UIManager != null)
+            player.UIManager.GetGameUI(GameUIType.Death).GetComponent<Animator>().SetTrigger("fadeout");
         player.isCarry = false;
         player.isFlight = false;
         player.isIdle = false;

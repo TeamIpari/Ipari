@@ -1,3 +1,4 @@
+using IPariUtility;
 using Polybrush;
 using System;
 using System.Collections;
@@ -88,7 +89,7 @@ public class GameManager : Singleton<GameManager>
         _startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
         _currentCheckPoint = _startPoint;
         
-        // ¸¶Áö¸· Coin ÀúÀå
+        // ë§ˆì§€ë§‰ Coin ì €ì¥
         PrevCoin = _coin;
         desiredChapter.gameObject.SetActive(true);
         WrapPlayerPosition(_startPoint);
@@ -97,7 +98,7 @@ public class GameManager : Singleton<GameManager>
         DataManager.Instance.SaveGameDate();
     }
     
-    // ÀÌ Func´Â ÃßÈÄ ÀÛ¾÷ÇØ¾ßÇÔ
+    // ì´ FuncëŠ” ì¶”í›„ ì‘ì—…í•´ì•¼í•¨
     public void RestartChapter()
     {
         switch (LastActiveChapter.ChapterType)
@@ -114,23 +115,23 @@ public class GameManager : Singleton<GameManager>
                 break;
         }
         
-        // ÄÚÀÎ ÃÊ±âÈ­
+        // ì½”ì¸ ì´ˆê¸°í™”
         Coin = PrevCoin;
         
-        // Ã¼Å©Æ÷ÀÎÆ® ÃÊ±âÈ­
+        // ì²´í¬í¬ì¸íŠ¸ ì´ˆê¸°í™”
         _startPoint = Vector3.zero;
         _currentCheckPoint = Vector3.zero;
     }
     
     public void RestartGame()
     {
-        // ÄÚÄÚ½Ã ÃÊ±âÈ­
+        // ì½”ì½”ì‹œ ì´ˆê¸°í™”
         cocosi = new bool[3][];
         cocosi[0] = new bool[] { false, false, false, false, false };
         cocosi[1] = new bool[] { false, false, false };
         cocosi[2] = new bool[] { false, false, false };
         
-        // ÄÚÀÎ ÃÊ±âÈ­
+        // ì½”ì¸ ì´ˆê¸°í™”
         PrevCoin = 0;
         Coin = 0;
 
@@ -163,7 +164,17 @@ public class GameManager : Singleton<GameManager>
 #endif
         }
     }
-    
+
+    public void Test()
+    {
+        _chapterList.Find(x => x.ChapterType == ChapterType.Chapter01).gameObject.SetActive(false);
+    }
+
+    protected override void OnSigletonDestroy()
+    {
+        IpariUtility.ClearUtilityState();
+    }
+
     #region Property
 
     public int Coin
