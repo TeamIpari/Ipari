@@ -16,7 +16,6 @@ public enum CheckPointType
 public enum ScoreType
 {
     Coin,
-    Flower,
     Cocosi
 }
 
@@ -25,19 +24,15 @@ public enum ChapterType
     Title,
     Chapter01,
     Chapter02,
-    BossRoom,
+    MiddleBossRoom,
     Chapter03,
+    BossRoom,
     EndCredits,
     Test
 }
 
 public class GameManager : Singleton<GameManager>
 {
-    // Option
-    private float _masterVolume;
-    private float _musicVolume;
-    private float _soundEffectsVolume;
-
     // CheckPoint
     public int num;
     private List<CheckPoint> _checkPointList;
@@ -45,42 +40,32 @@ public class GameManager : Singleton<GameManager>
     private Vector3 _currentCheckPoint = Vector3.zero;
     //================================================
     // Score
-    private List<ScoreObject> _scoreObjectList;
     private int _coin = 0;
-    private int _flower = 0;
-
     public bool[][] cocosi;
+    
     //================================================
     // Chapter
     private List<Chapter> _chapterList;
-    private Chapter _lastActiveChapter;
-    
+
     //================================================
 
     protected override void Awake()
     {
         base.Awake();
 
-        // CheckPoints
-        // ===========================================================================
-        //_checkPointList = GetComponentsInChildren<CheckPoint>().ToList();
-        //_checkPointList.ForEach(x=>x.gameObject.SetActive(true));
-        //_startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
-        //_currentCheckPoint = _startPoint;
+        if (!DataManager.Instance.LoadGameData())
+        {
+            Coin = 0;
+            cocosi = new bool[3][];
+            cocosi[0] = new bool[] { false, false, false, false, false };
+            cocosi[1] = new bool[] { false, false, false };
+            cocosi[2] = new bool[] { false, false, false };
         
-        // Score
-        // ===========================================================================
-        //_scoreObjectList = GetComponentsInChildren<ScoreObject>().ToList();
-        //_scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
-        Coin = 0;
-        Flower = 0;
-        cocosi = new bool[3][];
-        cocosi[0] = new bool[] { false, false, false, false, false };
-        cocosi[1] = new bool[] { false, false, false };
-        cocosi[2] = new bool[] { false, false, false };
-        
-        IsKeyboard = true;
-        IsGamepad = false;
+            IsKeyboard = true;
+            IsGamepad = false;
+
+            PrevCoin = 0;
+        }
         
         // Chapter
         _chapterList = GetComponentsInChildren<Chapter>().ToList();
@@ -103,29 +88,57 @@ public class GameManager : Singleton<GameManager>
         _checkPointList.ForEach(x => x.gameObject.SetActive(true));
         _startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
         _currentCheckPoint = _startPoint;
-        // ==================================================================================
-
-        // Score
-        // ==================================================================================
-        _scoreObjectList = desiredChapter.GetComponentsInChildren<ScoreObject>().ToList();
-        _scoreObjectList.ForEach(x => x.gameObject.SetActive(true));
         
-        // ==================================================================================
-
+        // 마지막 Coin 저장
+        PrevCoin = _coin;
         desiredChapter.gameObject.SetActive(true);
         WrapPlayerPosition(_startPoint);
-        _lastActiveChapter = desiredChapter;
+        LastActiveChapter = desiredChapter;
+        
+        DataManager.Instance.SaveGameDate();
     }
     
-    // �� Func�� ���� �۾��ؾ���
+    // 이 Func는 추후 작업해야함
     public void RestartChapter()
     {
+        switch (LastActiveChapter.ChapterType)
+        {
+            case ChapterType.Chapter01:
+                cocosi[0] = new bool[] { false, false, false, false, false };
+                break;
+            case ChapterType.Chapter02 or ChapterType.MiddleBossRoom:
+                cocosi[1] = new bool[] { false, false, false };
+                LastActiveChapter = _chapterList.Find(x => x.ChapterType == ChapterType.Chapter02);
+                break;
+            case ChapterType.Chapter03:
+                cocosi[2] = new bool[] { false, false, false };
+                break;
+        }
+        
+        // 코인 초기화
+        Coin = PrevCoin;
+        
+        // 체크포인트 초기화
+        _startPoint = Vector3.zero;
+        _currentCheckPoint = Vector3.zero;
+    }
+    
+    public void RestartGame()
+    {
+        // 코코시 초기화
+        cocosi = new bool[3][];
+        cocosi[0] = new bool[] { false, false, false, false, false };
+        cocosi[1] = new bool[] { false, false, false };
+        cocosi[2] = new bool[] { false, false, false };
+        
+        // 코인 초기화
+        PrevCoin = 0;
         Coin = 0;
-        Flower = 0;
-        _scoreObjectList.ForEach(x=>x.gameObject.SetActive(true));
-        _checkPointList.ForEach(x=>x.gameObject.SetActive(true));
-        _currentCheckPoint = _startPoint;
-        WrapPlayerPosition(_startPoint);
+
+        _startPoint = Vector3.zero;
+        _currentCheckPoint = Vector3.zero;
+
+        LastActiveChapter = null;
     }
     
     public void SwitchCheckPoint(Vector3 pos)
@@ -146,7 +159,9 @@ public class GameManager : Singleton<GameManager>
         
         else
         {
+#if UNITY_EDITOR
             Debug.Log("Player is not found!!");
+#endif
         }
     }
 
@@ -160,7 +175,6 @@ public class GameManager : Singleton<GameManager>
         IpariUtility.ClearUtilityState();
     }
 
-
     #region Property
 
     public int Coin
@@ -173,19 +187,11 @@ public class GameManager : Singleton<GameManager>
             _coin = value;
         }
     }
-
-    public int Flower
-    {
-        get => _flower;
-        set
-        {
-            if (_flower is >= 0 and < 50)
-            {
-                _flower = value;
-            }
-        }
-    }
     
+    public int PrevCoin { get; set; }
+    
+    public Chapter LastActiveChapter { get; set; }
+
     public bool IsKeyboard { get; set; }
 
     public bool IsGamepad { get; set; }

@@ -34,6 +34,7 @@ public class BossNepenthesDieState : AIDieState
         AISM.Animator.SetTrigger("isDeath");
         animLeftVine.SetTrigger("isDeath");
         animRightVine.SetTrigger("isDeath");
+        //FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_Dead);
         curTimer = 0;
         brokenTime = 1.5f;
         oneChance = false;

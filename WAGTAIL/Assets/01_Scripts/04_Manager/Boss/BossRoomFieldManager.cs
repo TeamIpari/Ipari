@@ -158,7 +158,8 @@ public class BossRoomFieldManager :MonoBehaviour
 
     private void CameraShake(float shakePower, float shakeTime )
     {
-        CameraManager.GetInstance().CamShake();
+        //Debug.Log("AA");
+        CameraManager.GetInstance().CameraShake(0.5f, CameraManager.ShakeDir.ROTATE, 0.8f, 0.05f);
     }
 
     //======================================
@@ -177,7 +178,6 @@ public class BossRoomFieldManager :MonoBehaviour
         int X = (int)(xPos - Offset.x ) + 9, Y = 0;
         int FindY = Y * (-StoneYSize);
 
-        Debug.Log($"{X}, {FindY}");
         while (BossField.ContainsKey(new Vector2(X, FindY)))
         {
             StartCoroutine(BrokenDelayCo(X, FindY));
@@ -185,7 +185,8 @@ public class BossRoomFieldManager :MonoBehaviour
             FindY = Y * (-StoneYSize);
         }
         this.reAction = reAction;
-        
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_VineSmash);
+
         if (this.reAction)
         {
             StartCoroutine(SpawnReActionObject());
@@ -227,7 +228,8 @@ public class BossRoomFieldManager :MonoBehaviour
         {
             curTile.Value.gameObject.GetComponentInChildren<IEnviroment>().ExecutionFunction(0.5f);
         }
-        CameraShake(EndShakePower, EndShakeTime);
+        //CameraShake(EndShakePower, EndShakeTime);
+        CameraManager.GetInstance().CameraShake(0.5f, CameraManager.ShakeDir.ROTATE, EndShakeTime, 0.05f);
 
         deathZone.SetActive(false);
         potal.SetActive(true);

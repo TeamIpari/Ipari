@@ -114,10 +114,7 @@ public class SceneLoader : Singleton<SceneLoader>
 
             if (_loadSceneName == "EndCredits")
             {
-                GameManager.GetInstance().Test();
                 UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
-                CameraManager.GetInstance().Test();
-
                 FModAudioManager.StopBGM();
                 //SoundTest.GetInstance().PlayBGM("isInGame",false);
             }
