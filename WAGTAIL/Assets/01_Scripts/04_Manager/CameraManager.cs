@@ -228,7 +228,6 @@ public class CameraManager : Singleton<CameraManager>
                     /**대상 virtual Camera를 움직이고, 다음 로직 적용까지 대기한다.....*/
                     targetCam.OnTargetObjectWarped(targetCam.Follow, (dir2 * shakePow));
 
-                    Debug.Log($"{dir2 * shakePow} pow");
                     while ((waitTime -= Time.deltaTime) > 0f) yield return null;
                     waitTime = cycleDuration;
                     dir2     = Vector3.Cross(camTr.forward, dir2);
