@@ -176,8 +176,9 @@ public class BossRoomFieldManager :MonoBehaviour
         // .Attack Delay = 2.5f
         int X = (int)(xPos - Offset.x ) + 9, Y = 0;
         int FindY = Y * (-StoneYSize);
+        X = X <= 7 ? X - 1 : X;
 
-        Debug.Log($"{X}, {FindY}");
+        Debug.Log($"{X} - {xPos}, {FindY}");
         while (BossField.ContainsKey(new Vector2(X, FindY)))
         {
             StartCoroutine(BrokenDelayCo(X, FindY));

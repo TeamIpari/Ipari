@@ -173,6 +173,7 @@ public class BossNepenthesVineAttack : AIAttackState
 
     private void ShowVine()
     {
+        Debug.Log($"{BossRoomFieldManager.Instance.PlayerOnTilePos}");
         spawnPos = BossRoomFieldManager.Instance.PlayerOnTilePos;
         float xpos = (spawnPos.x - 1.5f) / 3;
         // ÀÛÀ» °æ¿ì ¿ÞÂÊ µ¢Äð Ãâ·Â
