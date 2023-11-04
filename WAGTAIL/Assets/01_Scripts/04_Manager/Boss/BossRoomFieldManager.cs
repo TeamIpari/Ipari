@@ -178,7 +178,6 @@ public class BossRoomFieldManager :MonoBehaviour
         int FindY = Y * (-StoneYSize);
         X = X <= 7 ? X - 1 : X;
 
-        Debug.Log($"{X} - {xPos}, {FindY}");
         while (BossField.ContainsKey(new Vector2(X, FindY)))
         {
             StartCoroutine(BrokenDelayCo(X, FindY));
