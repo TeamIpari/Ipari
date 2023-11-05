@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 354725107443459940}
   - component: {fileID: 354725107443459939}
   - component: {fileID: 354725107443459938}
-  - component: {fileID: 354725107443459937}
+  - component: {fileID: 5084169871526101552}
   m_Layer: 0
-  m_Name: EgoCrabHand
+  m_Name: MagicCrabHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,6 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2674050726061362816}
+  - {fileID: 8580797681609930884}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -121,7 +122,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &354725107443459937
+--- !u!114 &5084169871526101552
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,54 +131,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 354725107443459936}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa37a1729f8d81849b262ca6e4e51d5f, type: 3}
+  m_Script: {fileID: 11500000, guid: bba63881a16d5424b99a33bf964a3ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 0}
-  MarkerPrefab: {fileID: 0}
+  MarkerPrefab: {fileID: 7852820074993072773, guid: e504230fe5e2a5049be03404724cd5f2,
+    type: 3}
   SpawnSFXprefab: {fileID: 2304473523966851521, guid: 21889ed80c2ea364c86b1edb896b4f14,
     type: 3}
-  AttackSFXPrefab: {fileID: 1139699151019504029, guid: 079be5afd068e1a49bb9a1e0ecc8cc7e,
+  AttackSFXPrefab: {fileID: 8828920350819886802, guid: 079be5afd068e1a49bb9a1e0ecc8cc7e,
     type: 3}
   SonicBoomSFXPrefab: {fileID: 6828360375067362404, guid: 6074e4866abeb8a48a4843b8892367a6,
     type: 3}
   curve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0.50016475
-      outSlope: 0.50016475
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.81044006
-      value: 0.40535355
-      inSlope: -3.2388215
-      outSlope: -3.2388215
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1.0109953
-      value: -0.9940821
-      inSlope: -6.9778075
-      outSlope: -6.9778075
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _AttackReadyDuration: 5
+  _AttackReadyDuration: 1
   _AttackDuration: 0.5
   _AttackRange: 1
   IsAttack: 0
+  SpawnSFXScale: 0.5
+  AttackSFXScale: 0.2
+  SonicBoomSFXScale: 4
 --- !u!1 &6173868776044751966
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,3 +239,83 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1001 &405186799875791166
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 354725107443459942}
+    m_Modifications:
+    - target: {fileID: 6238543017196990495, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_Name
+      value: BOSS HIT UP( Crab )
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.3160659
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.4462485
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.9112663
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.22826
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.000000022817405
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.000000022817405
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 38339af310305754e96d903b41b06415, type: 3}
+--- !u!4 &8580797681609930884 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8253582131752395194, guid: 38339af310305754e96d903b41b06415,
+    type: 3}
+  m_PrefabInstance: {fileID: 405186799875791166}
+  m_PrefabAsset: {fileID: 0}

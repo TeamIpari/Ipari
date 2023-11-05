@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static GamePadUIController;
 
 /**********************************************************
  *  상호작용에 알맞는 UI가 출력되되록 하는 컴포넌트입니다.
@@ -97,6 +98,9 @@ public sealed class InterativeUI : MonoBehaviour
             return;
         }
 
+        /*******************************************************
+         *   필요한 모든 참조들을 얻어온다.....
+         * ****/
         _ins      = this;
         _mainCam  = Camera.main;
         _image    = GetComponent<Image>();
@@ -105,6 +109,14 @@ public sealed class InterativeUI : MonoBehaviour
         _rectTr   = _animator.GetComponent<RectTransform>();
 
         _rectTr.position = new Vector3(99999f, 99999f);
+
+        /*******************************************************
+         *   장치가 바뀌었을 때, 현재 장치에 알맞게 UI를 갱신한다...
+         * ****/
+        GamePadUIController.OnDeviceChange += (InputDeviceType prevDevice, InputDeviceType changeDevice) =>
+        {
+            Debug.Log($"Change input device: ({prevDevice})->({changeDevice}) (lastPadKind: {GamePadUIController.LastInputGamePadKind})");
+        };
         #endregion
     }
 
