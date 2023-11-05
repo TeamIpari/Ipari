@@ -219,7 +219,7 @@ public class Player : MonoBehaviour
         movementSM.currentState.PhysicsUpdate();
     }
     
-    // (구현해야함) 가장 가까운 collider를 읽어내서 IInteractable을 상속받은 클래스가 있다면 상호작용을 한다.
+    // collider를 읽어내서 IInteractable을 상속받은 클래스가 있다면 상호작용을 한다.
     public void Interaction()
     {
         #region LegacyCode
