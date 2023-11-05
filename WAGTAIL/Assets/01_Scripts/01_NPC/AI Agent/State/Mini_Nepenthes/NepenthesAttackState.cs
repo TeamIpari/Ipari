@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NepenthesAttackState : AIAttackState
 {
-    private float delayTime = 0.65f;
+    private float delayTime = 0.55f;
     private Vector3 lockOn;
     private AIState NextState;
 
