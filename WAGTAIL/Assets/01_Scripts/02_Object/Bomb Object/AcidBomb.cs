@@ -76,6 +76,7 @@ public class AcidBomb : Bullet
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log($"AA: {collision.gameObject.name}");
         BulletHit(collision.transform);
         Destroy(this.gameObject);
         // 강띵호가 추가함

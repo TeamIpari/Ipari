@@ -23,8 +23,8 @@ public class MiniNepenthes : Enemy
 
     [SerializeField] private bool debugMode = false;
 
-    [Header("View Config")]
-    private const float horizontalViewAngle = 180f;
+    [Header("탐색 범위"), Tooltip("탐색 하는 범위")]
+    private float horizontalViewAngle = 180f;
     private const float viewRotateZ = 0f;
 
     [SerializeField] private LayerMask viewTargetMask;
