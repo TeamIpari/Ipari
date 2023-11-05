@@ -8,7 +8,7 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
     /////////////////////////////////////////////////
     [SerializeField] public GameObject curTarget;
     [SerializeField] private List<Vector3> lPoints = new List<Vector3>();
-    [SerializeField] private SphereCollider hitCollision;
+    [SerializeField] private BoxCollider hitCollision;
     private Queue<Vector3> qPoints = new Queue<Vector3>();
 
     /////////////////////////////////////////////////
@@ -17,10 +17,12 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
 
     private void Awake()
     {
-        hitCollision = GetComponent<SphereCollider>();
+        hitCollision = GetComponent<BoxCollider>();
         if (hitCollision == null)
         {
-            hitCollision = gameObject.AddComponent<SphereCollider>();
+            hitCollision = gameObject.AddComponent<BoxCollider>();
+            //BoxCollider a = curTarget.AddComponent<BoxCollider>();
+            hitCollision.size = new Vector3(1, 3, 1);
             hitCollision.isTrigger = true;
         }
         for (int i = 0; i < lPoints.Count; i++)
@@ -56,7 +58,6 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
     {
         Vector3 curPos = qPoints.Dequeue();
         // 타겟 설정
-        Debug.Log($"{curPos}");
         if(curTarget == null)
         {
             curTarget = GameObject.Instantiate<GameObject>(new GameObject(), this.transform.position + curPos, Quaternion.identity, this.transform);
@@ -66,7 +67,8 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
         {
             curTarget.transform.position = transform.position + curPos;
         }
-        SphereCollider a = curTarget.AddComponent<SphereCollider>();
+        BoxCollider a = curTarget.AddComponent<BoxCollider>();
+        a.size = new Vector3(1, 3, 1);
         a.isTrigger = true;
         hitCollision.center = curPos;
     }
