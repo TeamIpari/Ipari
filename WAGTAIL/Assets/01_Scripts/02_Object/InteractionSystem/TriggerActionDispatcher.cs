@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System;
+using UnityEngine.Scripting;
 using System.Collections.Specialized;
+using System.Reflection;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
 
 /********************************************************************
  *  Trigger 영역 및 함수 등록에 대한 편리한 기능을 제공하는 컴포넌트입니다..
@@ -36,6 +39,8 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
         //=====================================
         private SerializedProperty EnterProperty;
         private SerializedProperty ExitProperty;
+        private SerializedProperty EnterTargetProperty;
+        private SerializedProperty ExitTargetProperty;
         private SerializedProperty TagListProperty;
         private SerializedProperty ColorProperty;
 
@@ -97,7 +102,17 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
                 TagListProperty = serializedObject.FindProperty("_InspectorAddTags");
             }
 
-            if(ColorProperty==null){
+            if(EnterTargetProperty==null){
+
+                EnterTargetProperty = serializedObject.FindProperty("OnTriggeredTargetEnterEvent");
+            }
+
+            if (ExitTargetProperty == null){
+
+                ExitTargetProperty = serializedObject.FindProperty("OnTriggeredTargetExitEvent");
+            }
+
+            if (ColorProperty==null){
 
                 ColorProperty = serializedObject.FindProperty("GizmosColor");
             }
@@ -132,6 +147,8 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
             EditorGUILayout.LabelField("Trigger Events", _boldStyle);
             EditorGUILayout.PropertyField(EnterProperty, true);
             EditorGUILayout.PropertyField(ExitProperty, true);
+            EditorGUILayout.PropertyField(EnterTargetProperty, true);
+            EditorGUILayout.PropertyField(ExitTargetProperty, true);
             #endregion
         }
 
@@ -231,6 +248,8 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
     //==========================================
     [SerializeField] public UnityEventTrigger OnTriggerEnterEvent;
     [SerializeField] public UnityEventTrigger OnTriggerExitEvent;
+    [SerializeField] public UnityEventTrigger OnTriggeredTargetEnterEvent;
+    [SerializeField] public UnityEventTrigger OnTriggeredTargetExitEvent;
     [SerializeField] private Color GizmosColor = Color.red;
 
 
@@ -287,14 +306,51 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        #region Omit
         if (CompareTriggerTag(other.tag)==false) return;
         OnTriggerEnterEvent?.Invoke();
+
+        /*********************************************
+         *   특정 대상에만 적용되는 대리자를 호출한다...
+         * ***/
+        if (OnTriggeredTargetEnterEvent == null) return;
+        GameObject target =  other.gameObject;
+
+        int Count = OnTriggeredTargetEnterEvent.GetPersistentEventCount();
+        for(int i=0; i<Count; i++){
+
+            UnityEngine.Object  currTarget = OnTriggeredTargetEnterEvent.GetPersistentTarget(i);
+            UnityEventCallState state      = (currTarget==target? UnityEventCallState.RuntimeOnly:UnityEventCallState.Off);
+            OnTriggeredTargetEnterEvent.SetPersistentListenerState(i, state);
+        }
+
+        OnTriggeredTargetEnterEvent.Invoke();
+        #endregion
     }
 
     private void OnTriggerExit(Collider other)
     {
+        #region Omit
         if (CompareTriggerTag(other.tag) == false) return;
         OnTriggerExitEvent?.Invoke();
+
+        /*********************************************
+         *   특정 대상에만 적용되는 대리자를 호출한다...
+         * ***/
+        if (OnTriggeredTargetExitEvent == null) return;
+        UnityEngine.Object target = other.gameObject;
+
+        int Count = OnTriggeredTargetExitEvent.GetPersistentEventCount();
+        for (int i = 0; i < Count; i++)
+        {
+
+            UnityEngine.Object currTarget = OnTriggeredTargetExitEvent.GetPersistentTarget(i);
+            UnityEventCallState state = (currTarget == target ? UnityEventCallState.RuntimeOnly : UnityEventCallState.Off);
+            OnTriggeredTargetExitEvent.SetPersistentListenerState(i, state);
+        }
+
+        OnTriggeredTargetExitEvent.Invoke();
+        #endregion
     }
 
 #if UNITY_EDITOR

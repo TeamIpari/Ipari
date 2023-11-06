@@ -1160,6 +1160,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         ref BoneData curr = ref _datas[index];
         ref BoneData next = ref _datas[index+1];
 
+        if (curr.Tr == null || next.Tr == null) return Vector3.zero;
         return (next.Tr.position - curr.Tr.position).normalized;
         #endregion
     }

@@ -30,9 +30,9 @@ public class ChapterController : MonoBehaviour
                 CameraManager.GetInstance().CameraSetting();
                 UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>().SetCanvas(1,true);
                 break;
-            case ChapterType.BossRoom:
+            case ChapterType.MiddleBossRoom:
                 FModAudioManager.PlayBGM(FModBGMEventType.NepenthesBossBGM);
-                GameManager.GetInstance().StartChapter(ChapterType.BossRoom);
+                GameManager.GetInstance().StartChapter(ChapterType.MiddleBossRoom);
                 CameraManager.GetInstance().CameraSetting();
                 UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, false);
                 break;

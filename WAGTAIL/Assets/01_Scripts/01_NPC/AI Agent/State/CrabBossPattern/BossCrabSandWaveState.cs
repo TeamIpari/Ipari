@@ -40,11 +40,14 @@ public class BossCrabSandWaveState : AIAttackState
 
     public override void Enter()
     {
+        #region Omit
         _waveLeft = _waveCount;
         _progress = 0;
         curTimer  = 0f;
+        _bossCrab.StateTrigger = false;
         AISM.Animator.speed = .5f;
         AISM.Animator.CrossFade(BossCrabAnimation.MakeSandWave_TongsRise, .4f);
+        #endregion
     }
 
     public override void Update()
@@ -99,7 +102,7 @@ public class BossCrabSandWaveState : AIAttackState
                     {
                         AISM.Animator.speed = 0f;
                         _progress = -1;
-                        _bossCrab.SetStateTrigger(Random.Range(.1f, .2f));
+                        _bossCrab.SetStateTrigger(_waveLeft==1? .3f:.1f);
                     }
                     break;
                 }

@@ -8,7 +8,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     private MeshRenderer mesh;
     private Collider col;
     public GameObject BasePlatform;
-    public GameObject PlatformPiece; 
+    public GameObject[] PlatformPiece; 
     public GameObject Light;
     public bool IsUpdownMode = false;
 
@@ -26,6 +26,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
     // 흔들리고 사라지거나 떨어질 때 원래 위치로 찾아오기 위한 Origin Position;
     private Vector3 startPos;
+    private GameObject curBrokenPlatform;
 
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
@@ -81,13 +82,17 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         startPos = transform.position;
         mesh = GetComponent<MeshRenderer>();
         col = GetComponent<Collider>();
-        PosList = new Vector3[PlatformPiece.transform.childCount];
-        for (int i = 0; i < PlatformPiece.transform.childCount; i++)
+        for (int i = 0; i < PlatformPiece.Length; i++)
         {
-            var piece = PlatformPiece.transform.GetChild(i);
-            PosList[i] = piece.position;
+            PlatformPiece[i].SetActive(false);
         }
-        PlatformPiece.SetActive(false);    
+        //PosList = new Vector3[PlatformPiece.transform.childCount];
+        //for (int i = 0; i < PlatformPiece.transform.childCount; i++)
+        //{
+        //    var piece = PlatformPiece.transform.GetChild(i);
+        //    PosList[i] = piece.position;
+        //}
+        //PlatformPiece.SetActive(false);
     }
 
     public void ExecutionFunction(float time)
@@ -123,6 +128,18 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
     /////           Core Methods               /////
     //===============================================
 
+
+    private void SetPieceOriginPos(GameObject curPlatform)
+    {
+        curBrokenPlatform = curPlatform;
+        PosList = new Vector3[curPlatform.transform.childCount];
+        for (int i = 0; i < curPlatform.transform.childCount; i++)
+        {
+            var piece = curPlatform.transform.GetChild(i);
+            PosList[i] = piece.position;
+        }
+        curPlatform.SetActive(false);
+    }
 
     private IEnumerator DownPlatform(bool callBack = false)
     {
@@ -167,12 +184,13 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         shake = true;
         yield return new WaitForSeconds(delayTime);
         BasePlatform.SetActive(false);
-        PlatformPiece.SetActive(true);
+        SetPieceOriginPos(PlatformPiece[Random.Range(0, PlatformPiece.Length)]);
+        curBrokenPlatform.SetActive(true);
         shake = false;
 
-        for (int i = 0; i < PlatformPiece.transform.childCount; i++)
+        for (int i = 0; i < curBrokenPlatform.transform.childCount; i++)
         {
-            var rigidbody = PlatformPiece.transform.GetChild(i).GetComponent<Rigidbody>();
+            var rigidbody = curBrokenPlatform.transform.GetChild(i).GetComponent<Rigidbody>();
             if (rigidbody != null)
             {
                 rigidbody.useGravity = true;
@@ -236,9 +254,9 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
 
         Vector3 v = new Vector3(-90, 0, 0);
 
-        for (int i = 0; i < PlatformPiece.transform.childCount; i++)
+        for (int i = 0; i < curBrokenPlatform.transform.childCount; i++)
         {
-            var piece = PlatformPiece.transform.GetChild(i);
+            var piece = curBrokenPlatform.transform.GetChild(i);
             if (piece.GetComponent<Rigidbody>() != null)
             {
                 piece.GetComponent<Rigidbody>().useGravity = false;
@@ -252,7 +270,7 @@ public class BrokenPlatform : MonoBehaviour, IEnviroment
         }
         if (col != null) col.enabled = true;
         if (mesh != null) mesh.enabled = true;
-        PlatformPiece.SetActive(false);
+        curBrokenPlatform.SetActive(false);
         BasePlatform.SetActive(true);
         isBroken = false;
 

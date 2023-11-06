@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 
 public class TimelineController : MonoBehaviour
 {
     private GameObject _player;
+    private PlayerInput _playerInput;
     private CharacterController _playerCtrl;
     private GameObject _timeline;
     private bool _isStart;
@@ -31,10 +33,11 @@ public class TimelineController : MonoBehaviour
     private void Start()
     {
         _player = Player.Instance.gameObject;
+        _playerInput = _player.GetComponent<PlayerInput>();
         _playerCtrl = _player.GetComponent<CharacterController>();
         _timeline = GetComponentInChildren<PlayableDirector>().gameObject;
         _timeline.SetActive(false);
-        _fakeObject.SetActive(false);
+        if (_fakeObject != null) _fakeObject.SetActive(false);
         _isStart = false;
         var collider = GetComponent<BoxCollider>();
         if(collider == null)
@@ -57,6 +60,7 @@ public class TimelineController : MonoBehaviour
         SetActiveObjects(false);
         if (_fakeObject != null) _fakeObject.SetActive(true);
         _timeline.SetActive(true);
+        _playerInput.enabled = false;
         _playerCtrl.enabled = false;
         _player.SetActive(false);
     }
@@ -77,7 +81,9 @@ public class TimelineController : MonoBehaviour
             SetActiveObjects(true);
             
             _player.SetActive(true);
+            _playerInput.enabled = true;
             _playerCtrl.enabled = true;
+            if (CameraManager.GetInstance() != null) CameraManager.GetInstance().SwitchCamera(CameraType.Main);
         }
     }
 
