@@ -74,7 +74,7 @@ public class CutScene : MonoBehaviour
                 if (IsIntro)
                 {
                     UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
-                    UIManager.GetInstance().ActiveGameUI(GameUIType.Chapter, true);
+                    //UIManager.GetInstance().ActiveGameUI(GameUIType.Chapter, true);
                     UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
                         .SetCanvas(0, true);
                     FModAudioManager.SetBusMute(FModBusType.Player, false);

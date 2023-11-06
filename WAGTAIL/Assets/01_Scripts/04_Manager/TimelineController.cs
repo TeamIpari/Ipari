@@ -29,6 +29,7 @@ public class TimelineController : MonoBehaviour
 
     [Header("Debug")] 
     [SerializeField] private bool _isDebug = false;
+    public bool chapter03 = false;
 
     private void Start()
     {
@@ -84,6 +85,12 @@ public class TimelineController : MonoBehaviour
             _playerInput.enabled = true;
             _playerCtrl.enabled = true;
             if (CameraManager.GetInstance() != null) CameraManager.GetInstance().SwitchCamera(CameraType.Main);
+            if (chapter03)
+            {
+                UIManager.GetInstance().ActiveGameUI(GameUIType.Coin, true);
+                UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, true);
+                UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>().SetCanvas(2,true);
+            }
         }
     }
 

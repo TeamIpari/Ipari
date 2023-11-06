@@ -22,6 +22,7 @@ public class ChapterController : MonoBehaviour
             case ChapterType.Chapter01:
                 //UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
+                //UIManager.GetInstance().ActiveGameUI(GameUIType.Chapter, false);
                 CameraManager.GetInstance().CameraSetting();
                 break;
             case ChapterType.Chapter02:
@@ -40,8 +41,9 @@ public class ChapterController : MonoBehaviour
                 FModAudioManager.PlayBGM(FModBGMEventType.Chapter4BGM);
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter03);
                 CameraManager.GetInstance().CameraSetting();
-                UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, true);
-                UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>().SetCanvas(2,true);
+                UIManager.GetInstance().ActiveGameUI(GameUIType.Coin, false);
+                UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, false);
+                //UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>().SetCanvas(2,true);
                 break;
             case ChapterType.EndCredits:
                 GameManager.GetInstance().StartChapter(ChapterType.EndCredits);

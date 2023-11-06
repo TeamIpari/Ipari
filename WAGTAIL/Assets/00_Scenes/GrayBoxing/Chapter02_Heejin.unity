@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17283523, g: 0.21598466, b: 0.29793352, a: 1}
+  m_IndirectSpecularColor: {r: 0.17283553, g: 0.21598503, b: 0.2979341, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10369,6 +10369,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
         type: 3}
+      propertyPath: ScoreType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
+        type: 3}
+      propertyPath: InteractionVFX
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
+        type: 3}
       propertyPath: _CocosiChapter
       value: 1
       objectReference: {fileID: 0}
@@ -18348,8 +18358,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
         type: 3}
+      propertyPath: ScoreType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
+        type: 3}
       propertyPath: _CocosiIndex
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
+        type: 3}
+      propertyPath: InteractionVFX
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
         type: 3}
@@ -20744,8 +20764,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
         type: 3}
+      propertyPath: ScoreType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
+        type: 3}
       propertyPath: _CocosiIndex
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
+        type: 3}
+      propertyPath: InteractionVFX
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
         type: 3}
@@ -21549,6 +21579,12 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   OnTriggerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggeredTargetEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggeredTargetExitEvent:
     m_PersistentCalls:
       m_Calls: []
   GizmosColor: {r: 1, g: 0, b: 0, a: 1}
