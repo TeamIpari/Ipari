@@ -27,10 +27,10 @@ Transform:
   m_GameObject: {fileID: 548918026210985655}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.476736, y: -0.95576, z: -7.541957}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.03, y: 1, z: 1.03}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3692901077509404821}
+  - {fileID: 5291558383591918301}
   - {fileID: 3050345825396176783}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b002c68db0d284d8def109e732be4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BasePlatform: {fileID: 4067877850708615727}
+  BasePlatform: {fileID: 0}
   PlatformPiece:
   - {fileID: 239817420347561573}
   Light: {fileID: 0}
@@ -183,6 +183,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Broken_BossStoneFloor
+      objectReference: {fileID: 0}
+    - target: {fileID: 671555707266854007, guid: 1818ad8f067d73e4ca30a494cab20ddb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1818ad8f067d73e4ca30a494cab20ddb, type: 3}
@@ -591,84 +596,78 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -3299087661334909604, guid: 3c20ff033f337464e994adb7709647c5, type: 3}
---- !u!1001 &4628741234304873660
+--- !u!1001 &5175171254947607894
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 548918026210985652}
     m_Modifications:
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 429339682887312689, guid: 0d73bf33ada0cd749b4387981b6662f1,
+        type: 3}
+      propertyPath: m_Name
+      value: BossStoneFloor3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.000000021855694
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+    - target: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8667343486227011219, guid: 64ceda3cace19194da818ec986be3f72,
-        type: 3}
-      propertyPath: m_Name
-      value: BossStoneFloor1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 64ceda3cace19194da818ec986be3f72, type: 3}
---- !u!4 &3692901077509404821 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: 0d73bf33ada0cd749b4387981b6662f1, type: 3}
+--- !u!4 &5291558383591918301 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 8287545075285298217, guid: 64ceda3cace19194da818ec986be3f72,
+  m_CorrespondingSourceObject: {fileID: 1062430074894712715, guid: 0d73bf33ada0cd749b4387981b6662f1,
     type: 3}
-  m_PrefabInstance: {fileID: 4628741234304873660}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4067877850708615727 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8667343486227011219, guid: 64ceda3cace19194da818ec986be3f72,
-    type: 3}
-  m_PrefabInstance: {fileID: 4628741234304873660}
+  m_PrefabInstance: {fileID: 5175171254947607894}
   m_PrefabAsset: {fileID: 0}
