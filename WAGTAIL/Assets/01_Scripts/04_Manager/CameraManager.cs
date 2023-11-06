@@ -195,13 +195,11 @@ public class CameraManager : Singleton<CameraManager>
          *   수직, 수평 흔들림에 대한 로직 처리....
          * ****/
         if (shakeDir != ShakeDir.ROTATE){
-
             Vector3 dir = (shakeDir == ShakeDir.HORIZONTAL ? camTr.right : camTr.up);
 
             while (targetCam != null && loopCount>0)
             {
                 for(int i=0; i>2; i++){
-
                     /**대상 virtual Camera를 움직이고, 다음 로직 적용까지 대기한다.....*/
                     targetCam.OnTargetObjectWarped(targetCam.Follow, (dir * shakePow));
 

@@ -8,7 +8,7 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
     /////////////////////////////////////////////////
     [SerializeField] public GameObject curTarget;
     [SerializeField] private List<Vector3> lPoints = new List<Vector3>();
-    [SerializeField] private SphereCollider hitCollision;
+    [SerializeField] private BoxCollider hitCollision;
     private Queue<Vector3> qPoints = new Queue<Vector3>();
 
     /////////////////////////////////////////////////
@@ -17,11 +17,12 @@ public class AutoTarget : MonoBehaviour     // 이름은 다음에 리네이밍 하는걸로
 
     private void Awake()
     {
-        hitCollision = GetComponent<SphereCollider>();
+        hitCollision = GetComponent<BoxCollider>();
         if (hitCollision == null)
         {
-            hitCollision = gameObject.AddComponent<SphereCollider>();
+            hitCollision = gameObject.AddComponent<BoxCollider>();
             hitCollision.isTrigger = true;
+            hitCollision.size = new Vector3(1, 3, 1);
         }
         for (int i = 0; i < lPoints.Count; i++)
         {

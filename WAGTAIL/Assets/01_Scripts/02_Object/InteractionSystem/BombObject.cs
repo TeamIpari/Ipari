@@ -92,8 +92,10 @@ public class BombObject : MonoBehaviour
             var exploVFX = Instantiate(explosionVFX, tf.position, tf.rotation);
             Destroy(exploVFX, 3);
         }
+        // ÆøÅº ÅÍÁö´Â »ç¿îµå
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_BombBurst);
 
-        // enable·Î ¹Ù²Ù»ï
+
         Destroy(gameObject);
 
 

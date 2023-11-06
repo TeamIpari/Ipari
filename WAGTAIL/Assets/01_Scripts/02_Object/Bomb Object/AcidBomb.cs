@@ -81,7 +81,6 @@ public class AcidBomb : Bullet
         // 강띵호가 추가함
         if (collision.collider.CompareTag("Player"))
         {
-            Debug.Log("맞음");
             FModAudioManager.PlayOneShotSFX(
                 FModSFXEventType.Player_Hit,
                 FModLocalParamType.PlayerHitType,

@@ -5,12 +5,8 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
 {
     private static T instance;
 
-    private static bool m_applicationIsQuitting = false;
-
     public static T GetInstance()
     {
-        if (m_applicationIsQuitting) { return null; }
-
         if (instance == null)
         {
             instance = FindObjectOfType<T>();
@@ -28,19 +24,26 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
     {
         if (instance == null)
         {
+            Debug.Log($"{name} √ ±‚»≠µ ");
             instance = this as T;
             DontDestroyOnLoad(gameObject);
         }
+
         /*
         else if (instance != this as T)
         {
             Destroy(gameObject);
         }*/
+
         else {DontDestroyOnLoad(gameObject);}
     }
 
-    private static void OnApplicationQuit()
+    private void OnApplicationQuit()
     {
-        m_applicationIsQuitting = true;
+        OnSigletonDestroy();
+    }
+
+    protected virtual void OnSigletonDestroy()
+    {
     }
 }

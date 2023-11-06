@@ -1,5 +1,7 @@
+using System;
+using System.Collections;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 
 namespace IPariUtility
 {
@@ -8,6 +10,28 @@ namespace IPariUtility
     /// </summary>
     public struct IpariUtility
     {
+        #region Define
+        private struct VibrationDesc
+        {
+            public Vector2 VibeVec;
+            public float   TimeLeft;
+            public int     Id;
+        }
+        #endregion
+
+        //==============================================
+        //////               Fields                 ////
+        //==============================================
+        private static Coroutine        _padCoroutne;
+        private static int              _vibeNum   = 0;
+        private static VibrationDesc[]  _vibeDescs = new VibrationDesc[10];
+
+
+
+        //===============================================
+        //////              Core methods            /////
+        //===============================================
+
         /// <summary>
         /// 이건 포물선을 사용한 공식이여
         /// </summary>
@@ -169,9 +193,128 @@ namespace IPariUtility
             #endregion
         }
 
-        //internal static Vector3 AngleToDirZ(Transform transform, float v)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        internal static void PlayGamePadVibration( float leftPow, float rightPow, float time, int id=0 )
+        {
+            #region Omit
+            /**공간이 부족하면 확장한다...*/
+            if(_vibeNum>=_vibeDescs.Length)
+            {
+                VibrationDesc[] descs = new VibrationDesc[ _vibeNum*2 ];
+                _vibeDescs.CopyTo( descs, 0 );
+            }
+
+            ref VibrationDesc desc = ref _vibeDescs[ _vibeNum++ ];
+            desc.VibeVec  = new Vector2(leftPow, rightPow);
+            desc.TimeLeft = time;
+            desc.Id       = id;
+
+            /**패드 진동을 적용한다...*/
+            Gamepad currPad = Gamepad.current;
+            if(currPad!=null){
+
+                currPad.SetMotorSpeeds(leftPow, rightPow);
+            }
+
+
+            /**진동 코루틴을 실행한다...*/
+            if(_padCoroutne==null){
+
+                _padCoroutne = GameManager.GetInstance().StartCoroutine(PadVibrationProgress());
+            }
+            #endregion
+        }
+
+        internal static void StopGamePadVibration(int stopID)
+        {
+            #region Omit
+            for(int i=0; i<_vibeNum; i++)
+            {
+                ref VibrationDesc desc = ref _vibeDescs[i];
+
+                /**ID가 동일하면 종료시킨다...*/
+                if(stopID==desc.Id)
+                {
+                    _vibeDescs[i] = _vibeDescs[_vibeNum - 1];
+                    _vibeNum--;
+                    i--;
+                }
+            }
+            #endregion
+        }
+
+        internal static void ClearUtilityState()
+        {
+            #region Omit
+            _padCoroutne = null;
+            _vibeNum     = 0;
+            Gamepad.current?.SetMotorSpeeds(0f, 0f);
+            #endregion
+        }
+
+
+
+        //===================================================
+        ///////             Core methods               //////
+        //===================================================
+
+        private static IEnumerator PadVibrationProgress()
+        {
+            #region Omit
+            /************************************************
+             *   게임 패드 진동을 강도순으로 차례대로 적용된다...
+             * ****/
+            Gamepad current    = Gamepad.current;
+            int     applyIndex = _vibeNum;
+            bool    isChange   = false;
+            float   total = 0f;
+
+            while(current!=null && _vibeNum>0)
+            {
+                float deltaTime   = Time.unscaledDeltaTime;
+                Debug.Log($"total: {total+=deltaTime}");
+
+                /**모든 로직을 적용한다....*/
+                for (int i = 0; i < _vibeNum; i++){
+
+                    /**해당 진동이 마무리 되었다면 다음 진동을 적용한다....*/
+                    if(ApplyPadVibration(i, deltaTime, ref isChange, current))
+                    {
+                        i--;
+                        isChange = true;
+                    }
+                }
+
+                yield return null;
+            }
+
+            /**게임패드의 진동을 종료한다....*/
+            if (current != null) current.SetMotorSpeeds(0f, 0f);
+            _padCoroutne = null;
+
+            #endregion
+        }
+
+        private static bool ApplyPadVibration(int index, float deltaTime, ref bool isChange, Gamepad current)
+        {
+            #region Omit
+            ref VibrationDesc desc = ref _vibeDescs[index];
+
+            /**진동이 마무리되었을 경우....*/
+            if((desc.TimeLeft -= deltaTime)<=0f){
+
+                _vibeDescs[index] = _vibeDescs[_vibeNum-1];
+                _vibeNum--;
+                return true;
+            }
+
+            if (isChange && current != null)
+            {
+                isChange = false;
+                current.SetMotorSpeeds(desc.VibeVec.x, desc.VibeVec.y);
+            }
+
+            return false;
+            #endregion
+        }
     }
 }

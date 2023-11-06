@@ -472,6 +472,11 @@ public sealed class GamePadUIController : MonoBehaviour
         #endregion
     }
 
+    private void OnApplicationQuit()
+    {
+        UICoroutine = null;
+    }
+
 
 
     //====================================================

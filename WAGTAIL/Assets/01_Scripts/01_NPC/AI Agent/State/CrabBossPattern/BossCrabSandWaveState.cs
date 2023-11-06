@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -88,12 +89,12 @@ public class BossCrabSandWaveState : AIAttackState
                     waveIns.Volume = 2f;
                     waveIns.Play();
                     FModAudioManager.ApplyInstanceFade(waveIns, 0f, 2f, 0, true);
-
                     FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Smash);
+
                     CameraManager.GetInstance().CameraShake(.4f,CameraManager.ShakeDir.ROTATE,.5f);
+                    IpariUtility.PlayGamePadVibration(1f, 1f, .3f, 1);
 
                     _waves[--_waveLeft]?.StartWave();
-
                     if(_waveLeft>0)
                     {
                         AISM.Animator.speed = 0f;

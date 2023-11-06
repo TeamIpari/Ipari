@@ -138,7 +138,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
         //Debug.Log($"{collision.gameObject.layer}");
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemies"))
         {
-            Debug.Log("AA");
             ResetPoint();
             return;
         }
@@ -336,7 +335,6 @@ public class ThrowObject : MonoBehaviour, IInteractable
         {
             _rigidbody.velocity += Physics.gravity * .05f;
         }
-
     }
 
     private Vector3 BezierCurve(Vector3 startPos, Vector3 endPos, Vector3 height, float value)

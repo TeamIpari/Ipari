@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -31,6 +32,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     [SerializeField] private bool           _IsTalkable  = true;
     [SerializeField] private bool           _IsMoving = false;
     [SerializeField] public  int            SayType     = 1;
+    [SerializeField, DefaultValue(1.5f)] public float           TargetDistance = 1.5f;
 
     [SerializeField] public TextMeshProUGUI TextViewer;
     [SerializeField] public TextMeshProUGUI NameTag;
@@ -274,7 +276,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         // 강제로 이동시키기 위해 InputSystem을 꺼줌.
         Player.Instance.playerInput.enabled = false;
         // 내 앞까지 와라
-        GameObject point = GameObject.Instantiate(new GameObject(), transform.position + transform.forward * 1.5f, Quaternion.identity, this.transform);
+        GameObject point = GameObject.Instantiate(new GameObject(), transform.position + transform.forward * TargetDistance, Quaternion.identity, this.transform);
         //Player.Instance.controller.enabled = false;
 
         Destroy(point, 10f);

@@ -1,9 +1,11 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using static BossCrab;
 
@@ -48,25 +50,20 @@ public sealed class BossCrabEgoStampState : AIAttackState
         try
         {
             /****************************************************
-             *   꽃게의 집게에 대한 참조를 가져온다....
+             *   기를 모으는 이펙트에 대한 참조를 가져온다...
              * ***/
             Transform arm  = AISM.Transform.Find("Boss_Crab_Con").Find("Crab_Body_Bone").Find("L_Tong01");
-            Transform tong = arm.Find("Bone011").Find("Bone012").Find("Bone012_internal");
-            _renderer      = tong.GetComponent<Renderer>();
+            Transform tong = arm.Find("Bone011").Find("Bone012");
+            _collectFX = tong.Find("Cras ( ready) Ver.3 180").GetComponent<ParticleSystem>();
+            _collectFX.gameObject.SetActive(false);
 
 
             /***************************************************
              *   집게의 머터리얼에 대한 복사본의 참조를 가져온다.... 
              * ****/
-            _EgoMat = _renderer.materials[1];
+            _renderer = AISM.Transform.Find("Boss_Crab_Mesh").GetComponent<Renderer>();
+            _EgoMat = _renderer.materials[2];
             _EgoMat.SetFloat("_alpha", 0f);
-
-
-            /******************************************************
-             *   기를 모으는 이펙트에 대한 참조를 가져온다...
-             * ***/
-            _collectFX = tong.Find("Cras ( ready) Ver.3 180").GetComponent<ParticleSystem>();
-            _collectFX.gameObject.SetActive(false);
 
         }
         catch { Debug.LogWarning("BossCrabEgoStampState: 참조를 가져오는데 실패하였습니다..."); }
@@ -124,8 +121,10 @@ public sealed class BossCrabEgoStampState : AIAttackState
 
                     if (_handIns != null){
 
+                        /**소환될 때의 진동을 적용한다...*/
                         CameraManager.GetInstance().CameraShake(.3f, CameraManager.ShakeDir.ROTATE, .5f);
                         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
+                        IpariUtility.PlayGamePadVibration(.1f, .1f, .1f);
 
                         _handIns.gameObject.SetActive(true);
                         _handIns.targetTransform    = Player.Instance.transform;
