@@ -11,22 +11,7 @@ public class AcidBomb : Bullet
     //======================================
     /////          magic Methods        ////
     //======================================
-    public override void Flying()
-    {
-        base.Flying();
-    }
 
-    public override void ShotDirection(Vector3 vector3)
-    {
-        DirectionLine = true;
-        BulletRigidBody.velocity = vector3;
-    }
-
-    public override void SetDirection(Vector3 vector3)
-    {
-        DirectionLine = false;
-        direction = vector3;
-    }
 
     // Start is called before the first frame update
     void Awake()
@@ -39,6 +24,11 @@ public class AcidBomb : Bullet
             BulletRigidBody = GetComponent<Rigidbody>();
         }
         Damage = Damage == 0 ? 10 : Damage;
+    }
+
+    private void Start()
+    {
+        // n초 뒤
     }
 
     // Update is called once per frame
@@ -101,6 +91,22 @@ public class AcidBomb : Bullet
     //=======================================
     /////          core Method            ////
     //=======================================
+    public override void Flying()
+    {
+        base.Flying();
+    }
+
+    public override void ShotDirection(Vector3 vector3)
+    {
+        DirectionLine = true;
+        BulletRigidBody.velocity = vector3;
+    }
+
+    public override void SetDirection(Vector3 vector3)
+    {
+        DirectionLine = false;
+        direction = vector3;
+    }
     void BulletHit(Transform target)
     {
         // 방향 벡터 구하기
