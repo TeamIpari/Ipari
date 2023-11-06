@@ -201,6 +201,7 @@ namespace IPariUtility
             {
                 VibrationDesc[] descs = new VibrationDesc[ _vibeNum*2 ];
                 _vibeDescs.CopyTo( descs, 0 );
+                _vibeDescs = descs;
             }
 
             ref VibrationDesc desc = ref _vibeDescs[ _vibeNum++ ];
@@ -212,7 +213,8 @@ namespace IPariUtility
             Gamepad currPad = Gamepad.current;
             if(currPad!=null){
 
-                currPad.SetMotorSpeeds(leftPow, rightPow);
+                float xx = (GamePadUIController.LastInputGamePadKind == GamePadUIController.GamePadKind.XBox? 3f:1f);
+                currPad.SetMotorSpeeds(leftPow*xx, rightPow*xx);
             }
 
 
@@ -266,12 +268,10 @@ namespace IPariUtility
             Gamepad current    = Gamepad.current;
             int     applyIndex = _vibeNum;
             bool    isChange   = false;
-            float   total = 0f;
 
             while(current!=null && _vibeNum>0)
             {
                 float deltaTime   = Time.unscaledDeltaTime;
-                Debug.Log($"total: {total+=deltaTime}");
 
                 /**모든 로직을 적용한다....*/
                 for (int i = 0; i < _vibeNum; i++){
@@ -310,7 +310,9 @@ namespace IPariUtility
             if (isChange && current != null)
             {
                 isChange = false;
-                current.SetMotorSpeeds(desc.VibeVec.x, desc.VibeVec.y);
+
+                float xx = (GamePadUIController.LastInputGamePadKind == GamePadUIController.GamePadKind.XBox ? 3f : 1f);
+                current.SetMotorSpeeds(desc.VibeVec.x*xx, desc.VibeVec.y*xx);
             }
 
             return false;

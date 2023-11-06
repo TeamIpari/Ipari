@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using static BossCrab;
 
-public sealed class BossCrabEgoStampState : AIAttackState
+public sealed class BossCrabMagicCrabHandState : AIAttackState
 {
     //======================================
     ////            Fields              ////
@@ -18,7 +18,7 @@ public sealed class BossCrabEgoStampState : AIAttackState
     /**참조 관련...*/
     private BossCrab       _bossCrab;
     private ParticleSystem _collectFX;
-    private EgoCrabHand    _handIns;
+    private MagicCrabHand    _handIns;
     private Material       _EgoMat;
     private Renderer       _renderer;
 
@@ -35,7 +35,7 @@ public sealed class BossCrabEgoStampState : AIAttackState
     //==================================================
     //////        Public and Override methods       ////
     //==================================================
-    public BossCrabEgoStampState(AIStateMachine stateMachine, EgoCrabHand handIns, BossCrab bossCrab, float collectDuration=1f)
+    public BossCrabMagicCrabHandState(AIStateMachine stateMachine, MagicCrabHand handIns, BossCrab bossCrab, float collectDuration=1f)
     :base(stateMachine)
     {
         #region Omit
@@ -129,7 +129,7 @@ public sealed class BossCrabEgoStampState : AIAttackState
                         _handIns.gameObject.SetActive(true);
                         _handIns.targetTransform    = Player.Instance.transform;
                         _handIns.transform.position = new Vector3(-2.57999992f, 6.17999983f, -5.75f);
-                        _handIns?.StartCrabHand(_handIns.transform.position);
+                        _handIns?.StartAttack(_handIns.transform.position);
                     }
                     break;
                 }

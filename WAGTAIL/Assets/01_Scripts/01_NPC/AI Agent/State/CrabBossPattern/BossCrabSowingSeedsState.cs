@@ -257,9 +257,9 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         IpariUtility.GetPlayerFloorinfo(
 
             out result, 
-            ~(1 << LayerMask.NameToLayer("Player")), 
+            (1<<LayerMask.NameToLayer("Platform")), 
             (unitDir * randRad),
-             1f
+             5f
         );
 
         desc.goalPos    = result.point + (result.normal*.03f);

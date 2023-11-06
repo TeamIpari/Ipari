@@ -231,7 +231,7 @@ public sealed class BossCrab : Enemy
                 return;
 
             /**접힌 상태라면 내용을 표시하지 않는다...*/
-            if (!(_EgoStampfoldout = EditorGUILayout.Foldout(_EgoStampfoldout, "EgoStamp Pattern", BoldFoldStyle))){
+            if (!(_EgoStampfoldout = EditorGUILayout.Foldout(_EgoStampfoldout, "MagicCrabHand Pattern", BoldFoldStyle))){
 
                 GUI_DrawLine(5f, 20f);
                 return;
@@ -242,7 +242,7 @@ public sealed class BossCrab : Enemy
             /**집게발 프래팹 참조필드 표시..*/
             using (var changeScope = new EditorGUI.ChangeCheckScope())
             {
-                GameObject value = (GameObject)EditorGUILayout.ObjectField("CrabHandPrefab", CrabHandProperty.objectReferenceValue, typeof(GameObject), true);
+                GameObject value = (GameObject)EditorGUILayout.ObjectField("MagicCrabHand Prefab", CrabHandProperty.objectReferenceValue, typeof(GameObject), true);
                 if (changeScope.changed){
 
                     CrabHandProperty.objectReferenceValue = value;
@@ -636,10 +636,10 @@ public sealed class BossCrab : Enemy
         /**********************************************
          *   상태 초기화에 필요한 요소들을 초기화한다...
          * ***/
-        EgoCrabHand newHand = null;
+        MagicCrabHand newHand = null;
         if (CrabHandPrefab != null)
         {
-            newHand = GameObject.Instantiate(CrabHandPrefab).GetComponent<EgoCrabHand>();
+            newHand = GameObject.Instantiate(CrabHandPrefab).GetComponent<MagicCrabHand>();
             newHand.AttackDuration = EgoAtkCompleteRate;
             newHand.AttackRange = EgoAtkRange;
             newHand.AttackReadyDuration = EgoAtkWaitTime;
@@ -668,7 +668,7 @@ public sealed class BossCrab : Enemy
         AiHit = new BossCrabHitState(AiSM, this);
         AiDie = new BossCrabDieState(AiSM);
         AiAttack = new BossCrabSowingSeedsState(AiSM, ref sowingSeedsDesc, this);
-        AiAttack2 = new BossCrabEgoStampState(AiSM, newHand, this);
+        AiAttack2 = new BossCrabMagicCrabHandState(AiSM, newHand, this);
         AiAttack3 = new BossCrabSandWaveState(AiSM, this, SandWavePrefab);
         AiAttack4 = new BossCrabAntHellState(AiSM, AntHellPrefab, _AntHellDuration, this);
 

@@ -8,7 +8,7 @@ using static IPariUtility.IpariUtility;
  *   분신 집게팔로 내려찍는 기능이 구현된 컴포넌트입니다...
  * ***/
 [RequireComponent(typeof(Animator))]
-public sealed class EgoCrabHand : MonoBehaviour
+public sealed class MagicCrabHand : MonoBehaviour
 {
     //===============================================
     //////        Property and Fields           /////
@@ -25,9 +25,13 @@ public sealed class EgoCrabHand : MonoBehaviour
     [SerializeField] public  GameObject     SonicBoomSFXPrefab;
     [SerializeField] public  AnimationCurve curve;
     [SerializeField] private float          _AttackReadyDuration = 1f;
-    [SerializeField] private float          _AttackDuration = .5f;
-    [SerializeField] private float          _AttackRange = 1f;
-    [SerializeField] public  bool           IsAttack = false;
+    [SerializeField] private float          _AttackDuration      = .5f;
+    [SerializeField] private float          _AttackRange         = 1f;
+    [SerializeField] public  bool           IsAttack             = false;
+
+    [SerializeField, Min(0f)] public float SpawnSFXScale     = .5f;
+    [SerializeField, Min(0f)] public float AttackSFXScale    = .1f;
+    [SerializeField, Min(0f)] public float SonicBoomSFXScale = 4f;
 
 
     private Animator       _animator;
@@ -56,7 +60,7 @@ public sealed class EgoCrabHand : MonoBehaviour
         }
 
         /**애니메이션 커브가 없을 경우, 초기화.*/
-        if(curve==null)
+        if(curve==null || curve.length==0)
         {
             curve = new AnimationCurve();
             curve.AddKey(0f, 0f);
@@ -93,7 +97,7 @@ public sealed class EgoCrabHand : MonoBehaviour
     //=======================================
     /////         Core methods           ////
     //========================================
-    public void StartCrabHand( Vector3 startPos )
+    public void StartAttack( Vector3 startPos )
     {
         #region Omit
         if (_progressCoroutine!=null) StopCoroutine(_progressCoroutine);
@@ -105,7 +109,7 @@ public sealed class EgoCrabHand : MonoBehaviour
 
             GameObject newSFX = GameObject.Instantiate(SpawnSFXprefab);
             newSFX.transform.position   = transform.position;
-            newSFX.transform.localScale = (Vector3.one*.5f);
+            newSFX.transform.localScale = (Vector3.one* SpawnSFXScale);
             Destroy(newSFX, .8f);
         }
         #endregion
@@ -161,7 +165,6 @@ public sealed class EgoCrabHand : MonoBehaviour
             timeLeft -= deltaTime;
 
             progressRatio = (1f - Mathf.Clamp(timeLeft * sizeupDiv, 0f, 1f));
-            //tr.localScale = (goalScale * progressRatio);
             _glowMat.SetFloat("_alpha", progressRatio );
 
             yield return null;
@@ -233,7 +236,6 @@ public sealed class EgoCrabHand : MonoBehaviour
 
         } while (progressRatio < 1f);
 
-
         /********************************************************
          *   집게가 내려쳤을 때 발생하는 이펙트와 진동을 적용한다...
          * ****/
@@ -241,6 +243,7 @@ public sealed class EgoCrabHand : MonoBehaviour
         CameraManager.GetInstance()?.CameraShake(.4f, CameraManager.ShakeDir.ROTATE, .6f);
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Atk3Smash);
         IpariUtility.PlayGamePadVibration(.1f, .1f, .2f);
+
 
         /************************************************
          *   내려찍었을 때의 모래먼지 이펙트를 실행한다....
@@ -250,18 +253,22 @@ public sealed class EgoCrabHand : MonoBehaviour
         if(_attackSFXIns==null && AttackSFXPrefab != null){
 
             _attackSFXIns = GameObject.Instantiate(AttackSFXPrefab).GetComponent<ParticleSystem>();
-            _attackSFXIns.transform.localScale = (Vector3.one * .5f);
+            _attackSFXIns.transform.localScale = (Vector3.one * AttackSFXScale);
 
             ParticleSystem.MainModule main = _attackSFXIns.main;
             main.loop = false;
         }
 
-        Transform  sfxTr   = _attackSFXIns.transform;
-        Vector3    newPos  = hit.point + (hit.normal * .5f);
-        Quaternion newQuat = IpariUtility.GetQuatBetweenVector(sfxTr.up, hit.normal);
+        if(_attackSFXIns!=null)
+        {
+            Transform sfxTr    = _attackSFXIns.transform;
+            Vector3 newPos     = hit.point + (hit.normal * .5f);
+            Quaternion newQuat = IpariUtility.GetQuatBetweenVector(sfxTr.up, hit.normal);
 
-        sfxTr.SetPositionAndRotation(newPos, newQuat);
-        _attackSFXIns.Play(true);
+            sfxTr.SetPositionAndRotation(newPos, newQuat);
+            sfxTr.transform.localScale = (Vector3.one * AttackSFXScale);
+            _attackSFXIns.Play(true);
+        }
 
 
         /************************************************
@@ -275,25 +282,29 @@ public sealed class EgoCrabHand : MonoBehaviour
 
             Transform sonicSFXTr  = _sonicBoomSFXIns.transform;
             _ringTr               = sonicSFXTr.Find("FX_SonicBoom_Ring");
-            sonicSFXTr.rotation   = (IpariUtility.GetQuatBetweenVector(sonicSFXTr.forward, sonicSFXTr.up)*sonicSFXTr.rotation);
+            sonicSFXTr.rotation   = Quaternion.Euler(-180f, 0f, 0f);
 
             int childCount = sonicSFXTr.childCount;
             for(int i=0; i<childCount; i++){
 
-                sonicSFXTr.GetChild(i).localScale = (Vector3.one * 4f);
+                sonicSFXTr.GetChild(i).localScale = (Vector3.one * SonicBoomSFXScale);
             }
 
             ParticleSystem.MainModule main = _sonicBoomSFXIns.main;
             main.loop = false;
         }
 
-        Transform  sonicSFXTr2   = _sonicBoomSFXIns.transform;
-        Vector3    sonicNewPos   = transform.position + (hit.normal * 2f);
-        Quaternion sonicNewQuat  = (IpariUtility.GetQuatBetweenVector(sonicSFXTr2.up, hit.normal) * sonicSFXTr2.rotation); 
-        sonicSFXTr2.SetPositionAndRotation(sonicNewPos, sonicNewQuat);
+        if(_sonicBoomSFXIns!=null){
 
-        _ringTr.position = hit.point + (hit.normal * .5f); 
-        _sonicBoomSFXIns.Play(true);
+            Transform sonicSFXTr2   = _sonicBoomSFXIns.transform;
+            Vector3 sonicNewPos     = transform.position + (hit.normal * 2f);
+            sonicSFXTr2.position = sonicNewPos;
+
+            Vector3    ringPos  = hit.point + (hit.normal * .5f);
+            Quaternion ringQuat = IpariUtility.GetQuatBetweenVector(_ringTr.forward, hit.normal) * _ringTr.rotation;
+            _ringTr.SetPositionAndRotation(ringPos, ringQuat);  
+            _sonicBoomSFXIns.Play(true);
+        }
 
 
         /************************************************
@@ -334,6 +345,4 @@ public sealed class EgoCrabHand : MonoBehaviour
 
         #endregion
     }
-
-
 }
