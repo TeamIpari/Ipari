@@ -84,7 +84,13 @@ public class IdleState : State
         base.LogicUpdate();
         
         player.animator.SetFloat(Speed, input.magnitude, player.speedDampTime, Time.deltaTime);
-
+        
+        if (player.isDead && player.movementSM.currentState != player.death)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
+        
         if (player.isJump)
         {
             stateMachine.ChangeState(player.jump);

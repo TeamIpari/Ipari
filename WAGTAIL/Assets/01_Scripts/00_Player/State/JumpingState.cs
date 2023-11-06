@@ -53,6 +53,12 @@ public class JumpingState : State
     {
         base.LogicUpdate();
         
+        if (player.isDead && player.movementSM.currentState != player.death)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
+        
         if (_jump)
         {
             stateMachine.ChangeState(player.jump);

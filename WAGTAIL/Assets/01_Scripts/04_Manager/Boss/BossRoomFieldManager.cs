@@ -97,7 +97,6 @@ public class BossRoomFieldManager :MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         Vector3 pos = BossField[new Vector2(x, y)].transform.position;
-
         GameObject obj = GameObject.Instantiate<GameObject>(_interactionVFX, new Vector3(pos.x, pos.y + 0.5f, pos.z - 1f), _interactionVFX.transform.rotation);
         Destroy(obj, 1);
     }
@@ -177,6 +176,7 @@ public class BossRoomFieldManager :MonoBehaviour
         // .Attack Delay = 2.5f
         int X = (int)(xPos - Offset.x ) + 9, Y = 0;
         int FindY = Y * (-StoneYSize);
+        X = X <= 7 ? X - 1 : X;
 
         while (BossField.ContainsKey(new Vector2(X, FindY)))
         {
