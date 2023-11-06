@@ -68,6 +68,11 @@ public sealed class InterativeUI : MonoBehaviour
         }
     }
 
+    [SerializeField] Sprite ButtonFSprite;
+    [SerializeField] Sprite ButtonXSprite;
+    [SerializeField] Sprite ButtonYSprite;
+    [SerializeField] Sprite ButtonSquareSprite;
+
 
 
     //=========================================
@@ -76,6 +81,7 @@ public sealed class InterativeUI : MonoBehaviour
     private Camera          _mainCam;
     private Animator        _animator;
     private Image           _image;
+    private Image           _btnImage;
     private TextMeshProUGUI _text;
     private RectTransform   _rectTr;
     private ShowType        _show = ShowType.InVisible;
@@ -91,11 +97,10 @@ public sealed class InterativeUI : MonoBehaviour
     private void Start()
     {
         #region Omit
-        /**이미 객체가 존재한다면 파괴된다...*/
+        /**이미 객체가 존재한다면 기존 객체를 파괴한다...*/
         if(_ins!=null)
         {
-            Destroy(gameObject);
-            return;
+            Destroy(_ins.gameObject);
         }
 
         /*******************************************************
@@ -107,6 +112,7 @@ public sealed class InterativeUI : MonoBehaviour
         _animator = GetComponent<Animator>();
         _text     = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         _rectTr   = _animator.GetComponent<RectTransform>();
+        _btnImage = transform.GetChild(0).GetChild(0).GetComponent<Image>();
 
         _rectTr.position = new Vector3(99999f, 99999f);
 
@@ -115,7 +121,50 @@ public sealed class InterativeUI : MonoBehaviour
          * ****/
         GamePadUIController.OnDeviceChange += (InputDeviceType prevDevice, InputDeviceType changeDevice) =>
         {
-            Debug.Log($"Change input device: ({prevDevice})->({changeDevice}) (lastPadKind: {GamePadUIController.LastInputGamePadKind})");
+            #region Omit
+
+            /******************************************
+             *    키보드의 경우를 처리한다....
+             * ******/
+            if(changeDevice==InputDeviceType.Keyboard && ButtonFSprite!=null){
+
+                _btnImage.sprite = ButtonFSprite;
+                return;
+            }
+
+            /******************************************
+             *   게임패드의 경우를 처리한다....
+             * ****/
+            GamePadKind padKind = GamePadUIController.LastInputGamePadKind;
+            switch (padKind){
+
+                    /**XInput을 사용할 경우...*/
+                    case (GamePadKind.Unknown):
+                    case (GamePadKind.XBox):
+                    {
+                        if (ButtonXSprite==null) break;
+                        _btnImage.sprite = ButtonXSprite;
+                        break;
+                    }
+
+                    /**듀얼쇼크/센스를 사용할 경우...*/
+                    case (GamePadKind.PS):
+                    {
+                        if (ButtonSquareSprite == null) break;
+                        _btnImage.sprite = ButtonSquareSprite;
+                        break;
+                    }
+
+                    /**닌텐도 프로콘을 사용할 경우...*/
+                    case (GamePadKind.Nintendo):
+                    {
+                        if (ButtonYSprite == null) break;
+                        _btnImage.sprite = ButtonYSprite;
+                        break;
+                    }
+
+            }
+            #endregion
         };
         #endregion
     }

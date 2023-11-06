@@ -282,7 +282,7 @@ public sealed class MagicCrabHand : MonoBehaviour
 
             Transform sonicSFXTr  = _sonicBoomSFXIns.transform;
             _ringTr               = sonicSFXTr.Find("FX_SonicBoom_Ring");
-            sonicSFXTr.rotation   = (IpariUtility.GetQuatBetweenVector(sonicSFXTr.forward, sonicSFXTr.up)*sonicSFXTr.rotation);
+            sonicSFXTr.rotation   = Quaternion.Euler(-180f, 0f, 0f);
 
             int childCount = sonicSFXTr.childCount;
             for(int i=0; i<childCount; i++){
@@ -298,10 +298,11 @@ public sealed class MagicCrabHand : MonoBehaviour
 
             Transform sonicSFXTr2   = _sonicBoomSFXIns.transform;
             Vector3 sonicNewPos     = transform.position + (hit.normal * 2f);
-            Quaternion sonicNewQuat = (IpariUtility.GetQuatBetweenVector(sonicSFXTr2.forward, hit.normal) * sonicSFXTr2.rotation);
-            sonicSFXTr2.SetPositionAndRotation(sonicNewPos, sonicNewQuat);
+            sonicSFXTr2.position = sonicNewPos;
 
-            _ringTr.position = hit.point + (hit.normal * .5f);
+            Vector3    ringPos  = hit.point + (hit.normal * .5f);
+            Quaternion ringQuat = IpariUtility.GetQuatBetweenVector(_ringTr.forward, hit.normal) * _ringTr.rotation;
+            _ringTr.SetPositionAndRotation(ringPos, ringQuat);  
             _sonicBoomSFXIns.Play(true);
         }
 

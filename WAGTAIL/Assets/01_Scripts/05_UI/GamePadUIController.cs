@@ -5,6 +5,9 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.DualShock;
+using UnityEngine.InputSystem.XInput;
+using UnityEngine.InputSystem.Switch;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -590,17 +593,21 @@ public sealed class GamePadUIController : MonoBehaviour
         #endregion
     }
 
-    private GamePadKind GetGamePadKind(string name)
+    private GamePadKind GetGamePadKind(Gamepad currPad)
     {
         #region Omit
-        if (name.Contains("Xbox", System.StringComparison.OrdinalIgnoreCase))
-            return GamePadKind.XBox;
+        XInputController        xInput = null;
+        DualShockGamepad        shock  = null;
+        SwitchProControllerHID  swit   = null;
 
-        if (name.Contains("Playstation", System.StringComparison.OrdinalIgnoreCase))
+        if((swit = currPad as SwitchProControllerHID)!=null)
+            return GamePadKind.Nintendo;
+
+        if ((shock = currPad as DualShockGamepad) != null)
             return GamePadKind.PS;
 
-        if (name.Contains("Nintendo", System.StringComparison.OrdinalIgnoreCase))
-            return GamePadKind.Nintendo;
+        if ((xInput = currPad as XInputController) != null)
+            return GamePadKind.XBox;
 
         return GamePadKind.Unknown;
         #endregion
@@ -613,11 +620,11 @@ public sealed class GamePadUIController : MonoBehaviour
         /**키보드를 사용하는 경우...*/
         if(LastInputDevice==InputDeviceType.Keyboard)
         {
-            if (type == GamePadInputType.OK) return Input.GetKeyDown(KeyCode.F);
-            else return Input.GetKeyUp(KeyCode.Q);
+            if (type == GamePadInputType.OK) return Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Return);
+            else return Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Escape);
         }
 
-        /**Xbox Controller의 경우...*/
+        /**XBox의 경우...*/
         if (LastInputGamePadKind == GamePadKind.XBox)
         {
             if (type == GamePadInputType.OK) return (currPad.aButton.value != 0f);
@@ -643,15 +650,47 @@ public sealed class GamePadUIController : MonoBehaviour
         #endregion
     }
 
-    private Vector2 GetAxis(Gamepad currPad)
+    private Vector2 GetKeyboardAxis(Keyboard currKeyboard)
+    {
+        #region Omit
+        float aValue     = currKeyboard.aKey.value;
+        float dValue     = currKeyboard.dKey.value;
+        float leftValue  = currKeyboard.leftArrowKey.value;
+        float rightValue = currKeyboard.rightArrowKey.value;
+
+        float wValue    = currKeyboard.wKey.value; 
+        float sValue    = currKeyboard.sKey.value;
+        float upValue   = currKeyboard.upArrowKey.value;
+        float downValue = currKeyboard.downArrowKey.value;
+
+        Vector2 result = Vector2.zero;
+
+        /**x축을 얻어낸다...*/
+        if ((aValue + dValue) > 0f) result.x = (aValue != 0f ? -1f : 1f);
+        else if ((leftValue + rightValue) > 0f)
+        {
+            result.x = (leftValue != 0f ? -1f : 1f);
+        }
+
+
+        /**y축을 얻어낸다...*/
+        if ((wValue + sValue) > 0f) result.y = (wValue != 0f ? 1f : -1f);
+        else if ((upValue + downValue) > 0f)
+        {
+            result.y = (upValue != 0f ? 1f : -1f);
+        }
+
+        return result;
+        #endregion
+    }
+
+    private Vector2 GetAxis(Gamepad currPad, Keyboard currKeyboard)
     {
         #region Omit
         if(LastInputDevice==InputDeviceType.Keyboard || currPad==null)
-        {
-            return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        }
+            return GetKeyboardAxis(currKeyboard);
 
-        return currPad.dpad.value;
+        return (currPad!=null? currPad.dpad.value:Vector2.zero);
         #endregion
     }
 
@@ -677,7 +716,8 @@ public sealed class GamePadUIController : MonoBehaviour
             /********************************************
              *   마지막으로 입력된 기기를 갱신한다....
              * ***/
-            if(LastInputDevice != InputDeviceType.Mouse && currMouse != null && currMouse.position.value != lastCursorPos )
+            #region Update_LastInputDevice
+            if (LastInputDevice != InputDeviceType.Mouse && currMouse != null && currMouse.position.value != lastCursorPos )
             {
                 /**마우스를 사용하였을 경우...*/
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.Mouse);
@@ -701,15 +741,16 @@ public sealed class GamePadUIController : MonoBehaviour
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.GamePad);
                 lastUsedPad          = currPad;
                 LastInputDevice      = InputDeviceType.GamePad;
-                LastInputGamePadKind = GetGamePadKind(currPad.displayName);
+                LastInputGamePadKind = GetGamePadKind(currPad);
                 Current?.OnSelect?.Invoke();
             }
+            #endregion
 
 
             /***********************************************************
              *   현재 연결된 게임패드 또는 선택된 UI가 존재하는지 체크한다...
              * ****/
-            if(LastInputDevice == InputDeviceType.Mouse || Current==null)
+            if (LastInputDevice == InputDeviceType.Mouse || Current==null)
             {
                 yield return null;
                 continue;
@@ -719,7 +760,7 @@ public sealed class GamePadUIController : MonoBehaviour
             /***************************************************
              *   현재 입력된 DPad값에 따라 연결된 메뉴로 이동한다...
              * ****/
-            if ((dpadDir = GetAxis(currPad)) != Vector2.zero && lastInput == Vector2.zero){
+            if ((dpadDir = GetAxis(currPad, currKeyboard)) != Vector2.zero && lastInput == Vector2.zero){
 
                 SelectUI(dpadDir);
             }
@@ -729,6 +770,7 @@ public sealed class GamePadUIController : MonoBehaviour
             /****************************************************
              *   확인 버튼을 눌렀을 때의 처리를 한다....
              * ****/
+            #region OK_Button
             bool pressOkBtn = ButtonIsDown(currPad, GamePadInputType.OK);
             if(Current != null && pressOkBtn && lastOk==false){
 
@@ -751,12 +793,13 @@ public sealed class GamePadUIController : MonoBehaviour
                 }
             }
             lastOk = pressOkBtn;
+            #endregion
 
-            
 
             /****************************************************
              *    취소 버튼을 눌렀을 때의 처리를 한다....
              * ****/
+            #region Cancel_Button
             bool pressCancelBtn = ButtonIsDown(currPad, GamePadInputType.Cancel);
             if (Current != null && pressCancelBtn && lastCancel==false){
 
@@ -779,6 +822,7 @@ public sealed class GamePadUIController : MonoBehaviour
                 }
             }
             lastCancel = pressCancelBtn;
+            #endregion
 
             yield return null;
         }
