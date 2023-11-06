@@ -3306,6 +3306,48 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 876886df07425a74aa37d4444563c932, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c196d0dd38928d409142b12ce492330, type: 3}
+--- !u!21 &215322554
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Grass(Clone)
+  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
+    type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blend: 0
+    - _BlendMult: 1
+    - _BlendOff: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1001 &218099683
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31423,7 +31465,7 @@ MonoBehaviour:
     normal: {x: 0, y: 1, z: 0}
     length: {x: 0.277, y: 0.01}
     color: {x: 0.63576895, y: 0.90434986, z: 1.5297618}
-  m_InstantiatedMaterial: {fileID: 2124052211}
+  m_InstantiatedMaterial: {fileID: 215322554}
 --- !u!4 &1305550751
 Transform:
   m_ObjectHideFlags: 0
@@ -37353,18 +37395,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5592530433070981190}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1553968447 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5592530432460475652, guid: e01bb446b89274c498eb9ad111db1373,
-    type: 3}
-  m_PrefabInstance: {fileID: 5592530433070981190}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1553968446}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ee1089798c91e44fb7e757e679d96cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1556096644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45921,48 +45951,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!21 &2124052211
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Grass(Clone)
-  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
-    type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Blend: 0
-    - _BlendMult: 1
-    - _BlendOff: 0
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1001 &2129112368
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -46321,36 +46309,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2513090701329873199, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: SandTarget
-      value: 
-      objectReference: {fileID: 1553968447}
-    - target: {fileID: 2513090701957838912, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: SandTarget
-      value: 
-      objectReference: {fileID: 1553968447}
-    - target: {fileID: 2513090701957838912, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: WaveDuration
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2513090702286564596, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: SandTarget
-      value: 
-      objectReference: {fileID: 1553968447}
-    - target: {fileID: 5592530432550687947, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: _InspectorAddTags.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5592530432550687947, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: _InspectorAddTags.Array.data[1]
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 5592530432550687947, guid: e01bb446b89274c498eb9ad111db1373,
         type: 3}
       propertyPath: OnTriggerEnterEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -46361,21 +46319,6 @@ PrefabInstance:
       propertyPath: OnTriggerEnterEvent.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 919132148314211999}
-    - target: {fileID: 5592530432550687947, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: OnTriggerEnterEvent.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: SetActive
-      objectReference: {fileID: 0}
-    - target: {fileID: 5592530432550687947, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: OnTriggerEnterEvent.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: CrabBossAweaking
-      objectReference: {fileID: 0}
-    - target: {fileID: 5592530432550687958, guid: e01bb446b89274c498eb9ad111db1373,
-        type: 3}
-      propertyPath: EventDescs.Array.data[0].ParamRef._isGlobal
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5592530433519607412, guid: e01bb446b89274c498eb9ad111db1373,
         type: 3}
       propertyPath: m_RootOrder
