@@ -143,6 +143,19 @@ public sealed class PullInOutState : State
         input += pushXAxisAction.ReadValue<Vector2>();
         #endregion
     }
+    
+    public override void LogicUpdate()
+    {
+        #region Omit
+        base.LogicUpdate();
+        
+        if (player.isDead && player.movementSM.currentState != player.death)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
+        #endregion
+    }
 
     
 

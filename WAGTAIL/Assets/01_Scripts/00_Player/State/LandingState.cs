@@ -35,7 +35,13 @@ public class LandingState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
+        
+        if (player.isDead && player.movementSM.currentState != player.death)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
+        
         if (_timePassed > _landingTime)
         {
             if (player.isCarry) stateMachine.ChangeState(player.carry);

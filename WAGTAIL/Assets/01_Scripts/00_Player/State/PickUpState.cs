@@ -44,7 +44,14 @@ public class PickUpState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        // ¹°°ÇÀ» µé°í ÀÏÁ¤ ½Ã°£ ÈÄ ÇöÀç »óÅÂ¸¦ carry(µé°í ¿òÁ÷ÀÌ±â)·Î ¹Ù²ãÁÜ.
+        
+        if (player.isDead && player.movementSM.currentState != player.death)
+        {
+            stateMachine.ChangeState(player.death);
+            return;
+        }
+        
+        // ë¬¼ê±´ì„ ë“¤ê³  ì¼ì • ì‹œê°„ í›„ í˜„ì¬ ìƒíƒœë¥¼ carry(ë“¤ê³  ì›€ì§ì´ê¸°)ë¡œ ë°”ê¿”ì¤Œ.
         if(player.isCarry)
         {
             stateMachine.ChangeState(player.carry);
@@ -73,14 +80,14 @@ public class PickUpState : State
         _currentInteractableTransform.rotation = Quaternion.Euler(0f,player.transform.rotation.y,0f);
         yield return new WaitForSecondsRealtime(PickUpDelayTime);
         
-        // BezierCurve¸¦ À§ÇÑ 3°³ÀÇ Á¡ ±¸ÇÏ±â StartPos, Height, EndPos
+        // BezierCurveë¥¼ ìœ„í•œ 3ê°œì˜ ì  êµ¬í•˜ê¸° StartPos, Height, EndPos
         _startPos = _currentInteractableTransform.position;
         var lookVec = (player.transform.position - _currentInteractableTransform.position).normalized;
         _height = new Vector3(_startPos.x, player.ThrowEquipPoint.position.y - 0.5f, _startPos.z) + lookVec * 0.5f;
         _endPos = player.ThrowEquipPoint.position;
         _endPos.y -= 0.25f;
         
-        // ¸Ó¸® À§·Î µå´Â °î¼±À» ±×¸®´Â ÄÚ·çÆ¾
+        // ë¨¸ë¦¬ ìœ„ë¡œ ë“œëŠ” ê³¡ì„ ì„ ê·¸ë¦¬ëŠ” ì½”ë£¨í‹´
         currentTime = 0.0f;
         while (currentTime < pickUpTime)
         {

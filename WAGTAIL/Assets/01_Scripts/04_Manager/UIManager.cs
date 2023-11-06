@@ -46,13 +46,10 @@ public class UIManager : Singleton<UIManager>
         _languageType = LanguageType.KOR;
 
         _gameUIControllerList = GetCanvas(CanvasType.GameUI).GetComponentsInChildren<GameUIController>().ToList();
-        ActiveGameUI(GameUIType.Death, false);
         
+        ActiveGameUI(GameUIType.Death, false);
         ActiveGameUI(GameUIType.TextBox,false);
-        //ActiveGameUI(GameUIType.Interactable, false);
-
-        // 테스트 끝나면 CanvasType.MainMenu로 바꿔야함
-        //SwitchCanvas(CanvasType.MainMenu);
+        ActiveGameUI(GameUIType.Chapter,false);
     }
 
     public void ActiveGameUI(GameUIType type, bool isActive)

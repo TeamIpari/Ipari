@@ -26,13 +26,9 @@ public class Player : MonoBehaviour
     public float slopeSpeed = 0f;
     public float respawnTime;
     public bool isSwimming = false;
-
-    //========================================
-    //              지훈 추가               //
-    //========================================
+    
     [Header("HoldSearch")]
     public float rotateAngle;
-
     private const float HorizontalViewAngle = 120f;
     [Range(-180f, 180f)]
     [SerializeField] private float m_viewRotateZ = 0f;
@@ -43,7 +39,6 @@ public class Player : MonoBehaviour
     [Header("AutoTarget")]
     public GameObject target;
     //========================================
-
 
     [Header("Animation Smoothing")]
     [Range(0, 1)]
@@ -83,7 +78,6 @@ public class Player : MonoBehaviour
     public LandingState landing;
     public CarryState carry;
     public PickUpState pickup;
-    public DropState drop;
     public PullInOutState pullInout;
     public DeathState death;
     public StiffenState stiffen;
@@ -190,7 +184,6 @@ public class Player : MonoBehaviour
         landing     = new LandingState(this, movementSM);
         carry       = new CarryState(this, movementSM);
         pickup      = new PickUpState(this, movementSM);
-        drop        = new DropState(this, movementSM);
         pullInout   = new PullInOutState(this, movementSM, HoldingPoint);
         death       = new DeathState(this, movementSM);
         stiffen     = new StiffenState(this, movementSM);
@@ -226,7 +219,7 @@ public class Player : MonoBehaviour
         movementSM.currentState.PhysicsUpdate();
     }
     
-    // (구현해야함) 가장 가까운 collider를 읽어내서 IInteractable을 상속받은 클래스가 있다면 상호작용을 한다.
+    // collider를 읽어내서 IInteractable을 상속받은 클래스가 있다면 상호작용을 한다.
     public void Interaction()
     {
         #region LegacyCode

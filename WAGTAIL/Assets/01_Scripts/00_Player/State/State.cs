@@ -39,7 +39,6 @@ public class State
     {
         player = _player;
         stateMachine = _stateMachine;
-
         //PlayerInput
         moveAction = player.playerInput.actions["Move"];
         jumpAction = player.playerInput.actions["jump"];
@@ -79,7 +78,6 @@ public class State
             rotation.x = 0f;
             rotation.z = 0f;
             player.transform.rotation = rotation;
-            
         }
     }
     
@@ -132,22 +130,19 @@ public class State
 #endif
     }
 
-    // Input 체크
+    // Input Update
     public virtual void HandleInput()
     {
 
     }
 
-    // State 교체 Logic
+    // Logic Update
     public virtual void LogicUpdate()
     {
-        if (player.isDead && player.movementSM.currentState != player.death)
-        {
-            stateMachine.ChangeState(player.death);
-            return;
-        }
-    }
 
+    }
+    
+    // Physics Update
     public virtual void PhysicsUpdate()
     {
 
