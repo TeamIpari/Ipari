@@ -319,8 +319,10 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
         int Count = OnTriggeredTargetEnterEvent.GetPersistentEventCount();
         for(int i=0; i<Count; i++){
 
-            UnityEngine.Object  currTarget = OnTriggeredTargetEnterEvent.GetPersistentTarget(i);
-            UnityEventCallState state      = (currTarget==target? UnityEventCallState.RuntimeOnly:UnityEventCallState.Off);
+            UnityEngine.Component currComp = OnTriggeredTargetEnterEvent.GetPersistentTarget(i) as UnityEngine.Component;
+            bool isValid  = !(currComp == null || currComp.gameObject != target);
+
+            UnityEventCallState state = (isValid? UnityEventCallState.RuntimeOnly:UnityEventCallState.Off);
             OnTriggeredTargetEnterEvent.SetPersistentListenerState(i, state);
         }
 
@@ -341,11 +343,12 @@ public sealed class TriggerActionDispatcher : MonoBehaviour
         UnityEngine.Object target = other.gameObject;
 
         int Count = OnTriggeredTargetExitEvent.GetPersistentEventCount();
-        for (int i = 0; i < Count; i++)
-        {
+        for (int i = 0; i < Count; i++){
 
-            UnityEngine.Object currTarget = OnTriggeredTargetExitEvent.GetPersistentTarget(i);
-            UnityEventCallState state = (currTarget == target ? UnityEventCallState.RuntimeOnly : UnityEventCallState.Off);
+            UnityEngine.Component currComp = OnTriggeredTargetEnterEvent.GetPersistentTarget(i) as UnityEngine.Component;
+            bool isValid = !(currComp == null || currComp.gameObject != target);
+
+            UnityEventCallState state = (isValid ? UnityEventCallState.RuntimeOnly : UnityEventCallState.Off);
             OnTriggeredTargetExitEvent.SetPersistentListenerState(i, state);
         }
 
