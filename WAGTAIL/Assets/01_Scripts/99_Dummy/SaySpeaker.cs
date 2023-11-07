@@ -258,7 +258,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
         // 거리에 따른 속도 변화 Max를 넘어가면 Max값으로 고정하고 가까워질수록 느려지게
         Debug.Log($"{Vector3.Distance(ArrivalPoint, player.transform.position)}");
-        if (Vector3.Distance(ArrivalPoint, player.transform.position) < 0.2f)
+        if (Vector3.Distance(ArrivalPoint, player.transform.position) < 0.3f)
         {
             _IsMoving = false;
             Player.Instance.playerInput.enabled = true;
