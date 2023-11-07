@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8989643632259500065
+--- !u!114 &-8942561164831842782
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,23 +9,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/tavuti_ingame2/BGMIsLooping
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/Wagtail_bgm_title
   m_EditorClassIdentifier: 
-  Name: BGMIsLooping
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 3569675359
-    data2: 2001988435
-  Type: 2
-  IsGlobal: 1
-  Labels:
-  - Used
-  - UnUsed
-  Exists: 1
+  Path: event:/BGM/Wagtail_bgm_title
+  Guid:
+    Data1: 942327427
+    Data2: 1305162648
+    Data3: 144500900
+    Data4: -1687243536
+  Banks:
+  - {fileID: -8574538590451004006}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -3385761220386298797}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 71999
 --- !u!114 &-8781093544084752279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,10 +70,10 @@ MonoBehaviour:
   Path: ../../IpariFMOD/IpariAudio/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 638344375395409715
+  lastModified: 638349693516523582
   FileSizes:
   - Name: Desktop
-    Value: 13987296
+    Value: 15195648
   Exists: 1
 --- !u!114 &-8554720411717453016
 MonoBehaviour:
@@ -235,6 +237,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-7069252974859152088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/NepenthesBossBGM
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/NepenthesBossBGM
+  Guid:
+    Data1: 1035370724
+    Data2: 1231878928
+    Data3: 1320145589
+    Data4: 790482389
+  Banks:
+  - {fileID: -8574538590451004006}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 60000
 --- !u!114 &-6703035416276170003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,10 +332,10 @@ MonoBehaviour:
   Path: ../../IpariFMOD/IpariAudio/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638305876761800965
+  lastModified: 638349693526322108
   FileSizes:
   - Name: Desktop
-    Value: 2276
+    Value: 1016288
   Exists: 1
 --- !u!114 &-5914123853823216281
 MonoBehaviour:
@@ -335,7 +364,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-5227991290194243226
+--- !u!114 &-5788574800720095299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Chapter4BGM/BGMIsLooping
+  m_EditorClassIdentifier: 
+  Name: BGMIsLooping
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3569675359
+    data2: 2001988435
+  Type: 2
+  IsGlobal: 1
+  Labels:
+  - Used
+  - UnUsed
+  Exists: 1
+--- !u!114 &-5136972132548315164
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -345,23 +400,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/NepenthesBossBGM
+  m_Name: event:/SFX/Boss/Boss Crab/Crab_SeedSpitOut
   m_EditorClassIdentifier: 
-  Path: event:/BGM/NepenthesBossBGM
+  Path: event:/SFX/Boss/Boss Crab/Crab_SeedSpitOut
   Guid:
-    Data1: 1035370724
-    Data2: 1231878928
-    Data3: 1320145589
-    Data4: 790482389
+    Data1: 840049676
+    Data2: 1183846134
+    Data3: -1624760407
+    Data4: -325378633
   Banks:
-  - {fileID: -8574538590451004006}
-  IsStream: 1
+  - {fileID: 6366069459090721618}
+  IsStream: 0
   Is3D: 0
-  IsOneShot: 0
+  IsOneShot: 1
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 60000
+  Length: 0
 --- !u!114 &-4947915134102617159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,7 +444,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-3826212722634738100
+--- !u!114 &-4238480815004486670
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -398,24 +453,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/tavuti_ingame1/BGMIsLooping
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/tavuti_ingame2
   m_EditorClassIdentifier: 
-  Name: BGMIsLooping
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 3569675359
-    data2: 2001988435
-  Type: 2
-  IsGlobal: 1
-  Labels:
-  - Used
-  - UnUsed
-  Exists: 1
---- !u!114 &-3675089349780768830
+  Path: event:/BGM/tavuti_ingame2
+  Guid:
+    Data1: 1172652772
+    Data2: 1096849244
+    Data3: 1626328197
+    Data4: 1334314980
+  Banks:
+  - {fileID: -8574538590451004006}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 1386574320591483604}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 110248
+--- !u!114 &-3692921446431028157
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -424,23 +481,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Chapter4BGM/BGMIsLooping
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/tavuti_ingame1
   m_EditorClassIdentifier: 
-  Name: BGMIsLooping
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 3569675359
-    data2: 2001988435
-  Type: 2
-  IsGlobal: 1
-  Labels:
-  - Used
-  - UnUsed
-  Exists: 1
+  Path: event:/BGM/tavuti_ingame1
+  Guid:
+    Data1: 948676747
+    Data2: 1227712620
+    Data3: -1017469557
+    Data4: -1232547804
+  Banks:
+  - {fileID: -8574538590451004006}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 2816373123240752988}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 109122
 --- !u!114 &-3620721468160987631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,6 +528,32 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-3385761220386298797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Wagtail_bgm_title/BGMIsLooping
+  m_EditorClassIdentifier: 
+  Name: BGMIsLooping
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3569675359
+    data2: 2001988435
+  Type: 2
+  IsGlobal: 1
+  Labels:
+  - Used
+  - UnUsed
+  Exists: 1
 --- !u!114 &-3138118490543788030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,7 +636,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-2303884723593261183
+--- !u!114 &-2352992559042537288
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -561,24 +646,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/Wagtail_bgm_title
+  m_Name: event:/BGM/test2
   m_EditorClassIdentifier: 
-  Path: event:/BGM/Wagtail_bgm_title
+  Path: event:/BGM/test2
   Guid:
-    Data1: 942327427
-    Data2: 1305162648
-    Data3: 144500900
-    Data4: -1687243536
+    Data1: -839459200
+    Data2: 1158110859
+    Data3: -183060576
+    Data4: 1601068035
   Banks:
   - {fileID: -8574538590451004006}
   IsStream: 1
   Is3D: 0
-  IsOneShot: 0
-  Parameters:
-  - {fileID: 172018040840284909}
+  IsOneShot: 1
+  Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 71999
+  Length: 323056
 --- !u!114 &-2093551448395460084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,33 +745,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-1607187604272488268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/test
-  m_EditorClassIdentifier: 
-  Path: event:/BGM/test
-  Guid:
-    Data1: -1059833457
-    Data2: 1253542699
-    Data3: -338358873
-    Data4: 775534634
-  Banks:
-  - {fileID: -8574538590451004006}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
 --- !u!114 &-1293267205457379766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -715,7 +772,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-1006406672152164201
+--- !u!114 &-1136454838983840090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/test
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/test
+  Guid:
+    Data1: -1059833457
+    Data2: 1253542699
+    Data3: -338358873
+    Data4: 775534634
+  Banks:
+  - {fileID: -8574538590451004006}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-549591198763586258
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -739,7 +823,7 @@ MonoBehaviour:
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: -3675089349780768830}
+  - {fileID: -5788574800720095299}
   MinDistance: 1
   MaxDistance: 20
   Length: 93814
@@ -797,33 +881,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-112475909815317035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/NepenthesRoad
-  m_EditorClassIdentifier: 
-  Path: event:/BGM/NepenthesRoad
-  Guid:
-    Data1: -1867582431
-    Data2: 1121209320
-    Data3: -1608370768
-    Data4: -1609358906
-  Banks:
-  - {fileID: -8574538590451004006}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 87997
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -862,14 +919,6 @@ MonoBehaviour:
   - {fileID: -8056110322466189814}
   - {fileID: -6043910715390462415}
   - {fileID: 8262096790140744133}
-  - {fileID: 3026645733845307037}
-  - {fileID: -2303884723593261183}
-  - {fileID: 2665858918098981559}
-  - {fileID: -1607187604272488268}
-  - {fileID: 5816622561622822629}
-  - {fileID: -112475909815317035}
-  - {fileID: -1006406672152164201}
-  - {fileID: -5227991290194243226}
   - {fileID: -535370867513519732}
   - {fileID: 7177791688170806985}
   - {fileID: 3808708237300459614}
@@ -884,40 +933,25 @@ MonoBehaviour:
   - {fileID: -8781093544084752279}
   - {fileID: 3318052320968997221}
   - {fileID: 350014784369058253}
+  - {fileID: 6935983932795136499}
+  - {fileID: 5350856745909891422}
+  - {fileID: -2352992559042537288}
+  - {fileID: -8942561164831842782}
+  - {fileID: -3692921446431028157}
+  - {fileID: -1136454838983840090}
+  - {fileID: -549591198763586258}
+  - {fileID: -4238480815004486670}
+  - {fileID: -7069252974859152088}
+  - {fileID: 1604976982840517309}
+  - {fileID: -5136972132548315164}
   EditorParameters:
   - {fileID: 4204844847748057071}
   MasterBanks:
   - {fileID: -5999180023837473950}
   StringsBanks:
   - {fileID: 7503394392174117104}
-  cacheTime: 638344375400699461
+  cacheTime: 638349693527093857
   cacheVersion: 131605
---- !u!114 &172018040840284909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Wagtail_bgm_title/BGMIsLooping
-  m_EditorClassIdentifier: 
-  Name: BGMIsLooping
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 3569675359
-    data2: 2001988435
-  Type: 2
-  IsGlobal: 1
-  Labels:
-  - Used
-  - UnUsed
-  Exists: 1
 --- !u!114 &350014784369058253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -945,6 +979,59 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &1386574320591483604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/tavuti_ingame2/BGMIsLooping
+  m_EditorClassIdentifier: 
+  Name: BGMIsLooping
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3569675359
+    data2: 2001988435
+  Type: 2
+  IsGlobal: 1
+  Labels:
+  - Used
+  - UnUsed
+  Exists: 1
+--- !u!114 &1604976982840517309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/CrabBossBGM
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/CrabBossBGM
+  Guid:
+    Data1: 2087680138
+    Data2: 1137614030
+    Data3: -974458185
+    Data4: -1355772786
+  Banks:
+  - {fileID: -5999180023837473950}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 71999
 --- !u!114 &2493489744437394798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -972,7 +1059,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &2665858918098981559
+--- !u!114 &2816373123240752988
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -981,52 +1068,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/tavuti_ingame1
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/tavuti_ingame1/BGMIsLooping
   m_EditorClassIdentifier: 
-  Path: event:/BGM/tavuti_ingame1
-  Guid:
-    Data1: 948676747
-    Data2: 1227712620
-    Data3: -1017469557
-    Data4: -1232547804
-  Banks:
-  - {fileID: -8574538590451004006}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters:
-  - {fileID: -3826212722634738100}
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 109122
---- !u!114 &3026645733845307037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/test2
-  m_EditorClassIdentifier: 
-  Path: event:/BGM/test2
-  Guid:
-    Data1: -839459200
-    Data2: 1158110859
-    Data3: -183060576
-    Data4: 1601068035
-  Banks:
-  - {fileID: -8574538590451004006}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 323056
+  Name: BGMIsLooping
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3569675359
+    data2: 2001988435
+  Type: 2
+  IsGlobal: 1
+  Labels:
+  - Used
+  - UnUsed
+  Exists: 1
 --- !u!114 &3178529705213134163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1320,6 +1378,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &5350856745909891422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/Chapter5BGM
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/Chapter5BGM
+  Guid:
+    Data1: 718605923
+    Data2: 1331647710
+    Data3: 838851234
+    Data4: -72285666
+  Banks:
+  - {fileID: -8574538590451004006}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 95997
 --- !u!114 &5381683496291750505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1346,34 +1431,6 @@ MonoBehaviour:
   - Wall
   - Stone
   Exists: 1
---- !u!114 &5816622561622822629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/tavuti_ingame2
-  m_EditorClassIdentifier: 
-  Path: event:/BGM/tavuti_ingame2
-  Guid:
-    Data1: 1172652772
-    Data2: 1096849244
-    Data3: 1626328197
-    Data4: 1334314980
-  Banks:
-  - {fileID: -8574538590451004006}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters:
-  - {fileID: -8989643632259500065}
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 110248
 --- !u!114 &5861567049334198733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1471,7 +1528,7 @@ MonoBehaviour:
   Name: PlayerWalkType
   StudioPath: 
   Min: 0
-  Max: 0
+  Max: 2
   Default: 0
   ID:
     data1: 543888505
@@ -1480,6 +1537,8 @@ MonoBehaviour:
   IsGlobal: 0
   Labels:
   - Grass
+  - Sand
+  - Stone
   Exists: 1
 --- !u!114 &6366069459090721618
 MonoBehaviour:
@@ -1496,10 +1555,10 @@ MonoBehaviour:
   Path: ../../IpariFMOD/IpariAudio/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638344375400699461
+  lastModified: 638349693527093857
   FileSizes:
   - Name: Desktop
-    Value: 1428384
+    Value: 1430720
   Exists: 1
 --- !u!114 &6806143325091009236
 MonoBehaviour:
@@ -1528,6 +1587,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &6935983932795136499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/NepenthesRoad
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/NepenthesRoad
+  Guid:
+    Data1: -1867582431
+    Data2: 1121209320
+    Data3: -1608370768
+    Data4: -1609358906
+  Banks:
+  - {fileID: -8574538590451004006}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 87997
 --- !u!114 &7177791688170806985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1570,10 +1656,10 @@ MonoBehaviour:
   Path: ../../IpariFMOD/IpariAudio/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638344375397176465
+  lastModified: 638349693526322108
   FileSizes:
   - Name: Desktop
-    Value: 3400
+    Value: 3540
   Exists: 1
 --- !u!114 &7705151850671449206
 MonoBehaviour:

@@ -198,7 +198,7 @@ public class Player : MonoBehaviour
         gravityValue *= gravityMultiplier;
 
         holdTargetMask = LayerMask.GetMask("Interactable");
-        throwTargetMask = LayerMask.GetMask("Enemies");
+        throwTargetMask = (1<<LayerMask.NameToLayer("Enemies")) | (1<<LayerMask.NameToLayer("Boss"));
     }
 
     // Update is called once per frame

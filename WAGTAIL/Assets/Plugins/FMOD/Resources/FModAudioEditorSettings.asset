@@ -60,10 +60,10 @@ MonoBehaviour:
     Min: 0
     Max: 0
   - ParamName: PlayerWalkType
-    LableCount: 1
+    LableCount: 3
     isGlobal: 0
     Min: 0
-    Max: 0
+    Max: 2
   - ParamName: TreeActionType
     LableCount: 2
     isGlobal: 0
@@ -83,6 +83,8 @@ MonoBehaviour:
   - Stone
   - MiniNepenthes_Attack
   - Grass
+  - Sand
+  - Stone
   - TreeFallDown
   - TreeCrash
   - Used
@@ -119,12 +121,12 @@ MonoBehaviour:
     foldout: 0
     EventIsValid: 1
   - CategoryName: SFX/Boss/Boss Crab
-    EventCount: 7
+    EventCount: 8
     GroupIndex: 1
     foldout: 0
     EventIsValid: 1
   - CategoryName: BGM
-    EventCount: 8
+    EventCount: 10
     GroupIndex: 0
     foldout: 0
     EventIsValid: 1
@@ -318,6 +320,13 @@ MonoBehaviour:
       Data2: 1302165862
       Data3: 377981080
       Data4: 995136610
+  - Name: Crab_SeedSpitOut
+    Path: event:/SFX/Boss/Boss Crab/Crab_SeedSpitOut
+    GUID:
+      Data1: 840049676
+      Data2: 1183846134
+      Data3: -1624760407
+      Data4: -325378633
   - Name: Crab_Roar
     Path: event:/SFX/Boss/Boss Crab/Crab_Roar
     GUID:
@@ -367,6 +376,13 @@ MonoBehaviour:
       Data2: 1140839663
       Data3: 1957934753
       Data4: -1357273977
+  - Name: CrabBossBGM
+    Path: event:/BGM/CrabBossBGM
+    GUID:
+      Data1: 2087680138
+      Data2: 1137614030
+      Data3: -974458185
+      Data4: -1355772786
   - Name: NepenthesBossBGM
     Path: event:/BGM/NepenthesBossBGM
     GUID:
@@ -416,6 +432,13 @@ MonoBehaviour:
       Data2: 1158110859
       Data3: -183060576
       Data4: 1601068035
+  - Name: Chapter5BGM
+    Path: event:/BGM/Chapter5BGM
+    GUID:
+      Data1: 718605923
+      Data2: 1331647710
+      Data3: 838851234
+      Data4: -72285666
   - Name: NepenthesRoad
     Path: event:/BGM/NepenthesRoad
     GUID:
@@ -426,8 +449,8 @@ MonoBehaviour:
   RootFolderFoldout: 0
   EventGroups:
   - RootFolderName: BGM
-    TotalEvent: 8
+    TotalEvent: 10
   - RootFolderName: SFX
-    TotalEvent: 34
+    TotalEvent: 35
   - RootFolderName: NoGroup
     TotalEvent: 0

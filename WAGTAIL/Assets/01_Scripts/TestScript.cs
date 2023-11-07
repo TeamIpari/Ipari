@@ -8,10 +8,42 @@ using UnityEngine.SceneManagement;
 
 public sealed class TestScript : MonoBehaviour
 {
-    private void OnDestroy()
+    private WaterPlatformBehavior[] behaviors;
+
+    private void Start()
     {
-        Debug.Log("진짜 정답이 이거라면 답대가리가 없는고네>?>?");
+        int Count = transform.childCount;
+
+        behaviors = new WaterPlatformBehavior[Count];
+        for (int i = 0; i<Count; i++)
+        {
+            behaviors[i] = transform.GetChild(i).GetComponent<WaterPlatformBehavior>();
+            if (behaviors[i] == null) Debug.Log($"({i})번째는 null!!!");
+            Debug.Log($"behaviors added: {behaviors[i].name}/ yspeed: {behaviors[i].Yspeed}");
+        }
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            StartCoroutine(ShakeProgress());
+        }
+    }
+
+    private IEnumerator ShakeProgress()
+    {
+        float yspeed = -.5f;
+        WaitForSecondsRealtime waitTime = new WaitForSecondsRealtime(.5f);
+
+        int Count = behaviors.Length;
+        for(int i=0; i<Count; i++)
+        {
+            behaviors[i].Yspeed += yspeed;
+            yield return waitTime;
+        }
 
     }
+
 
 }

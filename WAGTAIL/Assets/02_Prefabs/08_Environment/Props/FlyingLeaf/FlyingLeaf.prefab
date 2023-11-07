@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 3978325072229929890}
   - component: {fileID: 43349373308148743}
   - component: {fileID: 2845981736734845133}
-  m_Layer: 0
+  - component: {fileID: 1932206440}
+  - component: {fileID: 1932206441}
+  m_Layer: 6
   m_Name: FlyingLeaf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4358931658246441240}
-  m_LocalRotation: {x: -0.38587224, y: 0.5925392, z: 0.5925391, w: 0.38587224}
+  m_LocalRotation: {x: -0.38587323, y: 0.5925385, z: 0.5925385, w: 0.38587323}
   m_LocalPosition: {x: 9.28, y: 0.5, z: -70.84}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
@@ -83,3 +85,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1932206440
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4358931658246441240}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 6.7567444, y: 9.2312765, z: 1.2753443}
+  m_Center: {x: 0.11826897, y: 0.501238, z: 0.49381214}
+--- !u!114 &1932206441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4358931658246441240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec3ec8caf88f374c8ef789675d8614c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
