@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 namespace IPariUtility
 {
@@ -258,7 +259,6 @@ namespace IPariUtility
         //===================================================
         ///////             Core methods               //////
         //===================================================
-
         private static IEnumerator PadVibrationProgress()
         {
             #region Omit
@@ -316,6 +316,56 @@ namespace IPariUtility
             }
 
             return false;
+            #endregion
+        }
+
+        private Vector2 ConvertTerrainPosition(Vector3 pos, Terrain targetTerrain)
+        {
+            #region Omit
+            if (targetTerrain == null) return Vector2.zero;
+
+            /*************************************************
+             *   주어진 좌표를 터레인 좌표계로 변환한다.....
+             * *******/
+
+            /**터레인의 원점을 기준으로*/
+            TerrainData data        = targetTerrain.terrainData;
+            Vector3     terrainPos  = (pos-targetTerrain.transform.position);
+            Vector3     mapPos      = new Vector3(
+
+                (terrainPos.x / data.size.x),
+                0f,
+                (terrainPos.z / data.size.z)
+            );
+
+            float xCoord = Mathf.Clamp(mapPos.x * data.alphamapWidth, 0f, data.alphamapWidth-1);
+            float zCoord = Mathf.Clamp(mapPos.z * data.alphamapHeight, 0f, data.alphamapHeight-1);
+
+            return new Vector3((int)xCoord, (int)zCoord);
+            #endregion
+        }
+
+        private int GetTerrainLayer(Vector2 position, Terrain terrainObject)
+        {
+            #region Omit
+            float[,,] aMap = terrainObject.terrainData.GetAlphamaps((int)position.x, (int)position.y, 1, 1);
+            int tLayer = 0;
+            float lastHighest = 0;
+            for (int x = 0; x < aMap.GetLength(0); x++)
+            {
+                for (int y = 0; y < aMap.GetLength(1); y++)
+                {
+                    for (int z = 0; z < aMap.GetLength(2); z++)
+                    {
+                        if (aMap[x, y, z] > lastHighest)
+                        {
+                            lastHighest = aMap[x, y, z];
+                            tLayer = z;
+                        }
+                    }
+                }
+            }
+            return tLayer;
             #endregion
         }
     }
