@@ -66,6 +66,7 @@ public class AcidBomb : Bullet
 
     private void OnCollisionEnter(Collision collision)
     {
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_AcidBoom);
         BulletHit(collision.transform);
         Destroy(this.gameObject);
         // 강띵호가 추가함
