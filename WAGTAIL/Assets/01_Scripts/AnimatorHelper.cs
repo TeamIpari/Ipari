@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
 /***********************************************************
@@ -16,7 +17,7 @@ public sealed class AnimatorHelper : MonoBehaviour
     public Animator HelperAnimator { get; private set; }
 
     public LateUpdateNotify AnimatorLateUpdate;
-
+    public UnityEvent onEvent;
 
 
     //========================================
@@ -73,5 +74,9 @@ public sealed class AnimatorHelper : MonoBehaviour
         }
     }
 
+    private void Event()
+    {
+        onEvent?.Invoke();
+    }
 
 }
