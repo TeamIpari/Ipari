@@ -35,7 +35,7 @@ public class FadeUI : MonoBehaviour
                 _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(false);
                 _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(false);
                 fadeAnimator[0].gameObject.SetActive(true);
-                fadeAnimator[0].pl
+                fadeAnimator[0].Play("Black_FadeIn");
                 break;
             case FadeType.LetterBox:
                 _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(false);
@@ -54,7 +54,8 @@ public class FadeUI : MonoBehaviour
             case FadeType.Normal:
                 _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(true);
                 _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(true);
-                fadeAnimator[0].SetTrigger(Out);
+                fadeAnimator[0].gameObject.SetActive(true);
+                fadeAnimator[0].Play("Black_FadeOut");
                 break;
             case FadeType.LetterBox:
                 _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(true);

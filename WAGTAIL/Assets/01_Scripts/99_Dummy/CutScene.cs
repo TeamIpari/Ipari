@@ -74,6 +74,7 @@ public class CutScene : MonoBehaviour
                 if (IsIntro)
                 {
                     UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+                    GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
                     UIManager.GetInstance().ActiveGameUI(GameUIType.Chapter, true);
                     UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
                         .SetCanvas(0, true);

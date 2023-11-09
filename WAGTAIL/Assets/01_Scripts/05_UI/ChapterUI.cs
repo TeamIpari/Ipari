@@ -15,13 +15,15 @@ public class ChapterUI : MonoBehaviour
     void Start()
     {
         _gameManager = GameManager.GetInstance();
+        _animator = GetComponent<Animator>();
         _chapterType = _gameManager.LastActiveChapter.ChapterType;
         _fadeUI = UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>();
+        ChapterCanvasStart(GameManager.GetInstance().LastActiveChapter.ChapterType);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ChapterCanvasStart(ChapterType chapterType)
     {
+        Debug.Log("ChapterUIStart");
         switch (_chapterType)
         {
             case ChapterType.Chapter01:
@@ -29,9 +31,11 @@ public class ChapterUI : MonoBehaviour
                 _animator.Play("Chapter1");
                 break;
             case ChapterType.Chapter02:
+                _fadeUI.FadeIn(FadeType.Normal);
                 _animator.Play("Chapter2");
                 break;
             case ChapterType.Chapter03:
+                _fadeUI.FadeIn(FadeType.Normal);
                 _animator.Play("Chapter3");
                 break;
             default:
