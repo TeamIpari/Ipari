@@ -134,20 +134,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b63374138cb54e147abc8d8bb04736e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseDefaultVolume: 0
   EventDescs:
   - EventRef:
       Guid:
-        Data1: 1035370724
-        Data2: 1231878928
-        Data3: 1320145589
-        Data4: 790482389
-      Path: event:/BGM/NepenthesBossBGM
+        Data1: 2087680138
+        Data2: 1137614030
+        Data3: -974458185
+        Data4: -1355772786
+      Path: event:/BGM/CrabBossBGM
     ParamRef:
       _paramType: -1
       _paramValue: 0
       _isGlobal: 0
       _init: 1
+    PlayApplyTiming: 0
+    StopApplyTiming: 0
     EventPos: {x: 0, y: 0, z: 0}
+    IsOneShot: 0
+    EventMinDistance: 0
+    EventMaxDistance: 0
+    Volume: 3
+    StartPosition: 0
 --- !u!1 &5592530433519607415
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,9 +190,91 @@ Transform:
   - {fileID: 2513090701329873193}
   - {fileID: 2513090701957838918}
   - {fileID: 5592530432550687945}
+  - {fileID: 7580922801834394070}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1630682007
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5592530433519607412}
+    m_Modifications:
+    - target: {fileID: 2097615167498095134, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_Name
+      value: SandMoveColor
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -13.556833
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -6.4995246
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13.402828
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9999398
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.010976548
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -1.258
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1f3476841db6fe145a10e03df1d46b92, type: 3}
+--- !u!1 &2097615169122218377 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2097615167498095134, guid: 1f3476841db6fe145a10e03df1d46b92,
+    type: 3}
+  m_PrefabInstance: {fileID: 1630682007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7580922801834394070 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7580922800237296193, guid: 1f3476841db6fe145a10e03df1d46b92,
+    type: 3}
+  m_PrefabInstance: {fileID: 1630682007}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5592530431602105839
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -196,8 +286,7 @@ PrefabInstance:
         type: 3}
       propertyPath: SandFX
       value: 
-      objectReference: {fileID: 2097615167498095134, guid: 1f3476841db6fe145a10e03df1d46b92,
-        type: 3}
+      objectReference: {fileID: 2097615169122218377}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: FXScale
@@ -206,7 +295,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: Pricision
-      value: 500
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
@@ -231,7 +320,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: LimitCircleRadius
-      value: 10.7
+      value: 11.5
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
@@ -261,7 +350,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998342, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13.72
+      value: -13.14
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998342, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
@@ -472,8 +561,7 @@ PrefabInstance:
         type: 3}
       propertyPath: SandFX
       value: 
-      objectReference: {fileID: 2097615167498095134, guid: 1f3476841db6fe145a10e03df1d46b92,
-        type: 3}
+      objectReference: {fileID: 2097615169122218377}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: FXScale
@@ -482,7 +570,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: Pricision
-      value: 500
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
@@ -507,7 +595,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: LimitCircleRadius
-      value: 10.7
+      value: 11.5
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
@@ -537,7 +625,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998342, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13.8
+      value: -13.22
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998342, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
@@ -608,8 +696,7 @@ PrefabInstance:
         type: 3}
       propertyPath: SandFX
       value: 
-      objectReference: {fileID: 2097615167498095134, guid: 1f3476841db6fe145a10e03df1d46b92,
-        type: 3}
+      objectReference: {fileID: 2097615169122218377}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: FXScale
@@ -618,7 +705,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: Pricision
-      value: 500
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
@@ -643,7 +730,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: LimitCircleRadius
-      value: 10.7
+      value: 11.5
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998336, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
@@ -673,7 +760,7 @@ PrefabInstance:
     - target: {fileID: 8033544743812998342, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13.67
+      value: -13.09
       objectReference: {fileID: 0}
     - target: {fileID: 8033544743812998342, guid: d93e63d63cc821a4f9649efb9d680a92,
         type: 3}
