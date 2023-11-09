@@ -22,6 +22,7 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     [HideInInspector] public float Rotspeed      = 0f;
     [SerializeField]  public float sinkDepth     = .1f;
     [SerializeField]  public float SpinPow       = 80f;
+    [SerializeField]  public float UpdateDelay   = 0f;
 
 
 
@@ -60,7 +61,11 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
     public override void PhysicsUpdate(PlatformObject affectedPlatform)
     {
         #region Ommission
-        if (_landedType == LandedType.None) return;
+        if(UpdateDelay>0f){
+
+            UpdateDelay -= Time.fixedDeltaTime;
+            return;
+        }
 
         /**********************************************
          *  회전방향벡터를 구한다...
@@ -150,6 +155,31 @@ public sealed class WaterPlatformBehavior : PlatformBehaviorBase
 
             _playerLastEuler = Player.Instance.transform.eulerAngles;
         }
+        #endregion
+    }
+
+
+
+    //==========================================
+    /////          Public methods          /////
+    //==========================================
+    public void SetRotDir(Vector3 standingWorldPos)
+    {
+        #region Omit
+        Vector3 standingDir = (standingWorldPos - transform.position).normalized;
+        _landedRadian = Mathf.Atan2(standingDir.z, standingDir.x);
+
+        /**회전방향벡터를 구한다...*/
+        _lastYEuler = _platformTr.transform.eulerAngles.y;
+        float radian = _landedRadian + (Mathf.Deg2Rad * _lastYEuler);
+        float cos = Mathf.Cos(radian);
+        float sin = Mathf.Sin(radian);
+
+        _SpinRotDir = new Vector3(
+            -sin,
+            0f,
+            cos
+        );
         #endregion
     }
 }

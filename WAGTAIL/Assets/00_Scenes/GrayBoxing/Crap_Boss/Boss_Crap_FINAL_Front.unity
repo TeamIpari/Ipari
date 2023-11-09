@@ -10442,48 +10442,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a507a6f35152f89448ad1d9814797097, type: 3}
---- !u!21 &702953359
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Grass(Clone)
-  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
-    type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Blend: 0
-    - _BlendMult: 1
-    - _BlendOff: 0
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!4 &707242884 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 278670351380330820, guid: 9bbe5646e9086464d8c97b8ec1b6736b,
@@ -30209,7 +30167,7 @@ MonoBehaviour:
     normal: {x: 0, y: 1, z: 0}
     length: {x: 0.277, y: 0.01}
     color: {x: 0.63576895, y: 0.90434986, z: 1.5297618}
-  m_InstantiatedMaterial: {fileID: 702953359}
+  m_InstantiatedMaterial: {fileID: 1611912430}
 --- !u!4 &1305550751
 Transform:
   m_ObjectHideFlags: 0
@@ -36693,6 +36651,48 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!21 &1611912430
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Grass(Clone)
+  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
+    type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blend: 0
+    - _BlendMult: 1
+    - _BlendOff: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1001 &1615860909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43952,6 +43952,24 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!1 &2124127522 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7186614508565438322, guid: 4e571e30fe445494bb690d3070e2430e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1391776867}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2124127526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124127522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b26dbd039fabae469f33a9b5562c366, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2127630058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44021,8 +44039,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5592530432550687958, guid: e01bb446b89274c498eb9ad111db1373,
         type: 3}
+      propertyPath: UseDefaultVolume
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592530432550687958, guid: e01bb446b89274c498eb9ad111db1373,
+        type: 3}
+      propertyPath: EventDescs.Array.data[0].Volume
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592530432550687958, guid: e01bb446b89274c498eb9ad111db1373,
+        type: 3}
       propertyPath: EventDescs.Array.data[0].EventRef.Path
       value: event:/BGM/CrabBossBGM
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592530432550687958, guid: e01bb446b89274c498eb9ad111db1373,
+        type: 3}
+      propertyPath: EventDescs.Array.data[0].PlayApplyTiming
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592530432550687958, guid: e01bb446b89274c498eb9ad111db1373,
+        type: 3}
+      propertyPath: EventDescs.Array.data[0].ParamRef._isGlobal
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5592530432550687958, guid: e01bb446b89274c498eb9ad111db1373,
         type: 3}
