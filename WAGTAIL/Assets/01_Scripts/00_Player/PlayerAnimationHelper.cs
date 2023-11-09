@@ -8,12 +8,32 @@ using UnityEngine;
  * *****/
 public sealed class PlayerAnimationHelper : MonoBehaviour
 {
+    //===============================================
+    ///////              Fields                //////
+    //===============================================
+    private Animator _anim;
+
+
+
+    //================================================
+    ///////            Magic methods           ///////
+    //================================================
+    private void Awake()
+    {
+        _anim = GetComponent<Animator>();
+    }
+
+
+
+
     //==============================================
     //////          Public methods            //////
     //==============================================
     public void PlayWalkSound()
     {
         #region Omit
+        if (_anim.GetFloat("speed") < .15f) return;
+
         /**현재 밟은 부분의 환경 파라미터를 가져온다...*/
         FModParameterReference paramRef = IpariUtility.GetFloorSFXType( transform.position, 
                                                                         ~(1 << LayerMask.NameToLayer("Player") ));
@@ -23,7 +43,7 @@ public sealed class PlayerAnimationHelper : MonoBehaviour
                                          paramRef, 
                                          transform.position, 
                                          5f, 
-                                         200 );
+                                         400 );
         #endregion
     }
 
