@@ -22,6 +22,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
      *   에디터 확장을 위한 private class.
      * ***/
 #if UNITY_EDITOR
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(PlatformObject))]
     private sealed class PlatformObjectEditor : Editor
     {

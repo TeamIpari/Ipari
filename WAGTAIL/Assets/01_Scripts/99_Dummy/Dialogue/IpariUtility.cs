@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace IPariUtility
 {
@@ -18,14 +20,32 @@ namespace IPariUtility
             public float   TimeLeft;
             public int     Id;
         }
+
+        private struct SFXColorSample
+        {
+            public Vector3 Color;
+            public float   ParamValue;
+            public string  Name;
+        }
         #endregion
 
         //==============================================
         //////               Fields                 ////
         //==============================================
-        private static Coroutine        _padCoroutne;
-        private static int              _vibeNum   = 0;
-        private static VibrationDesc[]  _vibeDescs = new VibrationDesc[10];
+        private static Coroutine          _padCoroutne;
+        private static int                _vibeNum       = 0;
+        private static VibrationDesc[]    _vibeDescs     = new VibrationDesc[10];
+
+        /**바닥 환경 관련....*/
+        private static Terrain            _lastTerrain   = null;
+        private static float[]            _layerSFXTypes = new float[10];
+        private static SFXColorSample[]   _texColors = new SFXColorSample[]
+        {
+            new SFXColorSample{ Color=new Vector3(117f/255f, 106f/255f, 73f/255f), ParamValue=FModParamLabel.PlayerWalkType.Sand, Name="흙" }, //흙
+            new SFXColorSample{ Color=new Vector3(58f/255f, 95f/255f, 40f/255f), ParamValue=FModParamLabel.PlayerWalkType.Grass, Name="풀숲" }, //풀숲
+            new SFXColorSample{ Color=new Vector3(208f/255f, 168f/255f, 101f/255f), ParamValue=FModParamLabel.PlayerWalkType.Grass, Name="모래" }, //모래
+            new SFXColorSample{ Color=new Vector3(121f/255f, 118f/255f, 104f/255f), ParamValue=FModParamLabel.PlayerWalkType.Stone, Name="돌" }, //돌
+        };
 
 
 
@@ -254,6 +274,69 @@ namespace IPariUtility
             #endregion
         }
 
+        internal static FModParameterReference GetFloorSFXType(Vector3 worldPosition, int layer=1)
+        {
+            #region Omit
+
+            /*********************************************************
+             *   주어진 worldPosition이 위치한 바닥의 종류를 조사한다...
+             * ****/
+            RaycastHit ret;
+            float      paramValue = 0f;
+            if (Physics.Raycast(   worldPosition+(Vector3.up),
+                                   Vector3.down,
+                                   out ret,
+                                   1.1f,
+                                   layer,
+                                   QueryTriggerInteraction.Ignore ))
+            {
+                /**터레인인지 확인한다....*/
+                bool isTerrain = (_lastTerrain != null && _lastTerrain.gameObject.Equals(ret.collider.gameObject))
+                                 || ((_lastTerrain=ret.collider.GetComponent<Terrain>())!=null);
+
+
+                /*********************************************
+                 *   터레인을 밟고 있는지 확인하고, 맞다면 해당
+                 *   터레인을 캐싱한다....
+                 * ******/
+                Renderer renderer = null;
+                if (isTerrain){
+
+                    TerrainLayer[] layers = _lastTerrain.terrainData.terrainLayers;
+                    UpdateTerrainLayerSFXLists(layers);
+
+                    paramValue = _layerSFXTypes[GetTerrainLayer(ConvertTerrainPosition(worldPosition, _lastTerrain), _lastTerrain)];
+                }
+
+                /**********************************************
+                 *    터레인이 아닌 GameObject들에 대한 처리.....
+                 * *******/
+                else if((renderer=ret.collider.GetComponent<Renderer>()))
+                {
+                    Vector2    hitCoord = ret.textureCoord;
+                    Texture2D  tex      = renderer.sharedMaterial.mainTexture as Texture2D;
+
+                    if(tex==null)
+                    {
+                        FModParameterReference paramRefFail = new FModParameterReference();
+                        return paramRefFail;
+                    }
+                    hitCoord.x *= tex.width;
+                    hitCoord.y *= tex.height;
+
+                    paramValue = GetSFXTypeFromColorSamples(tex.GetPixel(Mathf.FloorToInt(hitCoord.x), Mathf.FloorToInt(hitCoord.y)));
+                }
+
+
+            }
+
+            FModParameterReference paramRef = new FModParameterReference();
+            paramRef.SetParameter(FModLocalParamType.PlayerWalkType, paramValue);   
+
+            return paramRef;
+            #endregion
+        }
+
 
 
         //===================================================
@@ -319,7 +402,7 @@ namespace IPariUtility
             #endregion
         }
 
-        private Vector2 ConvertTerrainPosition(Vector3 pos, Terrain targetTerrain)
+        private static Vector2 ConvertTerrainPosition(Vector3 pos, Terrain targetTerrain)
         {
             #region Omit
             if (targetTerrain == null) return Vector2.zero;
@@ -345,12 +428,13 @@ namespace IPariUtility
             #endregion
         }
 
-        private int GetTerrainLayer(Vector2 position, Terrain terrainObject)
+        private static int GetTerrainLayer(Vector2 position, Terrain terrainObject)
         {
             #region Omit
             float[,,] aMap = terrainObject.terrainData.GetAlphamaps((int)position.x, (int)position.y, 1, 1);
             int tLayer = 0;
             float lastHighest = 0;
+
             for (int x = 0; x < aMap.GetLength(0); x++)
             {
                 for (int y = 0; y < aMap.GetLength(1); y++)
@@ -365,7 +449,84 @@ namespace IPariUtility
                     }
                 }
             }
+
             return tLayer;
+            #endregion
+        }
+
+        private static void UpdateTerrainLayerSFXLists(TerrainLayer[] layers)
+        {
+            #region Omit
+            if (_layerSFXTypes == null || layers == null) return;
+
+            /**************************************************
+             *   터레인 레이어 수에 알맞게 SFXLists를 확장한다...
+             * ***/
+            int layerCount = layers.Length;
+            if(_layerSFXTypes.Length<layerCount){
+
+                _layerSFXTypes = new float[layerCount];
+            }
+
+
+            /***************************************************
+             *   레이어의 이름에 따른 적절한 SFX Type을 채워넣는다...
+             * ******/
+            for(int i=0; i<layerCount; i++){
+
+                _layerSFXTypes[i] = GetSFXTypeFromTerrainLayer(layers[i]);
+            }
+
+
+            #endregion
+        }
+
+        private static float GetSFXTypeFromTerrainLayer(TerrainLayer layer)
+        {
+            #region Omit
+            if (layer == null) return -1;
+
+            string layerName = layer.name;
+
+            /**퓰을 밟았을 경우...*/
+            if (layerName.Contains("Grass") || layerName.Contains("Moss")) {
+
+                return FModParamLabel.PlayerWalkType.Grass;
+            }
+
+            /**모래을 밟았을 경우...*/
+            if (layerName.Contains("Sand") || layerName.Contains("New")){
+
+                return FModParamLabel.PlayerWalkType.Sand;
+            }
+
+            return -1;
+            #endregion
+        }
+
+        private static float GetSFXTypeFromColorSamples(Color inputColor)
+        {
+            #region Omit
+            Vector3 color = new Vector3(inputColor.r, inputColor.g, inputColor.b);
+
+            int   Count  = _texColors.Length;
+            float minDst = float.MaxValue;
+            int   minIdx = 0;
+
+            /**************************************
+             *   가장 가까운 색상을 선택한다.....
+             * ******/
+            for( int i=0; i<Count; i++ ){
+
+                float distance = (_texColors[i].Color - color).sqrMagnitude;
+                if (distance<minDst)
+                {
+                    minDst = distance;
+                    minIdx = i;
+                }
+            }
+
+            return _texColors[minIdx].ParamValue;
             #endregion
         }
     }
