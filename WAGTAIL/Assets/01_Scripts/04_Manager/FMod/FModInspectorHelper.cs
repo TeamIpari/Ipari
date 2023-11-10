@@ -138,7 +138,7 @@ public sealed class FModInspectorHelper : MonoBehaviour
             if (desc.Instance.IsValid) desc.Instance.Destroy(false);
 
             desc.Instance = FModAudioManager.CreateInstance(desc.EventRef);
-            desc.Instance.Volume           = (!UseDefaultVolume? desc.Instance.Volume:desc.Volume);
+            desc.Instance.Volume           = (UseDefaultVolume? desc.Instance.Volume:desc.Volume);
             desc.Instance.Position         = desc.EventPos;
             desc.Instance.TimelinePosition = desc.StartPosition;
             desc.Instance.SetParameter(desc.ParamRef);
@@ -165,8 +165,9 @@ public sealed class FModInspectorHelper : MonoBehaviour
         #region Omit
         if (EventDescs == null || EventDescs.Length < index) return;
 
-        ref EventDesc desc = ref EventDescs[index];
-        FModAudioManager.PlayOneShotSFX( desc.EventRef, desc.EventPos, desc.ParamRef, desc.Volume, desc.StartPosition, desc.EventMinDistance, desc.EventMaxDistance );
+        ref EventDesc desc   = ref EventDescs[index];
+        float         volume = (UseDefaultVolume? -1f:desc.Volume);
+        FModAudioManager.PlayOneShotSFX( desc.EventRef, desc.EventPos, desc.ParamRef, volume, desc.StartPosition, desc.EventMinDistance, desc.EventMaxDistance );
         #endregion
     }
 

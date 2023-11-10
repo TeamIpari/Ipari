@@ -90,21 +90,30 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
 
         switch (_progress++){
 
-                /**¾¾¾ÑÀ» ¹ñ´Â´Ù...*/
+                /**¾¾¾Ñ ¹ñ´Â ¸ð¼ÇÀ» Àû¿ëÇÑ´Ù....*/
                 case (0):
                 {
+                    AISM.Animator.speed = 1.5f;
+                    AISM.Animator.CrossFade(BossCrabAnimation.SpittingSeeds, .1f);
+                    break;
+                }
+
+                /**¾¾¾ÑÀ» ¹ñ´Â´Ù...*/
+                case (1):
+                {
+                    AISM.Animator.speed = 1f;
                     FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
                     CameraManager.GetInstance().CameraShake(.2f, CameraManager.ShakeDir.HORIZONTAL, .4f);
                     IpariUtility.PlayGamePadVibration(.1f, .1f, .1f);
 
                     CreateMarker();
                     PositionLuncher();
-                    _bossCrab.SetStateTrigger(.05f);
+                    _bossCrab.SetStateTrigger(.1f);
                     break;
                 }
 
                 /**»óÅÂ¸¦ Å»ÃâÇÑ´Ù...*/
-                case (1):
+                case (2):
                 {
                     AISM.Animator.CrossFade(BossCrabAnimation.Idle, .4f);
                     _bossCrab.SetStateTrigger(3f);
@@ -112,7 +121,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 }
 
                 /**´ÙÀ½ ÆÐÅÏÀ¸·Î ³Ñ¾î°£´Ù...*/
-                case (2):
+                case (3):
                 {
                     AISM.NextPattern();
                     break;

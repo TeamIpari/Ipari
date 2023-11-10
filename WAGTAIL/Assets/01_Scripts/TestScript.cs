@@ -23,26 +23,26 @@ public sealed class TestScript : MonoBehaviour
     //================================================
     ///////               Fields                //////
     //================================================
-    private WaterPlatformBehavior[] behaviors;
+    private WavePlatformBehavior[] behaviors;
 
     private Vector3 centerPos = Vector3.zero;
 
 
 
-    //===================================================
-    /////             Magic methods                 /////
-    //==================================================
+    //===========================================================
+    /////            Magic and Core methods                 /////
+    //==========================================================
     private void Start()
     {
         #region Omit
         int Count = transform.childCount;
 
         center2EdgeDstDiv = (1f / maxDst);
-        behaviors         = new WaterPlatformBehavior[Count];
+        behaviors         = new WavePlatformBehavior[Count];
 
         for (int i = 0; i<Count; i++){
 
-            behaviors[i] = transform.GetChild(i).GetComponent<WaterPlatformBehavior>();
+            behaviors[i] = transform.GetChild(i).GetComponent<WavePlatformBehavior>();
             if (behaviors[i] == null) continue;
         }
 
@@ -71,6 +71,11 @@ public sealed class TestScript : MonoBehaviour
         }
     }
 #endif
+
+    public void ApplyWave()
+    {
+
+    }
 
 
 }

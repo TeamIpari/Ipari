@@ -73,14 +73,14 @@ public class BossCrabSandWaveState : AIAttackState
                 /**속도를 조절한다....*/
                 case (0):
                 {
-                    AISM.Animator.speed = 1f;
+                    AISM.Animator.speed = .9f;
                     break;
                 }
 
                 /**빠르게 내려친다...*/
                 case (1):
                 {
-                    AISM.Animator.speed = 2f;
+                    AISM.Animator.speed = 4f;
                     AISM.Animator.CrossFade(BossCrabAnimation.MakeSandWave_Smash, .3f);
                     break;
                 }

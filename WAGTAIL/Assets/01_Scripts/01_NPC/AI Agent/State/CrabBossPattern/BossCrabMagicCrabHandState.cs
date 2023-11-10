@@ -128,7 +128,7 @@ public sealed class BossCrabMagicCrabHandState : AIAttackState
 
                         _handIns.gameObject.SetActive(true);
                         _handIns.targetTransform    = Player.Instance.transform;
-                        _handIns.transform.position = new Vector3(-2.57999992f, 6.17999983f, -5.75f);
+                        _handIns.transform.position = _bossCrab.transform.position + (Vector3.up * 5f) + (_bossCrab.transform.forward * 3.5f);
                         _handIns?.StartAttack(_handIns.transform.position);
                     }
                     break;

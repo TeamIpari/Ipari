@@ -6,8 +6,8 @@ using UnityEngine;
 /********************************************************
  * 플레이어가 해당 밟았을 경우, 발판이 출렁이는 효과를 적용합니다.
  ****/
-[AddComponentMenu("Platform/WaterPlatformBehavior")]
-public sealed class WaterPlatformBehavior : PlatformBehaviorBase
+[AddComponentMenu("Platform/WavePlatformBehavior")]
+public sealed class WavePlatformBehavior : PlatformBehaviorBase
 {
     private enum LandedType
     {

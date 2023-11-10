@@ -1,5 +1,31 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1102 &-7713262532633965967
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Attack1Spit
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 5385dac4eac27054d97ef6a432d97480, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-6492644550159977389
 AnimatorState:
   serializedVersion: 6
@@ -26,7 +52,58 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &-5348531496418225234
+--- !u!1102 &-4133969952928638465
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Attack3TongsSmash
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 1a5f13d5875a6604e9544849e61a4718, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1107 &-2564317192855199607
+AnimatorStateMachine:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MakeSandWave
+  m_ChildStates:
+  - serializedVersion: 1
+    m_State: {fileID: 3757430578539564856}
+    m_Position: {x: 280, y: -40, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -4133969952928638465}
+    m_Position: {x: 280, y: 20, z: 0}
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 300, y: -140, z: 0}
+  m_EntryPosition: {x: 300, y: -100, z: 0}
+  m_ExitPosition: {x: 300, y: 90, z: 0}
+  m_ParentStateMachinePosition: {x: 280, y: 140, z: 0}
+  m_DefaultState: {fileID: 3757430578539564856}
+--- !u!1102 &-506370578465137884
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -46,37 +123,12 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0b2cbb09fc18d2145af10f2d5c94951b, type: 2}
+  m_Motion: {fileID: 7400000, guid: 2031c024edc098a4eb42df32c4be3ed3, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1107 &-2564317192855199607
-AnimatorStateMachine:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MakeSandWave
-  m_ChildStates:
-  - serializedVersion: 1
-    m_State: {fileID: 6717680285448261874}
-    m_Position: {x: 280, y: -40, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 5387947436204028752}
-    m_Position: {x: 280, y: 20, z: 0}
-  m_ChildStateMachines: []
-  m_AnyStateTransitions: []
-  m_EntryTransitions: []
-  m_StateMachineTransitions: {}
-  m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 300, y: -140, z: 0}
-  m_EntryPosition: {x: 300, y: -100, z: 0}
-  m_ExitPosition: {x: 300, y: 90, z: 0}
-  m_ParentStateMachinePosition: {x: 290, y: 140, z: 0}
-  m_DefaultState: {fileID: 6717680285448261874}
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -141,7 +193,7 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!1102 &843916775987256178
+--- !u!1102 &2900589748969467011
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -161,7 +213,59 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 9da8709305def85419960003d4deb4ec, type: 2}
+  m_Motion: {fileID: 7400000, guid: 870ea1d0f16c103448547bf261026446, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1102 &3225294517010709659
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Attack4Ready
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 0ecddffc093fde94fae3fa932761f4e4, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1102 &3757430578539564856
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Attack3TongsRise
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 1fd076627b6c3614bbfce6096bd0d9dd, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -193,33 +297,7 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &5387947436204028752
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Attack3TongsSmash
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: df768262ad9327b449edc854b472a9f8, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1102 &5821603662183290188
+--- !u!1102 &5170962365495669144
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -239,7 +317,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: aaf2ecad2b43d4c47aee17344735631a, type: 2}
+  m_Motion: {fileID: 7400000, guid: c0ce84add253ccc4a9fc03573809d68f, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -255,13 +333,13 @@ AnimatorStateMachine:
   m_Name: EgoTongAttack
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: 5821603662183290188}
+    m_State: {fileID: 5170962365495669144}
     m_Position: {x: 280, y: -80, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 8149273398910874662}
+    m_State: {fileID: 7149356766620768425}
     m_Position: {x: 280, y: -20, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 843916775987256178}
+    m_State: {fileID: 2900589748969467011}
     m_Position: {x: 280, y: 40, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
@@ -272,104 +350,8 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 300, y: -190, z: 0}
   m_ExitPosition: {x: 300, y: 110, z: 0}
   m_ParentStateMachinePosition: {x: 280, y: 150, z: 0}
-  m_DefaultState: {fileID: 5821603662183290188}
---- !u!1102 &6717680285448261874
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Attack3TongsRise
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: dc5a4b43b186c78428233067836f8840, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1102 &6902959292100559797
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Attack4Ready
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7bb8ea68fe346864381960a849c04f39, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1107 &7486872349636362356
-AnimatorStateMachine:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Base Layer
-  m_ChildStates:
-  - serializedVersion: 1
-    m_State: {fileID: -5348531496418225234}
-    m_Position: {x: 470, y: -300, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 6902959292100559797}
-    m_Position: {x: 470, y: -120, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 8437083787035300679}
-    m_Position: {x: 220, y: -240, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -6492644550159977389}
-    m_Position: {x: 220, y: -300, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 3925263955430847384}
-    m_Position: {x: 220, y: -180, z: 0}
-  m_ChildStateMachines:
-  - serializedVersion: 1
-    m_StateMachine: {fileID: 5984802303604312385}
-    m_Position: {x: 470, y: -240, z: 0}
-  - serializedVersion: 1
-    m_StateMachine: {fileID: -2564317192855199607}
-    m_Position: {x: 470, y: -180, z: 0}
-  m_AnyStateTransitions: []
-  m_EntryTransitions: []
-  m_StateMachineTransitions:
-  - first: {fileID: 5984802303604312385}
-    second: []
-  - first: {fileID: -2564317192855199607}
-    second: []
-  m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 30, y: -280, z: 0}
-  m_EntryPosition: {x: 30, y: -230, z: 0}
-  m_ExitPosition: {x: 30, y: -180, z: 0}
-  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: 8437083787035300679}
---- !u!1102 &8149273398910874662
+  m_DefaultState: {fileID: 5170962365495669144}
+--- !u!1102 &7149356766620768425
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -389,12 +371,81 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: c0bd92946b64fcb4f90413eade8faf11, type: 2}
+  m_Motion: {fileID: 7400000, guid: d49006c49de57c54485d54ac24b64e8b, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1107 &7163208460506660389
+AnimatorStateMachine:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SplitSeeds
+  m_ChildStates:
+  - serializedVersion: 1
+    m_State: {fileID: -506370578465137884}
+    m_Position: {x: 310, y: -50, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -7713262532633965967}
+    m_Position: {x: 310, y: 10, z: 0}
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 330, y: -140, z: 0}
+  m_EntryPosition: {x: 330, y: -100, z: 0}
+  m_ExitPosition: {x: 330, y: 70, z: 0}
+  m_ParentStateMachinePosition: {x: 310, y: 120, z: 0}
+  m_DefaultState: {fileID: -506370578465137884}
+--- !u!1107 &7486872349636362356
+AnimatorStateMachine:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Base Layer
+  m_ChildStates:
+  - serializedVersion: 1
+    m_State: {fileID: 8437083787035300679}
+    m_Position: {x: 220, y: -240, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -6492644550159977389}
+    m_Position: {x: 220, y: -300, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 3925263955430847384}
+    m_Position: {x: 220, y: -180, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 3225294517010709659}
+    m_Position: {x: 470, y: -120, z: 0}
+  m_ChildStateMachines:
+  - serializedVersion: 1
+    m_StateMachine: {fileID: 5984802303604312385}
+    m_Position: {x: 470, y: -240, z: 0}
+  - serializedVersion: 1
+    m_StateMachine: {fileID: -2564317192855199607}
+    m_Position: {x: 470, y: -180, z: 0}
+  - serializedVersion: 1
+    m_StateMachine: {fileID: 7163208460506660389}
+    m_Position: {x: 470, y: -300, z: 0}
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions:
+  - first: {fileID: 5984802303604312385}
+    second: []
+  - first: {fileID: -2564317192855199607}
+    second: []
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 30, y: -280, z: 0}
+  m_EntryPosition: {x: 30, y: -230, z: 0}
+  m_ExitPosition: {x: 30, y: -180, z: 0}
+  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+  m_DefaultState: {fileID: 8437083787035300679}
 --- !u!1102 &8437083787035300679
 AnimatorState:
   serializedVersion: 6

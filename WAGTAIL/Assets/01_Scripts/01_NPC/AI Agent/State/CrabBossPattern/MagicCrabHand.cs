@@ -228,7 +228,7 @@ public sealed class MagicCrabHand : MonoBehaviour
             float updatePos  = (hit.point.y - startPos.y) * curveValue;
 
             Vector3 lookPos = (playerTr.position - transform.position).normalized;
-            lookPos.y += Mathf.Clamp(curveValue, 0f, float.MaxValue);
+            lookPos.y += Mathf.Clamp(curveValue+.1f, 0f, float.MaxValue);
 
             tr.rotation = (IPariUtility.IpariUtility.GetQuatBetweenVector(-transform.forward, lookPos, deltaTime*10f) * tr.rotation);
             tr.position = startPos + (Vector3.down * updatePos);
