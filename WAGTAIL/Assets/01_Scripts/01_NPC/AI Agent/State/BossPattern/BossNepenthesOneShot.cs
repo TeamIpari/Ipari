@@ -1,4 +1,5 @@
 using IPariUtility;
+using MagicaCloth2;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -109,7 +110,11 @@ public class BossNepenthesOneShot: AIAttackState
         //Vector3 pos = CaculateVelocity(target, shootPoint.position, time);
         Vector3 pos = IpariUtility.CaculateVelocity(target, shootPoint.position, time);
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
-        obj.transform.localScale = Vector3.one * bombSize;
+        for(int i = 0; i < obj.transform.childCount; i++)
+        {
+            obj.transform.GetChild(i).localScale = Vector3.one * bombSize;
+        }
+        //obj.transform.localScale = Vector3.one * bombSize;
         obj.GetComponent<Bullet>().ShotDirection(pos);
         obj.GetComponent<Bullet>().SetMarker(marker);
 

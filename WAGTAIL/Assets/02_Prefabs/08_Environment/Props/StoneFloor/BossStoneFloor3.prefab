@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 4112165874696548398}
   - component: {fileID: 2230880894163715300}
   - component: {fileID: -5270008600021183769}
+  - component: {fileID: 2004822239079086907}
+  - component: {fileID: 7956003402833010766}
   m_Layer: 0
   m_Name: BossStoneFloor3
   m_TagString: Untagged
@@ -95,5 +97,47 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.8721695, y: 0.95428646, z: 2.8742406}
-  m_Center: {x: 0, y: 0.47714317, z: -0.00000011920929}
+  m_Size: {x: 3, y: 1, z: 3}
+  m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &2004822239079086907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 429339682887312689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bddf0544d16af64386c99d66d23ab23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpdateQuat: {x: 0, y: 0, z: 0, w: 1}
+  OffsetQuat: {x: 0, y: 0, z: 0, w: 1}
+  UpdatePosition: {x: 0, y: 0, z: 0}
+  OffsetPosition: {x: 0, y: 0, z: 0}
+  PrevPosition: {x: 0, y: 0, z: 0}
+  PreventAddChild: 0
+  _PlayerOnPlatform: 0
+  UsedCollision: 1
+  CheckGroundOffset: 0
+  CheckGroundDownOffset: 0
+  Behaviors:
+  - {fileID: 7956003402833010766}
+  _ObjectOnPlatformCount: 0
+--- !u!114 &7956003402833010766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 429339682887312689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43b45c8f7e1cfe048a9e94faf1444333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Yspeed: 0
+  Rotspeed: 0
+  sinkDepth: 0.02
+  SpinPow: 40
+  UpdateDelay: 0

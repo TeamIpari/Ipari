@@ -129,6 +129,8 @@ public sealed class WavePlatformBehavior : PlatformBehaviorBase
         /***********************************************
          *  ¹âÇûÀ» °æ¿ì, ¹âÈù ÁöÁ¡ ¹× ¹âÈù »óÅÂ·Î ÀüÈ¯ÇÑ´Ù...
          * **/
+        if (standingTarget == null) return;
+
         _landedType = LandedType.Enter;
         Yspeed      = -sinkDepth;
         Rotspeed    = -.1f;

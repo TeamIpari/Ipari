@@ -1,0 +1,161 @@
+using Autodesk.Fbx;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Tilemaps;
+using UnityEngine;
+
+public class BrokenPlatformBehavior : PlatformBehaviorBase
+{
+    /**************************************************
+     * Bomb 또는 Bullet에 의해 부서지는 Platform Object.
+     * */
+
+    /**************************************************
+     * 필요한 변수들이 무엇이 있을까?
+     * 1. Platform 생성 시간.
+     * 2. Platform의 Piece들을 가지고 있는 데이터.
+     * 3. Platform Piece의 최초 위치. 
+     */
+
+    //===========================================
+    /////           Property                /////
+    //===========================================
+
+    public GameObject[] PlatformArray;
+    public bool isBroken;
+    [HideInInspector] public Vector3[] InitPos;
+
+
+
+    //=============================================
+    /////           Private Fields          //////
+    //============================================
+    private MeshRenderer mesh;
+    private Collider col;
+    private GameObject curBrokenPlatform;
+    
+
+
+
+
+    //=============================================
+    /////        Override Methods             /////
+    //=============================================
+    public override void BehaviorStart(PlatformObject affectedPlatform)
+    {
+        this.tag = "Platform";
+        // Platform Piece가 몇 개 있는지 파싱부터 해줘야함.
+        mesh = GetComponent<MeshRenderer>();
+        col = GetComponent<Collider>();
+        isBroken = false;
+        // 파괴되는 방식이 여러 바리에이션으로 파괴되게 세팅
+        for (int i = 0; i < PlatformArray.Length; i++)
+        {
+            PlatformArray[i].SetActive(false);
+        }
+    }
+
+    public override void BehaviorEnd(PlatformObject changedTarget)
+    {
+        base.BehaviorEnd(changedTarget);
+    }
+
+    public override void OnObjectPlatformEnter(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
+    {
+        #region Omit       
+        /******************************************
+         * 기본적으로 무엇인가 밟았을 때 실행하는 것이 아닌 파괴되었을 때 실행.
+         * */ 
+        if (standingTarget != null) return;
+        isBroken = true;
+        StartCoroutine(SpawnPlatform());
+
+
+        #endregion
+
+
+    }
+
+    public override void OnObjectPlatformExit(PlatformObject affectedPlatform, GameObject exitTarget, Rigidbody exitBody)
+    {
+        base.OnObjectPlatformExit(affectedPlatform, exitTarget, exitBody);
+    }
+
+    public override void OnObjectPlatformStay(PlatformObject affectedPlatform, GameObject standingTarget, Rigidbody standingBody, Vector3 standingPoint, Vector3 standingNormal)
+    {
+        base.OnObjectPlatformStay(affectedPlatform, standingTarget, standingBody, standingPoint, standingNormal);
+    }
+
+    //============================================
+    /////          Core Methods              /////
+    //============================================
+    private void SetPieceOriginPos(GameObject curPlatform)
+    {
+        curBrokenPlatform = curPlatform;
+        InitPos = new Vector3[curPlatform.transform.childCount];
+        for (int i = 0; i < curPlatform.transform.childCount; i++)
+        {
+            var piece = curPlatform.transform.GetChild(i);
+            InitPos[i] = piece.position;
+        }
+        curBrokenPlatform.SetActive(true);
+    }
+    public IEnumerator SpawnPlatform()
+    {
+
+        // 매쉬부터 꺼주기.
+        if (col != null) col.enabled = false;
+        if (mesh != null) mesh.enabled = false;
+        SetPieceOriginPos(PlatformArray[Random.Range(0, PlatformArray.Length)]);
+        // 랜덤 플랫폼을 받아와서 Piece를 할당받고 Piece를 폭발시켜 사방에 퍼지게 하기.
+
+        for (int i = 0; i < curBrokenPlatform.transform.childCount; i++)
+        {
+            var rigidbody = curBrokenPlatform.transform.GetChild(i).GetComponent<Rigidbody>();
+            if (rigidbody != null)
+            {
+                rigidbody.useGravity = true;
+                rigidbody.isKinematic = false;
+                // 리지드 바디에 벨로시티를 부가함.
+                rigidbody.velocity = ExplosionVelocity(rigidbody);
+                rigidbody.gameObject.layer = LayerMask.NameToLayer("Pass");
+            }
+        }
+
+        yield return new WaitForSeconds(1.5f);
+
+        Vector3 v = new Vector3(-90, 0, 0);
+
+        for (int i = 0; i < curBrokenPlatform.transform.childCount; i++)
+        {
+            var piece = curBrokenPlatform.transform.GetChild(i);
+            var rigid = piece.GetComponent<Rigidbody>();
+            if (rigid != null)
+            {
+                rigid.useGravity = false;
+                rigid.velocity = Vector3.zero;
+                rigid.isKinematic = true;
+
+                piece.rotation = Quaternion.Euler(v);
+                piece.position = InitPos[i];
+            }
+        }
+        curBrokenPlatform.SetActive(false);
+        if (col != null) col.enabled = true;
+        if (mesh != null) mesh.enabled = true;
+        isBroken = false;
+    }
+
+    private Vector3 ExplosionVelocity(Rigidbody rigid)
+    {
+        // 현재 포지션에서 y값이 n만큼 내려간 위치에서 조각마다의 방향 벡터를 구함.
+        Vector3 direction = rigid.gameObject.transform.position - (transform.position /*- Vector3.up * 1.5f*/);
+
+        // 방향 벡터를 구함.
+        direction.Normalize();
+
+        return direction * 1.5f;
+    }
+
+}

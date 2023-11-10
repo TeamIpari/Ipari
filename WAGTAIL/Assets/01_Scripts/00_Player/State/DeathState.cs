@@ -105,9 +105,10 @@ public class DeathState : State
         //player.UIManager.ActiveGameUI(GameUIType.Death, true);
         player.animator.Rebind();
         player.GameManager.Coin -= 5;
+        ChildPlatformsShaker obj = GameObject.Find("Floor2").GetComponent<ChildPlatformsShaker>();
         //체크 포인트로 이동 구현 해야함
-        if (BossRoomFieldManager.Instance != null)
-            player.GameManager.WrapPlayerPosition(BossRoomFieldManager.Instance.GetSafetyTile().position + new Vector3(0,5,0));
+        if (obj != null)
+            player.GameManager.WrapPlayerPosition(obj.GetWavePlatform().position + Vector3.up * 2f);
         else
             player.GameManager.Respawn();
     }

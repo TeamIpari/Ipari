@@ -7,6 +7,8 @@ using UnityEditor.EditorTools;
 using System.Runtime.InteropServices;
 using UnityEditor.Build.Content;
 using Unity.VisualScripting.FullSerializer;
+using UnityEngine.SocialPlatforms;
+using Autodesk.Fbx;
 
 [Serializable]
 public struct BossNepenthesProfile
@@ -59,7 +61,8 @@ public sealed class BossNepenthes : Enemy
         //========================================
         private SerializedProperty LeftVineProperty;
         private SerializedProperty RightVineProperty;
-
+        private SerializedProperty FXVineAttackProperty;
+        private SerializedProperty BombObjectProperty;
 
 
         /*독성 구체 패턴 공용(한번 쏘는 기믹 포함)*/
@@ -136,6 +139,16 @@ public sealed class BossNepenthes : Enemy
             if(RightVineProperty == null)
             {
                 RightVineProperty = serializedObject.FindProperty("_RightVinePrefab");
+            }
+
+            if(FXVineAttackProperty == null)
+            {
+                FXVineAttackProperty = serializedObject.FindProperty("_FXVineAttackPrefab");
+            }
+            
+            if(BombObjectProperty == null)
+            {
+                BombObjectProperty = serializedObject.FindProperty("_BombObjectPrefab");
             }
 
             if(ShootPointProperty == null)
@@ -215,6 +228,15 @@ public sealed class BossNepenthes : Enemy
 
             EditorGUI.indentLevel++;
 
+            using (var changeScope = new EditorGUI.ChangeCheckScope())
+            {
+                GameObject value = (GameObject)EditorGUILayout.ObjectField("FXVineAttack", FXVineAttackProperty.objectReferenceValue, typeof(GameObject), true);
+                if(changeScope.changed)
+                {
+                    FXVineAttackProperty.objectReferenceValue = value;
+                }
+            }
+
             /* 오른쪽 덩쿨 프리팹 참조필드 표시..*/
             using (var changeScope = new EditorGUI.ChangeCheckScope())
             {
@@ -232,6 +254,15 @@ public sealed class BossNepenthes : Enemy
                 if (changeScope.changed)
                 {
                     LeftVineProperty.objectReferenceValue = value;
+                }
+            }
+
+            using (var changeScope = new EditorGUI.ChangeCheckScope())
+            {
+                GameObject value = (GameObject)EditorGUILayout.ObjectField("BombObject", BombObjectProperty.objectReferenceValue, typeof(GameObject), true);
+                if(changeScope.changed)
+                {
+                    BombObjectProperty.objectReferenceValue = value;
                 }
             }
 
@@ -427,6 +458,12 @@ public sealed class BossNepenthes : Enemy
     [SerializeField, HideInInspector]
     public GameObject _RightVinePrefab;
 
+    [SerializeField, HideInInspector]
+    public GameObject _FXVineAttackPrefab;
+
+    [SerializeField, HideInInspector]
+    public GameObject _BombObjectPrefab;
+
     /*********************************************
      * 독성 구체 일발 장전
      * ***/
@@ -446,7 +483,7 @@ public sealed class BossNepenthes : Enemy
     public GameObject _AcidBombBigMarker;
 
     [SerializeField, HideInInspector]
-    public GameObject _AcidBombSmallMarker;
+    public GameObject _AcidBombSmallMarker;    
 
 
     //==============================================
@@ -455,12 +492,18 @@ public sealed class BossNepenthes : Enemy
     [Header("Bullet Prefab")]
     private BossNepenthesProfile BossProfile;
     public GameObject FX_Hitprefab;
-    public Transform hitTrasnform;
+    public ChildPlatformsShaker PlatformShaker;
+    public Transform HitTrasnform;
 
     [Header("Next Chapter")]
     [Tooltip("보스가 죽었을 때 갈 다음 씬 이름")]
     public string nextChapterName;
+    public GameObject deathZone;
+    public GameObject potal;
     private Stack<GameObject> HpCanvas;
+    
+    private float curTImer;
+    private bool isOne = false;
 
     //==========================================
     /////           Magic Method            ////
@@ -483,8 +526,33 @@ public sealed class BossNepenthes : Enemy
 
     void Update()
     {
-        if (AiSM != null)
-            AiSM.CurrentState.Update();
+        bool Ending = AiSM.CurrentState == AiDie;
+        if(!Ending)
+        {
+            if (AiSM != null)
+                AiSM.CurrentState.Update();
+        }
+        else if(Ending && !isOne)
+        {
+            curTImer += Time.deltaTime;
+            GameObject obj = GameObject.Find("Floor2");
+            if (curTImer > 1.5f)
+            {
+                Debug.Log($"{obj.transform.childCount}");
+                for (int i =0; i < obj.transform.childCount; i++)
+                {
+                    Debug.Log("AA");
+                    Transform child = obj.transform.GetChild(i);
+                    Debug.Log($"{child.name}");
+                    child.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
+                }
+                //CameraManager.GetInstance().CameraShake(0.5f, CameraManager.ShakeDir.ROTATE, 2.5f, 0.05f);
+
+                deathZone.SetActive(false);
+                potal.SetActive(true);
+                isOne = true;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -533,7 +601,7 @@ public sealed class BossNepenthes : Enemy
         base.Hit();
         GameObject hpGage = HpCanvas.Pop();
         hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
-        GameObject FX_Hit = GameObject.Instantiate(FX_Hitprefab, hitTrasnform.position, FX_Hitprefab.transform.rotation, this.transform.parent);
+        GameObject FX_Hit = GameObject.Instantiate(FX_Hitprefab, HitTrasnform.position, FX_Hitprefab.transform.rotation, this.transform.parent);
         Destroy(FX_Hit, 1.0f);
         #endregion
     }
@@ -545,7 +613,7 @@ public sealed class BossNepenthes : Enemy
 
         AiIdle = new BossNepenthesIdleState(AiSM, IdleRate);
         AiWait = new BossNepenthesWaitState(AiSM, WaitRate);
-        AiAttack = new BossNepenthesVineAttack(AiSM, _LeftVinePrefab, _RightVinePrefab);
+        AiAttack = new BossNepenthesVineAttack(AiSM, this, _LeftVinePrefab, _RightVinePrefab, _FXVineAttackPrefab, _BombObjectPrefab , PlatformShaker);
         AiAttack2 = new BossNepenthesOneShot(AiSM, BossProfile, _MaximumSize, _FlightTime);
         SetProfile(_AcidBombSmallMarker);
         AiAttack3 = new BossNepenthesSmallShotGun(AiSM, BossProfile, _FlightTime, _ShootCount, _ShootArea);
@@ -563,5 +631,14 @@ public sealed class BossNepenthes : Enemy
     public void SetProfile(GameObject ShotMarker)
     {
         BossProfile.SetProfile(_AcidBombPrefab, _ShootPoint, ShotMarker);
+    }
+
+
+    /******************************************************
+     * coroutine
+     * */
+    public void CoroutineFunc(Func<float, IEnumerator> coFunc, float time)
+    {
+        StartCoroutine(coFunc(time));
     }
 }
