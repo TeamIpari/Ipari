@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BossNepenthesVineAttack : AIAttackState
@@ -20,8 +19,6 @@ public class BossNepenthesVineAttack : AIAttackState
         STATE_END = 4,
     }
 
-    public delegate void AddListItem(String myString);
-    AddListItem myDelegate;
     private Thread myThread;
     private VineState myState = VineState.STATE_NONE;
 
@@ -34,15 +31,22 @@ public class BossNepenthesVineAttack : AIAttackState
     private bool isThread = false;
 
     //================================================
-    // Unity Property
+    // Property
     //================================================
+    private BossNepenthes boss;
     private GameObject rightVine;
     private GameObject leftVine;
     private GameObject vine;
+    private GameObject bomb;
+    private GameObject fx;
+    private ChildPlatformsShaker shaker;
 
     private Vector3 rightOriginPos;
     private Vector3 leftOriginPos;
-    private Vector3 spawnPos;
+    private Vector3 movingPos;
+    private Collider[] colliders = new Collider[10];
+    private GameObject[] BombPools = new GameObject[3];
+
 
     private Animator vineAnim;
 
@@ -52,7 +56,7 @@ public class BossNepenthesVineAttack : AIAttackState
     /////               Magic Methods              /////
     //=================================================
     public BossNepenthesVineAttack(
-        AIStateMachine stateMachine, GameObject leftVine, GameObject rightVine) : base(stateMachine)
+        AIStateMachine stateMachine, BossNepenthes boss, GameObject leftVine, GameObject rightVine ,GameObject fx, GameObject bomb, ChildPlatformsShaker shaker) : base(stateMachine)
     {
         #region Omit
         this.AISM = stateMachine;
@@ -60,6 +64,10 @@ public class BossNepenthesVineAttack : AIAttackState
         leftOriginPos = leftVine.transform.position;
         this.rightVine = rightVine;
         rightOriginPos = rightVine.transform.position;
+        this.shaker = shaker;
+        this.boss = boss;
+        this.fx = fx;
+        this.bomb = bomb;
         #endregion
     }
 
@@ -119,7 +127,7 @@ public class BossNepenthesVineAttack : AIAttackState
             case VineState.STATE_MOVE:
                 {
                     vineAnim.SetBool("isAttack", true);
-                    MovementVine(vine.transform.position, spawnPos);
+                    MovementVine(vine.transform.position, movingPos);
                     break;
                 }
             case VineState.STATE_ATTACK:
@@ -132,14 +140,27 @@ public class BossNepenthesVineAttack : AIAttackState
                         isThread = true;
                         myThread = new Thread(new ThreadStart(ThreadFunction));
                         myThread.Start();
-                        BossRoomFieldManager.Instance.BreakingPlatform(spawnPos.x, true);
+
+                        int Count = Physics.OverlapBoxNonAlloc(
+                            vine.transform.position,
+                            new Vector3(0.5f, 1.5f, 20f),
+                            colliders,
+                            vine.transform.rotation,
+                            (1 << LayerMask.NameToLayer("Platform")),
+                            QueryTriggerInteraction.Ignore
+                        );
+                        if (Count > 0)
+                        {
+                            boss.CoroutineFunc(ShakePlatforms, 0.1f);
+                            FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_VineSmash, Vector3.zero, 2f);
+                            CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, 0.8f, .05f);
+                        }
                     }
                 }
                 break;
             case VineState.STATE_ORIGINBACK:
                 {
                     GotoMoveOrigin();
-                    isThread = false;
                 }
                 break;
             default:
@@ -147,9 +168,54 @@ public class BossNepenthesVineAttack : AIAttackState
         }
     }
 
+    private IEnumerator ShakePlatforms(float time)
+    {
+        float x, z;
+        yield return new WaitForSeconds(time);
+        shaker.MakeWave(colliders);
+        Vector3 vec = new Vector3(movingPos.x, movingPos.y, -4.5f);
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject tempFx = GameObject.Instantiate(fx, vec, fx.transform.rotation);
+            GameObject.Destroy(tempFx, 1f);
+            vec += Vector3.forward * -3f;
+        }
+
+        if (BombPools[0] == null)
+            CreateReActionObject();
+
+        //CameraManager.GetInstance().CameraShake(0.5f, CameraManager.ShakeDir.ROTATE, 2.5f, 0.05f);
+
+        foreach (var fruit in BombPools)
+        {
+            x = Random.Range(-6f, 6f);
+            z = Random.Range(-6f, -12f);
+
+            fruit.SetActive(true);
+            fruit.transform.position = new Vector3(x, 13f, z);
+            yield return new WaitForSeconds(0.050f);
+        }
+    }
+
+    private void CreateReActionObject()
+    {
+        BombPools = new GameObject[3];
+
+        // 생성 하는 기능.
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject obj = GameObject.Instantiate<GameObject>(bomb);
+            obj.transform.position = Vector3.zero;
+            BombPools[i] = obj;
+            BombPools[i].SetActive(false);
+        }
+    }
+
+
     private void GotoMoveOrigin()
     {
         MovementVine(vine.transform.position, isLeft == true ? leftOriginPos : rightOriginPos);
+        isThread = false;
     }
 
 
@@ -173,23 +239,12 @@ public class BossNepenthesVineAttack : AIAttackState
 
     private void ShowVine()
     {
-        spawnPos = BossRoomFieldManager.Instance.PlayerOnTilePos;
-        float xpos = (spawnPos.x - 1.5f) / 3;
-        // 작을 경우 왼쪽 덩쿨 출력
+        movingPos = Player.Instance.transform.position;
 
-        // 생성이 아닌 지정으로 해야 함.
+        vine = movingPos.x < AISM.Transform.position.x ? leftVine : rightVine;
+        isLeft = movingPos.x < AISM.Transform.position.x ? true : false;
 
-        vine = xpos < 3 ? leftVine : rightVine;
-        isLeft = xpos < 3 ? true : false;
-
-        //if (vine == null)
-        //    vine = GameObject.Instantiate(rightVine, BossRoomFieldManager.Instance.transform);
-        //else
-        //    vine.SetActive(true);
-        vine.transform.parent = BossRoomFieldManager.Instance.transform;
-
-        // 몇 초 후 떨어지게 하기.
-        spawnPos = BossRoomFieldManager.Instance.transform.position + new Vector3(spawnPos.x, vine.transform.position.y + 2.8f, vine.transform.position.z);
+        movingPos = shaker.transform.position + new Vector3(movingPos.x, vine.transform.position.y + 2.8f, vine.transform.position.z - 2f);
     }
 }
 

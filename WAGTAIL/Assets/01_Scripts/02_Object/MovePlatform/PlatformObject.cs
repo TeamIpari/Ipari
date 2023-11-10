@@ -344,7 +344,8 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private void OnCollisionEnter(Collision collision)
     {
         #region Omit
-        if (UsedCollision == false || collision.gameObject.layer==LayerMask.NameToLayer("Enemies")) return;
+        if (UsedCollision == false || collision.gameObject.layer==LayerMask.NameToLayer("Enemies") ||
+            collision.gameObject.GetComponent<BombObject>() != null) return;
 
         /***********************************
          *   enter의 처리를 안하는 경우의 처리.
@@ -409,7 +410,8 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private void OnCollisionStay(Collision collision)
     {
         #region Omit
-        if (UsedCollision == false) return;
+        if (UsedCollision == false||
+            collision.gameObject.GetComponent<BombObject>() != null) return;
 
         /**************************************
          *  해당 발판위를 밟고 있는지 확인한다...
@@ -469,7 +471,8 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     private void OnCollisionExit(Collision collision)
     {
         #region Omit
-        if (UsedCollision == false) return;
+        if (UsedCollision == false ||
+            collision.gameObject.GetComponent<BombObject>() != null) return;
 
         /***********************************
          *   exit의 처리를 안하는 경우의 처리.
@@ -658,6 +661,7 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     {
         // 무빙 플랫폼 전용인데... 일단 임시
         #region Call_OnObjectPlatformEnter
+        //Debug.Log("AA");
         _PkProgress = PendingKillProgress.PENDINGKILL_READY;
         for (int i = 0; i < _CopyCount; i++)
         {

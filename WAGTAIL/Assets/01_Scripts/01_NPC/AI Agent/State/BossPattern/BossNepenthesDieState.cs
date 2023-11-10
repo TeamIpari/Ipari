@@ -56,7 +56,6 @@ public class BossNepenthesDieState : AIDieState
         curTimer += Time.deltaTime;
         if(curTimer > brokenTime && !oneChance)
         {
-            BossRoomFieldManager.Instance.EnableBrokenPlatformComponent(nextSceneName);
             //AISM.character.GetComponent<Enemy>().GoNextChapter();
             oneChance = true;
         }

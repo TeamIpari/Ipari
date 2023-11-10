@@ -87,6 +87,7 @@ public sealed class ChildPlatformsShaker : MonoBehaviour
     //=====================================================
     ////////              Core methods            ////////
     //=====================================================
+
     public void MakeWave( params GameObject[] waveStartObjs )
     {
         #region Omit
@@ -218,6 +219,16 @@ public sealed class ChildPlatformsShaker : MonoBehaviour
 
         return false;
         #endregion
+    }
+    public Transform GetWavePlatform()
+    {
+        BrokenPlatformBehavior bp;
+        do
+        {
+            bp = transform.GetChild(Random.Range(0, transform.childCount)).GetComponent<BrokenPlatformBehavior>();
+        } while (bp.isBroken);
+
+        return bp.transform;
     }
 
 
