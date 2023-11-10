@@ -74,7 +74,7 @@ namespace IPariUtility
 
             // 속도 추가
             float Vxz = Sxz / time;
-            float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
+            float Vy = Sy / time + 1.5f * Mathf.Abs(Physics.gravity.y) * time;
             // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
             Vector3 result = distanceXZ.normalized;
             result *= Vxz;
