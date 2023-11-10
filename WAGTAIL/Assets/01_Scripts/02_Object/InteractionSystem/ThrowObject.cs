@@ -26,8 +26,8 @@ public class ThrowObject : MonoBehaviour, IInteractable
     [Header("Throw Setting")]
     [Range(0, 5)]
     [SerializeField] private float value = 0.0f;
-    [SerializeField] private float height = 0.0f;
-    [SerializeField] private float range = 0.0f;
+    [SerializeField] private const float height = 1.0f;
+    [SerializeField] private const float range = 10.0f;
     [SerializeField] private Transform autoTarget;
 
     private Transform _transform;
@@ -304,13 +304,13 @@ public class ThrowObject : MonoBehaviour, IInteractable
         else if (_player.target != null)
         {
             float distance = Vector3.Distance(_player.target.transform.position, this.transform.position);
-            flightTime = height * (distance / (_player.throwRange));
+            //flightTime = height * (distance / (_player.throwRange));
             isTarget = true;
-            Vector3 correction_value =
-                new Vector3(_player.target.transform.position.x, _player.target.transform.position.y + correctionHeight, _player.target.transform.position.z)
-                + (_player.transform.forward * correctionForward)* (Gravity * flightTime);
+            //Vector3 correction_value =
+            //    new Vector3(_player.target.transform.position.x, _player.target.transform.position.y + correctionHeight, _player.target.transform.position.z)
+            //    + (_player.transform.forward * correctionForward)* (Gravity * flightTime);
 
-            Vector3 val = IpariUtility.CaculateVelocity(correction_value , _player.transform.position, flightTime);
+            Vector3 val = IpariUtility.CaculateVelocity(_player.target.transform.position, _player.transform.position, height);
             _rigidbody.velocity = val;
         }
         
