@@ -44,8 +44,6 @@ public class BossCrabAntHellState : AIAttackState
     public override void Update()
     {
         #region Omit
-        base.Update();
-
         /*****************************************
          *   상태 트리거가 참일 경우에만 로직 적용...
          * ***/

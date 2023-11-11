@@ -25,7 +25,7 @@ namespace IPariUtility
         {
             public Vector3 Color;
             public float   ParamValue;
-            public string  Name;
+            public string  DebugName;
         }
         #endregion
 
@@ -41,10 +41,10 @@ namespace IPariUtility
         private static float[]            _layerSFXTypes = new float[10];
         private static SFXColorSample[]   _texColors = new SFXColorSample[]
         {
-            new SFXColorSample{ Color=new Vector3(117f/255f, 106f/255f, 73f/255f), ParamValue=FModParamLabel.PlayerWalkType.Sand, Name="Èë" }, //Èë
-            new SFXColorSample{ Color=new Vector3(58f/255f, 95f/255f, 40f/255f), ParamValue=FModParamLabel.PlayerWalkType.Grass, Name="Ç®½£" }, //Ç®½£
-            new SFXColorSample{ Color=new Vector3(208f/255f, 168f/255f, 101f/255f), ParamValue=FModParamLabel.PlayerWalkType.Grass, Name="¸ð·¡" }, //¸ð·¡
-            new SFXColorSample{ Color=new Vector3(121f/255f, 118f/255f, 104f/255f), ParamValue=FModParamLabel.PlayerWalkType.Stone, Name="µ¹" }, //µ¹
+            new SFXColorSample{ Color=new Vector3(117f/255f, 106f/255f, 73f/255f), ParamValue=FModParamLabel.PlayerWalkType.Sand, DebugName="Èë" }, //Èë
+            new SFXColorSample{ Color=new Vector3(58f/255f, 95f/255f, 40f/255f), ParamValue=FModParamLabel.PlayerWalkType.Grass, DebugName="Ç®½£" }, //Ç®½£
+            new SFXColorSample{ Color=new Vector3(208f/255f, 168f/255f, 101f/255f), ParamValue=FModParamLabel.PlayerWalkType.Sand, DebugName="¸ð·¡" }, //¸ð·¡
+            new SFXColorSample{ Color=new Vector3(121f/255f, 118f/255f, 104f/255f), ParamValue=FModParamLabel.PlayerWalkType.Stone, DebugName="µ¹" }, //µ¹
         };
 
 

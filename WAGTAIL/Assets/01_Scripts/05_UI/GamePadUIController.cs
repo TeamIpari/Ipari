@@ -47,7 +47,7 @@ public sealed class GamePadUIController : MonoBehaviour
     public enum GamePadButtonType
     {
         X,Y,A,B, 
-        Circle, Triangle, Cross, Square
+        Circle, Triangle, Cross, Square,
     }
     #endregion
 
@@ -413,7 +413,7 @@ public sealed class GamePadUIController : MonoBehaviour
     //=======================================================
     //////            Property and fields               /////
     //=======================================================
-    public static GamePadUIController Current              { get; set; }
+    public static GamePadUIController Current              { get { return _current; } set { _current = value; if (value == null) Cursor.visible = false; } }
     public static InputDeviceType     LastInputDevice      { get; private set; } = InputDeviceType.Keyboard;
     public static GamePadKind         LastInputGamePadKind { get; private set; } = GamePadKind.XBox;
 
@@ -447,7 +447,9 @@ public sealed class GamePadUIController : MonoBehaviour
     [SerializeField] private int UsedEventLayer = 0;
 
 
-    private static Coroutine UICoroutine;
+    private static Coroutine           UICoroutine;
+    private static GamePadUIController _current;
+    private static int                 _moveShield = 0;
 
 
     //========================================================
@@ -459,7 +461,9 @@ public sealed class GamePadUIController : MonoBehaviour
         /**시작지점으로 선택된 개체를 갱신한다... */
         if (StartSelect)
         {
-            Current = this;
+            Current             = this;
+            _moveShield         = 1;
+            Current.UseMoveLock = true;
         }
 
         /**메인 코루틴을 실행한다...*/
@@ -484,6 +488,7 @@ public sealed class GamePadUIController : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        Current        = null;
         UICoroutine    = null;
         OnDeviceChange = null;
     }
@@ -508,6 +513,15 @@ public sealed class GamePadUIController : MonoBehaviour
         #region Omit
         if (Current == null) return;
         Current.UseMoveLock = isLock;
+        _moveShield = (isLock ? -1 : 0);
+        #endregion
+    }
+
+    public void SetMoveLock(int count)
+    {
+        #region Omit
+        if (Current == null) return;
+        Current.UseMoveLock = ((_moveShield = count) !=0);
         #endregion
     }
 
@@ -589,6 +603,12 @@ public sealed class GamePadUIController : MonoBehaviour
         else if (Current == this){
 
             Current.OnSelect?.Invoke();
+        }
+
+        /**MoveLock을 해제한다...*/
+        if((_moveShield--)==0)
+        {
+            Current.UseMoveLock = false;
         }
         #endregion
     }
@@ -724,6 +744,7 @@ public sealed class GamePadUIController : MonoBehaviour
                 LastInputDevice = InputDeviceType.Mouse;
                 Current?.OnDisSelect?.Invoke();
 
+                if(Current!=null) Cursor.visible = true;
                 lastCursorPos = currMouse.position.value;
                 lastInput = Vector2.zero;
                 lastOk = false;
@@ -731,6 +752,7 @@ public sealed class GamePadUIController : MonoBehaviour
             else if (LastInputDevice!=InputDeviceType.Keyboard && currKeyboard!=null && currKeyboard.anyKey.value>0f ){
 
                 /**키보드를 입력하였을 경우....*/
+                Cursor.visible = false;
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.Keyboard);
                 LastInputDevice = InputDeviceType.Keyboard;
                 Current?.OnSelect?.Invoke();
@@ -738,6 +760,7 @@ public sealed class GamePadUIController : MonoBehaviour
             else if(currPad!=null && currPad.wasUpdatedThisFrame && (lastUsedPad!=currPad || LastInputDevice != InputDeviceType.GamePad)){
 
                 /**패드를 입력하였을 경우....*/
+                Cursor.visible = false;
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.GamePad);
                 lastUsedPad          = currPad;
                 LastInputDevice      = InputDeviceType.GamePad;
