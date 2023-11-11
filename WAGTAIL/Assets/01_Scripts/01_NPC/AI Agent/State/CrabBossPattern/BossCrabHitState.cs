@@ -63,7 +63,7 @@ public sealed class BossCrabHitState : AIHitState
     public override void Exit()
     {
         base.Exit();
-        AISM.character.IsHit = false;
+        //AISM.character.IsHit = false;
     }
 
     public override void Update()
@@ -79,6 +79,7 @@ public sealed class BossCrabHitState : AIHitState
                 /**다음 패턴으로 넘어간다....*/
                 case (0):
                 {
+                    _bossCrab.StateTrigger = false;
                     AISM.NextPattern();
                     break;
                 }
@@ -103,6 +104,14 @@ public sealed class BossCrabHitState : AIHitState
                 /**쓰러진 후의 진동효과...*/
                 case (3):
                 {
+                    /**먼지 이펙트를 생성한다....*/
+                    if(_bossCrab.DeathSFXPrefab)
+                    {
+                        GameObject newSFX           = GameObject.Instantiate(_bossCrab.DeathSFXPrefab);
+                        newSFX.transform.position   = new Vector3(-0.25f, -0.0100011826f, -1.3f);
+                        GameObject.Destroy(newSFX, 4f); 
+                    }
+
                     FModAudioManager.PlayOneShotSFX(
 
                         FModSFXEventType.Crab_Atk3Smash, 

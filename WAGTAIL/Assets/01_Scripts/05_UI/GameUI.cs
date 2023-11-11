@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameUI : MonoBehaviour
@@ -11,10 +12,16 @@ public class GameUI : MonoBehaviour
     public GameObject RestartChapterUI;
 
     public GameObject RestartTutorialUI;
+
+    private GamePadUIController _pauseButton;
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("escape"))
+        Gamepad currPad       = Gamepad.current;
+        bool    pressedSelect = (currPad!=null && currPad.selectButton.value!=0f);
+
+        if (Input.GetKeyDown("escape") || pressedSelect)
         {
             switch (PauseBtn.activeSelf)
             {
@@ -31,12 +38,23 @@ public class GameUI : MonoBehaviour
     
     public void Continue()
     {
+        GamePadUIController.Current = null;
         PauseBtn.SetActive(false);
         Time.timeScale = 1f;
     }
 
     public void Pause()
     {
+        if (_pauseButton==null){
+
+            _pauseButton = PauseBtn.transform.Find("PopUp").Find("Restart").GetComponent<GamePadUIController>();
+        }
+
+        if (_pauseButton!=null){
+
+            _pauseButton.ChangeCurrentThis();
+        }
+
         PauseBtn.SetActive(true);
         Time.timeScale = 0f;
     }

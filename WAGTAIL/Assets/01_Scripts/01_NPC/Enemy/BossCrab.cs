@@ -549,6 +549,16 @@ public sealed class BossCrab : Enemy
     private float        _AntHellDuration;
 
 
+    /*************************************
+     *    공용 SFX 관련 프로퍼티...
+     * ****/
+    [SerializeField]
+    public GameObject DeathSFXPrefab;
+
+    [SerializeField]
+    public GameObject AttackSFXPrefab;
+
+
     [SerializeField]
     public bool StartPatternOnAwake = false;
 
@@ -593,6 +603,8 @@ public sealed class BossCrab : Enemy
 
                     StateTrigger = true;
                 }
+                Debug.Log($"Delay: {_stateTriggerDelay}");
+
             }
 
             AiSM?.CurrentState.Update();
@@ -728,6 +740,7 @@ public sealed class BossCrab : Enemy
         #region Omit
         if (delay>0f)
         {
+            Debug.Log($"StateDelay 갱신!!: {delay}");
             _stateTriggerDelay = delay;
             StateTrigger = false;
             return;
