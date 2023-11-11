@@ -559,10 +559,13 @@ public sealed class BossCrab : Enemy
     public GameObject AttackSFXPrefab;
 
     [SerializeField]
-    public Material BodyDissolveMat;
+    public Material   BodyDissolveMat;
 
     [SerializeField]
-    public Material HandDissolveMat;
+    public Material   HandDissolveMat;
+
+    [SerializeField]
+    public WhaleHorn  DropableHorn;
 
 
     /***************************************
