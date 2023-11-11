@@ -80,10 +80,11 @@ public sealed class BossCrabHitState : AIHitState
          * *****/
         if (_progress >= 4 && _dissolveMats != null){
 
-            float progressRatio = Mathf.Clamp01((curTimer += Time.deltaTime) * _dissolveDurationDiv);
+            float progressRatio = Mathf.Clamp((curTimer += Time.deltaTime) * _dissolveDurationDiv, 0f, 1.02f);
             _dissolveMats[0].SetFloat("_Dissolve", progressRatio);
             _dissolveMats[1].SetFloat("_Dissolve", progressRatio);
         }
+
 
         /*****************************************************
          *   상태 트리거가 유효하면, 상황에 따른 로직을 적용한다...
@@ -139,25 +140,26 @@ public sealed class BossCrabHitState : AIHitState
                     IpariUtility.PlayGamePadVibration(.6f, .6f, .5f);
                     CameraManager.GetInstance().CameraShake(.6f, CameraManager.ShakeDir.ROTATE, 1f);
 
-                    _bossCrab.SetStateTrigger(1.5f);
+                    _bossCrab.SetStateTrigger(2.5f);
                     break;
                 }
 
                 /**쓰러진 후 디졸브 효과를 적용한다.*/
                 case (4):
                 {
-                    /**BossCrab의 Rednerer로부터 필요한 머터리얼을 교체 및 캐싱한다....*/
-                    Renderer renderer  = AISM.Transform.Find("Boss_Crab_Mesh").GetComponent<Renderer>();
-                    _dissolveMats      = (renderer.materials = new Material[] { _bossCrab.BodyDissolveMat, _bossCrab.HandDissolveMat });
+                    /**BossCrab의 Rednerer로부터 필요한 머터리얼을 가져온다...*/
+                    Renderer renderer = AISM.Transform.Find("Boss_Crab_Mesh").GetComponent<Renderer>();
+                    _dissolveMats     = renderer.materials;
 
                     curTimer = 0f;
-                    _bossCrab.SetStateTrigger(_dissolveDuration);
+                    _bossCrab.SetStateTrigger(_dissolveDuration+.1f);
                     break;
                 }
 
                 /**꽃게보스가 사라진다...*/
                 case (5):
                 {
+                    _bossCrab.DropableHorn?.DropItem();
                     GameObject.Destroy(_bossCrab.gameObject);
                     break;
                 }
