@@ -88,7 +88,7 @@ public class LarvaSpawner : MonoBehaviour
                 //Debug.Log($"{ver2}");
                 GameObject obj2 = Instantiate(LarvaPrefabs[LarvaCur--]);
                 obj2.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                Debug.Log($"{ver2} % {2} = {ver2 % 2}");
+                //Debug.Log($"{ver2} % {2} = {ver2 % 2}");
              
                 obj2.AddComponent<AutoMoveLarva>().SetUp(this, delayTime, AnimSpeed);
                 obj2.transform.localScale = new Vector3(InitPrefabSize, InitPrefabSize, InitPrefabSize);

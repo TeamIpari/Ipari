@@ -13,11 +13,13 @@ public enum FadeType
 public class FadeUI : MonoBehaviour
 {
     [HideInInspector] public Animator[] fadeAnimator;
+    private UIManager _uiManager;
     private static readonly int Out = Animator.StringToHash("FadeOut");
 
     // Start is called before the first frame update
     void Start()
     {
+        _uiManager = UIManager.GetInstance();
         fadeAnimator = GetComponentsInChildren<Animator>();
         foreach (var animator in fadeAnimator)
         {
@@ -30,11 +32,14 @@ public class FadeUI : MonoBehaviour
         switch (fadeType)
         {
             case FadeType.Normal:
+                _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(false);
+                _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(false);
                 fadeAnimator[0].gameObject.SetActive(true);
+                fadeAnimator[0].Play("Black_FadeIn");
                 break;
             case FadeType.LetterBox:
-                UIManager.GetInstance().GetGameUI(GameUIType.Coin).gameObject.SetActive(false);
-                UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.SetActive(false);
+                _uiManager.GetGameUI(GameUIType.Coin).GetComponent<Animator>().SetTrigger("FadeOut");
+                _uiManager.GetGameUI(GameUIType.CoCosi).GetComponent<CollectionCocosiUI>().currentCanvas.GetComponent<Animator>().SetTrigger("FadeOut");
                 fadeAnimator[1].gameObject.SetActive(true);
                 break;
             default:
@@ -47,11 +52,14 @@ public class FadeUI : MonoBehaviour
         switch (fadeType)
         {
             case FadeType.Normal:
-                fadeAnimator[0].SetTrigger(Out);
+                _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(true);
+                _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(true);
+                fadeAnimator[0].gameObject.SetActive(true);
+                fadeAnimator[0].Play("Black_FadeOut");
                 break;
             case FadeType.LetterBox:
-                UIManager.GetInstance().GetGameUI(GameUIType.Coin).gameObject.SetActive(true);
-                UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.SetActive(true);
+                _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(true);
+                _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(true);
                 fadeAnimator[1].SetTrigger(Out);
                 break;
             default:

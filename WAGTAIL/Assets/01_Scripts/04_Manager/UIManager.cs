@@ -49,7 +49,6 @@ public class UIManager : Singleton<UIManager>
         
         ActiveGameUI(GameUIType.Death, false);
         ActiveGameUI(GameUIType.TextBox,false);
-        ActiveGameUI(GameUIType.Chapter,false);
     }
 
     public void ActiveGameUI(GameUIType type, bool isActive)

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
 /***********************************************************
@@ -16,8 +17,9 @@ public sealed class AnimatorHelper : MonoBehaviour
     public Animator HelperAnimator { get; private set; }
 
     public LateUpdateNotify AnimatorLateUpdate;
-
-
+    public UnityEvent onEvent;
+    public UnityEvent onStart;
+    public UnityEvent onEnd;
 
     //========================================
     /////         Magic methods           ////
@@ -47,13 +49,6 @@ public sealed class AnimatorHelper : MonoBehaviour
         HelperAnimator.SetLayerWeight(index, weight);
     }
 
-    public void SetActive()
-    {
-        gameObject.SetActive(false);
-    }
-
-
-
     //==========================================
     /////          Core methods             ////
     //==========================================
@@ -73,5 +68,24 @@ public sealed class AnimatorHelper : MonoBehaviour
         }
     }
 
+    private void Event()
+    {
+        onEvent?.Invoke();
+    }
+
+    private void StartEvent()
+    {
+        onStart?.Invoke();
+    }
+    
+    private void EndEvent()
+    {
+        onEnd?.Invoke();
+    }
+
+    public void SetActive()
+    {
+        gameObject.SetActive(false);
+    }
 
 }

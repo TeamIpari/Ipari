@@ -20,15 +20,17 @@ public class ChapterController : MonoBehaviour
                 FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
                 break;
             case ChapterType.Chapter01:
-                //UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(false);
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
+                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+                UIManager.GetInstance().ActiveGameUI(GameUIType.Coin, false);
+                UIManager.GetInstance().ActiveGameUI(GameUIType.Tutorial, false);
                 CameraManager.GetInstance().CameraSetting();
                 break;
             case ChapterType.Chapter02:
-                FModAudioManager.PlayBGM(FModBGMEventType.NepenthesRoad);
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter02);
+                FModAudioManager.SetBusMute(FModBusType.Player, true);
+                FModAudioManager.PlayBGM(FModBGMEventType.NepenthesRoad);
                 CameraManager.GetInstance().CameraSetting();
-                UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>().SetCanvas(1,true);
                 break;
             case ChapterType.MiddleBossRoom:
                 FModAudioManager.PlayBGM(FModBGMEventType.NepenthesBossBGM);
@@ -37,11 +39,9 @@ public class ChapterController : MonoBehaviour
                 UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, false);
                 break;
             case ChapterType.Chapter03:
-                FModAudioManager.PlayBGM(FModBGMEventType.Chapter4BGM);
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter03);
+                FModAudioManager.PlayBGM(FModBGMEventType.Chapter4BGM);
                 CameraManager.GetInstance().CameraSetting();
-                UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, true);
-                UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>().SetCanvas(2,true);
                 break;
             case ChapterType.EndCredits:
                 GameManager.GetInstance().StartChapter(ChapterType.EndCredits);
