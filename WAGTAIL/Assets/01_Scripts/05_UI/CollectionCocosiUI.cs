@@ -6,6 +6,7 @@ public class CollectionCocosiUI : MonoBehaviour
 {
     [HideInInspector] public GameObject[][] cocosiUI;
     [HideInInspector] public GameObject[] canvas = new GameObject[3];
+    [HideInInspector] public GameObject currentCanvas; 
     // Start is called before the first frame update
     void Awake()
     {
@@ -49,7 +50,11 @@ public class CollectionCocosiUI : MonoBehaviour
     {
         for (int i = 0; i < 3; i++)
         {
-            if(i == index) canvas[index].SetActive(isOn);
+            if (i == index)
+            {
+                canvas[index].SetActive(isOn);
+                currentCanvas = canvas[index];
+            }
             else canvas[i].SetActive(false);
         }
     }

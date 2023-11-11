@@ -27,6 +27,8 @@ public class CutScene : MonoBehaviour
     private int sceneCount;
     [SerializeField] private Dialogue dialogue = new Dialogue();
 
+    public GameObject ChapterCanvas;
+
     private void Awake()
     {
         CutScenes = CutSceneBackGround.GetComponentsInChildren<PlayableDirector>();
@@ -46,6 +48,8 @@ public class CutScene : MonoBehaviour
             dialogue = LoadManager.GetInstance().IO_GetScriptable(SayType);
             LoadManager.GetInstance().TmpSet(TextViewer);
             LoadManager.GetInstance().StartDialogue(dialogue);
+            FModAudioManager.SetBusMute(FModBusType.Environment, true);
+            ChapterCanvas.SetActive(false);
             //LoadManager.GetInstance().PlayTyping();
         }
     }
@@ -73,13 +77,11 @@ public class CutScene : MonoBehaviour
                 HideCutScenes();
                 if (IsIntro)
                 {
-                    UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
-                    GameManager.GetInstance().StartChapter(ChapterType.Chapter01);
-                    UIManager.GetInstance().ActiveGameUI(GameUIType.Chapter, true);
                     UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
                         .SetCanvas(0, true);
-                    FModAudioManager.SetBusMute(FModBusType.Player, false);
                     FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
+                    ChapterCanvas.SetActive(true);
+                    ChapterCanvas.GetComponent<ChapterUI>().ChapterCanvasStart();
                 }
             }
             else if (sceneCount < CutScenes.Length)
@@ -91,7 +93,7 @@ public class CutScene : MonoBehaviour
             }
         }
 
-        // ±ÛÀÚ¸¦ Á¡Á¡ »ç¶óÁö°Ô ÇÏ´Â ±â´É.
+        // ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½.
         if (sceneCount >= CutScenes.Length && TextViewer != null)
         {
             if (WaitTime > WaitTimer)

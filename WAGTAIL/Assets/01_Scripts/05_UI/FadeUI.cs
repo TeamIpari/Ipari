@@ -38,8 +38,8 @@ public class FadeUI : MonoBehaviour
                 fadeAnimator[0].Play("Black_FadeIn");
                 break;
             case FadeType.LetterBox:
-                _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(false);
-                _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(false);
+                _uiManager.GetGameUI(GameUIType.Coin).GetComponent<Animator>().SetTrigger("FadeOut");
+                _uiManager.GetGameUI(GameUIType.CoCosi).GetComponent<CollectionCocosiUI>().currentCanvas.GetComponent<Animator>().SetTrigger("FadeOut");
                 fadeAnimator[1].gameObject.SetActive(true);
                 break;
             default:
