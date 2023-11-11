@@ -558,7 +558,16 @@ public sealed class BossCrab : Enemy
     [SerializeField]
     public GameObject AttackSFXPrefab;
 
+    [SerializeField]
+    public Material BodyDissolveMat;
 
+    [SerializeField]
+    public Material HandDissolveMat;
+
+
+    /***************************************
+     *    패턴 관련.....
+     * ******/
     [SerializeField]
     public bool StartPatternOnAwake = false;
 
@@ -603,7 +612,6 @@ public sealed class BossCrab : Enemy
 
                     StateTrigger = true;
                 }
-                Debug.Log($"Delay: {_stateTriggerDelay}");
 
             }
 

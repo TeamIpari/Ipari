@@ -9,8 +9,14 @@ public sealed class BossCrabHitState : AIHitState
     //===============================================
     //////               Fields                //////
     //===============================================
-    private BossCrab _bossCrab;
-    private int      _progress = 0;
+    private BossCrab     _bossCrab;
+    private int          _progress            = 0;
+
+    /**dissolve 관련 필드....*/
+    private const float  _dissolveDuration    = 3f;
+    private const float  _dissolveDurationDiv = (1f/_dissolveDuration);
+    private Material[]   _dissolveMats;
+
 
 
     //==================================================
@@ -69,11 +75,21 @@ public sealed class BossCrabHitState : AIHitState
     public override void Update()
     {
         #region Omit
-        if (_bossCrab.StateTrigger == false) return;
+        /************************************************
+         *   디졸브 효과를 적용한다....
+         * *****/
+        if (_progress >= 4 && _dissolveMats != null){
+
+            float progressRatio = Mathf.Clamp01((curTimer += Time.deltaTime) * _dissolveDurationDiv);
+            _dissolveMats[0].SetFloat("_Dissolve", progressRatio);
+            _dissolveMats[1].SetFloat("_Dissolve", progressRatio);
+        }
 
         /*****************************************************
          *   상태 트리거가 유효하면, 상황에 따른 로직을 적용한다...
          * ****/
+        if (_bossCrab.StateTrigger == false) return;
+
         switch(_progress++){
 
                 /**다음 패턴으로 넘어간다....*/
@@ -122,6 +138,27 @@ public sealed class BossCrabHitState : AIHitState
                     FModAudioManager.ApplyBGMFade(0f, 3f, 0, true);
                     IpariUtility.PlayGamePadVibration(.6f, .6f, .5f);
                     CameraManager.GetInstance().CameraShake(.6f, CameraManager.ShakeDir.ROTATE, 1f);
+
+                    _bossCrab.SetStateTrigger(1.5f);
+                    break;
+                }
+
+                /**쓰러진 후 디졸브 효과를 적용한다.*/
+                case (4):
+                {
+                    /**BossCrab의 Rednerer로부터 필요한 머터리얼을 교체 및 캐싱한다....*/
+                    Renderer renderer  = AISM.Transform.Find("Boss_Crab_Mesh").GetComponent<Renderer>();
+                    _dissolveMats      = (renderer.materials = new Material[] { _bossCrab.BodyDissolveMat, _bossCrab.HandDissolveMat });
+
+                    curTimer = 0f;
+                    _bossCrab.SetStateTrigger(_dissolveDuration);
+                    break;
+                }
+
+                /**꽃게보스가 사라진다...*/
+                case (5):
+                {
+                    GameObject.Destroy(_bossCrab.gameObject);
                     break;
                 }
 

@@ -5,14 +5,17 @@ using UnityEngine;
 /**********************************************************
  *    고래신의 뿔과 상호작용하는 기능이 구현된 컴포넌트입니다...
  * ******/
+[RequireComponent(typeof(Rigidbody))]
 public sealed class WhaleHorn : MonoBehaviour, IInteractable
 {
     //========================================================
     //////            Property and fields               //////
     //========================================================
-    public string  InteractionPrompt   { get; set; } = "획득하기";
-    public Vector3 InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
-    public bool    Gettable            { get { return _Gettable; } set { _Gettable = value; _moveDurationDiv = (1f / MoveDuration); } }
+    public string    InteractionPrompt   { get; set; } = "획득하기";
+    public Vector3   InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
+    public bool      Gettable            { get { return _Gettable; } set { _Gettable = value; _moveDurationDiv = (1f / MoveDuration); } }
+    public Rigidbody Body                { get { return _body; } }
+
 
     [SerializeField] public GameObject     ShineSFXPrefab;
     [SerializeField] public AnimationCurve MoveCurve;
@@ -20,8 +23,9 @@ public sealed class WhaleHorn : MonoBehaviour, IInteractable
     [SerializeField] private bool          _Gettable       = false;
 
 
-    private float _currTime        = 0f;
-    private float _moveDurationDiv = 1f;
+    private Rigidbody _body;
+    private float     _currTime        = 0f;
+    private float     _moveDurationDiv = 1f;
 
 
 
