@@ -90,6 +90,7 @@ public class TimelineController : MonoBehaviour
             UIManager.GetInstance()?.SwitchCanvas(CanvasType.GameUI);
             UIManager.GetInstance()?.ActiveGameUI(GameUIType.Coin, true);
             UIManager.GetInstance()?.ActiveGameUI(GameUIType.CoCosi, true);
+            InterativeUI.HideUI();
             if (CameraManager.GetInstance() != null) CameraManager.GetInstance().SwitchCamera(CameraType.Main);
         }
     }
