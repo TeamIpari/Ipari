@@ -63,8 +63,15 @@ public class GameUI : MonoBehaviour
     {
         Continue();
         GameManager.GetInstance().RestartGame();
-        SceneLoader.GetInstance().LoadScene("Chapter01_Heejin4");
+        SceneLoader.GetInstance().LoadScene("Chapter01");
         FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
+    }
+
+    public void ChapterRestart()
+    {
+        Continue();
+        GameManager.GetInstance().RestartChapter();
+        SceneLoader.GetInstance().LoadScene(GameManager.GetInstance().LastActiveChapter.ChapterType.ToString());
     }
 
     public void GoMain()
