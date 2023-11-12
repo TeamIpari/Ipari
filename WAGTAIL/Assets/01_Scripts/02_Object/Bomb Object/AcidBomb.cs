@@ -132,7 +132,6 @@ public class AcidBomb : Bullet
             Physics.OverlapSphere(
                 bombMarker.transform.localPosition, 
                 this.transform.localScale.x-0.5f);
-            //var size = Physics.OverlapSphereNonAlloc(bombMarker.transform.position, this.transform.localScale.x, cols);
             foreach (var c in cols)
             {
                 try

@@ -108,7 +108,7 @@ public class BossNepenthesOneShot: AIAttackState
     private void PositionLuncher()
     {
         //Vector3 pos = CaculateVelocity(target, shootPoint.position, time);
-        Vector3 pos = IpariUtility.CaculateVelocity(target, shootPoint.position, time);
+        Vector3 pos = IpariUtility.CaculateVelocity(target, shootPoint.position, time, 0.5f);
         GameObject obj = GameObject.Instantiate(bullet, shootPoint.position, Quaternion.identity);
         for(int i = 0; i < obj.transform.childCount; i++)
         {

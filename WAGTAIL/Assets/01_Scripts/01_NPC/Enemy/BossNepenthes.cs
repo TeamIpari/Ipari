@@ -44,7 +44,6 @@ public sealed class BossNepenthes : Enemy
 
     #endregion
 
-
     #region Editor_Extension
 #if UNITY_EDITOR
 
@@ -436,9 +435,7 @@ public sealed class BossNepenthes : Enemy
     public float MaxSize { get { return _MaximumSize; } set { _MaximumSize = (value < 0f ? 0f : value); } }
     public float MinSize { get { return _MinimumSize; } set { _MinimumSize = (value < 0f ? 0f : value); } }
     public int ShootCount { get { return _ShootCount; } set { _ShootCount = (value < 0 ? 0 : value); } }
-   
     public int ShootArea { get { return _ShootArea; } set{_ShootArea  = (value < 0 ? 0 : value); }}
-
 
     /*********************************************
      * µ¢Äð Ã¤Âï °ü·Ã ÇÁ·ÎÆÛÆ¼...
@@ -541,12 +538,9 @@ public sealed class BossNepenthes : Enemy
                 Debug.Log($"{obj.transform.childCount}");
                 for (int i =0; i < obj.transform.childCount; i++)
                 {
-                    Debug.Log("AA");
                     Transform child = obj.transform.GetChild(i);
-                    Debug.Log($"{child.name}");
                     child.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
                 }
-                //CameraManager.GetInstance().CameraShake(0.5f, CameraManager.ShakeDir.ROTATE, 2.5f, 0.05f);
 
                 deathZone.SetActive(false);
                 potal.SetActive(true);
