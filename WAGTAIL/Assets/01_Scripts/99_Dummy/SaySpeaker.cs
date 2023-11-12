@@ -12,7 +12,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     //=================================================
     //////              Property                 //////
     //================================================
-    public Vector3  InteractPopupOffset { get { return (!_IsTalkable ? _unPossibleOffset : _possibleOffset); } set{ Debug.LogWarning("SaySpeaker: 임의로 상호작용UI 오프셋을 수정할 수 없습니다."); } }
+    public Vector3  InteractPopupOffset { get { return (_unPossibleOffset); } set{ Debug.LogWarning("SaySpeaker: 임의로 상호작용UI 오프셋을 수정할 수 없습니다."); } }
     public string   InteractionPrompt   { get; set; } = "대화한다";
     public bool     IsSaying            { get { return _IsSaying; } }
     public bool     IsTalkable          

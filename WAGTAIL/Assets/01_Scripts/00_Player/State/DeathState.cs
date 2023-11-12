@@ -85,9 +85,6 @@ public class DeathState : State
     public override void Exit()
     {
         base.Exit();
-
-
-
         if (player.UIManager != null)
             player.UIManager.GetGameUI(GameUIType.Death).GetComponent<Animator>().SetTrigger("fadeout");
         player.isCarry = false;
