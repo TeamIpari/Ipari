@@ -27,8 +27,7 @@ public class TimelineController : MonoBehaviour
     [Tooltip("플레이어를 특정 위치로 옮길거면 체크")]
     [SerializeField] private bool _isPlayerMoveToFakeTavuti;
 
-    [Header("Debug")] 
-    [SerializeField] private bool _isDebug = false;
+    [Header("Debug")] [SerializeField] private bool isStartTimeline = false;
 
     private void Start()
     {
@@ -40,7 +39,7 @@ public class TimelineController : MonoBehaviour
         if (_fakeObject != null) _fakeObject.SetActive(false);
         _isStart = false;
         var collider = GetComponent<BoxCollider>();
-        if(collider == null)
+        if(collider == null && isStartTimeline)
             StartTimeline();
     }
 
@@ -56,8 +55,11 @@ public class TimelineController : MonoBehaviour
 
     public void StartTimeline()
     {
-        UIManager.GetInstance().ActiveGameUI(GameUIType.Coin, false);
-        UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, false);
+        if (UIManager.GetInstance() != null)
+        {
+            UIManager.GetInstance().ActiveGameUI(GameUIType.Coin, false);
+            UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, false);
+        }
         _isStart = true;
         SetActiveObjects(false);
         if (_fakeObject != null) _fakeObject.SetActive(true);
@@ -85,6 +87,7 @@ public class TimelineController : MonoBehaviour
             _player.SetActive(true);
             _playerInput.enabled = true;
             _playerCtrl.enabled = true;
+            UIManager.GetInstance()?.SwitchCanvas(CanvasType.GameUI);
             UIManager.GetInstance()?.ActiveGameUI(GameUIType.Coin, true);
             UIManager.GetInstance()?.ActiveGameUI(GameUIType.CoCosi, true);
             if (CameraManager.GetInstance() != null) CameraManager.GetInstance().SwitchCamera(CameraType.Main);

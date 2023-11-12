@@ -28,12 +28,14 @@ public class ChapterController : MonoBehaviour
                 break;
             case ChapterType.Chapter02:
                 GameManager.GetInstance().StartChapter(ChapterType.Chapter02);
+                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
                 FModAudioManager.SetBusMute(FModBusType.Player, true);
                 FModAudioManager.PlayBGM(FModBGMEventType.NepenthesRoad);
                 CameraManager.GetInstance().CameraSetting();
                 break;
             case ChapterType.MiddleBossRoom:
                 FModAudioManager.PlayBGM(FModBGMEventType.NepenthesBossBGM);
+                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
                 GameManager.GetInstance().StartChapter(ChapterType.MiddleBossRoom);
                 CameraManager.GetInstance().CameraSetting();
                 UIManager.GetInstance().ActiveGameUI(GameUIType.CoCosi, false);
