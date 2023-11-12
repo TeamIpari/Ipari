@@ -606,9 +606,11 @@ public sealed class GamePadUIController : MonoBehaviour
         }
 
         /**MoveLock을 해제한다...*/
-        if((_moveShield--)==0)
+        if((_moveShield-1)==0)
         {
+            _moveShield = 0;
             Current.UseMoveLock = false;
+            Current.OnSelect?.Invoke();
         }
         #endregion
     }
@@ -752,7 +754,9 @@ public sealed class GamePadUIController : MonoBehaviour
             else if (LastInputDevice!=InputDeviceType.Keyboard && currKeyboard!=null && currKeyboard.anyKey.value>0f ){
 
                 /**키보드를 입력하였을 경우....*/
+#if UNITY_EDITOR
                 Cursor.visible = false;
+#endif
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.Keyboard);
                 LastInputDevice = InputDeviceType.Keyboard;
                 Current?.OnSelect?.Invoke();
@@ -760,7 +764,9 @@ public sealed class GamePadUIController : MonoBehaviour
             else if(currPad!=null && currPad.wasUpdatedThisFrame && (lastUsedPad!=currPad || LastInputDevice != InputDeviceType.GamePad)){
 
                 /**패드를 입력하였을 경우....*/
+#if UNITY_EDITOR
                 Cursor.visible = false;
+#endif
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.GamePad);
                 lastUsedPad          = currPad;
                 LastInputDevice      = InputDeviceType.GamePad;

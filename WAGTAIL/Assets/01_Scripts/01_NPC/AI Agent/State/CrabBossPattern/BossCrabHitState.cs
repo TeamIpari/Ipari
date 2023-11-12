@@ -40,6 +40,8 @@ public sealed class BossCrabHitState : AIHitState
         _bossCrab.ClearStateTriggerDelay();
         _bossCrab.PopHPUIStack();
 
+        Debug.Log($"데미지 입음!!!");
+
         AISM.Animator.speed = 1f;
 
         /************************************

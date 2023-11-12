@@ -8,74 +8,9 @@ using UnityEngine.SceneManagement;
 
 public sealed class TestScript : MonoBehaviour
 {
-    //===============================================
-    //////                Property              /////
-    //===============================================
-    [SerializeField] private Transform centerPlatformTr;
-    [SerializeField] private float maxDst = 11f;
-    [SerializeField] private float yspeed = -.6f;
-    [SerializeField] private float delay  = .2f;
-    [SerializeField] private float center2EdgeDstDiv = 0f;
-    [SerializeField] public  float rotPow = 3f;
-
-
-
-    //================================================
-    ///////               Fields                //////
-    //================================================
-    private WavePlatformBehavior[] behaviors;
-
-    private Vector3 centerPos = Vector3.zero;
-
-
-
-    //===========================================================
-    /////            Magic and Core methods                 /////
-    //==========================================================
-    private void Start()
+    private void OnCollisionEnter(Collision collision)
     {
-        #region Omit
-        int Count = transform.childCount;
-
-        center2EdgeDstDiv = (1f / maxDst);
-        behaviors         = new WavePlatformBehavior[Count];
-
-        for (int i = 0; i<Count; i++){
-
-            behaviors[i] = transform.GetChild(i).GetComponent<WavePlatformBehavior>();
-            if (behaviors[i] == null) continue;
-        }
-
-        centerPos = centerPlatformTr.position;  
-        #endregion
+        Debug.Log($"{name}이 {collision.gameObject.name}과 충돌!!!");
     }
-
-#if UNITY_EDITOR
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.P))
-        {
-            int Count = behaviors.Length;
-
-            for (int i = 0; i < Count; i++)
-            {
-                float ratio = (1f - Vector3.Distance(centerPos, behaviors[i].transform.position) * center2EdgeDstDiv);
-                behaviors[i].Yspeed     += (yspeed * ratio);
-                behaviors[i].Rotspeed   += -rotPow;
-                behaviors[i].UpdateDelay = delay - (delay * ratio);
-                behaviors[i].SetRotDir(centerPos);
-            }
-
-            FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_VineSmash, Vector3.zero, 2f);
-            CameraManager.GetInstance().CameraShake(.4f, CameraManager.ShakeDir.ROTATE, .5f);
-        }
-    }
-#endif
-
-    public void ApplyWave()
-    {
-
-    }
-
 
 }
