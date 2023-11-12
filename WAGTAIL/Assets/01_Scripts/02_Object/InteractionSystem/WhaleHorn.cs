@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.ProBuilder;
+using IPariUtility;
 
 /**********************************************************
  *    고래신의 뿔과 상호작용하는 기능이 구현된 컴포넌트입니다...
@@ -31,6 +34,7 @@ public sealed class WhaleHorn : MonoBehaviour
 
     private Rigidbody _body;
     private Transform _ShineSFXIns;
+    private Image     _fadeUI;
     private HornState _state           = HornState.None;
     private float     _currTime        = 0f;
     private float     _moveDurationDiv = 1f;
@@ -46,7 +50,8 @@ public sealed class WhaleHorn : MonoBehaviour
     //======================================================
     private void Start()
     {
-        _body = GetComponent<Rigidbody>();
+        _body   = GetComponent<Rigidbody>();
+        _fadeUI = GameObject.Find("Boss_Canvas").transform.GetChild(1).GetComponent<Image>();
         _body.isKinematic = true;
     }
 
@@ -66,6 +71,12 @@ public sealed class WhaleHorn : MonoBehaviour
         #endregion
     }
 
+    private void OnDestroy()
+    {
+        
+    }
+
+
 
     //==================================================
     //////             Public methods              //////
@@ -83,6 +94,16 @@ public sealed class WhaleHorn : MonoBehaviour
     //===================================================
     ///////             Core methods               //////
     //===================================================
+    private void FadeComplete( bool isDark, int id )
+    {
+        #region Omit
+        if (id != 11) return;
+
+
+        IpariUtility.OnFadeChange -= FadeComplete;
+        #endregion
+    }
+
     private IEnumerator HornDropProgress()
     {
         #region Omit
@@ -143,16 +164,16 @@ public sealed class WhaleHorn : MonoBehaviour
             }
 
             /**상호작용을 가능하게 하고, 샤인 이펙트를 생성한다....*/
-            else if(_state==HornState.Fly && dst.sqrMagnitude<=1f && ShineSFXPrefab)
-            {
+            else if(_state==HornState.Fly && dst.sqrMagnitude<=1f && ShineSFXPrefab){
+
                 _state              = HornState.Fly_Idle;
                 _ShineSFXIns = Instantiate(ShineSFXPrefab).transform;
                 _ShineSFXIns.position = collider.bounds.center;
 
                 /**상호작용을 가능하도록 한다...*/
                 InteractActionDispatcher dispatcher = InteractableGoalPos.GetComponent<InteractActionDispatcher>();
-                if(dispatcher!=null){
-
+                if(dispatcher!=null)
+                {
                     dispatcher.gameObject.SetActive(true);
                     dispatcher.IsInteractable = true;
                     dispatcher.OnInteract.AddListener(() =>
@@ -162,13 +183,33 @@ public sealed class WhaleHorn : MonoBehaviour
 
                         Player.Instance.stiffen.StiffenTime = -1f;
                         Player.Instance.movementSM.ChangeState(Player.Instance.stiffen);
-                        FadeUI fade = UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>();
-                        fade.FadeIn(FadeType.Normal);
+                        _state = HornState.Enter_CutScene;
+                        dispatcher.OnInteract.RemoveAllListeners();
+
+                        /**페이드를 적용한다....*/
+                        IpariUtility.ApplyImageFade(
+                            IpariUtility.FadeOutType.WHITE_TO_DARK_TO_WHITE,
+                            _fadeUI,
+                            3f,
+                            1f,
+                            11
+                        );
+
+                        IpariUtility.OnFadeChange += FadeComplete;
+
                     });
                 }
             }
         }
-        while (true);
+        while (_state!=HornState.Enter_CutScene);
+
+
+        /********************************************
+         *    페이드 인 효과를 적용한다....
+         * ****/
+        time = 3f;
+        while ((time += Time.deltaTime) < 3f) yield return null;
+
 
 
         #endregion
