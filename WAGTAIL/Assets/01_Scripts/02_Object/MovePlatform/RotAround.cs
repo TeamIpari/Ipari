@@ -16,7 +16,8 @@ public class RotAround : MonoBehaviour, IEnviroment
     [Range(3, 30)]
     public int Polygon = 3;
     public float CircleSize = 1.0f;
-    public Vector3 Offset = new Vector3(0, 0, 0);
+    public Vector3 offset = new Vector3(0, 0, 0);
+    public Vector3 coinOffset = new Vector3(0, 0, 0);
     public GameObject CreateObj1;
     public GameObject CreateObj2;
 
@@ -95,13 +96,13 @@ public class RotAround : MonoBehaviour, IEnviroment
 
         vertices = new Vector3[polygon + 1];
 
-        vertices[0] = new Vector3(0, 0, 0) + Offset;
+        vertices[0] = new Vector3(0, 0, 0) + offset;
         for (int i = 1; i <= polygon; i++)
         {
             float angle = -i * (Mathf.PI * 2.0f) / polygon;
 
             vertices[i]
-                = (new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * size) + Offset;
+                = (new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * size) + offset;
 
             if (CreateObj2 != null)
                 CreateObj = i % 2 == 1 ? CreateObj1 : CreateObj2;
@@ -111,8 +112,7 @@ public class RotAround : MonoBehaviour, IEnviroment
 
             createPos = vertices[i] + transform.position;
 
-            obj.transform.position = obj.CompareTag("Coin") == true ? createPos + Vector3.up * 1.5f : createPos;
-            
+            obj.transform.position = obj.CompareTag("Coin") == true ? createPos + coinOffset : createPos;
             obj.transform.LookAt(this.transform);
             w_Vec = Reverse == true ? 75 : -75;
             obj.transform.Rotate(0, w_Vec, 0);
