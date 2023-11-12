@@ -60,7 +60,7 @@ namespace IPariUtility
         /// <param name="origin"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        internal static Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time)
+        internal static Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time, float height = 1.5f)
         {
             #region Omit
             // define the distance x and y first;
@@ -74,7 +74,7 @@ namespace IPariUtility
 
             // 속도 추가
             float Vxz = Sxz / time;
-            float Vy = Sy / time + 1.5f * Mathf.Abs(Physics.gravity.y) * time;
+            float Vy = Sy / time + height * Mathf.Abs(Physics.gravity.y) * time;
             // 계산으로 인해 두 축의 초기 속도를 가지고 새로운 벡터를 만들 수 있음.
             Vector3 result = distanceXZ.normalized;
             result *= Vxz;
