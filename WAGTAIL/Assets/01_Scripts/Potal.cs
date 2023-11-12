@@ -5,7 +5,6 @@ using UnityEngine;
 public class Potal : MonoBehaviour
 {
     public ChapterType nextChapter;
-    public string nextChapterName;
 
     private void Update()
     {
@@ -17,7 +16,7 @@ public class Potal : MonoBehaviour
     
     public void GoNextChapter()
     {
-        SceneLoader.GetInstance().LoadScene(nextChapterName);
+        SceneLoader.GetInstance().LoadScene(nextChapter.ToString());
     }
     
     private void OnTriggerEnter(Collider other)

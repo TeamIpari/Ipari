@@ -404,11 +404,12 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
         _isValid = (_body != null || _collider != null || _playerTr != null);
 
+        /*
         if (ScoreType == ScoreType.Cocosi)
         {
             Debug.Log(CocosiChapter);
             Debug.Log(CocosiIndex);
-        }
+        }*/
         #endregion
     }
 

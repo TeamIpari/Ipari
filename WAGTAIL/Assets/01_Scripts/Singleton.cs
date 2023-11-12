@@ -24,7 +24,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
     {
         if (instance == null)
         {
-            Debug.Log($"{name} √ ±‚»≠µ ");
+            //Debug.Log($"{name} √ ±‚»≠µ ");
             instance = this as T;
             DontDestroyOnLoad(gameObject);
         }

@@ -97,12 +97,6 @@ public class BombObject : MonoBehaviour
 
 
         Destroy(gameObject);
-
-
-        /*_cc = _colliders[0].GetComponent<CharacterController>();
-        CalcDirectionVector(_colliders[0].transform.position, transform.position);
-        _currentTime = 0f;
-        _isStart = true;*/
     }
     
     private void OnDrawGizmos()
@@ -127,6 +121,7 @@ public class BombObject : MonoBehaviour
                 other.gameObject.GetComponent<Enemy>().Hit();
                 var tf = transform;
                 var exploVFX = Instantiate(explosionVFX, tf.position, tf.rotation);
+                FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_BombBurst);
                 Destroy(exploVFX, 3);
             }
             // enable·Î ¹Ù²Ù»ï
