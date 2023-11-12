@@ -111,7 +111,7 @@ public class RotAround : MonoBehaviour, IEnviroment
 
             createPos = vertices[i] + transform.position;
 
-            obj.transform.position = obj.CompareTag("Coin") == true ? createPos + Vector3.up * 0.5f : createPos;
+            obj.transform.position = obj.CompareTag("Coin") == true ? createPos + Vector3.up * 1.5f : createPos;
             
             obj.transform.LookAt(this.transform);
             w_Vec = Reverse == true ? 75 : -75;

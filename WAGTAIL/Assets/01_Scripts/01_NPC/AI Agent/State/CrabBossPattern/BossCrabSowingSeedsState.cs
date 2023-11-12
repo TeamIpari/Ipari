@@ -50,20 +50,22 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
     public BossCrabSowingSeedsState( AIStateMachine stateMachine, ref BossCrabSowingSeedsDesc desc, BossCrab bossCrab )
     :base( stateMachine )
     {
+        #region Omit
         _desc = desc;
-        _targets = new ThrowDesc[_desc.count];
-        _bossCrab = bossCrab;
+        _targets         = new ThrowDesc[_desc.count];
+        _bossCrab        = bossCrab;
+        #endregion
     }
 
     public override void Enter()
     {
         #region Omit
         AISM.Animator.CrossFade(BossCrabAnimation.SpitSeedsReady, .3f);
-        _changeTimeDiv = (1f / _desc.changeTime);
-        curTimer       = 0f;
-        _isShoot       = false;
-        _ignoreRelease = false;
-        _progress      = 0;
+        _changeTimeDiv   = (1f / _desc.changeTime);
+        curTimer         = 0f;
+        _isShoot         = false;
+        _ignoreRelease   = false;
+        _progress        = 0;
         #endregion
     }
 
@@ -101,6 +103,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 /**¾¾¾ÑÀ» ¹ñ´Â´Ù...*/
                 case (1):
                 {
+                    curTimer = _desc.flightTime * .7f;
                     AISM.Animator.speed = 1f;
                     FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
                     CameraManager.GetInstance().CameraShake(.2f, CameraManager.ShakeDir.HORIZONTAL, .4f);
@@ -198,6 +201,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
     private void PositionLuncher()
     {
         #region Omit
+
         for (int i= 0; i < _desc.count; i++)
         {
             ref ThrowDesc desc = ref _targets[i];
@@ -206,9 +210,9 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
             Vector3 vel = IpariUtility.CaculateVelocity(
                 desc.goalPos, 
                 _desc.shootPoint.position, 
-                (_desc.flightTime * Random.Range(.5f,1f))
+                _desc.flightTime * Random.Range(.5f, 1f),
+                .5f
             );
-
 
             /**¾¾¾Ñ ÆøÅºÀ» »ý¼ºÇÑ´Ù...*/
             GameObject obj = GameObject.Instantiate(
@@ -216,7 +220,6 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 _desc.shootPoint.position, 
                 Quaternion.identity
             );
-
 
             /**¾¾¾Ñ ÆøÅº¿¡°Ô °¡¼Óµµ¸¦ °¡ÇÑ´Ù...*/
             desc.throwBody = obj.GetComponent<Rigidbody>();
@@ -231,7 +234,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         }
 
         /**°¢ ¾¾¾ÑµéÀº ¼­·Î Ãæµ¹ÆÇÁ¤ÀÌ ³ªÁö ¾Êµµ·Ï ÇÑ´Ù...*/
-        for(int i=0; i<_desc.count; i++){
+        for (int i = 0; i < _desc.count; i++){
 
             IgnoreCollisionOtherSeeds(ref _targets[i]);
         }
@@ -261,9 +264,10 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
          * ***/
         Vector3 unitDir  = Random.onUnitSphere;
         float   randRad  = Random.Range(0.0f, _desc.rad);
+        unitDir.y = 0f;
 
         RaycastHit result;
-        IpariUtility.GetPlayerFloorinfo(
+        bool isHit = IpariUtility.GetPlayerFloorinfo(
 
             out result, 
             (1<<LayerMask.NameToLayer("Platform")), 
@@ -271,6 +275,19 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
              5f
         );
 
+        /******************************************
+         *    À§Ä¡¸¦ Á¦ÇÑ½ÃÅ²´Ù...
+         * *****/
+        Vector3 center = new Vector3(-0.949999988f, 1.63f, -15.4200001f);
+        Vector3 dir    = (result.point - center);
+        float   dst    = dir.sqrMagnitude;
+        if(dst > (5f*5f)){
+
+            desc.goalPos = center + (dir.normalized*7f);
+        }
+
+
+        /**ÃÖÁ¾ °á°ú¹°À» ±â·ÏÇÑ´Ù.....*/
         desc.goalPos    = result.point + (result.normal*.03f);
         desc.goalNormal = result.normal;
         #endregion

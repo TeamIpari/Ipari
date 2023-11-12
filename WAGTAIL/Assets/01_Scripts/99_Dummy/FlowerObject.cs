@@ -157,7 +157,7 @@ public sealed class FlowerObject : MonoBehaviour
                 newCoin.ItemGetType       = ScoreObject.GetKind.None;
 
                 newCoin.UseRigidbody(true,true);
-                newCoin.Body.velocity = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime);
+                newCoin.Body.velocity = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime, .5f);
 
                 Transform coinTr = newCoin.transform;
                 Vector3 coinPos = flowerPos;

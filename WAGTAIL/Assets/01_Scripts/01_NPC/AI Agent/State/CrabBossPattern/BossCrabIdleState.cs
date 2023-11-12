@@ -40,13 +40,6 @@ public sealed class BossCrabIdleState : AIIdleState
             return;
         }
 
-        /**크랩 보스의 히트 상태 전환...*/
-        else if(AISM.character.IsHit){
-
-            AISM.ChangeState(AISM.character.AiHit);
-            return;
-        }
-
         /**다음 패턴으로 넘어간다...*/
         if(_currTime>_waitTime){
 
