@@ -475,15 +475,16 @@ public sealed class BossCrab : Enemy
     //===========================================
     //////          Property                /////
     //===========================================
-    public float SeedSpawnRange     { get { return _SeedSpawnRange; } set { _SeedSpawnRange = (value < 0f ? 0f : value); } }
-    public float SeedExplodeTime    { get { return _SeedExplodeTime; } set { _SeedExplodeTime = (value < 0f ? 0f : value); } }
-    public float SeedExplodeRange   { get { return _SeedExplodeTime; } set { _SeedExplodeTime = (value < 0f ? 0f : value); } }
-    public float EgoAtkWaitTime     { get { return _EgoAtkWaitTime; } set { _EgoAtkWaitTime = (value < 0f ? 0f : value); } }
-    public float EgoAtkCompleteRate { get { return _EgoAtkCompleteRate; } set { _EgoAtkCompleteRate = (value < 0f ? 0f : value); } }
-    public float AntHellDuration    { get { return _AntHellDuration; } set { _AntHellDuration = (value < 0f ? 0f : value); } }
-    public float EgoAtkRange        { get { return _EgoAtkRange; } set { _EgoAtkRange = (value < 0f ? 0f : value); } }
-    public int   SandWaveCount      { get { return _SandWaveCount; } set { _SandWaveCount = (value < 0 ? 0 : value); } }
-    public int   SeedCount          { get { return _SeedCount; } set { _SeedCount = (value < 0 ? 0 : value); } }
+    public float    SeedSpawnRange     { get { return _SeedSpawnRange; } set { _SeedSpawnRange = (value < 0f ? 0f : value); } }
+    public float    SeedExplodeTime    { get { return _SeedExplodeTime; } set { _SeedExplodeTime = (value < 0f ? 0f : value); } }
+    public float    SeedExplodeRange   { get { return _SeedExplodeTime; } set { _SeedExplodeTime = (value < 0f ? 0f : value); } }
+    public float    EgoAtkWaitTime     { get { return _EgoAtkWaitTime; } set { _EgoAtkWaitTime = (value < 0f ? 0f : value); } }
+    public float    EgoAtkCompleteRate { get { return _EgoAtkCompleteRate; } set { _EgoAtkCompleteRate = (value < 0f ? 0f : value); } }
+    public float    AntHellDuration    { get { return _AntHellDuration; } set { _AntHellDuration = (value < 0f ? 0f : value); } }
+    public float    EgoAtkRange        { get { return _EgoAtkRange; } set { _EgoAtkRange = (value < 0f ? 0f : value); } }
+    public int      SandWaveCount      { get { return _SandWaveCount; } set { _SandWaveCount = (value < 0 ? 0 : value); } }
+    public int      SeedCount          { get { return _SeedCount; } set { _SeedCount = (value < 0 ? 0 : value); } }
+    public Collider Collider           { get { return _collider; } }
 
     /************************************
      *   씨앗 뱉는 패턴 관련 프로퍼티...
@@ -581,6 +582,7 @@ public sealed class BossCrab : Enemy
     //==================================================
     ///////              Fields                   //////
     //==================================================
+    private Collider         _collider;
     private Animator         _HPAnim;
     private Stack<Transform> _HPstack;
 
@@ -595,6 +597,7 @@ public sealed class BossCrab : Enemy
     {
         #region Omit
         gameObject.tag = "Boss";
+        _collider = GetComponent<Collider>();
 
         InitHPUI();
         StateSetting();
@@ -607,6 +610,8 @@ public sealed class BossCrab : Enemy
     {
         #region Omit
         if (AiSM.CurrentState!=null){
+
+            Debug.Log($"현재 상태: {AiSM.CurrentState}");
 
             if(_stateTriggerDelay>0f)
             {
@@ -751,9 +756,9 @@ public sealed class BossCrab : Enemy
         #region Omit
         if (delay>0f)
         {
-            Debug.Log($"StateDelay 갱신!!: {delay}");
+            Debug.Log($"StateDelay 갱신!!: {delay}({AiSM.CurrentState})");
             _stateTriggerDelay = delay;
-            StateTrigger = false;
+            StateTrigger       = false;
             return;
         }
 

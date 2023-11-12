@@ -159,6 +159,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  currentCanvas: {fileID: 0}
 --- !u!1 &934498609851717264
 GameObject:
   m_ObjectHideFlags: 0
@@ -2382,12 +2383,12 @@ PrefabInstance:
     - target: {fileID: 3725633767389760368, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767389760368, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767389760368, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2402,7 +2403,7 @@ PrefabInstance:
     - target: {fileID: 3725633767389760368, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -56.711998
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767389760381, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2472,12 +2473,12 @@ PrefabInstance:
     - target: {fileID: 3725633767458884207, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767458884207, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767458884207, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2492,17 +2493,17 @@ PrefabInstance:
     - target: {fileID: 3725633767458884207, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -298.644
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707026, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707026, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707026, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2517,12 +2518,12 @@ PrefabInstance:
     - target: {fileID: 3725633767510707026, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -217.99998
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2536,6 +2537,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2898481941285338031}
@@ -2546,12 +2562,42 @@ PrefabInstance:
       objectReference: {fileID: 6969973673468068188}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 546589323}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 546589323}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
+      value: 
+      objectReference: {fileID: 1270611866}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
@@ -2566,6 +2612,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: ChangeCurrentThis
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: SetMoveLock
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_MethodName
+      value: InvokeExitEvent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: TitleUI, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -2576,9 +2637,49 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: GamePadUIController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: GamePadUIController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_TargetAssemblyTypeName
+      value: UIPointerEmulator, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_IntArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 7388334740512904978}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -2589,15 +2690,30 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3725633767708840009, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767708840009, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767708840009, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2612,7 +2728,7 @@ PrefabInstance:
     - target: {fileID: 3725633767708840009, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -137.35599
       objectReference: {fileID: 0}
     - target: {fileID: 3725633768250933041, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2732,12 +2848,12 @@ PrefabInstance:
     - target: {fileID: 3725633769084537979, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633769084537979, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3725633769084537979, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2752,7 +2868,7 @@ PrefabInstance:
     - target: {fileID: 3725633769084537979, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -379.288
       objectReference: {fileID: 0}
     - target: {fileID: 3725633769084537988, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -3908,12 +4024,432 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8110014536876306715}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3524398580922094609 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4640293759408710922, guid: befda50c1393b63448b5950166790741,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014536876306715}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8935702588261942354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3524398580922094609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e637f0ecf6c63f1499a268d427f41903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpTarget: {fileID: 0}
+  DownTarget: {fileID: 2158560191735475380}
+  LeftTarget: {fileID: 0}
+  RightTarget: {fileID: 0}
+  CancelTarget: {fileID: 0}
+  SelectTarget: {fileID: 0}
+  OnSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeEnterEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398580922094609}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDisSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeExitEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398580922094609}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPressd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeClickEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398580922094609}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCancel:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRight:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPressdLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeftLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRightLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUpLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDownLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCancelLock:
+    m_PersistentCalls:
+      m_Calls: []
+  StartSelect: 0
+  UseMoveLock: 0
+  UsedEventLayer: 7
+--- !u!1 &3524398581380084756 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4640293758817584399, guid: befda50c1393b63448b5950166790741,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014536876306715}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2158560191735475380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3524398581380084756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e637f0ecf6c63f1499a268d427f41903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpTarget: {fileID: 8935702588261942354}
+  DownTarget: {fileID: 8331982645527653822}
+  LeftTarget: {fileID: 0}
+  RightTarget: {fileID: 0}
+  CancelTarget: {fileID: 0}
+  SelectTarget: {fileID: 0}
+  OnSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeEnterEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398581380084756}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDisSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeExitEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398581380084756}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPressd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeClickEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398581380084756}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCancel:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRight:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPressdLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeftLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRightLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUpLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDownLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCancelLock:
+    m_PersistentCalls:
+      m_Calls: []
+  StartSelect: 0
+  UseMoveLock: 0
+  UsedEventLayer: 7
+--- !u!1 &3524398581714167156 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4640293760166696047, guid: befda50c1393b63448b5950166790741,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014536876306715}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6516915445142381739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3524398581714167156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e637f0ecf6c63f1499a268d427f41903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpTarget: {fileID: 8331982645527653822}
+  DownTarget: {fileID: 0}
+  LeftTarget: {fileID: 0}
+  RightTarget: {fileID: 0}
+  CancelTarget: {fileID: 0}
+  SelectTarget: {fileID: 0}
+  OnSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeEnterEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398581714167156}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDisSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeExitEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398581714167156}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPressd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeClickEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398581714167156}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCancel:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRight:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPressdLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeftLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRightLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUpLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDownLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCancelLock:
+    m_PersistentCalls:
+      m_Calls: []
+  StartSelect: 0
+  UseMoveLock: 0
+  UsedEventLayer: 7
 --- !u!1 &5281825153842815885 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4161397242982437526, guid: befda50c1393b63448b5950166790741,
     type: 3}
   m_PrefabInstance: {fileID: 8110014536876306715}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6983304555942608154 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1181387028476414977, guid: befda50c1393b63448b5950166790741,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014536876306715}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8331982645527653822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6983304555942608154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e637f0ecf6c63f1499a268d427f41903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpTarget: {fileID: 2158560191735475380}
+  DownTarget: {fileID: 6516915445142381739}
+  LeftTarget: {fileID: 0}
+  RightTarget: {fileID: 0}
+  CancelTarget: {fileID: 0}
+  SelectTarget: {fileID: 0}
+  OnSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeEnterEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6983304555942608154}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDisSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeExitEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6983304555942608154}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPressd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeClickEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6983304555942608154}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCancel:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRight:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPressdLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeftLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRightLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadUpLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDownLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCancelLock:
+    m_PersistentCalls:
+      m_Calls: []
+  StartSelect: 0
+  UseMoveLock: 0
+  UsedEventLayer: 7
 --- !u!1001 &8110014537025281792
 PrefabInstance:
   m_ObjectHideFlags: 0

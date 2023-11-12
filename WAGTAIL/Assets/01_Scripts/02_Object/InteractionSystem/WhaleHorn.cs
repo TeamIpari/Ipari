@@ -93,7 +93,7 @@ public sealed class WhaleHorn : MonoBehaviour
         transform.parent  = null;
         _body.isKinematic = false;
         _body.AddTorque(Vector3.left * 50f);
-        _body.AddForce((Vector3.left * 90f)+(Vector3.up*70f));
+        _body.AddForce((Vector3.left * 90f));
 
         float time = 3f;
         while ((time -= Time.deltaTime)>0f) yield return null;

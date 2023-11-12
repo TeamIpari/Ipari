@@ -20,10 +20,10 @@ public class TitleUI : MonoBehaviour
 
     private void Update()
     {
-        if (OptionUI.activeSelf && Input.GetKeyDown("escape"))
-        {
-            OptionUI.GetComponent<Animator>().SetTrigger(FadeOut);
-        }
+        //if (OptionUI.activeSelf && Input.GetKeyDown("escape"))
+        //{
+        //    OptionUI.GetComponent<Animator>().SetTrigger(FadeOut);
+        //}
     }
 
     public void GameStart()
