@@ -50,6 +50,11 @@ public class DataManager : MonoBehaviour
 
         else
         {
+            data.Reset();
+            data.Load();
+#if Unity_Editor
+            Debug.Log("Reset GameData Finish");
+#endif
             return false;
         }
     }

@@ -55,6 +55,7 @@ public class GameManager : Singleton<GameManager>
 
         if (!DataManager.Instance.LoadGameData())
         {
+            Debug.Log("Test");
             Coin = 0;
             cocosi = new bool[3][];
             cocosi[0] = new bool[] { false, false, false, false, false };

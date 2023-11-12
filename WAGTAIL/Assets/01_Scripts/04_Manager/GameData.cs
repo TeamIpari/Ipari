@@ -33,4 +33,15 @@ public class GameData
         GameManager.GetInstance().LastActiveChapter = currentChapterType;
         GameManager.GetInstance().cocosi = cocosi;
     }
+
+    public void Reset()
+    {
+        masterVolume = 1f;
+        bgmVolume = 1f;
+        sfxVolume = 1f;
+        
+        currentChapterType = GameManager.GetInstance().LastActiveChapter;
+        cocosi = GameManager.GetInstance().cocosi;
+        coin = GameManager.GetInstance().PrevCoin;
+    }
 }
