@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 446512949551791459}
   - component: {fileID: 161460412437952724}
   - component: {fileID: 5714988654529219038}
+  - component: {fileID: 2184400153314419745}
   m_Layer: 0
   m_Name: StoneFloor2_Dark
   m_TagString: Untagged
@@ -126,6 +127,7 @@ MonoBehaviour:
   Behaviors:
   - {fileID: 161460412437952724}
   - {fileID: 5714988654529219038}
+  - {fileID: 2184400153314419745}
   _ObjectOnPlatformCount: 0
 --- !u!114 &161460412437952724
 MonoBehaviour:
@@ -182,11 +184,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d81594be7142eaa49a5bb9ae2bc4baad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 3
-  ShakeDistance: 0.1
+  Speed: 5
+  ShakeDistance: 0
   shakeDelay: 0.1
-  QuakeRate: 1.5
+  QuakeRate: 0.5
   TargetPosition: {x: 0, y: -5, z: 0}
+--- !u!114 &2184400153314419745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538121933741414391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43b45c8f7e1cfe048a9e94faf1444333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Yspeed: 0
+  Rotspeed: 0
+  sinkDepth: 0.04
+  SpinPow: 10
+  UpdateDelay: 0
 --- !u!1 &4401921959704673861
 GameObject:
   m_ObjectHideFlags: 0

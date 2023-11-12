@@ -3,12 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.EditorTools;
-using System.Runtime.InteropServices;
-using UnityEditor.Build.Content;
-using Unity.VisualScripting.FullSerializer;
-using UnityEngine.SocialPlatforms;
-using Autodesk.Fbx;
 
 [Serializable]
 public struct BossNepenthesProfile
