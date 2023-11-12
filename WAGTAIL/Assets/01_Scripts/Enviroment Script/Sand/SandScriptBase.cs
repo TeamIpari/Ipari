@@ -34,10 +34,13 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
     public bool    IntakeOnAwake = false;
 
     [SerializeField, Min(0f)] 
-    public float   IntakePower = 6f;
+    public float   IntakePower            = 6f;
 
     [SerializeField, Min(0f)]
-    public float   IntakeStopDuration = -1f;
+    public float   IntakeMatSpeedScale   = 1f;
+
+    [SerializeField, Min(0f)]
+    public float   IntakeStopDuration     = -1f;
 
     [SerializeField] 
     public Vector3 SandIdleCenterOffset   = Vector3.zero;
@@ -139,7 +142,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         /***************************************************************
          *   모래 침식 uv 애니메이션의 속도와, 흔들림 효과를 적용한다.....
          * *****/
-        if(_SandMat) _SandMat.SetFloat("_Speed", _totalTime += (deltaTime * _currPullSpeed));
+        if(_SandMat) _SandMat.SetFloat("_Speed", _totalTime += (deltaTime * _currPullSpeed * IntakeMatSpeedScale));
 
         if(_currPullSpeed>0f)
         {
