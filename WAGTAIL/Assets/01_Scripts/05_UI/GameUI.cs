@@ -70,6 +70,7 @@ public class GameUI : MonoBehaviour
         Continue();
         GameManager.GetInstance().RestartGame();
         SceneLoader.GetInstance().LoadScene("Chapter01");
+        UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).GetComponent<CollectionCocosiUI>().SetCanvas(1,false);
         FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
     }
 
