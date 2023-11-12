@@ -18,14 +18,6 @@ public class TitleUI : MonoBehaviour
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.UI_Button);
     }
 
-    private void Update()
-    {
-        if (OptionUI.activeSelf && Input.GetKeyDown("escape"))
-        {
-            OptionUI.GetComponent<Animator>().SetTrigger(FadeOut);
-        }
-    }
-
     public void GameStart()
     {
         GameManager.GetInstance().RestartGame();
