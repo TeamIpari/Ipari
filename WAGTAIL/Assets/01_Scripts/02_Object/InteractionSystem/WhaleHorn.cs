@@ -28,6 +28,7 @@ public sealed class WhaleHorn : MonoBehaviour
 
     [SerializeField] public Transform      InteractableGoalPos;
     [SerializeField] public GameObject     ShineSFXPrefab;
+    [SerializeField] public SaySpeaker     TalkableWhale;
     [SerializeField] private float         MoveDuration = 1f;
     [SerializeField] private float         MoveMaxHeight;
 
@@ -97,10 +98,17 @@ public sealed class WhaleHorn : MonoBehaviour
     private void FadeComplete( bool isDark, int id )
     {
         #region Omit
-        if (id != 11) return;
+        if (id != 11 || TalkableWhale==null || isDark==false) return;
 
+        Player.Instance.movementSM.ChangeState(Player.Instance.idle);
 
         IpariUtility.OnFadeChange -= FadeComplete;
+        Destroy(_ShineSFXIns.gameObject);
+        gameObject.SetActive(false);
+        GameObject.Find("---Camera").transform.GetChild(0).gameObject.SetActive(true);
+
+        TalkableWhale.gameObject.SetActive(true);
+        TalkableWhale.PlayingCutScene();
         #endregion
     }
 
@@ -155,8 +163,6 @@ public sealed class WhaleHorn : MonoBehaviour
                 rotDelay = 13f;
             }
 
-            yield return waitTime;
-
             /**샤인 이펙트의 위치를 갱신한다...*/
             if (_state==HornState.Fly_Idle && _ShineSFXIns!=null){
 
@@ -191,7 +197,7 @@ public sealed class WhaleHorn : MonoBehaviour
                             IpariUtility.FadeOutType.WHITE_TO_DARK_TO_WHITE,
                             _fadeUI,
                             3f,
-                            1f,
+                            .6f,
                             11
                         );
 
@@ -200,16 +206,10 @@ public sealed class WhaleHorn : MonoBehaviour
                     });
                 }
             }
+
+            yield return waitTime;
         }
         while (_state!=HornState.Enter_CutScene);
-
-
-        /********************************************
-         *    페이드 인 효과를 적용한다....
-         * ****/
-        time = 3f;
-        while ((time += Time.deltaTime) < 3f) yield return null;
-
 
 
         #endregion

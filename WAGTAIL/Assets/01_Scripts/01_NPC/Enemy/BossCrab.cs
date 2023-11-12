@@ -754,7 +754,6 @@ public sealed class BossCrab : Enemy
         #region Omit
         if (delay>0f)
         {
-            Debug.Log($"StateDelay °»½Å!!: {delay}({AiSM.CurrentState})");
             _stateTriggerDelay = delay;
             StateTrigger       = false;
             return;

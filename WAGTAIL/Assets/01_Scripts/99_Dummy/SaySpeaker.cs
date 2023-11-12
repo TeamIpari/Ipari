@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -244,11 +245,13 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         Player player = Player.Instance;
         if (player.movementSM.currentState != player.idle) return;
 
-        // 목표지점은 어떻게 지정할 것인가? 
-        Vector3 ArrivalPoint = transform.localPosition + transform.forward * 1.5f;
-
         // 족장을 바라보라우 
-        player.transform.LookAt(this.transform);
+        Vector3 lookDir = (transform.position - player.transform.position).normalized;
+        lookDir.y = 0f;
+        player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, lookDir) * player.transform.rotation);
+
+        // 목표지점은 어떻게 지정할 것인가? 
+        Vector3 ArrivalPoint = transform.localPosition - lookDir * 1.5f;
 
         // 방향 벡터를 구하고 속도를 조절
         player.controller.Move((ArrivalPoint - player.transform.position).normalized * Time.deltaTime * (player.playerSpeed * 0.5f));
@@ -276,10 +279,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         // 강제로 이동시키기 위해 InputSystem을 꺼줌.
         Player.Instance.playerInput.enabled = false;
         // 내 앞까지 와라
-        GameObject point = GameObject.Instantiate(new GameObject(), transform.position + transform.forward * TargetDistance, Quaternion.identity, this.transform);
-        //Player.Instance.controller.enabled = false;
 
-        Destroy(point, 10f);
         _IsMoving = true;
 
 
