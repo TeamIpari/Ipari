@@ -611,8 +611,6 @@ public sealed class BossCrab : Enemy
         #region Omit
         if (AiSM.CurrentState!=null){
 
-            Debug.Log($"현재 상태: {AiSM.CurrentState}");
-
             if(_stateTriggerDelay>0f)
             {
                 /**딜레이가 끝나면 StateTrigger를 발생시킨다...*/

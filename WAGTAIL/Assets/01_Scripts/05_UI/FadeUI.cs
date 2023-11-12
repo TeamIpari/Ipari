@@ -10,14 +10,6 @@ public enum FadeType
     LetterBox
 }
 
-public enum FadeApplyType : byte
-{
-    WHITE_TO_DARK           = 0b011,
-    WHITE_TO_DARK_TO_WHITE  = 0b010,
-    DARK_TO_WHITE           = 0b100,
-    DARK_TO_WHITE_TO_DARK   = 0b101
-}
-
 public class FadeUI : MonoBehaviour
 {
     public delegate void OnChangeNotify(bool isDark);
@@ -25,33 +17,18 @@ public class FadeUI : MonoBehaviour
     //======================================================
     ///////          Property and fields             ///////
     //======================================================
-    public static OnChangeNotify        OnFadeChange;
+    public OnChangeNotify               OnFadeChange;
     [HideInInspector] public Animator[] fadeAnimator;
 
 
     private UIManager _uiManager;
-    private byte      _fadeInfo     = 0, 
-                      _fadeIndex    = 0;
     private static readonly int Out = Animator.StringToHash("FadeOut");
-    private static FadeUI       _ins;
 
 
 
     //====================================================
     ///////              Magic methods              //////
     //====================================================
-    private void Awake()
-    {
-        #region Omit
-
-        if (_ins==null)
-        {
-            _ins = this;
-        }
-
-        #endregion
-    }
-
     private void Start()
     {
         #region Omit
@@ -69,29 +46,7 @@ public class FadeUI : MonoBehaviour
     //=================================================
     ///////            Core methods             //////
     //=================================================
-    public static void ApplyScreenFade(FadeApplyType applyType, float speed=1f)
-    {
-        #region Omit
-
-        /*******************************************
-         *    페이드를 적용한다....
-         * ******/
-        if (_ins == null) return;
-
-        /**정보기록....*/
-        _ins._fadeInfo  = (byte)applyType;
-        _ins._fadeIndex = 0;
-
-        /**페이드 실행...*/
-        _ins.fadeAnimator[0].speed = speed;
-        if ((_ins._fadeInfo & 1) >= 0) _ins.FadeIn(FadeType.Normal);
-        else _ins.FadeOut(FadeType.Normal);
-
-        _ins._fadeIndex++;
-        #endregion
-    }
-
-    public void FadeIn(FadeType fadeType)
+    public void FadeIn(FadeType fadeType, float speed=1f)
     {
         #region Omit
         switch (fadeType)
@@ -100,6 +55,7 @@ public class FadeUI : MonoBehaviour
                 _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(false);
                 _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(false);
                 fadeAnimator[0].gameObject.SetActive(true);
+                fadeAnimator[0].speed = speed;
                 fadeAnimator[0].Play("Black_FadeIn");
                 break;
             case FadeType.LetterBox:
@@ -113,7 +69,7 @@ public class FadeUI : MonoBehaviour
         #endregion
     }
 
-    public void FadeOut(FadeType fadeType)
+    public void FadeOut(FadeType fadeType, float speed= 1f)
     {
         #region Omit
         switch (fadeType)
@@ -122,6 +78,7 @@ public class FadeUI : MonoBehaviour
                 _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(true);
                 _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(true);
                 fadeAnimator[0].gameObject.SetActive(true);
+                fadeAnimator[0].speed = speed;
                 fadeAnimator[0].Play("Black_FadeOut");
                 break;
             case FadeType.LetterBox:
@@ -135,28 +92,9 @@ public class FadeUI : MonoBehaviour
         #endregion
     }
 
-    public void SetFadeComplete_Internal(bool isDark)
+    public void FadeCompleteDispatch(bool isDark)
     {
-        #region Omit
-
-        bool prev = (_fadeInfo & (1 << _fadeIndex-1))>= 0;
-        bool curr = (_fadeInfo & (1 << _fadeIndex)) >= 0;
-
         OnFadeChange?.Invoke(isDark);
-        if (prev == curr || _fadeIndex>2)
-        {
-            _fadeInfo  = 0;
-            _fadeIndex = 0;
-            return;
-        }
-
-        /**페이드 실행...*/
-        if ((_fadeInfo & (1<<_fadeIndex)) >= 0) FadeIn(FadeType.Normal);
-        else FadeOut(FadeType.Normal);
-
-        _fadeIndex++;
-
-        #endregion
     }
 
 

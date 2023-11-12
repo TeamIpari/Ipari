@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace IPariUtility
 {
@@ -25,11 +27,23 @@ namespace IPariUtility
             public float   ParamValue;
             public string  DebugName;
         }
+
+        public enum FadeOutType
+        {
+            DARK_TO_WHITE = 0b100,
+            WHITE_TO_DARK = 0b011,
+            DARK_TO_WHITE_TO_DARK = 0b101,
+            WHITE_TO_DARK_TO_WHITE = 0b010
+        }
+
+        public delegate void OnFadeCompleteNotify(bool isDark, int id);
         #endregion
 
         //==============================================
         //////               Fields                 ////
         //==============================================
+        public static OnFadeCompleteNotify OnFadeChange;
+
         private static Coroutine          _padCoroutne;
         private static int                _vibeNum       = 0;
         private static VibrationDesc[]    _vibeDescs     = new VibrationDesc[10];
@@ -335,6 +349,11 @@ namespace IPariUtility
             #endregion
         }
 
+        internal static void ApplyImageFade(FadeOutType type, Image target, float changeTime, float secondChangeDelay = 0f, int id = 0, Color startColor = default, float whiteAlpha = 0f, float darkAlpha = 1f, float startDelay = 0f, Color? goalColor = null)
+        {
+            GameManager.GetInstance().StartCoroutine(FadeOutProcess(type, target, changeTime, secondChangeDelay, id, startColor, whiteAlpha, darkAlpha, startDelay, goalColor));
+        }
+
 
 
         //===================================================
@@ -525,6 +544,81 @@ namespace IPariUtility
             }
 
             return _texColors[minIdx].ParamValue;
+            #endregion
+        }
+
+        private static IEnumerator FadeOutProcess(FadeOutType type, Image handler, float taktTime, float delayTime = 0f, int id = 0, Color color = default, float whiteAlpha = 0f, float darkAlpha = 1f, float startDelay = 0f, Color? goalColor = null)
+        {
+            #region Omit
+            float start = ((int)type & 0b100) == 0 ? whiteAlpha : darkAlpha;
+            float goal1 = ((int)type & 0b010) == 0 ? whiteAlpha : darkAlpha;
+            float goal2 = ((int)type & 0b001) == 0 ? whiteAlpha : darkAlpha;
+
+            if (taktTime < 0) yield break;
+
+            //알파 초기화
+            Color imgColor = handler.color;
+            imgColor       = color;
+            imgColor.a     = start;
+            handler.color  = imgColor;
+
+            //시작 딜레이
+            while ((startDelay -= Time.unscaledDeltaTime) > 0) yield return null;
+
+            float goalDiv = 1.0f / taktTime;
+            float time = 0f;
+            Color RGB = imgColor;
+
+            //1->2
+            while (time <= taktTime)
+            {
+                float process = time * goalDiv;
+                imgColor.a = start + (goal1 - start) * process;
+                if (goalColor != null)
+                {
+                    Color goalRGB = (Color)goalColor;
+                    RGB.r = color.r + (goalRGB.r - color.r) * process;
+                    RGB.g = color.g + (goalRGB.g - color.g) * process;
+                    RGB.b = color.b + (goalRGB.b - color.b) * process;
+                    imgColor = RGB;
+                }
+
+                handler.color = imgColor;
+                time += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            imgColor.a = goal1;
+            handler.color = imgColor;
+
+            OnFadeChange?.Invoke(imgColor.a == 1.0f, id);
+
+            //중간 마무리 여부
+            if (goal1 == goal2) yield break;
+
+            //중간 딜레이
+            while (delayTime > 0)
+            {
+                delayTime -= Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            //2->3
+            time = 0f;
+
+            while (time <= taktTime)
+            {
+                imgColor.a = goal1 + (goal2 - goal1) * (time * goalDiv);
+                handler.color = imgColor;
+
+                time += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            imgColor.a = goal2;
+            handler.color = imgColor;
+
+            OnFadeChange?.Invoke(imgColor.a == 1.0f, id);
             #endregion
         }
     }
