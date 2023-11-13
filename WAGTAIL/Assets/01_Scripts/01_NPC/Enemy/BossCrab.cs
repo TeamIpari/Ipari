@@ -20,7 +20,7 @@ public sealed class BossCrab : Enemy
     {
         public const string Idle = "Idle";
         public const string Hit  = "Hit";
-        public const string Die  = "die";
+        public const string Die  = "Death_Copy";
 
         public const string SpitSeedsReady   = "Attack1Ready";
         public const string SpittingSeeds    = "Attack1Spit";

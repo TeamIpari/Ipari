@@ -25,7 +25,6 @@ namespace IPariUtility
         {
             public Vector3 Color;
             public float   ParamValue;
-            public string  DebugName;
         }
 
         public enum FadeOutType
@@ -53,10 +52,17 @@ namespace IPariUtility
         private static float[]            _layerSFXTypes = new float[10];
         private static SFXColorSample[]   _texColors = new SFXColorSample[]
         {
-            new SFXColorSample{ Color=new Vector3(117f/255f, 106f/255f, 73f/255f), ParamValue=FModParamLabel.PlayerWalkType.Sand, DebugName="Èë" }, //Èë
-            new SFXColorSample{ Color=new Vector3(58f/255f, 95f/255f, 40f/255f), ParamValue=FModParamLabel.PlayerWalkType.Grass, DebugName="Ç®½£" }, //Ç®½£
-            new SFXColorSample{ Color=new Vector3(208f/255f, 168f/255f, 101f/255f), ParamValue=FModParamLabel.PlayerWalkType.Sand, DebugName="¸ð·¡" }, //¸ð·¡
-            new SFXColorSample{ Color=new Vector3(121f/255f, 118f/255f, 104f/255f), ParamValue=FModParamLabel.PlayerWalkType.Stone, DebugName="µ¹" }, //µ¹
+            new SFXColorSample{ Color=new Vector3(117f/255f, 106f/255f, 73f/255f), ParamValue=FModParamLabel.EnvironmentType.Ground}, //Èë
+
+            new SFXColorSample{ Color=new Vector3(58f/255f, 95f/255f, 40f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //Ç®½£
+            new SFXColorSample{ Color=new Vector3(97f/255f, 126f/255f, 67f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //Ç®½£
+            new SFXColorSample{ Color=new Vector3(63f/255f, 98f/255f, 29f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //Ç®½£
+
+            new SFXColorSample{ Color=new Vector3(208f/255f, 168f/255f, 101f/255f), ParamValue=FModParamLabel.EnvironmentType.Sand }, //¸ð·¡
+            new SFXColorSample{ Color=new Vector3(121f/255f, 118f/255f, 104f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone}, //µ¹
+
+            new SFXColorSample{ Color=new Vector3(213f/255f, 173f/255f, 110f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone }, //³ª¹«
+            new SFXColorSample{ Color=new Vector3(205f/255f, 156f/255f, 93f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone }, //³ª¹«
         };
 
 
@@ -344,7 +350,7 @@ namespace IPariUtility
             }
 
             FModParameterReference paramRef = new FModParameterReference();
-            paramRef.SetParameter(FModLocalParamType.PlayerWalkType, paramValue);   
+            paramRef.SetParameter(FModLocalParamType.EnvironmentType, paramValue);   
 
             return paramRef;
             #endregion
@@ -509,13 +515,18 @@ namespace IPariUtility
             /**Ç½À» ¹â¾ÒÀ» °æ¿ì...*/
             if (layerName.Contains("Grass") || layerName.Contains("Moss")) {
 
-                return FModParamLabel.PlayerWalkType.Grass;
+                return FModParamLabel.EnvironmentType.Grass;
             }
 
             /**¸ð·¡À» ¹â¾ÒÀ» °æ¿ì...*/
             if (layerName.Contains("Sand") || layerName.Contains("New")){
 
-                return FModParamLabel.PlayerWalkType.Sand;
+                return FModParamLabel.EnvironmentType.Sand;
+            }
+
+            if(layerName.Contains("Wood"))
+            {
+                return FModParamLabel.EnvironmentType.Wood;
             }
 
             return -1;

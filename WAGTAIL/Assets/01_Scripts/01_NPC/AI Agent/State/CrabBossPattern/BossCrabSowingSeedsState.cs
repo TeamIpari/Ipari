@@ -105,7 +105,13 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
                 {
                     curTimer = _desc.flightTime * .7f;
                     AISM.Animator.speed = 1f;
-                    FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
+
+                    FModAudioManager.PlayOneShotSFX(
+                        FModSFXEventType.Crab_SeedSpitOut, 
+                        _bossCrab.transform.position, 
+                        2f
+                     );
+
                     CameraManager.GetInstance().CameraShake(.2f, CameraManager.ShakeDir.HORIZONTAL, .4f);
                     IpariUtility.PlayGamePadVibration(.1f, .1f, .1f);
 

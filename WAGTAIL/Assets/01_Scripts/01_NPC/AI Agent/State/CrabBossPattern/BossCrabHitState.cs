@@ -40,8 +40,6 @@ public sealed class BossCrabHitState : AIHitState
         _bossCrab.ClearStateTriggerDelay();
         _bossCrab.PopHPUIStack();
 
-        Debug.Log($"데미지 입음!!!");
-
         AISM.Animator.speed = 1f;
 
         /************************************
@@ -51,7 +49,7 @@ public sealed class BossCrabHitState : AIHitState
         {
             _progress = 1;
             AISM.Animator.speed = 0f;
-            AISM.Animator.Play(BossCrabAnimation.Die, 0, .05f);
+            AISM.Animator.Play(BossCrabAnimation.Die, 0, .32f);
             CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, .8f, .022f);
             _bossCrab.SetStateTrigger(1f);
             return;

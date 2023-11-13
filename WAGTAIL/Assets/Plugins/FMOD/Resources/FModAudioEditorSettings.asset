@@ -37,18 +37,18 @@ MonoBehaviour:
     Path: bus:/SFX
   - Name: UI
     Path: bus:/SFX/UI
-  ParamCountList: 0100000006000000
+  ParamCountList: 0100000005000000
   ParamDescList:
   - ParamName: BrokenType
     LableCount: 2
     isGlobal: 0
     Min: 0
     Max: 1
-  - ParamName: LandedType
-    LableCount: 2
+  - ParamName: EnvironmentType
+    LableCount: 5
     isGlobal: 0
     Min: 0
-    Max: 1
+    Max: 4
   - ParamName: EnterWaterType
     LableCount: 2
     isGlobal: 0
@@ -59,11 +59,6 @@ MonoBehaviour:
     isGlobal: 0
     Min: 0
     Max: 0
-  - ParamName: PlayerWalkType
-    LableCount: 3
-    isGlobal: 0
-    Min: 0
-    Max: 2
   - ParamName: TreeActionType
     LableCount: 2
     isGlobal: 0
@@ -79,19 +74,19 @@ MonoBehaviour:
   - Stone
   - Grass
   - Ground
+  - Wood
+  - Sand
+  - Stone
   - Default
   - Stone
   - MiniNepenthes_Attack
-  - Grass
-  - Sand
-  - Stone
   - TreeFallDown
   - TreeCrash
   - Used
   - UnUsed
   CategoryDescList:
   - CategoryName: SFX/Environment
-    EventCount: 7
+    EventCount: 8
     GroupIndex: 1
     foldout: 0
     EventIsValid: 1
@@ -115,22 +110,29 @@ MonoBehaviour:
     GroupIndex: 1
     foldout: 0
     EventIsValid: 1
+  - CategoryName: BGM
+    EventCount: 10
+    GroupIndex: 0
+    foldout: 1
+    EventIsValid: 1
   - CategoryName: SFX/Boss/Boss Nepenthes
-    EventCount: 5
+    EventCount: 6
     GroupIndex: 1
     foldout: 0
     EventIsValid: 1
   - CategoryName: SFX/Boss/Boss Crab
-    EventCount: 8
+    EventCount: 9
     GroupIndex: 1
     foldout: 0
     EventIsValid: 1
-  - CategoryName: BGM
-    EventCount: 10
-    GroupIndex: 0
-    foldout: 0
-    EventIsValid: 1
   EventRefs:
+  - Name: StonePlatformBroken
+    Path: event:/SFX/Environment/StonePlatformBroken
+    GUID:
+      Data1: 872762981
+      Data2: 1252467944
+      Data3: -1386457176
+      Data4: -908974919
   - Name: Tree_Obstacle
     Path: event:/SFX/Environment/Tree Obstacle
     GUID:
@@ -285,6 +287,83 @@ MonoBehaviour:
       Data2: 1183593499
       Data3: 849544592
       Data4: 732205388
+  - Name: CrabBossBGM
+    Path: event:/BGM/CrabBossBGM
+    GUID:
+      Data1: 2087680138
+      Data2: 1137614030
+      Data3: -974458185
+      Data4: -1355772786
+  - Name: Chapter5BGM
+    Path: event:/BGM/Chapter5BGM
+    GUID:
+      Data1: 718605923
+      Data2: 1331647710
+      Data3: 838851234
+      Data4: -72285666
+  - Name: NepenthesBossBGM
+    Path: event:/BGM/NepenthesBossBGM
+    GUID:
+      Data1: 1035370724
+      Data2: 1231878928
+      Data3: 1320145589
+      Data4: 790482389
+  - Name: Chapter4BGM
+    Path: event:/BGM/Chapter4BGM
+    GUID:
+      Data1: 59827926
+      Data2: 1289788371
+      Data3: 1359709847
+      Data4: -804997082
+  - Name: NepenthesRoad
+    Path: event:/BGM/NepenthesRoad
+    GUID:
+      Data1: -1867582431
+      Data2: 1121209320
+      Data3: -1608370768
+      Data4: -1609358906
+  - Name: tavuti_ingame2
+    Path: event:/BGM/tavuti_ingame2
+    GUID:
+      Data1: 1172652772
+      Data2: 1096849244
+      Data3: 1626328197
+      Data4: 1334314980
+  - Name: test
+    Path: event:/BGM/test
+    GUID:
+      Data1: -1059833457
+      Data2: 1253542699
+      Data3: -338358873
+      Data4: 775534634
+  - Name: tavuti_ingame1
+    Path: event:/BGM/tavuti_ingame1
+    GUID:
+      Data1: 948676747
+      Data2: 1227712620
+      Data3: -1017469557
+      Data4: -1232547804
+  - Name: Wagtail_bgm_title
+    Path: event:/BGM/Wagtail_bgm_title
+    GUID:
+      Data1: 942327427
+      Data2: 1305162648
+      Data3: 144500900
+      Data4: -1687243536
+  - Name: test2
+    Path: event:/BGM/test2
+    GUID:
+      Data1: -839459200
+      Data2: 1158110859
+      Data3: -183060576
+      Data4: 1601068035
+  - Name: BossNepen_Hit
+    Path: event:/SFX/Boss/Boss Nepenthes/BossNepen_Hit
+    GUID:
+      Data1: -1007401708
+      Data2: 1308172674
+      Data3: 128069518
+      Data4: 245650646
   - Name: BossNepen_VineSmash
     Path: event:/SFX/Boss/Boss Nepenthes/BossNepen_VineSmash
     GUID:
@@ -320,6 +399,13 @@ MonoBehaviour:
       Data2: 1302165862
       Data3: 377981080
       Data4: 995136610
+  - Name: Crab_Hit
+    Path: event:/SFX/Boss/Boss Crab/Crab_Hit
+    GUID:
+      Data1: 88904361
+      Data2: 1138304325
+      Data3: -99787875
+      Data4: -1604164469
   - Name: Crab_SeedSpitOut
     Path: event:/SFX/Boss/Boss Crab/Crab_SeedSpitOut
     GUID:
@@ -376,81 +462,11 @@ MonoBehaviour:
       Data2: 1140839663
       Data3: 1957934753
       Data4: -1357273977
-  - Name: CrabBossBGM
-    Path: event:/BGM/CrabBossBGM
-    GUID:
-      Data1: 2087680138
-      Data2: 1137614030
-      Data3: -974458185
-      Data4: -1355772786
-  - Name: NepenthesBossBGM
-    Path: event:/BGM/NepenthesBossBGM
-    GUID:
-      Data1: 1035370724
-      Data2: 1231878928
-      Data3: 1320145589
-      Data4: 790482389
-  - Name: tavuti_ingame2
-    Path: event:/BGM/tavuti_ingame2
-    GUID:
-      Data1: 1172652772
-      Data2: 1096849244
-      Data3: 1626328197
-      Data4: 1334314980
-  - Name: Chapter4BGM
-    Path: event:/BGM/Chapter4BGM
-    GUID:
-      Data1: 59827926
-      Data2: 1289788371
-      Data3: 1359709847
-      Data4: -804997082
-  - Name: test
-    Path: event:/BGM/test
-    GUID:
-      Data1: -1059833457
-      Data2: 1253542699
-      Data3: -338358873
-      Data4: 775534634
-  - Name: tavuti_ingame1
-    Path: event:/BGM/tavuti_ingame1
-    GUID:
-      Data1: 948676747
-      Data2: 1227712620
-      Data3: -1017469557
-      Data4: -1232547804
-  - Name: Wagtail_bgm_title
-    Path: event:/BGM/Wagtail_bgm_title
-    GUID:
-      Data1: 942327427
-      Data2: 1305162648
-      Data3: 144500900
-      Data4: -1687243536
-  - Name: test2
-    Path: event:/BGM/test2
-    GUID:
-      Data1: -839459200
-      Data2: 1158110859
-      Data3: -183060576
-      Data4: 1601068035
-  - Name: Chapter5BGM
-    Path: event:/BGM/Chapter5BGM
-    GUID:
-      Data1: 718605923
-      Data2: 1331647710
-      Data3: 838851234
-      Data4: -72285666
-  - Name: NepenthesRoad
-    Path: event:/BGM/NepenthesRoad
-    GUID:
-      Data1: -1867582431
-      Data2: 1121209320
-      Data3: -1608370768
-      Data4: -1609358906
   RootFolderFoldout: 0
   EventGroups:
   - RootFolderName: BGM
     TotalEvent: 10
   - RootFolderName: SFX
-    TotalEvent: 35
+    TotalEvent: 38
   - RootFolderName: NoGroup
     TotalEvent: 0
