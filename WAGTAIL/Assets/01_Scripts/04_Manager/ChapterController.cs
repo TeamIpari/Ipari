@@ -46,6 +46,12 @@ public class ChapterController : MonoBehaviour
                 FModAudioManager.PlayBGM(FModBGMEventType.Chapter4BGM);
                 CameraManager.GetInstance().CameraSetting();
                 break;
+            case ChapterType.BossRoom:
+                GameManager.GetInstance().StartChapter(ChapterType.BossRoom);
+                UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
+                UIManager.GetInstance().ActiveGameUI(GameUIType.Coin, true);
+                UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).GetComponent<CollectionCocosiUI>().SetCanvas(2,false);
+                break;
             case ChapterType.EndCredits:
                 GameManager.GetInstance().StartChapter(ChapterType.EndCredits);
                 break;

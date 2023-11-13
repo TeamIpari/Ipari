@@ -586,7 +586,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     public void AnimationEvent()
     {
         SpawnVFX();
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     public void ExecutionFunction(float time)
