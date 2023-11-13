@@ -31,6 +31,7 @@ public class CarryState : State
         if (interactAction.triggered && player.currentInteractable != null)
         {
             player.Interaction();
+            
             player.animator.SetLayerWeight(1, 1);
             player.animator.Play("LiftThrow", 1, 0f);
             player.animator.SetTrigger(Throw);
