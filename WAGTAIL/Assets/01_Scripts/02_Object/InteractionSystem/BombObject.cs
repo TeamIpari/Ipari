@@ -127,6 +127,19 @@ public class BombObject : MonoBehaviour
             // enable·Î ¹Ù²Ù»ï
             Destroy(gameObject);
         }
+
+        if (other.gameObject.CompareTag("Shatter"))
+        {
+            if (_isExplosionVFXNotNull)
+            {
+                other.gameObject.GetComponent<ShatterObject>().Explode();
+                var tf = transform;
+                var exploVFX = Instantiate(explosionVFX, tf.position, tf.rotation);
+                FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_BombBurst);
+                Destroy(exploVFX, 3);
+            }
+            Destroy(gameObject);
+        }
     }
 
     private void CalcDirectionVector(Vector3 targetPos, Vector3 currentPos)

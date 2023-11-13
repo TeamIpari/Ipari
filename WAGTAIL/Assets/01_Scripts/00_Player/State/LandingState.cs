@@ -28,7 +28,7 @@ public class LandingState : State
         );
 
         _timePassed = 0f;
-        player.animator.SetTrigger(Landing);
+        player.animator.Play("JumpLanding", 0, 0f);
         _landingTime = 0.05f;
     }
 
