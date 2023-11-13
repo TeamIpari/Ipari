@@ -114,8 +114,6 @@ public class RotAround : MonoBehaviour, IEnviroment
 
             obj.transform.position = obj.CompareTag("Platform") == true ? createPos + coinOffset : createPos;
 
-            Debug.Log($"{obj.tag}");
-
             obj.transform.LookAt(this.transform);
             w_Vec = Reverse == true ? 75 : -75;
             obj.transform.Rotate(0, w_Vec, 0);
