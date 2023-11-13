@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1758429614289242577}
+  - {fileID: 1520505240162568490}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -59,7 +59,8 @@ MonoBehaviour:
   Dialogue:
     name: 
     sentences: []
---- !u!1001 &2300647918048226874
+  UseLetterBox: 1
+--- !u!1001 &1338503711822966465
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -89,17 +90,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.49
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.99
+      value: -3.71
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.05
+      value: 20.82
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
@@ -109,7 +110,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
@@ -119,7 +120,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
@@ -146,16 +147,44 @@ PrefabInstance:
       propertyPath: m_Name
       value: Whale
       objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 286c7298cc1c4704bbfcddf926505920,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 286c7298cc1c4704bbfcddf926505920, type: 3}
---- !u!4 &1758429614289242577 stripped
+--- !u!4 &1520505240162568490 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
     type: 3}
-  m_PrefabInstance: {fileID: 2300647918048226874}
+  m_PrefabInstance: {fileID: 1338503711822966465}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2184874573054530448 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 286c7298cc1c4704bbfcddf926505920,
+    type: 3}
+  m_PrefabInstance: {fileID: 1338503711822966465}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3690596371707980171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2184874573054530448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca87e694c7b7f1c478513098a5e7f426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsSaying: 0
+  _IsTalkable: 1
+  _IsMoving: 0
+  SayType: 1
+  TargetDistance: 1.5
+  TextViewer: {fileID: 0}
+  NameTag: {fileID: 0}
+  TextBoxPrefab: {fileID: 0}
+  QuestIcon: {fileID: 0}
+  SpeakBalloon: {fileID: 0}
+  CutScenePlayer: {fileID: 0}
+  Dialogue:
+    name: 
+    sentences: []
+  UseLetterBox: 1

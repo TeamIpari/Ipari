@@ -283,6 +283,7 @@ namespace IPariUtility
             _padCoroutne = null;
             _vibeNum     = 0;
             Gamepad.current?.SetMotorSpeeds(0f, 0f);
+            OnFadeChange = null;
             #endregion
         }
 

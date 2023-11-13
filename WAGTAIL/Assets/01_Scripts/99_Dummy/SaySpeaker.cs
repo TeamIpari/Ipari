@@ -10,6 +10,8 @@ using UnityEngine.InputSystem;
 *******/
 public sealed class SaySpeaker : MonoBehaviour, IInteractable
 {
+    public delegate void OnTalkCompleteNotify( SaySpeaker speaker );
+
     //=================================================
     //////              Property                 //////
     //================================================
@@ -27,7 +29,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
                 qiAnim.SetTrigger("Interactable");
             }
         } 
-    }     
+    }
 
     [SerializeField] private bool           _IsSaying   = false;
     [SerializeField] private bool           _IsTalkable  = true;
@@ -44,6 +46,9 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
     [SerializeField] public CutScene        CutScenePlayer;
     [SerializeField] public Dialogue        Dialogue;
+
+    public OnTalkCompleteNotify OnTalkComplete;
+    public bool                 UseLetterBox = true;
 
 
 
@@ -173,12 +178,14 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         if (boxAnim!=null){
 
             TextBoxPrefab.SetActive(false);
-            if (UIManager.GetInstance().GetGameUI(GameUIType.Fade).gameObject.activeSelf)
+            if (UIManager.GetInstance().GetGameUI(GameUIType.Fade).gameObject.activeSelf && UseLetterBox)
             {
                 UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeOut(FadeType.LetterBox);
             }
             boxAnim.Play("TextBox_FadeOut");
         }
+
+        OnTalkComplete?.Invoke(this);
 
         while (CutScenePlayer)
         {
@@ -275,7 +282,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     {
         #region Omit
         // 연출이라는걸 알리기 위한 LetterBox 추가
-        UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
+        if(UseLetterBox) UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
         // 강제로 이동시키기 위해 InputSystem을 꺼줌.
         Player.Instance.playerInput.enabled = false;
         // 내 앞까지 와라
