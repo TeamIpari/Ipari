@@ -63,7 +63,7 @@ public class BombObject : MonoBehaviour
         }
     }
 
-    private IEnumerator Bomb()
+    public IEnumerator Bomb()
     {
         yield return new WaitForSeconds(5f);
         StopCoroutine(nameof(StartTimeBomb));

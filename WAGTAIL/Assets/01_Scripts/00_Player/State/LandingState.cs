@@ -28,7 +28,14 @@ public class LandingState : State
         );
 
         _timePassed = 0f;
-        player.animator.Play("JumpLanding", 0, 0f);
+        if (player.currentInteractable == null)
+        {
+            player.animator.Play("JumpLanding", 0, 0f);
+        }
+        else if (player.currentInteractable != null)
+        {
+            player.animator.Play("LiftJumpLanding", 0, 0f);
+        }
         _landingTime = 0.05f;
     }
 
