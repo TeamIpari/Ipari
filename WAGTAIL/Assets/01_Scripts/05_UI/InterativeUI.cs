@@ -8,7 +8,7 @@ using static GamePadUIController;
 /**********************************************************
  *  상호작용에 알맞는 UI가 출력되되록 하는 컴포넌트입니다.
  * ***/
-public sealed class InterativeUI : MonoBehaviour
+public sealed class InterativeUI : GamePadInputSpriteChanger
 {
     public enum ShowType
     {
@@ -68,11 +68,6 @@ public sealed class InterativeUI : MonoBehaviour
         }
     }
 
-    [SerializeField] Sprite ButtonFSprite;
-    [SerializeField] Sprite ButtonXSprite;
-    [SerializeField] Sprite ButtonYSprite;
-    [SerializeField] Sprite ButtonSquareSprite;
-
 
 
     //=========================================
@@ -81,7 +76,6 @@ public sealed class InterativeUI : MonoBehaviour
     private Camera          _mainCam;
     private Animator        _animator;
     private Image           _image;
-    private Image           _btnImage;
     private TextMeshProUGUI _text;
     private RectTransform   _rectTr;
     private ShowType        _show = ShowType.InVisible;
@@ -94,7 +88,7 @@ public sealed class InterativeUI : MonoBehaviour
     //===========================================
     /////           Core methods           /////
     //===========================================
-    private void Start()
+    protected override void OnChangerStart()
     {
         #region Omit
         /**이미 객체가 존재한다면 기존 객체를 파괴한다...*/
@@ -106,70 +100,19 @@ public sealed class InterativeUI : MonoBehaviour
         /*******************************************************
          *   필요한 모든 참조들을 얻어온다.....
          * ****/
-        _ins      = this;
-        _mainCam  = Camera.main;
-        _image    = GetComponent<Image>();
-        _animator = GetComponent<Animator>();
-        _text     = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        _rectTr   = _animator.GetComponent<RectTransform>();
-        _btnImage = transform.GetChild(0).GetChild(0).GetComponent<Image>();
+        _ins        = this;
+        _mainCam    = Camera.main;
+        _image      = GetComponent<Image>();
+        _animator   = GetComponent<Animator>();
+        _text       = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        _rectTr     = _animator.GetComponent<RectTransform>();
+        TargetImage = transform.GetChild(0).GetChild(0).GetComponent<Image>();
 
         _rectTr.position = new Vector3(99999f, 99999f);
-
-        /*******************************************************
-         *   장치가 바뀌었을 때, 현재 장치에 알맞게 UI를 갱신한다...
-         * ****/
-        GamePadUIController.OnDeviceChange += (InputDeviceType prevDevice, InputDeviceType changeDevice) =>
-        {
-            #region Omit
-
-            /******************************************
-             *    키보드의 경우를 처리한다....
-             * ******/
-            if(changeDevice==InputDeviceType.Keyboard && ButtonFSprite!=null){
-
-                _btnImage.sprite = ButtonFSprite;
-                return;
-            }
-
-            /******************************************
-             *   게임패드의 경우를 처리한다....
-             * ****/
-            GamePadKind padKind = GamePadUIController.LastInputGamePadKind;
-            switch (padKind){
-
-                    /**XInput을 사용할 경우...*/
-                    case (GamePadKind.Unknown):
-                    case (GamePadKind.XBox):
-                    {
-                        if (ButtonXSprite==null) break;
-                        _btnImage.sprite = ButtonXSprite;
-                        break;
-                    }
-
-                    /**듀얼쇼크/센스를 사용할 경우...*/
-                    case (GamePadKind.PS):
-                    {
-                        if (ButtonSquareSprite == null) break;
-                        _btnImage.sprite = ButtonSquareSprite;
-                        break;
-                    }
-
-                    /**닌텐도 프로콘을 사용할 경우...*/
-                    case (GamePadKind.Nintendo):
-                    {
-                        if (ButtonYSprite == null) break;
-                        _btnImage.sprite = ButtonYSprite;
-                        break;
-                    }
-
-            }
-            #endregion
-        };
         #endregion
     }
 
-    private void OnDestroy()
+    protected override void OnChangerDestroy()
     { 
         /**동일한 객체라면 파괴된다...*/
         if (_ins == this){

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using IPariUtility;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -206,6 +207,9 @@ public sealed class TreeObstacles : MonoBehaviour
                       transform.position
                   );
 
+                CameraManager.GetInstance().CameraShake(.3f, CameraManager.ShakeDir.ROTATE, .6f);
+                IpariUtility.PlayGamePadVibration(.1f, .1f, .8f);
+
                 fallDownSpeed = -rebound;
                 fallDownRot -= rebound;
                 rebound -= maxRebound * ReboundValue;
@@ -260,6 +264,9 @@ public sealed class TreeObstacles : MonoBehaviour
                   FModParamLabel.TreeActionType.TreeCrash,
                   transform.position
               );
+
+            CameraManager.GetInstance().CameraShake(.3f, CameraManager.ShakeDir.ROTATE, .6f);
+            IpariUtility.PlayGamePadVibration(.1f, .1f, .8f);
 
             fallDownSpeed = -rebound;
             fallDownRot -= rebound;

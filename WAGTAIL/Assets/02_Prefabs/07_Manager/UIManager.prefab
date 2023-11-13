@@ -272,6 +272,7 @@ GameObject:
   - component: {fileID: 6034114314923793233}
   - component: {fileID: 6553573629369956952}
   - component: {fileID: 1270611866}
+  - component: {fileID: 7445625838703063074}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -322,6 +323,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DropDown: {fileID: 0}
+--- !u!114 &7445625838703063074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171818983396273204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f77572be10a055f448e41aefd5dd8b19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetSlider: {fileID: 0}
+  TargetImage: {fileID: 0}
+  TargetTransform: {fileID: 0}
+  ColorSamples:
+  - {r: 1, g: 1, b: 1, a: 0}
+  - {r: 0.74509805, g: 0.65882355, b: 0.60784316, a: 1}
+  VectorSamples:
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.5, y: 1.5, z: 1.5}
 --- !u!1 &4609092182758138931
 GameObject:
   m_ObjectHideFlags: 0
@@ -1352,6 +1374,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5678101145629273122}
     m_Modifications:
+    - target: {fileID: 1565680870841784196, guid: 106f5c9da2f002246bfe38fda96d79fb,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3579398502651951407, guid: 106f5c9da2f002246bfe38fda96d79fb,
         type: 3}
       propertyPath: m_Name
@@ -2241,6 +2268,7 @@ MonoBehaviour:
   ButtonXSprite: {fileID: 21300000, guid: 7eb17f8fb1949f3448281c5d8268a387, type: 3}
   ButtonYSprite: {fileID: 21300000, guid: 42cbeb33c75becd4ea79fbb3b80c7f08, type: 3}
   ButtonSquareSprite: {fileID: 0}
+  TargetImage: {fileID: 0}
 --- !u!1001 &6141994416004275265
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3374,6 +3402,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6454777577103376522}
     m_Modifications:
+    - target: {fileID: 333156635019994169, guid: 6b8d8bbe9d6b4d04eb0ae4659d2c2e7f,
+        type: 3}
+      propertyPath: m_Name
+      value: F
+      objectReference: {fileID: 0}
     - target: {fileID: 1821913962806162759, guid: 6b8d8bbe9d6b4d04eb0ae4659d2c2e7f,
         type: 3}
       propertyPath: m_Name
@@ -3522,6 +3555,41 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 6884833230960753342}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5099036027186237433 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1821913962806162759, guid: 6b8d8bbe9d6b4d04eb0ae4659d2c2e7f,
+    type: 3}
+  m_PrefabInstance: {fileID: 6884833230960753342}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4886342428868279672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5099036027186237433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b43ff80c9627cd345bf606bd966922ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ButtonFSprite: {fileID: 21300000, guid: 90a44a7a39f64b641b0c565d07da5a27, type: 3}
+  ButtonXSprite: {fileID: 21300000, guid: 7eb17f8fb1949f3448281c5d8268a387, type: 3}
+  ButtonYSprite: {fileID: 21300000, guid: 42cbeb33c75becd4ea79fbb3b80c7f08, type: 3}
+  ButtonSquareSprite: {fileID: 0}
+  TargetImage: {fileID: 5307096920699694902}
+--- !u!114 &5307096920699694902 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1598021263725925768, guid: 6b8d8bbe9d6b4d04eb0ae4659d2c2e7f,
+    type: 3}
+  m_PrefabInstance: {fileID: 6884833230960753342}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8110014536876306715
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4575,14 +4643,50 @@ MonoBehaviour:
   OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5214871351128392515}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetImage
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 5236569711064124405}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetImageColor
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetTransform
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2751738413017622323}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTransformScale
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -4590,10 +4694,46 @@ MonoBehaviour:
   OnDisSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5214871351128392515}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetImage
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 5236569711064124405}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetImageColor
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetTransform
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2751738413017622323}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTransformScale
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4716,14 +4856,50 @@ MonoBehaviour:
   OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1378881847914278074}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetImage
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3115140014585452054}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetImageColor
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetTransform
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3500375088191898958}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTransformScale
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -4731,10 +4907,46 @@ MonoBehaviour:
   OnDisSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1378881847914278074}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetImage
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3115140014585452054}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetImageColor
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetTransform
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3500375088191898958}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTransformScale
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4745,19 +4957,7 @@ MonoBehaviour:
         m_CallState: 2
   OnPressd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1094086046}
-        m_TargetAssemblyTypeName: GamePadUIController, Assembly-CSharp
-        m_MethodName: SetMoveLock
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
   OnCancel:
     m_PersistentCalls:
       m_Calls:
@@ -4775,21 +4975,6 @@ MonoBehaviour:
         m_CallState: 2
   OnDPadLeft:
     m_PersistentCalls:
-      m_Calls: []
-  OnDPadRight:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDPadUp:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDPadDown:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPressdLock:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDPadLeftLock:
-    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 760378028629949759}
         m_TargetAssemblyTypeName: BusSliderUI, Assembly-CSharp
@@ -4803,7 +4988,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDPadRightLock:
+  OnDPadRight:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 760378028629949759}
@@ -4818,6 +5003,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnDPadUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPressdLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadLeftLock:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDPadRightLock:
+    m_PersistentCalls:
+      m_Calls: []
   OnDPadUpLock:
     m_PersistentCalls:
       m_Calls: []
@@ -4826,28 +5026,10 @@ MonoBehaviour:
       m_Calls: []
   OnCancelLock:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1094086046}
-        m_TargetAssemblyTypeName: GamePadUIController, Assembly-CSharp
-        m_MethodName: SetMoveLock
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   StartSelect: 0
   UseMoveLock: 0
-  UsedEventLayer: 4879
---- !u!1 &1378881847914278074 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7182760904554935226, guid: 0133bf1164c51184386c116c4f0fd360,
-    type: 3}
-  m_PrefabInstance: {fileID: 8110014537025281792}
-  m_PrefabAsset: {fileID: 0}
+  UsedEventLayer: 59
 --- !u!1 &1559373836469676694 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7289231572299249046, guid: 0133bf1164c51184386c116c4f0fd360,
@@ -5061,6 +5243,30 @@ MonoBehaviour:
   StartSelect: 0
   UseMoveLock: 0
   UsedEventLayer: 15375
+--- !u!224 &2751738413017622323 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6250060329625270323, guid: 0133bf1164c51184386c116c4f0fd360,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014537025281792}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3115140014585452054 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6608957781273594134, guid: 0133bf1164c51184386c116c4f0fd360,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014537025281792}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &3500375088191898958 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4620512727636073038, guid: 0133bf1164c51184386c116c4f0fd360,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014537025281792}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4938900505719435789 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3748948271209524493, guid: 0133bf1164c51184386c116c4f0fd360,
@@ -5088,14 +5294,50 @@ MonoBehaviour:
   OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8084925340417069508}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetImage
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6255464813678550233}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetImageColor
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetTransform
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8890709121421493300}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTransformScale
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -5103,10 +5345,46 @@ MonoBehaviour:
   OnDisSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8084925340417069508}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetImage
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6255464813678550233}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetImageColor
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTargetTransform
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8890709121421493300}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7445625838703063074}
+        m_TargetAssemblyTypeName: UIInspectorHelper, Assembly-CSharp
+        m_MethodName: SetTransformScale
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5190,12 +5468,30 @@ MonoBehaviour:
   StartSelect: 0
   UseMoveLock: 0
   UsedEventLayer: 59
---- !u!1 &5214871351128392515 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4094474228101536835, guid: 0133bf1164c51184386c116c4f0fd360,
+--- !u!114 &5236569711064124405 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4044381075259610357, guid: 0133bf1164c51184386c116c4f0fd360,
     type: 3}
   m_PrefabInstance: {fileID: 8110014537025281792}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6255464813678550233 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2757169830810780633, guid: 0133bf1164c51184386c116c4f0fd360,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014537025281792}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6881108161518291516 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3454846039045150012, guid: 0133bf1164c51184386c116c4f0fd360,
@@ -5238,12 +5534,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8110014537025281792}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8084925340417069508 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 54011869475131076, guid: 0133bf1164c51184386c116c4f0fd360,
-    type: 3}
-  m_PrefabInstance: {fileID: 8110014537025281792}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8110014537568296153 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1638286297, guid: 0133bf1164c51184386c116c4f0fd360,
@@ -5256,6 +5546,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e787922ca3fac74cb3f9228567c2df5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &8890709121421493300 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 859813248013310772, guid: 0133bf1164c51184386c116c4f0fd360,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014537025281792}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8559850042798240347
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -235,6 +235,10 @@ namespace IPariUtility
         internal static void PlayGamePadVibration( float leftPow, float rightPow, float time, int id=0 )
         {
             #region Omit
+            /*********************************************************
+             *   게임패드의 우측/좌측 모터에 진동을 일정시간만큼 가합니다.
+             * ****/
+
             /**공간이 부족하면 확장한다...*/
             if(_vibeNum>=_vibeDescs.Length)
             {
