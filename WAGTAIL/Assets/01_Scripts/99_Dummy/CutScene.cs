@@ -77,11 +77,19 @@ public class CutScene : MonoBehaviour
                 HideCutScenes();
                 if (IsIntro)
                 {
-                    UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
-                        .SetCanvas(0, true);
-                    FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
-                    ChapterCanvas.SetActive(true);
-                    ChapterCanvas.GetComponent<ChapterUI>().ChapterCanvasStart();
+                    try
+                    {
+                        UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
+                            .SetCanvas(0, true);
+                        FModAudioManager.PlayBGM(FModBGMEventType.tavuti_ingame1);
+                        ChapterCanvas.SetActive(true);
+                        ChapterCanvas.GetComponent<ChapterUI>().ChapterCanvasStart();
+                    }
+                    catch
+                    {
+
+                    }
+                    this.gameObject.SetActive(false);
                 }
             }
             else if (sceneCount < CutScenes.Length)
@@ -135,7 +143,8 @@ public class CutScene : MonoBehaviour
         Time.timeScale = 1f;
         isCutScene = false;
         sceneCount = 0;
-        CutSceneBackGround.gameObject.SetActive(false);
+        if(!IsIntro)
+            CutSceneBackGround.gameObject.SetActive(false);
         if (TextViewer != null)
             TextViewer.gameObject.SetActive(false);
     }
