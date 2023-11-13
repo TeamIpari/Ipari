@@ -85,7 +85,7 @@ public class PickUpState : State
         var lookVec = (player.transform.position - _currentInteractableTransform.position).normalized;
         _height = new Vector3(_startPos.x, player.ThrowEquipPoint.position.y - 0.5f, _startPos.z) + lookVec * 0.5f;
         _endPos = player.ThrowEquipPoint.position;
-        _endPos.y -= 0.25f;
+        _endPos.y -= 0.25f + _currentInteractable.GetComponent<ThrowObject>().throwPointYOffset;
         
         // 머리 위로 드는 곡선을 그리는 코루틴
         currentTime = 0.0f;
@@ -96,7 +96,7 @@ public class PickUpState : State
             yield return new WaitForSecondsRealtime(Time.deltaTime);
         }
         _currentInteractableTransform.SetParent(player.Head.transform);
-        _currentInteractableTransform.position = new Vector3(player.ThrowEquipPoint.position.x, player.ThrowEquipPoint.position.y - 0.25f, player.ThrowEquipPoint.position.z);
+        _currentInteractableTransform.position = new Vector3(player.ThrowEquipPoint.position.x, player.ThrowEquipPoint.position.y - 0.25f - _currentInteractable.GetComponent<ThrowObject>().throwPointYOffset, player.ThrowEquipPoint.position.z);
         player.isCarry = true;
     }
     

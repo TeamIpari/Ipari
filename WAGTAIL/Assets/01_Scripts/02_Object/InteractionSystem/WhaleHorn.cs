@@ -137,7 +137,7 @@ public sealed class WhaleHorn : MonoBehaviour
                 case (12):
                 {
                     UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeOut(FadeType.LetterBox);
-                    SceneLoader.GetInstance().LoadScene("MiddleBossRoom");
+                    SceneLoader.GetInstance().LoadScene("EndCredits");
                     IpariUtility.OnFadeChange -= FadeComplete;
                     break;
                 }

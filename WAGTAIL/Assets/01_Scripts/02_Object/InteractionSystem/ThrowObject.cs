@@ -29,6 +29,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
     [SerializeField] private const float height = 1.0f;
     [SerializeField] private const float range = 10.0f;
     [SerializeField] private Transform autoTarget;
+    [SerializeField] public float throwPointYOffset = 0.0f;
 
     private Transform _transform;
     private Collider _collider;
