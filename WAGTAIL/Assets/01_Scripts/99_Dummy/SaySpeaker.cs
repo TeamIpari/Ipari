@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +10,8 @@ using UnityEngine.InputSystem;
 *******/
 public sealed class SaySpeaker : MonoBehaviour, IInteractable
 {
+    public delegate void OnTalkCompleteNotify( SaySpeaker speaker );
+
     //=================================================
     //////              Property                 //////
     //================================================
@@ -26,7 +29,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
                 qiAnim.SetTrigger("Interactable");
             }
         } 
-    }     
+    }
 
     [SerializeField] private bool           _IsSaying   = false;
     [SerializeField] private bool           _IsTalkable  = true;
@@ -43,6 +46,9 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
     [SerializeField] public CutScene        CutScenePlayer;
     [SerializeField] public Dialogue        Dialogue;
+
+    public OnTalkCompleteNotify OnTalkComplete;
+    public bool                 UseLetterBox = true;
 
 
 
@@ -172,12 +178,14 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         if (boxAnim!=null){
 
             TextBoxPrefab.SetActive(false);
-            if (UIManager.GetInstance().GetGameUI(GameUIType.Fade).gameObject.activeSelf)
+            if (UIManager.GetInstance().GetGameUI(GameUIType.Fade).gameObject.activeSelf && UseLetterBox)
             {
                 UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeOut(FadeType.LetterBox);
             }
             boxAnim.Play("TextBox_FadeOut");
         }
+
+        OnTalkComplete?.Invoke(this);
 
         while (CutScenePlayer)
         {
@@ -244,11 +252,13 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         Player player = Player.Instance;
         if (player.movementSM.currentState != player.idle) return;
 
-        // 목표지점은 어떻게 지정할 것인가? 
-        Vector3 ArrivalPoint = transform.localPosition + transform.forward * 1.5f;
-
         // 족장을 바라보라우 
-        player.transform.LookAt(this.transform);
+        Vector3 lookDir = (transform.position - player.transform.position).normalized;
+        lookDir.y = 0f;
+        player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, lookDir) * player.transform.rotation);
+
+        // 목표지점은 어떻게 지정할 것인가? 
+        Vector3 ArrivalPoint = transform.localPosition - lookDir * 1.5f;
 
         // 방향 벡터를 구하고 속도를 조절
         player.controller.Move((ArrivalPoint - player.transform.position).normalized * Time.deltaTime * (player.playerSpeed * 0.5f));
@@ -272,14 +282,11 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     {
         #region Omit
         // 연출이라는걸 알리기 위한 LetterBox 추가
-        UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
+        if(UseLetterBox) UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
         // 강제로 이동시키기 위해 InputSystem을 꺼줌.
         Player.Instance.playerInput.enabled = false;
         // 내 앞까지 와라
-        GameObject point = GameObject.Instantiate(new GameObject(), transform.position + transform.forward * TargetDistance, Quaternion.identity, this.transform);
-        //Player.Instance.controller.enabled = false;
 
-        Destroy(point, 10f);
         _IsMoving = true;
 
 

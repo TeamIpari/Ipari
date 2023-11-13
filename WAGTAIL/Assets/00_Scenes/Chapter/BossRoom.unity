@@ -1085,6 +1085,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbb78aa21a7e9224e853beba2a248794, type: 3}
+--- !u!21 &55785521
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Grass(Clone)
+  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
+    type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blend: 0
+    - _BlendMult: 1
+    - _BlendOff: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1001 &57186872
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9803,19 +9845,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 488038054, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.76923066
+      value: 0.7692308
       objectReference: {fileID: 0}
     - target: {fileID: 488038054, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.76923066
+      value: 0.7692308
       objectReference: {fileID: 0}
     - target: {fileID: 865502038, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.76923096
+      value: 0.76923084
       objectReference: {fileID: 0}
     - target: {fileID: 865502038, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.76923096
+      value: 0.76923084
       objectReference: {fileID: 0}
     - target: {fileID: 994831944, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.size
@@ -29587,7 +29629,7 @@ MonoBehaviour:
     normal: {x: 0, y: 1, z: 0}
     length: {x: 0.277, y: 0.01}
     color: {x: 0.63576895, y: 0.90434986, z: 1.5297618}
-  m_InstantiatedMaterial: {fileID: 1836220309}
+  m_InstantiatedMaterial: {fileID: 55785521}
 --- !u!4 &1305550751
 Transform:
   m_ObjectHideFlags: 0
@@ -39177,48 +39219,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8183234345345748859, guid: bfa9492b6e6daf6469332a02110e7885, type: 3}
---- !u!21 &1836220309
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Grass(Clone)
-  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
-    type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Blend: 0
-    - _BlendMult: 1
-    - _BlendOff: 0
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1836289214 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 680995985108789617, guid: 6a75cc42c097a214ca683411f9bc9338,
@@ -42992,7 +42992,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -3.71
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 286c7298cc1c4704bbfcddf926505920,
         type: 3}
@@ -43046,6 +43046,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 286c7298cc1c4704bbfcddf926505920, type: 3}
+--- !u!1 &2055742906 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 286c7298cc1c4704bbfcddf926505920,
+    type: 3}
+  m_PrefabInstance: {fileID: 2055742905}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2055742907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2055742906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca87e694c7b7f1c478513098a5e7f426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsSaying: 0
+  _IsTalkable: 1
+  _IsMoving: 0
+  SayType: 1
+  TargetDistance: 1.5
+  TextViewer: {fileID: 0}
+  NameTag: {fileID: 0}
+  TextBoxPrefab: {fileID: 0}
+  QuestIcon: {fileID: 0}
+  SpeakBalloon: {fileID: 0}
+  CutScenePlayer: {fileID: 0}
+  Dialogue:
+    name: 
+    sentences: []
 --- !u!1001 &2056189426
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -154,7 +154,7 @@ public sealed class BossCrabHitState : AIHitState
                     _dissolveMats     = renderer.materials;
 
                     curTimer = 0f;
-                    _bossCrab.SetStateTrigger(_dissolveDuration+.1f);
+                    _bossCrab.SetStateTrigger(_dissolveDuration);
                     break;
                 }
 
