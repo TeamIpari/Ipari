@@ -42,7 +42,7 @@ public sealed class PlayerAnimationHelper : MonoBehaviour
         FModAudioManager.PlayOneShotSFX( FModSFXEventType.Player_Walk, 
                                          paramRef, 
                                          transform.position, 
-                                         5f, 
+                                         8f, 
                                          400 );
         #endregion
     }

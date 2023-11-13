@@ -75,8 +75,8 @@ public sealed class WhaleHorn : MonoBehaviour
 
         FModAudioManager.PlayOneShotSFX(
             FModSFXEventType.Player_Walk, 
-            FModLocalParamType.PlayerWalkType, 
-            FModParamLabel.PlayerWalkType.Sand,
+            FModLocalParamType.EnvironmentType, 
+            FModParamLabel.EnvironmentType.Sand,
             transform.position,
             10f
         );
@@ -344,7 +344,7 @@ public sealed class WhaleHorn : MonoBehaviour
          * ****/
 
         #region Appear_Whale
-        time = 1f;
+        time = .7f;
         while ((time -= Time.deltaTime) > 0f) yield return null;
 
         /**고래신이 나오기전에 잠깐의 진동이 발생한다....*/
@@ -423,11 +423,11 @@ public sealed class WhaleHorn : MonoBehaviour
         Vector3 right         = Vector3.Cross(Vector3.up, hornS2GDir);
         Vector3 up            = Vector3.Cross(right, hornS2GDir);
         Vector3 hornCenterPos = hornStartPos + (hornS2G*.5f) + (up*-8f);
-        Vector3 startScale    = (whaleHornTr.localScale);
+        Vector3 startScale    = (transform.localScale*1.3f);
         Quaternion startQuat  = transform.rotation;
         _body.isKinematic  = true;
 
-        time    = 2f;
+        time    = 1.6f;
         timeDiv = (1f / time);
 
         float timeDiv2 = (1f / .2f);
