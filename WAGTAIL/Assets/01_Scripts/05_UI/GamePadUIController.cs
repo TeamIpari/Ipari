@@ -455,7 +455,7 @@ public sealed class GamePadUIController : MonoBehaviour
     //========================================================
     //////                 Magic methods                //////
     //=========================================================
-    private void Start()
+    private void Awake()
     {
         #region Omit
         /**시작지점으로 선택된 개체를 갱신한다... */
@@ -470,6 +470,7 @@ public sealed class GamePadUIController : MonoBehaviour
         UIManager manager = UIManager.GetInstance();
         if (manager != null && UICoroutine == null)
         {
+            OnDeviceChange = null;
             UICoroutine = manager.StartCoroutine(PadInputProgress());
         }
         #endregion

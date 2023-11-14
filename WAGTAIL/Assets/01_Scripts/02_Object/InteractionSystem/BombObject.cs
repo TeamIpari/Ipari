@@ -10,6 +10,7 @@ public class BombObject : MonoBehaviour
     [SerializeField] private float explosionRange;
     [SerializeField] private float explosionTime;
     [SerializeField] private GameObject explosionVFX;
+    [SerializeField] private GameObject explosionVFX2;
 
     private readonly Collider[] _colliders = new Collider[10];
     private Color _baseColor;
@@ -90,6 +91,12 @@ public class BombObject : MonoBehaviour
         if (_isExplosionVFXNotNull )         
         {
             var exploVFX = Instantiate(explosionVFX, tf.position, tf.rotation);
+            Destroy(exploVFX, 3);
+        }
+
+        if (explosionVFX2)
+        {
+            var exploVFX = Instantiate(explosionVFX2, tf.position, tf.rotation);
             Destroy(exploVFX, 3);
         }
         // ÆøÅº ÅÍÁö´Â »ç¿îµå
