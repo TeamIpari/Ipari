@@ -118,7 +118,7 @@ public class Player : MonoBehaviour
     [HideInInspector] public CameraManager CameraManager;
 
     #region DrawGizmos
-    /*
+    
     private void OnDrawGizmos()
     {
         if (!isCarry)
@@ -154,7 +154,7 @@ public class Player : MonoBehaviour
             Debug.DrawRay(originPos, lookDir * throwRange, Color.green);
             Debug.DrawRay(originPos, horizontalRightDir * throwRange, Color.cyan);
         }
-    }*/
+    }
     #endregion
 
     private void Awake()

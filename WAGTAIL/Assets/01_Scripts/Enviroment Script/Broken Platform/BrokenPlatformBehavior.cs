@@ -13,6 +13,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
      * 1. Platform 생성 시간.
      * 2. Platform의 Piece들을 가지고 있는 데이터.
      * 3. Platform Piece의 최초 위치. 
+     * 4. Platform 랜덤으로 떨어지게 설정하기.
      */
 
     //===========================================
@@ -118,6 +119,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
                 rigidbody.velocity = ExplosionVelocity(rigidbody);
                 rigidbody.gameObject.layer = LayerMask.NameToLayer("Pass");
             }
+            yield return new WaitForSeconds(0.5f);
         }
 
         yield return new WaitForSeconds(1.5f);
