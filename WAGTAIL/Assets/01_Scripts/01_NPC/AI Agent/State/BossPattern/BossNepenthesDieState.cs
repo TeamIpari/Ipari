@@ -20,7 +20,6 @@ public class BossNepenthesDieState : AIDieState
     //==========================================
     public BossNepenthesDieState(AIStateMachine stateMachine, GameObject LeftVine, GameObject RightVine, string nextSceneName) : base(stateMachine)
     {
-
         this.leftVine = LeftVine;
         this.rightVine = RightVine;
         animLeftVine = LeftVine.GetComponent<Animator>();
@@ -34,7 +33,6 @@ public class BossNepenthesDieState : AIDieState
         AISM.Animator.SetTrigger("isDeath");
         animLeftVine.SetTrigger("isDeath");
         animRightVine.SetTrigger("isDeath");
-        //FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_Dead);
         curTimer = 0;
         brokenTime = 1.5f;
         oneChance = false;

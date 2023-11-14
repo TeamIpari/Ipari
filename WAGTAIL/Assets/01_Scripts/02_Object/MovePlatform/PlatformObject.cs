@@ -661,7 +661,6 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
     {
         // 무빙 플랫폼 전용인데... 일단 임시
         #region Call_OnObjectPlatformEnter
-        //Debug.Log("AA");
         _PkProgress = PendingKillProgress.PENDINGKILL_READY;
         for (int i = 0; i < _CopyCount; i++)
         {

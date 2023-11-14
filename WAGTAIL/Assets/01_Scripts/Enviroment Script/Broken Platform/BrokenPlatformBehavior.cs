@@ -1,7 +1,10 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.ProBuilder.Shapes;
 
 public class BrokenPlatformBehavior : PlatformBehaviorBase
 {
@@ -24,6 +27,8 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
     public GameObject[] PlatformArray;
     public bool isBroken;
     [HideInInspector] public Vector3[] InitPos;
+    [HideInInspector] public Vector3[] EulerRotate;
+    public AnimationCurve curve;
 
 
 
@@ -33,7 +38,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
     private MeshRenderer mesh;
     private Collider col;
     private GameObject curBrokenPlatform;
-    
+    private BossNepenthes bossNepenthes;
 
 
 
@@ -48,6 +53,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
         mesh = GetComponent<MeshRenderer>();
         col = GetComponent<Collider>();
         isBroken = false;
+        bossNepenthes = GameObject.Find("NewBoss").GetComponent<BossNepenthes>();
         // 파괴되는 방식이 여러 바리에이션으로 파괴되게 세팅
         for (int i = 0; i < PlatformArray.Length; i++)
         {
@@ -67,9 +73,8 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
          * 기본적으로 무엇인가 밟았을 때 실행하는 것이 아닌 파괴되었을 때 실행.
          * */ 
         if (standingTarget != null) return;
-        isBroken = true;
-        StartCoroutine(SpawnPlatform());
-
+        if (!isBroken)
+            StartCoroutine(SpawnPlatform());
 
         #endregion
 
@@ -93,29 +98,36 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
     {
         curBrokenPlatform = curPlatform;
         InitPos = new Vector3[curPlatform.transform.childCount];
+        EulerRotate = new Vector3[curPlatform.transform.childCount];
         for (int i = 0; i < curPlatform.transform.childCount; i++)
         {
             var piece = curPlatform.transform.GetChild(i);
             InitPos[i] = piece.position;
+            EulerRotate[i] = piece.eulerAngles;
         }
         curBrokenPlatform.SetActive(true);
     }
 
-    public IEnumerator SmallHidePiece(GameObject Piece)
+    public IEnumerator SmallHidePiece(GameObject piece)
     { 
         yield return null;
-        Debug.Log("AA");
-        int count = 0;
-        while (Piece.transform.localScale.x >= 0.1f)
+        float time = 0;
+        float lerpRatio = 0;
+        //Vector3  = 
+        while (piece.transform.localScale.x >= 0.1f)
         {
-            Piece.transform.localScale = Vector3.Lerp(Piece.transform.localScale, Vector3.zero , Time.deltaTime);
-            yield return new WaitForSeconds(0.025f);
+            time += Time.deltaTime;
+            lerpRatio = time / 1.5f;
+
+            piece.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero , curve.Evaluate(lerpRatio));
+            yield return new WaitForSeconds(0.001f);
         }
+        piece.transform.localScale = Vector3.one;
     }
 
     public IEnumerator SpawnPlatform()
     {
-
+        isBroken = true;
         // 매쉬부터 꺼주기.
         if (col != null) col.enabled = false;
         if (mesh != null) mesh.enabled = false;
@@ -127,6 +139,9 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
             var rigidbody = curBrokenPlatform.transform.GetChild(i).GetComponent<Rigidbody>();
             if (rigidbody != null)
             {
+                //Vector3 v = new Vector3(0, 0, 0);
+                //rigidbody.transform.rotation = Quaternion.Euler(v);
+
                 rigidbody.useGravity = true;
                 rigidbody.isKinematic = false;
                 // 리지드 바디에 벨로시티를 부가함.
@@ -136,31 +151,32 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
             }
             yield return new WaitForSeconds(0.25f);
         }
-
         yield return new WaitForSeconds(1.5f);
-
-        Vector3 v = new Vector3(-90, 0, 0);
-
-        for (int i = 0; i < curBrokenPlatform.transform.childCount; i++)
+        if (bossNepenthes.AiSM.CurrentState != bossNepenthes.AiDie)
         {
-            var piece = curBrokenPlatform.transform.GetChild(i);
-            var rigid = piece.GetComponent<Rigidbody>();
-            if (rigid != null)
-            {
-                rigid.useGravity = false;
-                rigid.velocity = Vector3.zero;
-                rigid.isKinematic = true;
+            //Vector3 v = new Vector3(0, 0, 0);
 
-                piece.rotation = Quaternion.Euler(v);
-                piece.position = InitPos[i];
-                //piece.localScale = Vector3.one;
+            for (int i = 0; i < curBrokenPlatform.transform.childCount; i++)
+            {
+                var piece = curBrokenPlatform.transform.GetChild(i);
+                var rigid = piece.GetComponent<Rigidbody>();
+                if (rigid != null)
+                {
+                    rigid.useGravity = false;
+                    rigid.velocity = Vector3.zero;
+                    rigid.isKinematic = true;
+
+                    piece.rotation = Quaternion.Euler(EulerRotate[i]);
+                    piece.position = InitPos[i];
+                }
             }
+
+            curBrokenPlatform.SetActive(false);
+            if (col != null) col.enabled = true;
+            if (mesh != null) mesh.enabled = true;
+            isBroken = false;
         }
-        
-        curBrokenPlatform.SetActive(false);
-        if (col != null) col.enabled = true;
-        if (mesh != null) mesh.enabled = true;
-        isBroken = false;
+
     }
 
     private Vector3 ExplosionVelocity(Rigidbody rigid)

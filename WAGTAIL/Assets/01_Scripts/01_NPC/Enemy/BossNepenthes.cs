@@ -526,16 +526,9 @@ public sealed class BossNepenthes : Enemy
         else if(Ending && !isOne)
         {
             curTImer += Time.deltaTime;
-            GameObject obj = GameObject.Find("Floor2");
             if (curTImer > 1.5f)
             {
-                Debug.Log($"{obj.transform.childCount}");
-                for (int i =0; i < obj.transform.childCount; i++)
-                {
-                    Transform child = obj.transform.GetChild(i);
-                    child.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
-                }
-
+                StartCoroutine(DestroyPlatforms());
                 deathZone.SetActive(false);
                 potal.SetActive(true);
                 isOne = true;
@@ -567,6 +560,23 @@ public sealed class BossNepenthes : Enemy
     //============================================
     ////////         Core methods           //////
     //============================================
+
+    private IEnumerator DestroyPlatforms()
+    {
+        GameObject obj = GameObject.Find("Floor2");
+        for (int i = 0; i < obj.transform.childCount; i++)
+        {
+            Transform child = obj.transform.GetChild(i);
+            if (child.GetComponent<BrokenPlatformBehavior>().isBroken) continue;
+            child.GetComponent<IEnviroment>().ExecutionFunction(0f);  // 이걸 코루틴으로?
+            yield return new WaitForSeconds(0.1f);
+            //if (obj.transform.childCount % 6 == 0)
+            //{
+            //    yield return new WaitForSeconds(0.25f);
+            //}
+        }
+    }
+
     public override void initializeUI()
     {
         #region Omit
