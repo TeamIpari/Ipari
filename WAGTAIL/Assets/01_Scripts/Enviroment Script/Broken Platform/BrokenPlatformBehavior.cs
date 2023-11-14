@@ -25,11 +25,14 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
     //===========================================
 
     public GameObject[] PlatformArray;
-    public bool isBroken;
+    [HideInInspector] public bool isBroken;
     [HideInInspector] public Vector3[] InitPos;
     [HideInInspector] public Vector3[] EulerRotate;
+    [Header("순차적으로 떨어질 때 각 조각들의 지연 시간")]
+    public float pieceDownDelay = 0.0f;
+    [Header("돌이 파괴되고 재생성까지 걸리는 시간")]
+    public float spawnDelay = 0.0f;
     public AnimationCurve curve;
-
 
 
     //=============================================
@@ -54,6 +57,8 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
         col = GetComponent<Collider>();
         isBroken = false;
         bossNepenthes = GameObject.Find("NewBoss").GetComponent<BossNepenthes>();
+        spawnDelay = spawnDelay == 0.0f ? 1.5f : spawnDelay;
+        pieceDownDelay = pieceDownDelay == 0.0f ? 0.25f : pieceDownDelay;
         // 파괴되는 방식이 여러 바리에이션으로 파괴되게 세팅
         for (int i = 0; i < PlatformArray.Length; i++)
         {
@@ -117,7 +122,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
         while (piece.transform.localScale.x >= 0.1f)
         {
             time += Time.deltaTime;
-            lerpRatio = time / 1.5f;
+            lerpRatio = time / spawnDelay;
 
             piece.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero , curve.Evaluate(lerpRatio));
             yield return new WaitForSeconds(0.001f);
@@ -149,9 +154,9 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
                 rigidbody.gameObject.layer = LayerMask.NameToLayer("Pass");
                 StartCoroutine(SmallHidePiece(rigidbody.gameObject));
             }
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(pieceDownDelay);
         }
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(spawnDelay);
         if (bossNepenthes.AiSM.CurrentState != bossNepenthes.AiDie)
         {
             //Vector3 v = new Vector3(0, 0, 0);
