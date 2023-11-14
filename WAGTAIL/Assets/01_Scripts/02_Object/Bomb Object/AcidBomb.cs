@@ -58,7 +58,7 @@ public class AcidBomb : Bullet
         // ==========================================================
         if (other.CompareTag("Platform"))
         {
-            other.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
+            other.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
         }
         BulletHit(other.transform);
         Destroy(this.gameObject);
@@ -137,7 +137,7 @@ public class AcidBomb : Bullet
                 try
                 {
                     if (c.CompareTag("Platform"))
-                        c.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
+                        c.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
                     else if (c.CompareTag("Player"))
                         c.GetComponent<Player>().isDead = true;
 

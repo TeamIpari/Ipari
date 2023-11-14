@@ -118,6 +118,7 @@ public class BombObject : MonoBehaviour
 
         if (other.gameObject.CompareTag("Platform"))
         {
+            Debug.Log($"{explosionTime}");
             StartCoroutine(StartTimeBomb(explosionTime));
         }
 
