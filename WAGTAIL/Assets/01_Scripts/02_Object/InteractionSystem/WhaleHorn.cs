@@ -33,6 +33,7 @@ public sealed class WhaleHorn : MonoBehaviour
     [SerializeField] public Transform      InteractableGoalPos;
     [SerializeField] public GameObject     ShineSFXPrefab;
     [SerializeField] public GameObject     PutSFXPrefab;
+    [SerializeField] public GameObject     WhaleSpawnSFXPrefab;
     [SerializeField] public SaySpeaker     TalkableWhale;
     [SerializeField] private float         MoveDuration = 1f;
     [SerializeField] private float         MoveMaxHeight;
@@ -371,6 +372,14 @@ public sealed class WhaleHorn : MonoBehaviour
             yield return null;
         }
         while (time>0f);
+
+        /**고래 소환 이펙트를 적용한다...*/
+        if(WhaleSpawnSFXPrefab)
+        {
+            GameObject newIns = Instantiate(WhaleSpawnSFXPrefab);
+            newIns.transform.position = TalkableWhale.transform.GetChild(0).position;
+
+        }
 
         /**고래신이 물에서 두둥실 떠다니는 효과를 적용한다....*/
         StartCoroutine(WhaleWaveProgress());

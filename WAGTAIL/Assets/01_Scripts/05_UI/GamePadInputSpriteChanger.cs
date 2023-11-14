@@ -78,6 +78,8 @@ public class GamePadInputSpriteChanger : MonoBehaviour
         /******************************************
          *   게임패드의 경우를 처리한다....
          * ****/
+        if (changeDevice != InputDeviceType.GamePad) return;
+
         GamePadKind padKind = GamePadUIController.LastInputGamePadKind;
         switch (padKind)
         {

@@ -2,8 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShatterObject : MonoBehaviour
+/********************************************************
+ *   폭발하여 조각이 흩어지는 효과가 구현된 컴포넌트입니다...
+ * ******/
+public sealed class ShatterObject : MonoBehaviour
 {
+    //======================================================
+    ////////                Property                ////////
+    //======================================================
     [SerializeField] private GameObject _originalObject;
     [SerializeField] private GameObject _fracturedObject;
     [SerializeField] private GameObject _explosionVFX;
@@ -12,8 +18,12 @@ public class ShatterObject : MonoBehaviour
     [SerializeField] private float _explosionForceRadius = 10;
     [SerializeField] private float _fragScaleFactor = 0.01f;
 
-    
-    
+
+
+    //====================================================
+    /////////                Fields                 //////
+    //====================================================
+    private Material   _sharedMat;
     private GameObject _fractObj;
 
     private void Update()
@@ -24,6 +34,8 @@ public class ShatterObject : MonoBehaviour
         //    Explode();
         //}
     }
+
+
 
     public void Explode()
     {
@@ -39,6 +51,10 @@ public class ShatterObject : MonoBehaviour
             if (_fracturedObject != null)
             {
                 _fractObj = Instantiate(_fracturedObject, _originalObject.transform.position, transform.rotation);
+
+                _sharedMat = _fractObj.transform.GetChild(0).GetComponent<Renderer>().sharedMaterial;
+                _sharedMat.SetFloat("_Dissolve", 0f);
+
                 FModAudioManager.PlayOneShotSFX(
                     FModSFXEventType.Broken,
                     FModLocalParamType.BrokenType,
@@ -46,7 +62,6 @@ public class ShatterObject : MonoBehaviour
                     transform.position
                 );
 
-                //_fractObj.transform.localScale = _originalObject.transform.lossyScale;
                 foreach (Transform t in _fractObj.transform)
                 {
                     var rb = t.GetComponent<Rigidbody>();
@@ -54,12 +69,8 @@ public class ShatterObject : MonoBehaviour
                     if(rb != null )
                     {
                         rb.AddExplosionForce(Random.Range(_explosionMinForce, _explosionMaxForce), 
-                            _originalObject.transform.position, _explosionForceRadius);
-
-                        StartCoroutine(Shrink(t, 2));
+                            _originalObject.transform.position, _explosionForceRadius); 
                     }
-
-                    Destroy(_fractObj, 3);
 
                     if (_explosionVFX != null )         
                     {           
@@ -67,6 +78,8 @@ public class ShatterObject : MonoBehaviour
                         Destroy(exploVFX, 7);
                     }
                 }
+
+                StartCoroutine(Shrink(2f, 2f));
             }
         }
     }
@@ -78,18 +91,22 @@ public class ShatterObject : MonoBehaviour
         _originalObject.SetActive(true);
     }
 
-    IEnumerator Shrink (Transform t, float delay)
+    IEnumerator Shrink (float delay, float time)
     {
-        yield return new WaitForSeconds(delay);
+        #region Omit
+        while ((delay -= Time.deltaTime) > 0f) yield return null;
 
-        Vector3 newScale = t.localScale;
-
-        while(newScale.x >= 0)
+        float timeDiv = (1f / time);
+        do
         {
-            newScale -= new Vector3(_fragScaleFactor, _fragScaleFactor, _fragScaleFactor);
-
-            t.localScale = newScale;
-            yield return new WaitForSeconds(0.05f);
+            float progressRatio = (1f - Mathf.Clamp01((time -= Time.deltaTime)*timeDiv));
+            _sharedMat.SetFloat("_Dissolve", 1.02f * progressRatio);
+            Debug.Log($"progressRatio: {progressRatio}/ sharedMat: {_sharedMat.name}");
+            yield return null;
         }
+        while (time > 0f);
+
+        Destroy(gameObject);
+        #endregion
     }
 }

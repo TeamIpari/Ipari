@@ -2419,7 +2419,7 @@ PrefabInstance:
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2439,7 +2439,7 @@ PrefabInstance:
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2465,7 +2465,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 546589323}
+      objectReference: {fileID: 1270611866}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
@@ -2514,7 +2514,7 @@ PrefabInstance:
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: SetMoveLock
+      value: InvokeExitEvent
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2539,7 +2539,7 @@ PrefabInstance:
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: GamePadUIController, Assembly-CSharp
+      value: UIPointerEmulator, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2549,7 +2549,7 @@ PrefabInstance:
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_IntArgument
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -2573,6 +2573,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 7388334740512904978}
+    - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 7388334740512904978}
@@ -2594,7 +2599,7 @@ PrefabInstance:
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3725633767510707039, guid: 82e70b84406ad8e428155d59e0afeaae,
         type: 3}
@@ -3862,6 +3867,18 @@ MonoBehaviour:
         m_MethodName: InvokeEnterEvent
         m_Mode: 2
         m_Arguments:
+          m_ObjectArgument: {fileID: 3524398582060497419}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeEnterEvent
+        m_Mode: 2
+        m_Arguments:
           m_ObjectArgument: {fileID: 3524398580922094609}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
@@ -3872,6 +3889,18 @@ MonoBehaviour:
   OnDisSelect:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeExitEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398582060497419}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1270611866}
         m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
         m_MethodName: InvokeExitEvent
@@ -3892,7 +3921,7 @@ MonoBehaviour:
         m_MethodName: InvokeClickEvent
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 3524398580922094609}
+          m_ObjectArgument: {fileID: 3524398582060497419}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -3967,6 +3996,18 @@ MonoBehaviour:
         m_MethodName: InvokeEnterEvent
         m_Mode: 2
         m_Arguments:
+          m_ObjectArgument: {fileID: 3524398581699675678}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeEnterEvent
+        m_Mode: 2
+        m_Arguments:
           m_ObjectArgument: {fileID: 3524398581380084756}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
@@ -3977,6 +4018,18 @@ MonoBehaviour:
   OnDisSelect:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeExitEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398581699675678}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1270611866}
         m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
         m_MethodName: InvokeExitEvent
@@ -3997,7 +4050,7 @@ MonoBehaviour:
         m_MethodName: InvokeClickEvent
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 3524398581380084756}
+          m_ObjectArgument: {fileID: 3524398581699675678}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -4040,6 +4093,12 @@ MonoBehaviour:
   StartSelect: 0
   UseMoveLock: 0
   UsedEventLayer: 7
+--- !u!1 &3524398581699675678 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4640293760177911557, guid: befda50c1393b63448b5950166790741,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014536876306715}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3524398581714167156 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4640293760166696047, guid: befda50c1393b63448b5950166790741,
@@ -4072,6 +4131,18 @@ MonoBehaviour:
         m_MethodName: InvokeEnterEvent
         m_Mode: 2
         m_Arguments:
+          m_ObjectArgument: {fileID: 3524398582545910393}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeEnterEvent
+        m_Mode: 2
+        m_Arguments:
           m_ObjectArgument: {fileID: 3524398581714167156}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
@@ -4082,6 +4153,18 @@ MonoBehaviour:
   OnDisSelect:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeExitEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3524398582545910393}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1270611866}
         m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
         m_MethodName: InvokeExitEvent
@@ -4102,7 +4185,7 @@ MonoBehaviour:
         m_MethodName: InvokeClickEvent
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 3524398581714167156}
+          m_ObjectArgument: {fileID: 3524398582545910393}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -4145,9 +4228,27 @@ MonoBehaviour:
   StartSelect: 0
   UseMoveLock: 0
   UsedEventLayer: 7
+--- !u!1 &3524398582060497419 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4640293760287050512, guid: befda50c1393b63448b5950166790741,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014536876306715}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3524398582545910393 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4640293759933627234, guid: befda50c1393b63448b5950166790741,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014536876306715}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5281825153842815885 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4161397242982437526, guid: befda50c1393b63448b5950166790741,
+    type: 3}
+  m_PrefabInstance: {fileID: 8110014536876306715}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6387477827395515167 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2893684244965736964, guid: befda50c1393b63448b5950166790741,
     type: 3}
   m_PrefabInstance: {fileID: 8110014536876306715}
   m_PrefabAsset: {fileID: 0}
@@ -4183,6 +4284,18 @@ MonoBehaviour:
         m_MethodName: InvokeEnterEvent
         m_Mode: 2
         m_Arguments:
+          m_ObjectArgument: {fileID: 6387477827395515167}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeEnterEvent
+        m_Mode: 2
+        m_Arguments:
           m_ObjectArgument: {fileID: 6983304555942608154}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
@@ -4193,6 +4306,18 @@ MonoBehaviour:
   OnDisSelect:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1270611866}
+        m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
+        m_MethodName: InvokeExitEvent
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6387477827395515167}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1270611866}
         m_TargetAssemblyTypeName: UIPointerEmulator, Assembly-CSharp
         m_MethodName: InvokeExitEvent
@@ -4213,7 +4338,7 @@ MonoBehaviour:
         m_MethodName: InvokeClickEvent
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 6983304555942608154}
+          m_ObjectArgument: {fileID: 6387477827395515167}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0

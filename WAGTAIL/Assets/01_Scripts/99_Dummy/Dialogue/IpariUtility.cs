@@ -59,7 +59,9 @@ namespace IPariUtility
             new SFXColorSample{ Color=new Vector3(63f/255f, 98f/255f, 29f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲
 
             new SFXColorSample{ Color=new Vector3(208f/255f, 168f/255f, 101f/255f), ParamValue=FModParamLabel.EnvironmentType.Sand }, //모래
+
             new SFXColorSample{ Color=new Vector3(121f/255f, 118f/255f, 104f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone}, //돌
+            new SFXColorSample{ Color=new Vector3(140f/255f, 129f/255f, 111f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone}, //돌
 
             new SFXColorSample{ Color=new Vector3(213f/255f, 173f/255f, 110f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone }, //나무
             new SFXColorSample{ Color=new Vector3(205f/255f, 156f/255f, 93f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone }, //나무
