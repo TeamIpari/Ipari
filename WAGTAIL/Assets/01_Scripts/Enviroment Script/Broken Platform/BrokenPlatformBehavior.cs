@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
 
 public class BrokenPlatformBehavior : PlatformBehaviorBase
 {
@@ -100,19 +99,6 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
         }
         curBrokenPlatform.SetActive(true);
     }
-
-    public IEnumerator SmallHidePiece(GameObject Piece)
-    { 
-        yield return null;
-        Debug.Log("AA");
-        int count = 0;
-        while (Piece.transform.localScale.x >= 0.1f)
-        {
-            Piece.transform.localScale = Vector3.Lerp(Piece.transform.localScale, Vector3.zero , Time.deltaTime);
-            yield return new WaitForSeconds(0.025f);
-        }
-    }
-
     public IEnumerator SpawnPlatform()
     {
 
@@ -132,9 +118,8 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
                 // 리지드 바디에 벨로시티를 부가함.
                 rigidbody.velocity = ExplosionVelocity(rigidbody);
                 rigidbody.gameObject.layer = LayerMask.NameToLayer("Pass");
-                StartCoroutine(SmallHidePiece(rigidbody.gameObject));
             }
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.5f);
         }
 
         yield return new WaitForSeconds(1.5f);
@@ -153,10 +138,8 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
 
                 piece.rotation = Quaternion.Euler(v);
                 piece.position = InitPos[i];
-                //piece.localScale = Vector3.one;
             }
         }
-        
         curBrokenPlatform.SetActive(false);
         if (col != null) col.enabled = true;
         if (mesh != null) mesh.enabled = true;
