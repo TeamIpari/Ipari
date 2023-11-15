@@ -6,10 +6,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.LowLevel;
 using System.Linq;
+using UnityEngine.Scripting;
 #if UNITY_EDITOR
 using UnityEditor.Compilation;
 using UnityEditor;
+#if UNITY_2023_1_OR_NEWER
+using UnityEditor.Build;
 #endif
+#endif
+
+// コードストリッピングを無効化する 
+[assembly: AlwaysLinkAssembly]
 
 namespace MagicaCloth2
 {
@@ -24,14 +31,15 @@ namespace MagicaCloth2
         /// </summary>
         static List<IManager> managers = null;
 
-        public static TeamManager Team => managers?[0] as TeamManager;
-        public static ClothManager Cloth => managers?[1] as ClothManager;
-        public static RenderManager Render => managers?[2] as RenderManager;
-        public static TransformManager Bone => managers?[3] as TransformManager;
-        public static VirtualMeshManager VMesh => managers?[4] as VirtualMeshManager;
-        public static SimulationManager Simulation => managers?[5] as SimulationManager;
-        public static ColliderManager Collider => managers?[6] as ColliderManager;
-        public static WindManager Wind => managers?[7] as WindManager;
+        public static TimeManager Time => managers?[0] as TimeManager;
+        public static TeamManager Team => managers?[1] as TeamManager;
+        public static ClothManager Cloth => managers?[2] as ClothManager;
+        public static RenderManager Render => managers?[3] as RenderManager;
+        public static TransformManager Bone => managers?[4] as TransformManager;
+        public static VirtualMeshManager VMesh => managers?[5] as VirtualMeshManager;
+        public static SimulationManager Simulation => managers?[6] as SimulationManager;
+        public static ColliderManager Collider => managers?[7] as ColliderManager;
+        public static WindManager Wind => managers?[8] as WindManager;
 
         //=========================================================================================
         // player loop delegate
@@ -100,14 +108,15 @@ namespace MagicaCloth2
 
             // 各マネージャの初期化
             managers = new List<IManager>();
-            managers.Add(new TeamManager()); // [0]
-            managers.Add(new ClothManager()); // [1]
-            managers.Add(new RenderManager()); // [2]
-            managers.Add(new TransformManager()); // [3]
-            managers.Add(new VirtualMeshManager()); // [4]
-            managers.Add(new SimulationManager()); // [5]
-            managers.Add(new ColliderManager()); // [6]
-            managers.Add(new WindManager()); // [7]
+            managers.Add(new TimeManager()); // [0]
+            managers.Add(new TeamManager()); // [1]
+            managers.Add(new ClothManager()); // [2]
+            managers.Add(new RenderManager()); // [3]
+            managers.Add(new TransformManager()); // [4]
+            managers.Add(new VirtualMeshManager()); // [5]
+            managers.Add(new SimulationManager()); // [6]
+            managers.Add(new ColliderManager()); // [7]
+            managers.Add(new WindManager()); // [8]
             foreach (var manager in managers)
                 manager.Initialize();
 
@@ -125,9 +134,33 @@ namespace MagicaCloth2
         [InitializeOnLoadMethod]
         static void PlayModeStateChange()
         {
+            // プロジェクトセッティングにMagicaCloth2用デファインシンボルを登録する
+            try
+            {
+#if UNITY_2023_1_OR_NEWER
+                var namedBuildTarget = NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+                PlayerSettings.GetScriptingDefineSymbols(namedBuildTarget, out string[] newDefines);
+                if (newDefines.Contains(Define.System.DefineSymbol) == false)
+                {
+                    PlayerSettings.SetScriptingDefineSymbols(namedBuildTarget, newDefines.Concat(new string[] { Define.System.DefineSymbol }).ToArray());
+                }
+#else
+                var newDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup).Split(';');
+                if (newDefines.Contains(Define.System.DefineSymbol) == false)
+                {
+                    PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, newDefines.Concat(new string[] { Define.System.DefineSymbol }).ToArray());
+                }
+#endif
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+
+            // エディタ状態変更時イベント処理
             EditorApplication.playModeStateChanged += (mode) =>
             {
-                Develop.DebugLog($"PlayModeStateChanged:{mode} F:{Time.frameCount}");
+                Develop.DebugLog($"PlayModeStateChanged:{mode} F:{UnityEngine.Time.frameCount}");
 
                 if (mode == UnityEditor.PlayModeStateChange.EnteredEditMode)
                 {
@@ -240,10 +273,11 @@ namespace MagicaCloth2
         //=========================================================================================
         /// <summary>
         /// カスタム更新ループ登録
-        /// このループはエディタ編集中でも動作する
+        /// すでに登録されている場合は何もしない
+        /// Custom update loop registration.
+        /// Do nothing if already registered.
         /// </summary>
-        //[RuntimeInitializeOnLoadMethod()]
-        static void InitCustomGameLoop()
+        public static void InitCustomGameLoop()
         {
             //Debug.Log("PhysicsManager.InitCustomGameLoop()");
             PlayerLoopSystem playerLoop = PlayerLoop.GetCurrentPlayerLoop();
@@ -251,7 +285,7 @@ namespace MagicaCloth2
             // すでに設定されているならばスルー
             if (CheckRegist(ref playerLoop))
             {
-                Develop.DebugLog("SetCustomGameLoop Skip!!");
+                //Develop.DebugLog("SetCustomGameLoop Skip!!");
                 return;
             }
 
