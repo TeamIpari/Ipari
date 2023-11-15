@@ -119,7 +119,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
         float time = 0;
         float lerpRatio = 0;
         //Vector3  = 
-        while (piece.transform.localScale.x >= 0.1f)
+        while (piece.transform.localScale.x >= 0.3f)
         {
             time += Time.deltaTime;
             lerpRatio = time / spawnDelay;

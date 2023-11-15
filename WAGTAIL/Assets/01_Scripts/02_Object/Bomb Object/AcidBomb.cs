@@ -130,8 +130,9 @@ public class AcidBomb : Bullet
         #endregion
             Collider[] cols = 
             Physics.OverlapSphere(
-                bombMarker.transform.localPosition, 
-                this.transform.localScale.x-0.5f);
+                bombMarker.transform.localPosition,
+                transform.GetChild(0).localScale.x *.5f);
+        //Debug.Log($"{transform.GetChild(0).localScale.x } * .5f = {transform.GetChild(0).localScale.x * .5f}");
             foreach (var c in cols)
             {
                 try

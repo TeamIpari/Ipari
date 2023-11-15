@@ -33,6 +33,8 @@ public class BossNepenthesDieState : AIDieState
         AISM.Animator.SetTrigger("isDeath");
         animLeftVine.SetTrigger("isDeath");
         animRightVine.SetTrigger("isDeath");
+        leftVine.AddComponent<Rigidbody>().useGravity = true;
+        rightVine.AddComponent<Rigidbody>().useGravity = true;
         curTimer = 0;
         brokenTime = 1.5f;
         oneChance = false;

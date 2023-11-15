@@ -68,10 +68,8 @@ public class CutScene : MonoBehaviour
     {
         bool bInputNextKey = Input.GetKeyDown(KeyCode.F);
         bool bSceneState = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
-        Debug.Log($"{CutScenes[sceneCount - 1].state}");
         if(bInputNextKey || bSceneState)
         {
-            Debug.Log($"{sceneCount} == {sceneCount >= CutScenes.Length} && {CutScenes[sceneCount - 1].state}");
             if (sceneCount >= CutScenes.Length && CutScenes[sceneCount - 1].state == PlayState.Paused)
             {
                 Player.Instance.playerInput.enabled = true;
@@ -92,7 +90,6 @@ public class CutScene : MonoBehaviour
                     }
                     this.gameObject.SetActive(false);
                 }
-                Debug.Log($"{this.gameObject.name}");
             }
             else if (sceneCount < CutScenes.Length)
             {

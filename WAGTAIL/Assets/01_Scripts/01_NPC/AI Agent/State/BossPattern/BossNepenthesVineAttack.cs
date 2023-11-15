@@ -48,6 +48,7 @@ public class BossNepenthesVineAttack : AIAttackState
     private GameObject[] BombPools = new GameObject[3];
 
 
+
     private Animator vineAnim;
 
     #endregion
@@ -126,13 +127,11 @@ public class BossNepenthesVineAttack : AIAttackState
                 break;
             case VineState.STATE_MOVE:
                 {
-                    vineAnim.SetBool("isAttack", true);
                     MovementVine(vine.transform.position, movingPos);
                     break;
                 }
             case VineState.STATE_ATTACK:
                 {
-                    vineAnim.SetBool("isAttack", false);
                     //// 공격하게 함.
                     //// 바로 공격
                     if (!isThread)
@@ -151,9 +150,7 @@ public class BossNepenthesVineAttack : AIAttackState
                         );
                         if (Count > 0)
                         {
-                            boss.CoroutineFunc(ShakePlatforms, 0.1f);
-                            FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_VineSmash, Vector3.zero, 2f);
-                            CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, 0.8f, .05f);
+                            boss.CoroutineFunc(ShakePlatforms, 0.3f);
                         }
                     }
                 }
@@ -170,8 +167,11 @@ public class BossNepenthesVineAttack : AIAttackState
 
     private IEnumerator ShakePlatforms(float time)
     {
+        vineAnim.SetBool("isAttack", true);
+        vineAnim.speed *= 1.7f;
         float x, z;
         yield return new WaitForSeconds(time);
+        vineAnim.SetBool("isAttack", false);
         shaker.MakeWave(colliders);
         Vector3 vec = new Vector3(movingPos.x, movingPos.y, -4.5f);
         for (int i = 0; i < 4; i++)
@@ -183,8 +183,8 @@ public class BossNepenthesVineAttack : AIAttackState
 
         if (BombPools[0] == null)
             CreateReActionObject();
-
-        //CameraManager.GetInstance().CameraShake(0.5f, CameraManager.ShakeDir.ROTATE, 2.5f, 0.05f);
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_VineSmash, Vector3.zero, 2f);
+        CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, 0.8f, .05f);
 
         foreach (var fruit in BombPools)
         {
@@ -195,6 +195,8 @@ public class BossNepenthesVineAttack : AIAttackState
             fruit.transform.position = new Vector3(x, 13f, z);
             yield return new WaitForSeconds(0.050f);
         }
+        vineAnim.speed = 1f;
+
     }
 
     private void CreateReActionObject()
