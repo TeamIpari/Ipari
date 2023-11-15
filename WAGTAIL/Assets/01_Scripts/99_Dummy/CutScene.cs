@@ -31,7 +31,7 @@ public class CutScene : MonoBehaviour
 
     private void Awake()
     {
-        CutScenes = CutSceneBackGround.GetComponentsInChildren<PlayableDirector>();
+        //CutScenes = CutSceneBackGround.GetComponentsInChildren<PlayableDirector>();
         HideCutScenes();
         isCutScene = true;
         sceneCount = 0;
@@ -68,9 +68,10 @@ public class CutScene : MonoBehaviour
     {
         bool bInputNextKey = Input.GetKeyDown(KeyCode.F);
         bool bSceneState = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
-
+        Debug.Log($"{CutScenes[sceneCount - 1].state}");
         if(bInputNextKey || bSceneState)
         {
+            Debug.Log($"{sceneCount} == {sceneCount >= CutScenes.Length} && {CutScenes[sceneCount - 1].state}");
             if (sceneCount >= CutScenes.Length && CutScenes[sceneCount - 1].state == PlayState.Paused)
             {
                 Player.Instance.playerInput.enabled = true;
@@ -91,17 +92,19 @@ public class CutScene : MonoBehaviour
                     }
                     this.gameObject.SetActive(false);
                 }
+                Debug.Log($"{this.gameObject.name}");
             }
             else if (sceneCount < CutScenes.Length)
             {
                 Player.Instance.playerInput.enabled = false;
+                CutScenes[sceneCount - 1].gameObject.SetActive(false);
                 CutScenes[sceneCount++].gameObject.SetActive(true);
                 if (TextViewer != null)
                     LoadManager.GetInstance().DisplayNextSentence();
             }
+
         }
 
-        // ���ڸ� ���� ������� �ϴ� ���.
         if (sceneCount >= CutScenes.Length && TextViewer != null)
         {
             if (WaitTime > WaitTimer)
@@ -136,6 +139,7 @@ public class CutScene : MonoBehaviour
 
     private void HideCutScenes()
     {
+        Debug.Log($"{CutScenes.Length}");
         for (int i = 0; i < CutScenes.Length; i++)
         {
             CutScenes[i].gameObject.SetActive(false);
