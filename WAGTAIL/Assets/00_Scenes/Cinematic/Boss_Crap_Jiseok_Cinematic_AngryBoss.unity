@@ -8108,7 +8108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 0, y: 3, z: 0}
+  m_TrackedObjectOffset: {x: 0, y: 5, z: 0}
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
@@ -8148,8 +8148,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
-  m_PivotOffset: {x: 6, y: 6, z: 0}
-  m_AmplitudeGain: 6
+  m_PivotOffset: {x: 10, y: 10, z: 0}
+  m_AmplitudeGain: 3
   m_FrequencyGain: 1
   mNoiseOffsets: {x: 477.98056, y: -867.29004, z: 290.00754}
 --- !u!1001 &501937246
@@ -12592,7 +12592,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 769785527}
-  m_LocalRotation: {x: 0.23469882, y: -0.0000000026697722, z: 6.4459704e-10, w: 0.9720682}
+  m_LocalRotation: {x: 0.23469883, y: -0.000000018699984, z: 0.0000000045149764, w: 0.9720682}
   m_LocalPosition: {x: 12.41, y: 11.48, z: -97.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -31547,7 +31547,7 @@ MonoBehaviour:
     normal: {x: 0, y: 1, z: 0}
     length: {x: 0.277, y: 0.01}
     color: {x: 0.63576895, y: 0.90434986, z: 1.5297618}
-  m_InstantiatedMaterial: {fileID: 1381620140}
+  m_InstantiatedMaterial: {fileID: 1940418956}
 --- !u!4 &1305550751
 Transform:
   m_ObjectHideFlags: 0
@@ -32532,48 +32532,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!21 &1381620140
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Grass(Clone)
-  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
-    type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Blend: 0
-    - _BlendMult: 1
-    - _BlendOff: 0
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!4 &1390518760 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7012603710724809034, guid: 3fa76aacaa26c5d4aaefdbe0f0fa1581,
@@ -35713,7 +35671,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1455603300}
-  m_LocalRotation: {x: -0.027157936, y: 0.00524167, z: 0.00014240744, w: 0.99961746}
+  m_LocalRotation: {x: -0.06598095, y: 0.024830809, z: 0.0016424491, w: 0.99751055}
   m_LocalPosition: {x: -0.79, y: 2.53, z: -3.36}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
@@ -35743,7 +35701,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 12699854}
   m_Follow: {fileID: 0}
   m_Lens:
-    FieldOfView: 60.000004
+    FieldOfView: 80
     OrthographicSize: 5
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -41280,7 +41238,7 @@ PrefabInstance:
     - target: {fileID: 8259764396587708555, guid: 7b53358512e7b044ca70f6352c2bdad3,
         type: 3}
       propertyPath: orthographic size
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8435702392910770825, guid: 7b53358512e7b044ca70f6352c2bdad3,
         type: 3}
@@ -43634,6 +43592,48 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!21 &1940418956
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Grass(Clone)
+  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
+    type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blend: 0
+    - _BlendMult: 1
+    - _BlendOff: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!4 &1943026659 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ebee77faf7f23be4b82f731bcc5d641a,
@@ -45054,7 +45054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 0, y: 3, z: 0}
+  m_TrackedObjectOffset: {x: -1.5, y: 6, z: 0}
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
@@ -45094,8 +45094,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
-  m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 1
+  m_PivotOffset: {x: 10, y: 10, z: 0}
+  m_AmplitudeGain: 5
   m_FrequencyGain: 1
   mNoiseOffsets: {x: -132.21777, y: 852.1991, z: 34.046265}
 --- !u!64 &2010467552
@@ -45660,7 +45660,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2048694646}
-  m_LocalRotation: {x: 0.05732212, y: 0.1653737, z: -0.0096286535, w: 0.9845167}
+  m_LocalRotation: {x: -0.03334964, y: 0.165559, z: 0.0056018876, w: 0.98561996}
   m_LocalPosition: {x: -2.36, y: 4.2, z: 10.59}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.50000006}
   m_ConstrainProportionsScale: 0
@@ -45711,7 +45711,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 1298817336}
   m_Follow: {fileID: 0}
   m_Lens:
-    FieldOfView: 60.000004
+    FieldOfView: 80
     OrthographicSize: 5
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -46422,7 +46422,7 @@ PrefabInstance:
     - target: {fileID: 7388334740163677192, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 387
       objectReference: {fileID: 0}
     - target: {fileID: 7388334740163677192, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
@@ -46447,7 +46447,7 @@ PrefabInstance:
     - target: {fileID: 7388334740449367857, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 387
       objectReference: {fileID: 0}
     - target: {fileID: 7388334740449367857, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
@@ -46472,7 +46472,7 @@ PrefabInstance:
     - target: {fileID: 7388334740512904979, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 387
       objectReference: {fileID: 0}
     - target: {fileID: 7388334740512904979, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
@@ -46497,7 +46497,7 @@ PrefabInstance:
     - target: {fileID: 7388334740526880302, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 387
       objectReference: {fileID: 0}
     - target: {fileID: 7388334740526880302, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
@@ -46522,7 +46522,7 @@ PrefabInstance:
     - target: {fileID: 7388334741069877306, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 387
       objectReference: {fileID: 0}
     - target: {fileID: 7388334741069877306, guid: ad9f4a80ccf8c994c89c284f0502cfd8,
         type: 3}
@@ -47432,7 +47432,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB124\uD39C\uB370\uC2A4"
+  m_text: "\uAC04\uC7A5\uAC8C\uC7A5"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e3a15dd1a5dae940b6f26cb07dd4e38, type: 2}
   m_sharedMaterial: {fileID: 6567864307227659277, guid: 8e3a15dd1a5dae940b6f26cb07dd4e38,
