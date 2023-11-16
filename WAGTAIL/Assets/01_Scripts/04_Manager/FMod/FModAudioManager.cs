@@ -15,6 +15,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Events;
 using System.Xml;
 using static UnityEngine.InputSystem.Layouts.InputControlLayout;
+using UnityEditor.Animations.Rigging;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -70,19 +71,24 @@ public struct FModParameterReference
             /**초기화에 실패했다면, 원래 방식대로 출력한다.*/
             if (GUI_Initialized(property)==false) return;
 
-            position.height = GetBaseHeight()- 50f;
+            /**펼쳐진 상태에서만 하위 내용들을 모조리 표시한다....*/
+            position.y -= (property.isExpanded ? 25f : 0f);
+            if (property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, property.displayName))
+            {
+                position.height = GetBaseHeight(property);
 
-            /**모든 프로퍼티들을 표시한다...*/
-            GUI_ShowPropertyRect(ref position, property);
+                position.y += 50f;
 
-            GUI_ShowParamType(ref position);
+                /**모든 프로퍼티들을 표시한다...*/
+                GUI_ShowParamType(ref position);
 
-            GUI_ShowParamValue(ref position);
+                GUI_ShowParamValue(ref position);
+            }
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return GetBaseHeight();
+            return GetBaseHeight(property) + (property.isExpanded? 50f:0f);
         }
 
 
@@ -110,8 +116,9 @@ public struct FModParameterReference
             /**스타일 초기화...*/
             if(_labelStyle==null){
 
-                _labelStyle = new GUIStyle(EditorStyles.boldLabel);
+                _labelStyle = new GUIStyle(EditorStyles.foldout);
                 _labelStyle.normal.textColor = Color.white;
+                _labelStyle.fontStyle = FontStyle.Bold;
                 _labelStyle.fontSize = 12;
             }
 
@@ -209,7 +216,7 @@ public struct FModParameterReference
              * ***/
             using (var scope = new EditorGUI.ChangeCheckScope())
             {
-                rect.x += (rect.width+5f);
+                rect.x += rect.width;
                 bool value = EditorGUI.ToggleLeft(rect, "Is Global", isGlobalProperty.boolValue);
             
                 /**값이 변경되었다면 갱신한다...*/
@@ -326,9 +333,9 @@ public struct FModParameterReference
         //===============================================
         /////            Utility Methods             ////
         ///==============================================
-        private float GetBaseHeight()
+        private float GetBaseHeight(SerializedProperty property)
         {
-            return GUI.skin.textField.CalcSize(GUIContent.none).y+ 50f;
+            return GUI.skin.textField.CalcSize(GUIContent.none).y;
         }
 
     }

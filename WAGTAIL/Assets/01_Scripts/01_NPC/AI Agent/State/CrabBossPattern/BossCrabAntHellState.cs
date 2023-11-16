@@ -74,7 +74,6 @@ public class BossCrabAntHellState : AIAttackState
                 {
                     AISM.Animator.CrossFade(BossCrabAnimation.Idle, .4f);
                     _bossCrab.SetStateTrigger(6f);
-                    Debug.Log($"Çæ...¤µ¤²??");
                     break;
                 }
 
