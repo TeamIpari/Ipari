@@ -141,15 +141,20 @@ public class BossNepenthesVineAttack : AIAttackState
                         myThread.Start();
 
                         int Count = Physics.OverlapBoxNonAlloc(
-                            vine.transform.position,
+                            movingPos,
                             new Vector3(0.5f, 1.5f, 20f),
                             colliders,
                             vine.transform.rotation,
                             (1 << LayerMask.NameToLayer("Platform")),
                             QueryTriggerInteraction.Ignore
                         );
+                        Debug.Log($"{Count}");
                         if (Count > 0)
                         {
+                            for (int i = 0; i < Count; i++)
+                            {
+                                Debug.Log($"{colliders[i].name}");
+                            }
                             boss.CoroutineFunc(ShakePlatforms, 0.3f);
                         }
                     }
