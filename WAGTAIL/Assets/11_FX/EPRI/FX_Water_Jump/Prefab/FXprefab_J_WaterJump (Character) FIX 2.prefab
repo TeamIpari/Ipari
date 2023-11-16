@@ -4860,7 +4860,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -24027,7 +24027,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -28897,7 +28897,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -33767,7 +33767,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -38622,6 +38622,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: FXprefab_J_WaterMove
       objectReference: {fileID: 0}
+    - target: {fileID: 2409381984899716504, guid: 51f1a84fb0228e54e8275f099360ffd9,
+        type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409381984899716504, guid: 51f1a84fb0228e54e8275f099360ffd9,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409381984899716504, guid: 51f1a84fb0228e54e8275f099360ffd9,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.atime3
+      value: 49151
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409381984899716504, guid: 51f1a84fb0228e54e8275f099360ffd9,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key3.a
+      value: 0.49744117
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409381984899716504, guid: 51f1a84fb0228e54e8275f099360ffd9,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key4.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2409381984899716504, guid: 51f1a84fb0228e54e8275f099360ffd9,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.m_NumAlphaKeys
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6431771881397174897, guid: 51f1a84fb0228e54e8275f099360ffd9,
         type: 3}
       propertyPath: m_RootOrder
@@ -38675,6 +38705,11 @@ PrefabInstance:
     - target: {fileID: 6431771881397174897, guid: 51f1a84fb0228e54e8275f099360ffd9,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885047670704393404, guid: 51f1a84fb0228e54e8275f099360ffd9,
+        type: 3}
+      propertyPath: looping
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

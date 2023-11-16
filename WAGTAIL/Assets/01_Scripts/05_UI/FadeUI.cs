@@ -84,6 +84,7 @@ public class FadeUI : MonoBehaviour
             case FadeType.LetterBox:
                 _uiManager.GetGameUI(GameUIType.Coin).gameObject.SetActive(true);
                 _uiManager.GetGameUI(GameUIType.CoCosi).gameObject.SetActive(true);
+                _uiManager.GetGameUI(GameUIType.CoCosi).GetComponent<CollectionCocosiUI>().currentCanvas.GetComponent<Animator>().Play("Cocosi_Blue_FadeIn");
                 fadeAnimator[1].SetTrigger(Out);
                 break;
             default:

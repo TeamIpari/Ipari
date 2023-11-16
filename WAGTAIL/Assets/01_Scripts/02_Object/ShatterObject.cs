@@ -51,6 +51,7 @@ public sealed class ShatterObject : MonoBehaviour
             if (_fracturedObject != null)
             {
                 _fractObj = Instantiate(_fracturedObject, _originalObject.transform.position, transform.rotation);
+                _fractObj.transform.parent = transform;
 
                 _sharedMat = _fractObj.transform.GetChild(0).GetComponent<Renderer>().sharedMaterial;
                 _sharedMat.SetFloat("_Dissolve", 0f);
@@ -101,7 +102,6 @@ public sealed class ShatterObject : MonoBehaviour
         {
             float progressRatio = (1f - Mathf.Clamp01((time -= Time.deltaTime)*timeDiv));
             _sharedMat.SetFloat("_Dissolve", 1.02f * progressRatio);
-            Debug.Log($"progressRatio: {progressRatio}/ sharedMat: {_sharedMat.name}");
             yield return null;
         }
         while (time > 0f);

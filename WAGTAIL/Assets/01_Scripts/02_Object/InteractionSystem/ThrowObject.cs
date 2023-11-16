@@ -137,11 +137,11 @@ public class ThrowObject : MonoBehaviour, IInteractable
     private void OnCollisionEnter(Collision collision)
     {
         //Debug.Log($"{collision.gameObject.layer}");
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemies"))
+        /*if (collision.gameObject.layer == LayerMask.NameToLayer("Enemies"))
         {
             ResetPoint();
             return;
-        }
+        }*/
         bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
                        !collision.gameObject.CompareTag("Player");
         if (bTagHit)

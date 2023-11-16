@@ -397,11 +397,15 @@ public sealed class WhaleHorn : MonoBehaviour
 
         /**고래신과 대화를 시전한다.....*/
         TalkableWhale.UseLetterBox = false;
+        TalkableWhale.SayType      = 5;
         TalkableWhale.PlaySay();
         TalkableWhale.OnTalkComplete += (SaySpeaker speaker) =>
         {
-            if (speaker.SayType == 1) _state = HornState.Give_Horn;
-            else _state = HornState.GotoEnding;
+            if (speaker.SayType == 5)
+            {
+                _state  = HornState.Give_Horn;
+                TalkableWhale.OnTalkComplete = null;
+            }
         };
 
         /**고래신과 1차 대화가 마무리될 때까지 대기한다...*/
@@ -491,18 +495,6 @@ public sealed class WhaleHorn : MonoBehaviour
         #region Ending_Fade
         time = 1f;
         while ((time -= Time.deltaTime) > 0f) yield return null;
-
-        TalkableWhale.SayType      = 2;
-        TalkableWhale.UseLetterBox = false;
-        TalkableWhale.IsTalkable   = true;
-        TalkableWhale.PlaySay();
-        TalkableWhale.OnTalkComplete += (SaySpeaker speaker) =>
-        {
-            _state= HornState.GotoEnding;
-            TalkableWhale.OnTalkComplete = null;
-        };
-
-        while(_state!=HornState.GotoEnding) yield return null;
 
         /**대화 마무리 페이드인아웃....*/
         IpariUtility.ApplyImageFade(

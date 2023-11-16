@@ -36,6 +36,7 @@ public class GameUI : MonoBehaviour
     
     public void Continue()
     {
+        GamePadUIController.UseCursorAutoVisible = false;
         GamePadUIController.Current.OnDisSelect?.Invoke();
         GamePadUIController.Current = null;
         FModAudioManager.SetBusVolume(FModBusType.BGM, _lastBGMVoulme);
@@ -45,6 +46,7 @@ public class GameUI : MonoBehaviour
 
     public void Pause()
     {
+        GamePadUIController.UseCursorAutoVisible = true;
         if (_pauseButton==null){
 
             _pauseButton   = PauseBtn.transform.Find("PopUp").Find("Restart").GetComponent<GamePadUIController>();

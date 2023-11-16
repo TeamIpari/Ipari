@@ -15,7 +15,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     //=================================================
     //////              Property                 //////
     //================================================
-    public Vector3  InteractPopupOffset { get { return (_unPossibleOffset); } set{ Debug.LogWarning("SaySpeaker: 임의로 상호작용UI 오프셋을 수정할 수 없습니다."); } }
+    public Vector3  InteractPopupOffset { get { return (IsTalkable? (_possibleOffset+PossibleExtraOffset):_unPossibleOffset); } set{ Debug.LogWarning("SaySpeaker: 임의로 상호작용UI 오프셋을 수정할 수 없습니다."); } }
     public string   InteractionPrompt   { get; set; } = "대화한다";
     public bool     IsSaying            { get { return _IsSaying; } }
     public bool     IsTalkable          
@@ -31,15 +31,17 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         } 
     }
 
-    [SerializeField] private bool           _IsSaying   = false;
+    [SerializeField] private bool           _IsSaying    = false;
     [SerializeField] private bool           _IsTalkable  = true;
-    [SerializeField] private bool           _IsMoving = false;
+    [SerializeField] private bool           _IsMoving    = false;
+    [SerializeField] private bool           IsOneshot    = false;
     [SerializeField] public  int            SayType     = 1;
     [SerializeField, DefaultValue(1.5f)] public float           TargetDistance = 1.5f;
 
     [SerializeField] public TextMeshProUGUI TextViewer;
     [SerializeField] public TextMeshProUGUI NameTag;
     [SerializeField] public GameObject      TextBoxPrefab;
+    [SerializeField] public Vector3         PossibleExtraOffset = Vector3.zero;
 
     [SerializeField] public GameObject      QuestIcon;
     [SerializeField] public GameObject      SpeakBalloon;
@@ -174,7 +176,6 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         /*******************************************
          *    대화창을 닫고 마무리 짓는다....
          * ****/
-        Debug.Log($"{boxAnim.name}");
         if (boxAnim!=null){
 
             TextBoxPrefab.SetActive(false);
@@ -185,6 +186,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
             boxAnim.Play("TextBox_FadeOut");
         }
 
+        IsTalkable = !IsOneshot;
         OnTalkComplete?.Invoke(this);
 
         while (CutScenePlayer)

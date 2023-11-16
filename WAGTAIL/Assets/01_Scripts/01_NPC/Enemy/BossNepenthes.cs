@@ -600,6 +600,7 @@ public sealed class BossNepenthes : Enemy
         GameObject hpGage = HpCanvas.Pop();
         hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
         GameObject FX_Hit = GameObject.Instantiate(FX_Hitprefab, HitTrasnform.position, FX_Hitprefab.transform.rotation, this.transform.parent);
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_Hit);
         Destroy(FX_Hit, 1.0f);
         #endregion
     }

@@ -78,10 +78,18 @@ public class GameManager : Singleton<GameManager>
     public void StartChapter(ChapterType type)
     {
         num = 0;
+
+        /**마우스 커서가 가려지도록 한다...*/
+        if(type!=ChapterType.Title){
+
+            Cursor.visible = false;
+            GamePadUIController.UseCursorAutoVisible = false;
+        }
+
         Chapter desiredChapter = _chapterList.Find(x => x.ChapterType == type);
         // CheckPoints
         // ==================================================================================
-        _checkPointList = desiredChapter.GetComponentsInChildren<CheckPoint>().ToList();
+        _checkPointList = desiredChapter.GetComponentsInChildren<CheckPoint>(true).ToList();
         _checkPointList.ForEach(x => x.gameObject.SetActive(true));
         _startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
         _currentCheckPoint = _startPoint;

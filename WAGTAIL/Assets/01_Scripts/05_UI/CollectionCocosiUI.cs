@@ -48,15 +48,51 @@ public class CollectionCocosiUI : MonoBehaviour
 
     public void SetCanvas(int index, bool isOn)
     {
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             if (i == index)
             {
                 canvas[index].SetActive(isOn);
+                ResetCocosiUI(index);
                 currentCanvas = canvas[index];
             }
             else canvas[i].SetActive(false);
         }
     }
-    
+
+    public void ResetCocosiUI(int chapter)
+    {
+        var cocosi = GameManager.GetInstance().cocosi;
+
+        switch (chapter)
+        {
+            case 0:
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    cocosiUI[chapter][i].SetActive(cocosi[i]);
+                }
+
+                break;
+            }
+            case 1:
+            {
+                for (var i = 0; i < 3; i++)
+                {
+                    cocosiUI[chapter][i].SetActive(cocosi[5 + i]);
+                }
+
+                break;
+            }
+            case 2:
+            {
+                for (var i = 0; i<3; i++)
+                {
+                    cocosiUI[2][i].SetActive(cocosi[8 + i]);
+                }
+
+                break;
+            }
+        }
+    }
 }
