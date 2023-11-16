@@ -9,10 +9,10 @@ using UnityEngine.InputSystem.DualShock;
 using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem.Switch;
 using static UnityEngine.GridBrushBase;
-using UnityEditor.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Rendering;
 #endif
 
 /*******************************************************
@@ -453,6 +453,7 @@ public sealed class GamePadUIController : MonoBehaviour
     public static GamePadUIController Current                   { get { return _current; } set { _current = value; if (value == null) Cursor.visible = false; } }
     public static InputDeviceType     LastInputDevice           { get; private set; } = InputDeviceType.Keyboard;
     public static GamePadKind         LastInputGamePadKind      { get; private set; } = GamePadKind.XBox;
+    public static bool                UseCursorAutoVisible      { get; set; } = true;
     public bool                       DPadIsMoveLockTarget      { get { return (_moveLockFlag & (int)MoveLockTarget.DPad)!=0; } set { SetMoveLockTarget( MoveLockTarget.DPad, value ); } }
     public bool                       OkBtnIsMoveLockTarget     { get { return (_moveLockFlag & (int)MoveLockTarget.OK) != 0; } set { SetMoveLockTarget(MoveLockTarget.OK, value); } }
     public bool                       CancelBtnIsMoveLockTarget { get { return (_moveLockFlag & (int)MoveLockTarget.Cancel) != 0; } set { SetMoveLockTarget(MoveLockTarget.Cancel, value); } }
@@ -704,7 +705,7 @@ public sealed class GamePadUIController : MonoBehaviour
         /**키보드를 사용하는 경우...*/
         if(LastInputDevice==InputDeviceType.Keyboard)
         {
-            if (type == GamePadInputType.OK) return Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Return);
+            if (type == GamePadInputType.OK) return Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space);
             else return Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Escape);
         }
 
@@ -808,7 +809,7 @@ public sealed class GamePadUIController : MonoBehaviour
                 LastInputDevice = InputDeviceType.Mouse;
                 Current?.OnDisSelect?.Invoke();
 
-                if(Current!=null) Cursor.visible = true;
+                if(UseCursorAutoVisible) Cursor.visible = true;
                 lastCursorPos = currMouse.position.value;
                 lastInput = Vector2.zero;
                 lastOk = false;
@@ -816,7 +817,7 @@ public sealed class GamePadUIController : MonoBehaviour
             else if (LastInputDevice!=InputDeviceType.Keyboard && currKeyboard!=null && currKeyboard.anyKey.value>0f ){
 
                 /**키보드를 입력하였을 경우....*/
-                Cursor.visible = false;
+                if (UseCursorAutoVisible) Cursor.visible = false;
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.Keyboard);
                 LastInputDevice = InputDeviceType.Keyboard;
                 Current?.OnSelect?.Invoke();
@@ -824,7 +825,7 @@ public sealed class GamePadUIController : MonoBehaviour
             else if(currPad!=null && currPad.wasUpdatedThisFrame && (lastUsedPad!=currPad || LastInputDevice != InputDeviceType.GamePad)){
 
                 /**패드를 입력하였을 경우....*/
-                Cursor.visible = false;
+                if (UseCursorAutoVisible) Cursor.visible = false;
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.GamePad);
                 lastUsedPad          = currPad;
                 LastInputDevice      = InputDeviceType.GamePad;

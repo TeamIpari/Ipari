@@ -7361,11 +7361,13 @@ MonoBehaviour:
   _IsSaying: 0
   _IsTalkable: 1
   _IsMoving: 0
+  IsOneshot: 1
   SayType: 1
   TargetDistance: 1.5
   TextViewer: {fileID: 0}
   NameTag: {fileID: 0}
   TextBoxPrefab: {fileID: 0}
+  PossibleExtraOffset: {x: 0, y: 0, z: 0}
   QuestIcon: {fileID: 1604254938}
   SpeakBalloon: {fileID: 0}
   CutScenePlayer: {fileID: 0}
@@ -18429,6 +18431,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 120a56e71f74be14699cfe63da3fa8f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1486338783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486338777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2508efdfd42b5641902418baa9f3cb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChapterNum: 5
+  Tmps: {fileID: 0}
+  NameTag: {fileID: 0}
+  Dic_Say:
+    Keys: 
+    Values: []
+  dialogue:
+    name: 
+    sentences: []
+  isSpeedUp: 0
+  KorTypingRate: 0.1
+  EngTypingRate: 0.05
+  JpTypingRate: 0.1
+  CnTypingRate: 0.1
 --- !u!1 &1492956119
 GameObject:
   m_ObjectHideFlags: 0
@@ -20787,8 +20815,61 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -66.708
       objectReference: {fileID: 0}
+    - target: {fileID: 6789087141855841280, guid: 946c1c50825d4c64b847265360778317,
+        type: 3}
+      propertyPath: UseDefaultVolume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789087141855841280, guid: 946c1c50825d4c64b847265360778317,
+        type: 3}
+      propertyPath: EventDescs.Array.data[0].PlayApplyTiming
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789087141855841287, guid: 946c1c50825d4c64b847265360778317,
+        type: 3}
+      propertyPath: _eventFlags
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789087141855841287, guid: 946c1c50825d4c64b847265360778317,
+        type: 3}
+      propertyPath: _datas.Array.size
+      value: 29
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789087141855841287, guid: 946c1c50825d4c64b847265360778317,
+        type: 3}
+      propertyPath: _datas.Array.data[26].Tr
+      value: 
+      objectReference: {fileID: 1782933273}
+    - target: {fileID: 6789087141855841287, guid: 946c1c50825d4c64b847265360778317,
+        type: 3}
+      propertyPath: _datas.Array.data[27].Tr
+      value: 
+      objectReference: {fileID: 1782933272}
+    - target: {fileID: 6789087141855841287, guid: 946c1c50825d4c64b847265360778317,
+        type: 3}
+      propertyPath: _datas.Array.data[28].Tr
+      value: 
+      objectReference: {fileID: 1782933271}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 946c1c50825d4c64b847265360778317, type: 3}
+--- !u!4 &1782933271 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9070410893330113168, guid: 946c1c50825d4c64b847265360778317,
+    type: 3}
+  m_PrefabInstance: {fileID: 1782933270}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1782933272 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 398401815850313641, guid: 946c1c50825d4c64b847265360778317,
+    type: 3}
+  m_PrefabInstance: {fileID: 1782933270}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1782933273 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5930522823230492292, guid: 946c1c50825d4c64b847265360778317,
+    type: 3}
+  m_PrefabInstance: {fileID: 1782933270}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1813130852
 GameObject:
   m_ObjectHideFlags: 0

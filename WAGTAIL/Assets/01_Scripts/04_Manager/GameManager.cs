@@ -82,6 +82,14 @@ public class GameManager : Singleton<GameManager>
     public void StartChapter(ChapterType type)
     {
         num = 0;
+
+        /**마우스 커서가 가려지도록 한다...*/
+        if(type!=ChapterType.Title){
+
+            Cursor.visible = false;
+            GamePadUIController.UseCursorAutoVisible = false;
+        }
+
         Chapter desiredChapter = _chapterList.Find(x => x.ChapterType == type);
         // CheckPoints
         // ==================================================================================
