@@ -81,7 +81,7 @@ public class GameManager : Singleton<GameManager>
         Chapter desiredChapter = _chapterList.Find(x => x.ChapterType == type);
         // CheckPoints
         // ==================================================================================
-        _checkPointList = desiredChapter.GetComponentsInChildren<CheckPoint>().ToList();
+        _checkPointList = desiredChapter.GetComponentsInChildren<CheckPoint>(true).ToList();
         _checkPointList.ForEach(x => x.gameObject.SetActive(true));
         _startPoint = _checkPointList.Find(x => x.checkPointType == CheckPointType.StartPoint).transform.position;
         _currentCheckPoint = _startPoint;
