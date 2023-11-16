@@ -95,7 +95,7 @@ MonoBehaviour:
   Path: ../../IpariFMOD/IpariAudio/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 638349693516523582
+  lastModified: 638351431890904017
   FileSizes:
   - Name: Desktop
     Value: 15195648
@@ -262,33 +262,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-7360364935622918449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/SFX/Boss/Boss Crab/Crab_Hit
-  m_EditorClassIdentifier: 
-  Path: event:/SFX/Boss/Boss Crab/Crab_Hit
-  Guid:
-    Data1: 88904361
-    Data2: 1138304325
-    Data3: -99787875
-    Data4: -1604164469
-  Banks:
-  - {fileID: 6366069459090721618}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
 --- !u!114 &-6162690317768770287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -444,6 +417,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-4232208700238387016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Player_Walk/PlayerWalkType
+  m_EditorClassIdentifier: 
+  Name: PlayerWalkType
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 543888505
+    data2: 784381380
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Grass
+  - Sand
+  - Stone
+  Exists: 1
 --- !u!114 &-3826212722634738100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -969,12 +969,6 @@ MonoBehaviour:
   - {fileID: -6162690317768770287}
   - {fileID: -1122939627633069578}
   - {fileID: -8838966445620770379}
-  - {fileID: 2916023765209854573}
-  - {fileID: 7763214977572517513}
-  - {fileID: 7850077905798137685}
-  - {fileID: 8181655568130757932}
-  - {fileID: -7360364935622918449}
-  - {fileID: 739313771484889727}
   EditorParameters:
   - {fileID: 4204844847748057071}
   MasterBanks:
@@ -1118,33 +1112,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 109122
---- !u!114 &2916023765209854573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/SFX/Boss/Boss Nepenthes/BossNepen_Hit
-  m_EditorClassIdentifier: 
-  Path: event:/SFX/Boss/Boss Nepenthes/BossNepen_Hit
-  Guid:
-    Data1: -1007401708
-    Data2: 1308172674
-    Data3: 128069518
-    Data4: 245650646
-  Banks:
-  - {fileID: 6366069459090721618}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
 --- !u!114 &3026645733845307037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1250,6 +1217,32 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &3413783084456662429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Player_Landed/LandedType
+  m_EditorClassIdentifier: 
+  Name: LandedType
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 1324780393
+    data2: 1874894010
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Grass
+  - Ground
+  Exists: 1
 --- !u!114 &3496728230555736283
 MonoBehaviour:
   m_ObjectHideFlags: 0
