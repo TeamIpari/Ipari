@@ -8,6 +8,16 @@ public class AcidBomb : Bullet
     private GameObject bombMarker;
     [SerializeField] private LayerMask passedMask;
 
+    #region DrawGizmos
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color32(255, 255, 255, 150);
+        Gizmos.DrawSphere(bombMarker.transform.position, transform.GetChild(0).localScale.x * .3f);
+        Gizmos.color = new Color(0, 0, 0);
+        Gizmos.DrawWireSphere(bombMarker.transform.position, transform.GetChild(0).localScale.x * .3f);
+    }
+
+    #endregion
     //======================================
     /////          magic Methods        ////
     //======================================
@@ -131,7 +141,7 @@ public class AcidBomb : Bullet
             Collider[] cols = 
             Physics.OverlapSphere(
                 bombMarker.transform.localPosition,
-                transform.GetChild(0).localScale.x *.5f);
+                transform.GetChild(0).localScale.x *.3f);
         //Debug.Log($"{transform.GetChild(0).localScale.x } * .5f = {transform.GetChild(0).localScale.x * .5f}");
             foreach (var c in cols)
             {
