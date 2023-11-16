@@ -28,11 +28,12 @@ public class basket : MonoBehaviour
             try
             {
                 ThrowObject _throw = other.GetComponent<ThrowObject>();
-                if(_throw.GetPhyscisCheck)
+                if(_throw.GetPhyscisCheck && _throw.enabled == true)
                 {
                     if (TargetCount >= 0)
                     {
                         _throw.gameObject.layer = 0;
+                        _throw.enabled = false;
                         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Put_KoKoShi);
                         TargetCount--;
                     }
