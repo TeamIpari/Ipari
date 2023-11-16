@@ -34,6 +34,7 @@ public sealed class BossCrabHitState : AIHitState
         base.Enter();
 
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Hit, _bossCrab.transform.position, 3f);
         IpariUtility.PlayGamePadVibration(1f, 1f, .08f);
 
         _bossCrab.StateTrigger = false;

@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.DualShock;
 using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem.Switch;
+using static UnityEngine.GridBrushBase;
+using UnityEditor.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -49,6 +51,13 @@ public sealed class GamePadUIController : MonoBehaviour
         X,Y,A,B, 
         Circle, Triangle, Cross, Square,
     }
+
+    public enum MoveLockTarget
+    {
+        DPad    = 1,
+        OK      = 2,
+        Cancel  = 4,
+    }
     #endregion
 
     #region Editor_Extension
@@ -70,6 +79,7 @@ public sealed class GamePadUIController : MonoBehaviour
         private SerializedProperty StartSelectProperty;
         private SerializedProperty UsedEventLayerProperty;
         private SerializedProperty UseMoveLockProperty;
+        private SerializedProperty MoveLockTargetProperty;
 
         private SerializedProperty UpTargetProperty;
         private SerializedProperty DownTargetProperty;
@@ -111,6 +121,8 @@ public sealed class GamePadUIController : MonoBehaviour
             GUI_Initialized();
 
             GUI_ShowStartSelectAndUseMoveLock();
+
+            GUI_ShowMoveLockTarget();
 
             GUI_ShowMoveTargets();
 
@@ -248,9 +260,14 @@ public sealed class GamePadUIController : MonoBehaviour
                 OnDPadDownLockProperty = serializedObject.FindProperty("OnDPadDownLock");
             }
 
-            if (OnPressedLockProperty == null)
-            {
+            if (OnPressedLockProperty == null){
+
                 OnPressedLockProperty = serializedObject.FindProperty("OnPressdLock");
+            }
+
+            if(MoveLockTargetProperty==null){
+
+                MoveLockTargetProperty = serializedObject.FindProperty("_moveLockFlag");
             }
 
             if (toggleOptions == null) {
@@ -406,6 +423,26 @@ public sealed class GamePadUIController : MonoBehaviour
             #endregion
         }
 
+        private void GUI_ShowMoveLockTarget()
+        {
+            #region Omit
+            if (MoveLockTargetProperty == null) return;
+
+            using (var scope = new EditorGUI.ChangeCheckScope())
+            {
+                MoveLockTarget value = MoveLockTargetProperty.GetEnumValue<MoveLockTarget>();
+                System.Enum    curr  = EditorGUILayout.EnumFlagsField("MoveLock Target", value);
+
+                /**값이 갱신되었다면 적용한다...*/
+                if(scope.changed){
+
+                    MoveLockTargetProperty.SetEnumValue(curr);  
+                }
+            }
+            
+            #endregion
+        }
+
     }
 #endif
     #endregion
@@ -413,9 +450,13 @@ public sealed class GamePadUIController : MonoBehaviour
     //=======================================================
     //////            Property and fields               /////
     //=======================================================
-    public static GamePadUIController Current              { get { return _current; } set { _current = value; if (value == null) Cursor.visible = false; } }
-    public static InputDeviceType     LastInputDevice      { get; private set; } = InputDeviceType.Keyboard;
-    public static GamePadKind         LastInputGamePadKind { get; private set; } = GamePadKind.XBox;
+    public static GamePadUIController Current                   { get { return _current; } set { _current = value; if (value == null) Cursor.visible = false; } }
+    public static InputDeviceType     LastInputDevice           { get; private set; } = InputDeviceType.Keyboard;
+    public static GamePadKind         LastInputGamePadKind      { get; private set; } = GamePadKind.XBox;
+    public bool                       DPadIsMoveLockTarget      { get { return (_moveLockFlag & (int)MoveLockTarget.DPad)!=0; } set { SetMoveLockTarget( MoveLockTarget.DPad, value ); } }
+    public bool                       OkBtnIsMoveLockTarget     { get { return (_moveLockFlag & (int)MoveLockTarget.OK) != 0; } set { SetMoveLockTarget(MoveLockTarget.OK, value); } }
+    public bool                       CancelBtnIsMoveLockTarget { get { return (_moveLockFlag & (int)MoveLockTarget.Cancel) != 0; } set { SetMoveLockTarget(MoveLockTarget.Cancel, value); } }
+    public bool                       MoveLockTargetAll         { get { return (_moveLockFlag==0b111); } set { SetMoveLockTarget((MoveLockTarget)0b111, value); } }
 
     public static OnDeviceChangeEvent  OnDeviceChange;
     
@@ -445,17 +486,24 @@ public sealed class GamePadUIController : MonoBehaviour
     [SerializeField] public bool StartSelect = false;
     [SerializeField] public bool UseMoveLock = false;
     [SerializeField] private int UsedEventLayer = 0;
+    [SerializeField] private int _moveLockFlag  = (int)0b111;
 
 
     private static Coroutine           UICoroutine;
     private static GamePadUIController _current;
-    private static int                 _moveShield = 0;
+    private static int                 _moveShield   = 0;
+
 
 
     //========================================================
     //////                 Magic methods                //////
     //=========================================================
     private void Awake()
+    {
+        OnDeviceChange = null;
+    }
+
+    private void Start()
     {
         #region Omit
         /**시작지점으로 선택된 개체를 갱신한다... */
@@ -470,7 +518,6 @@ public sealed class GamePadUIController : MonoBehaviour
         UIManager manager = UIManager.GetInstance();
         if (manager != null && UICoroutine == null)
         {
-            OnDeviceChange = null;
             UICoroutine = manager.StartCoroutine(PadInputProgress());
         }
         #endregion
@@ -531,23 +578,37 @@ public sealed class GamePadUIController : MonoBehaviour
     //====================================================
     //////               Core methods               //////
     //====================================================
+    private void SetMoveLockTarget(MoveLockTarget applyType, bool isApply)
+    {
+        #region Omit
+        if (isApply)
+        {
+            _moveLockFlag |= (int)applyType;
+            return;
+        }
+
+        _moveLockFlag &= ~(int)applyType;
+        #endregion
+    }
+
     private void SelectUI(Vector2 dir)
     {
         #region Omit
         FModAudioManager.PlayOneShotSFX(
             FModSFXEventType.UI_Button,
             Vector3.zero,
-            2f
+        2f
         );
 
-        /**좌측 클릭*/
-        if (dir.x < 0)
-        {
+        bool DPadMoveLockIsValid = (Current.UseMoveLock && (Current._moveLockFlag & (int)MoveLockTarget.DPad) != 0);
 
-            if (Current.UseMoveLock) Current.OnDPadLeftLock?.Invoke();
+        /**좌측 클릭*/
+        if (dir.x < 0){
+
+            if (DPadMoveLockIsValid) Current.OnDPadLeftLock?.Invoke();
             else Current.OnDPadLeft?.Invoke();
 
-            if (Current.LeftTarget != null && !Current.UseMoveLock)
+            if (Current.LeftTarget != null && !DPadMoveLockIsValid)
             {
                 Current.OnDisSelect?.Invoke();
                 Current = Current.LeftTarget;
@@ -559,10 +620,10 @@ public sealed class GamePadUIController : MonoBehaviour
         else if (dir.x > 0)
         {
 
-            if (Current.UseMoveLock) Current.OnDPadRightLock?.Invoke();
+            if (DPadMoveLockIsValid) Current.OnDPadRightLock?.Invoke();
             else Current.OnDPadRight?.Invoke();
 
-            if (Current.RightTarget != null && !Current.UseMoveLock)
+            if (Current.RightTarget != null && !DPadMoveLockIsValid)
             {
                 Current.OnDisSelect?.Invoke();
                 Current = Current.RightTarget;
@@ -574,7 +635,7 @@ public sealed class GamePadUIController : MonoBehaviour
         else if (dir.y > 0)
         {
 
-            if (Current.UseMoveLock) Current.OnDPadUpLock?.Invoke();
+            if (DPadMoveLockIsValid) Current.OnDPadUpLock?.Invoke();
             else Current.OnDPadUp?.Invoke();
 
             if (Current.UpTarget != null && !Current.UseMoveLock)
@@ -589,10 +650,10 @@ public sealed class GamePadUIController : MonoBehaviour
         else if (dir.y < 0)
         {
 
-            if (Current.UseMoveLock) Current.OnDPadDownLock?.Invoke();
+            if (DPadMoveLockIsValid) Current.OnDPadDownLock?.Invoke();
             else Current.OnDPadDown?.Invoke();
 
-            if (Current.DownTarget != null && !Current.UseMoveLock)
+            if (Current.DownTarget != null && !DPadMoveLockIsValid)
             {
                 Current.OnDisSelect?.Invoke();
                 Current = Current.DownTarget;
@@ -755,9 +816,7 @@ public sealed class GamePadUIController : MonoBehaviour
             else if (LastInputDevice!=InputDeviceType.Keyboard && currKeyboard!=null && currKeyboard.anyKey.value>0f ){
 
                 /**키보드를 입력하였을 경우....*/
-#if UNITY_EDITOR
                 Cursor.visible = false;
-#endif
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.Keyboard);
                 LastInputDevice = InputDeviceType.Keyboard;
                 Current?.OnSelect?.Invoke();
@@ -765,9 +824,7 @@ public sealed class GamePadUIController : MonoBehaviour
             else if(currPad!=null && currPad.wasUpdatedThisFrame && (lastUsedPad!=currPad || LastInputDevice != InputDeviceType.GamePad)){
 
                 /**패드를 입력하였을 경우....*/
-#if UNITY_EDITOR
                 Cursor.visible = false;
-#endif
                 OnDeviceChange?.Invoke(LastInputDevice, InputDeviceType.GamePad);
                 lastUsedPad          = currPad;
                 LastInputDevice      = InputDeviceType.GamePad;
@@ -801,12 +858,12 @@ public sealed class GamePadUIController : MonoBehaviour
              *   확인 버튼을 눌렀을 때의 처리를 한다....
              * ****/
             #region OK_Button
-            bool pressOkBtn = ButtonIsDown(currPad, GamePadInputType.OK);
-            if(Current != null && pressOkBtn && lastOk==false){
+            bool pressOkBtn        = ButtonIsDown(currPad, GamePadInputType.OK);
+            if (Current != null && pressOkBtn && lastOk==false){
 
-                bool lastMoveLock = Current.UseMoveLock;
+                bool lastMoveLock = (Current.UseMoveLock && (Current._moveLockFlag & (int)MoveLockTarget.OK) != 0);
 
-                if (Current.UseMoveLock) Current.OnPressdLock?.Invoke();
+                if (lastMoveLock) Current.OnPressdLock?.Invoke();
                 else Current.OnPressd?.Invoke();
 
                 if (Current != null && Current.SelectTarget != null && !lastMoveLock)
@@ -833,9 +890,9 @@ public sealed class GamePadUIController : MonoBehaviour
             bool pressCancelBtn = ButtonIsDown(currPad, GamePadInputType.Cancel);
             if (Current != null && pressCancelBtn && lastCancel==false){
 
-                bool lastMoveLock = Current.UseMoveLock;
+                bool lastMoveLock = (Current.UseMoveLock && (Current._moveLockFlag & (int)MoveLockTarget.Cancel) != 0);
 
-                if (Current.UseMoveLock) Current.OnCancelLock?.Invoke();
+                if (lastMoveLock) Current.OnCancelLock?.Invoke();
                 else Current.OnCancel?.Invoke();
 
                 if(Current != null && Current.CancelTarget!=null && !lastMoveLock)

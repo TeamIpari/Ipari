@@ -80,6 +80,13 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     [CustomEditor(typeof(PullableObject))]
     private sealed class PullableObjectEditor : Editor
     {
+        private enum ToggleStyle
+        {
+            Left,
+            Middle,
+            Right
+        }
+
         //====================================
         //////         Fields             ////
         //====================================
@@ -88,6 +95,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         private static readonly UnityEngine.Color GRAB_QUAD_COLOR = new UnityEngine.Color(0f, .8f, 0f);
 
         private static GUIStyle    NodeButtonStyle, GrabNodeButtonStyle;
+        private GUIStyle[]         toggleOptions;
 
         /**select target...*/
         private PullableObject     targetObj;
@@ -107,6 +115,9 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         private SerializedProperty StrechVibePowProperty;
         private SerializedProperty UseFixedVibeProperty;
         private SerializedProperty ApplyUpdateProperty;
+        private SerializedProperty UseFixedMaxLengthProperty;
+        private SerializedProperty FixedMaxLengthProperty;
+        private SerializedProperty EventFlagsProperty;
 
 
         //=====================================================
@@ -275,6 +286,8 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
             GUI_ShowStrechVibe();
 
+            GUI_ShowFixedMaxLength();
+
             EditorGUILayout.Space(10f);
 
 
@@ -331,11 +344,25 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
                 ApplyUpdateProperty             = serializedObject.FindProperty("ApplyUpdate");
                 StrechVibePowProperty           = serializedObject.FindProperty("StrechVibePow");
                 UseFixedVibeProperty            = serializedObject.FindProperty("UseFixedVibe");
+                UseFixedMaxLengthProperty       = serializedObject.FindProperty("UseFixedMaxLength");
+                FixedMaxLengthProperty          = serializedObject.FindProperty("FixedMaxLength");
+                EventFlagsProperty              = serializedObject.FindProperty("_eventFlags");
 
-        OnPullReleaseProperty            = serializedObject.FindProperty("OnPullRelease");
+                OnPullReleaseProperty            = serializedObject.FindProperty("OnPullRelease");
                 OnFullyExtendedProperty          = serializedObject.FindProperty("OnFullyExtended");
                 OnPullStartProperty              = serializedObject.FindProperty("OnPullStart");
                 OnBreakProperty                  = serializedObject.FindProperty("OnBreak");
+            }
+
+            /**스타일 룩업테이블 초기화....*/
+            if (toggleOptions == null){
+
+                toggleOptions = new GUIStyle[]
+                {
+                    EditorStyles.miniButtonLeft,
+                    EditorStyles.miniButtonMid,
+                    EditorStyles.miniButtonRight
+                };
             }
             #endregion
         }
@@ -490,6 +517,9 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             #region Omit
             if (GrabTargetProperty == null) return;
 
+            /**IK적용 여부...*/
+            ApplyUpdateProperty.boolValue = EditorGUILayout.Toggle("Apply Update", ApplyUpdateProperty.boolValue);
+
             EditorGUILayout.BeginHorizontal();
             {
                 /**GrabTarget 참조필드...*/
@@ -502,8 +532,6 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             }
             EditorGUILayout.EndHorizontal();
 
-            /**IK적용 여부...*/
-            ApplyUpdateProperty.boolValue = EditorGUILayout.Toggle("Apply Update", ApplyUpdateProperty.boolValue);
             #endregion
         }
 
@@ -513,10 +541,25 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             if (OnPullStartProperty==null || OnPullReleaseProperty==null || OnFullyExtendedProperty==null || OnBreakProperty==null) 
                 return;
 
-            EditorGUILayout.PropertyField(OnPullStartProperty);
-            EditorGUILayout.PropertyField(OnPullReleaseProperty);
-            EditorGUILayout.PropertyField(OnFullyExtendedProperty);
-            EditorGUILayout.PropertyField(OnBreakProperty);
+            /*****************************************
+             *   대리자 토글을 표시한다..
+             * ****/
+            GUILayout.BeginHorizontal();
+            {
+                GUI_ShowUseEventSelectToggle(0, "OnPullStart", ToggleStyle.Left);
+                GUI_ShowUseEventSelectToggle(1, "OnPullRelease");
+                GUI_ShowUseEventSelectToggle(2, "OnFullyExtended");
+                GUI_ShowUseEventSelectToggle(3, "OnBreak", ToggleStyle.Right);
+            }
+            GUILayout.EndHorizontal();
+
+            /******************************************
+             *   현재 사용할 대리자들을 표시한다...
+             * *****/
+            GUI_ShowEvent(0, OnPullStartProperty);
+            GUI_ShowEvent(1, OnPullReleaseProperty);
+            GUI_ShowEvent(2, OnFullyExtendedProperty);
+            GUI_ShowEvent(3, OnBreakProperty);
 
             #endregion
         }
@@ -540,9 +583,80 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
                 }
 
                 /**고정 힘을 사용하는지에 대한 여부를 결정한다....*/
-                UseFixedVibeProperty.boolValue = EditorGUILayout.ToggleLeft("Use Fixed Pow", UseFixedVibeProperty.boolValue, GUILayout.Width(130f));
+                UseFixedVibeProperty.boolValue = EditorGUILayout.ToggleLeft("Use Fixed Pow", UseFixedVibeProperty.boolValue, GUILayout.Width(140f));
             }
             EditorGUILayout.EndHorizontal();
+            #endregion
+        }
+
+        private void GUI_ShowFixedMaxLength()
+        {
+            #region Omit
+            if (FixedMaxLengthProperty == null || UseFixedMaxLengthProperty == null) return;
+
+            /**********************************************************
+             *   d고정된 최대길이를 사용하는지에 대한 프로퍼티를 표시한다...
+             * ***/
+            EditorGUILayout.BeginHorizontal();
+            {
+                /**진동의 힘을 결정하는 프로퍼티를 표시한다...*/
+                using (var scope = new EditorGUI.ChangeCheckScope()){
+
+                    float value = EditorGUILayout.FloatField("Fixed Max Length", FixedMaxLengthProperty.floatValue);
+                    if (scope.changed)
+                        FixedMaxLengthProperty.floatValue = Mathf.Clamp(value, 0f, float.MaxValue);
+                }
+
+                /**고정 힘을 사용하는지에 대한 여부를 결정한다....*/
+                UseFixedMaxLengthProperty.boolValue = EditorGUILayout.ToggleLeft("Use Fixed MaxLength", UseFixedMaxLengthProperty.boolValue, GUILayout.Width(140f));
+            }
+            EditorGUILayout.EndHorizontal();
+            #endregion
+        }
+
+        private void GUI_ShowEvent(int index, SerializedProperty property)
+        {
+            #region Omit
+            if (EventFlagsProperty == null || property == null) return;
+
+            /************************************************
+             *   해당 플래그가 유효하면 대리자를 표시한다.....
+             * *****/
+            int flags = EventFlagsProperty.intValue;
+            if( (flags & (1<<index))!=0 )
+            {
+                EditorGUILayout.PropertyField(property);
+            }
+
+            #endregion
+        }
+
+        private void GUI_ShowUseEventSelectToggle(int eventIndex, string eventName, ToggleStyle style = ToggleStyle.Middle)
+        {
+            #region Omit
+            if (EventFlagsProperty == null) return;
+            int layer           = (1 << eventIndex);
+            bool eventIsUsed    = (EventFlagsProperty.intValue & layer) != 0;
+            Color returnBgColor = GUI.backgroundColor;
+
+            /****************************************************
+             *   지정한 버튼을 표시한다....
+             * ***/
+            using (var scope = new EditorGUI.ChangeCheckScope()){
+
+                GUI.backgroundColor = (eventIsUsed ? Color.red : Color.green);
+                {
+                    eventIsUsed = GUILayout.Toggle(eventIsUsed, eventName, toggleOptions[(int)style]);
+                }
+                GUI.backgroundColor = returnBgColor;
+
+                /**값이 바뀌었을 경우 갱신한다...*/
+                if (scope.changed)
+                {
+                    if (eventIsUsed) EventFlagsProperty.intValue |= layer;
+                    else EventFlagsProperty.intValue &= ~layer;
+                }
+            }
             #endregion
         }
 
@@ -695,15 +809,35 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             {
                 ApplyUpdate = true;
                 OnPullStart?.Invoke();
+
+                /**고정 최대길이를 사용할 경우...*/
+                if(UseFixedMaxLength){
+
+                    _fullyExtendedLen = 5f;
+                    _fullyExtendedDiv = (1f / _fullyExtendedLen);
+
+                }
             }
-            else OnPullRelease?.Invoke();
+            else
+            {
+                OnPullRelease?.Invoke();
+
+                /**고정 최대길이를 사용할 경우...*/
+                if (UseFixedMaxLength){
+
+                    _fullyExtendedLen = MaxLength;
+                    _fullyExtendedDiv = (1f / _fullyExtendedLen);
+                }
+            }
         }
     }
 
-    [SerializeField] public float            MaxScale       = 1.5f;
-    [SerializeField] public float            StrechVibePow  = 3f;
-    [SerializeField] public bool             UseFixedVibe   = false;
-    [SerializeField] public bool             ApplyUpdate    = true;
+    [SerializeField] public float            MaxScale          = 1.5f;
+    [SerializeField] public float            StrechVibePow     = 3f;
+    [SerializeField] public float            FixedMaxLength    = 1.5f;
+    [SerializeField] public bool             UseFixedVibe      = false;
+    [SerializeField] public bool             UseFixedMaxLength = false;
+    [SerializeField] public bool             ApplyUpdate       = true;
     [SerializeField] private GameObject       _GrabTarget; 
     [SerializeField] public  PullableObjEvent OnPullRelease;
     [SerializeField] public  PullableObjEvent OnBreak;
@@ -720,6 +854,9 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
     [SerializeField, HideInInspector]
     private int        _dataCount = -1;
+
+    [SerializeField, HideInInspector]
+    private int        _eventFlags = 0;
 
     private const int   _fabrikLimit       = 100;
     private float       _fullyExtendedLen = -1f;

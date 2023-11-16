@@ -203,6 +203,7 @@ public class ThrowObject : MonoBehaviour, IInteractable
             _player.isPickup = true;
             isTarget = false;
             isReady = false;
+            OnPickUp?.Invoke();
             return true;
         }
 
