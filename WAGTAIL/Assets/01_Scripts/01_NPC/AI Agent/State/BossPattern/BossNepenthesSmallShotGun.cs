@@ -134,7 +134,7 @@ public class BossNepenthesSmallShotGun : AIAttackState
     {
         if (curTimer > delayTime && !isShoot)
         {
-            FModAudioManager.PlayOneShotSFX(FModSFXEventType.Nepenthes_Shoot);
+            FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_SpitAttack);
             CreateMarker();
             PositionLuncher();
             curTimer = 0;
