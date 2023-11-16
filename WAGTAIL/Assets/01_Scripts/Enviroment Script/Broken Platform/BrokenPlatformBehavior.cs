@@ -138,7 +138,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
         if (mesh != null) mesh.enabled = false;
         SetPieceOriginPos(PlatformArray[Random.Range(0, PlatformArray.Length)]);
         // 랜덤 플랫폼을 받아와서 Piece를 할당받고 Piece를 폭발시켜 사방에 퍼지게 하기.
-
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.StonePlatformBroken);
         for (int i = 0; i < curBrokenPlatform.transform.childCount; i++)
         {
             var rigidbody = curBrokenPlatform.transform.GetChild(i).GetComponent<Rigidbody>();
