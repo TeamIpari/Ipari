@@ -190,16 +190,16 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         {
             ref ThrowDesc desc = ref _targets[i];
 
-            if(desc.marker==null){
-                desc.marker = GameObject.Instantiate(_desc.MarkerPrefab).GetComponent<ParticleSystem>();
-            }
+            //if(desc.marker==null){
+            //    desc.marker = GameObject.Instantiate(_desc.MarkerPrefab).GetComponent<ParticleSystem>();
+            //}
 
-            Transform  newMarkerTr  = desc.marker.transform;
-            Quaternion newQuat      = IpariUtility.GetQuatBetweenVector(newMarkerTr.up, -desc.goalNormal);
+            //Transform  newMarkerTr  = desc.marker.transform;
+            //Quaternion newQuat      = IpariUtility.GetQuatBetweenVector(newMarkerTr.up, -desc.goalNormal);
 
-            desc.marker.Play(true);
-            desc.marker.GetComponentInChildren<Transform>().localScale = (Vector3.one*.3f);
-            desc.marker.transform.SetPositionAndRotation( _targets[i].goalPos, newQuat);
+            //desc.marker.Play(true);
+            //desc.marker.GetComponentInChildren<Transform>().localScale = (Vector3.one*.3f);
+            //desc.marker.transform.SetPositionAndRotation( _targets[i].goalPos, newQuat);
         }
         #endregion
     }

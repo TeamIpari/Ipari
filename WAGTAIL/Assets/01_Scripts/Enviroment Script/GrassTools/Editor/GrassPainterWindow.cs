@@ -18,6 +18,7 @@ public class GrassPainterWindow : EditorWindow
     Vector2 scrollPos;
 
     bool paintModeActive;
+    bool useForcePaint = false;
 
     readonly string[] toolbarStrings = { "Add", "Remove", "Edit", "Reproject" };
 
@@ -323,10 +324,9 @@ public class GrassPainterWindow : EditorWindow
 
     void ShowPaintPanel()
     {
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Paint Mode:", EditorStyles.boldLabel);
-        paintModeActive = EditorGUILayout.Toggle(paintModeActive);
-        EditorGUILayout.EndHorizontal();
+        paintModeActive = EditorGUILayout.Toggle("Paint Mode",paintModeActive);
+        useForcePaint = EditorGUILayout.Toggle("Use Force Paint",useForcePaint);
+
         EditorGUILayout.Separator();
         EditorGUILayout.LabelField("Hit Settings", EditorStyles.boldLabel);
         LayerMask tempMask = EditorGUILayout.MaskField("Hit Mask", InternalEditorUtility.LayerMaskToConcatenatedLayersMask(toolSettings.hitMask), InternalEditorUtility.layers);
@@ -1117,6 +1117,18 @@ public class GrassPainterWindow : EditorWindow
                         int hits2 = (Physics.RaycastNonAlloc(ray2, terrainHit, 200f, toolSettings.hitMask.value));
                         for (int l = 0; l < hits2; l++)
                         {
+                            if(useForcePaint)
+                            {
+                                GrassData newData = new GrassData();
+                                newData.color = GetRandomColor();
+                                newData.position = hitPos;
+                                newData.length = new Vector2(toolSettings.sizeWidth, toolSettings.sizeLength);
+                                newData.normal = hitNormal;
+
+                                grassData.Add(newData);
+                                continue;
+                            }
+
                             if ((toolSettings.paintMask.value & (1 << terrainHit[l].transform.gameObject.layer)) > 0 && terrainHit[l].normal.y <= (1 + toolSettings.normalLimit) && terrainHit[l].normal.y >= (1 - toolSettings.normalLimit))
                             {
                                 hitPos = terrainHit[l].point;

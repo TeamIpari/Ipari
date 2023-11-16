@@ -208,7 +208,7 @@ public sealed class TreeObstacles : MonoBehaviour
                   );
 
                 CameraManager.GetInstance().CameraShake(.3f, CameraManager.ShakeDir.ROTATE, .6f);
-                IpariUtility.PlayGamePadVibration(.1f, .1f, .8f);
+                IpariUtility.PlayGamePadVibration(.1f, .1f, .4f);
 
                 fallDownSpeed = -rebound;
                 fallDownRot -= rebound;
@@ -266,7 +266,7 @@ public sealed class TreeObstacles : MonoBehaviour
               );
 
             CameraManager.GetInstance().CameraShake(.3f, CameraManager.ShakeDir.ROTATE, .6f);
-            IpariUtility.PlayGamePadVibration(.1f, .1f, .8f);
+            IpariUtility.PlayGamePadVibration(.1f, .1f, .4f);
 
             fallDownSpeed = -rebound;
             fallDownRot -= rebound;
