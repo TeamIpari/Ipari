@@ -610,7 +610,7 @@ PrefabInstance:
     - target: {fileID: 5816783147489684446, guid: a007ab6e0edc3244493208dfccbaf275,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5885974202939074097, guid: a007ab6e0edc3244493208dfccbaf275,
         type: 3}
@@ -7567,48 +7567,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3530463191754018818, guid: ebee77faf7f23be4b82f731bcc5d641a, type: 3}
---- !u!21 &367947077
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Grass(Clone)
-  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
-    type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Blend: 0
-    - _BlendMult: 1
-    - _BlendOff: 0
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1001 &373077219
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11417,19 +11375,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 488038054, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.76923066
+      value: 0.7692308
       objectReference: {fileID: 0}
     - target: {fileID: 488038054, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.76923066
+      value: 0.7692308
       objectReference: {fileID: 0}
     - target: {fileID: 865502038, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.76923084
+      value: 0.76923096
       objectReference: {fileID: 0}
     - target: {fileID: 865502038, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.76923084
+      value: 0.76923096
       objectReference: {fileID: 0}
     - target: {fileID: 994831943, guid: e01bb446b89274c498eb9ad111db1373, type: 3}
       propertyPath: m_LocalScale.x
@@ -13985,7 +13943,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 769785527}
-  m_LocalRotation: {x: 0.4052657, y: -1e-45, z: 1e-45, w: 0.91419894}
+  m_LocalRotation: {x: 0.4052657, y: 3e-45, z: -1e-45, w: 0.91419894}
   m_LocalPosition: {x: 0.64, y: 20.735327, z: -7.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -14038,6 +13996,48 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 826508725}
   m_PrefabAsset: {fileID: 0}
+--- !u!21 &772997290
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Grass(Clone)
+  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
+    type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blend: 0
+    - _BlendMult: 1
+    - _BlendOff: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &773486122
 GameObject:
   m_ObjectHideFlags: 0
@@ -18893,6 +18893,7 @@ Transform:
   - {fileID: 1280600695}
   - {fileID: 969241092}
   - {fileID: 810996275}
+  - {fileID: 1956247971}
   - {fileID: 1785518639}
   - {fileID: 632428562}
   - {fileID: 1572375590}
@@ -18922,7 +18923,6 @@ Transform:
   - {fileID: 1603607673}
   - {fileID: 308982707}
   - {fileID: 1418991498}
-  - {fileID: 1956247971}
   - {fileID: 524789523}
   - {fileID: 1480751945}
   - {fileID: 1752373301}
@@ -22875,7 +22875,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1261307918
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33573,7 +33573,7 @@ MonoBehaviour:
     normal: {x: 0, y: 1, z: 0}
     length: {x: 0.277, y: 0.01}
     color: {x: 0.63576895, y: 0.90434986, z: 1.5297618}
-  m_InstantiatedMaterial: {fileID: 367947077}
+  m_InstantiatedMaterial: {fileID: 772997290}
 --- !u!4 &1305550751
 Transform:
   m_ObjectHideFlags: 0
@@ -36362,6 +36362,11 @@ PrefabInstance:
         type: 3}
       propertyPath: playerSpeed
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3721331665275117615, guid: 4e571e30fe445494bb690d3070e2430e,
+        type: 3}
+      propertyPath: invincibleTime
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3763343359765207031, guid: 4e571e30fe445494bb690d3070e2430e,
         type: 3}
@@ -45204,12 +45209,12 @@ PrefabInstance:
     - target: {fileID: 8259764396587708548, guid: 7b53358512e7b044ca70f6352c2bdad3,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -1e-45
+      value: 3e-45
       objectReference: {fileID: 0}
     - target: {fileID: 8259764396587708548, guid: 7b53358512e7b044ca70f6352c2bdad3,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 1e-45
+      value: -1e-45
       objectReference: {fileID: 0}
     - target: {fileID: 8259764396587708548, guid: 7b53358512e7b044ca70f6352c2bdad3,
         type: 3}
@@ -47788,7 +47793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d08dd6dbf040884b99db9235523725a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextChapter: 0
+  nextChapter: 6
 --- !u!4 &1956247971
 Transform:
   m_ObjectHideFlags: 0
@@ -47802,7 +47807,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1037279133}
-  m_RootOrder: 56
+  m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1958487241
 PrefabInstance:

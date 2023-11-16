@@ -41,7 +41,7 @@ public class GameManager : Singleton<GameManager>
     //================================================
     // Score
     private int _coin = 0;
-    public bool[][] cocosi;
+    public bool[] cocosi = new bool[11];
     
     //================================================
     // Chapter
@@ -55,12 +55,8 @@ public class GameManager : Singleton<GameManager>
 
         if (!DataManager.Instance.LoadGameData())
         {
-            Debug.Log("Test");
             Coin = 0;
-            cocosi = new bool[3][];
-            cocosi[0] = new bool[] { false, false, false, false, false };
-            cocosi[1] = new bool[] { false, false, false };
-            cocosi[2] = new bool[] { false, false, false };
+            cocosi = new bool[] { false, false, false, false, false, false, false, false, false, false, false };
         
             IsKeyboard = true;
             IsGamepad = false;
@@ -105,14 +101,23 @@ public class GameManager : Singleton<GameManager>
         switch (LastActiveChapter.ChapterType)
         {
             case ChapterType.Chapter01:
-                cocosi[0] = new bool[] { false, false, false, false, false };
+                for (var i = 0; i < 5; i++)
+                {
+                    cocosi[i] = false;
+                }
                 break;
             case ChapterType.Chapter02 or ChapterType.MiddleBossRoom:
-                cocosi[1] = new bool[] { false, false, false };
+                for (var i = 5; i < 8; i++)
+                {
+                    cocosi[i] = false;
+                }
                 LastActiveChapter = _chapterList.Find(x => x.ChapterType == ChapterType.Chapter02);
                 break;
             case ChapterType.Chapter03:
-                cocosi[2] = new bool[] { false, false, false };
+                for(var i = 8; i < 11; i++)
+                {
+                    cocosi[i] = false;
+                }
                 break;
         }
         
@@ -127,10 +132,7 @@ public class GameManager : Singleton<GameManager>
     public void RestartGame()
     {
         // 코코시 초기화
-        cocosi = new bool[3][];
-        cocosi[0] = new bool[] { false, false, false, false, false };
-        cocosi[1] = new bool[] { false, false, false };
-        cocosi[2] = new bool[] { false, false, false };
+        cocosi = new bool[] { false, false, false, false, false, false, false, false, false, false, false };
         
         // 코인 초기화
         PrevCoin = 0;

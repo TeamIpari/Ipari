@@ -11,7 +11,7 @@ public class GameData
     
     public Chapter currentChapterType;
     public int coin;
-    public bool[][] cocosi;
+    public bool[] cocosi;
     
     public void Init()
     {
