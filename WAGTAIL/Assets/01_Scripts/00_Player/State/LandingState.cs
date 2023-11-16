@@ -22,6 +22,10 @@ public class LandingState : State
         currentVelocity = Vector3.zero;
         cVelocity = Vector3.zero;
         
+        player.animator.ResetTrigger(Jumping);
+        player.animator.ResetTrigger(Flight);
+        
+        
         FModAudioManager.PlayOneShotSFX(
             FModSFXEventType.Player_Landed,
             player.transform.position
@@ -36,7 +40,7 @@ public class LandingState : State
         {
             player.animator.Play("LiftJumpLanding", 0, 0f);
         }
-        _landingTime = 0.05f;
+        _landingTime = 0.20f;
     }
 
     public override void LogicUpdate()

@@ -29,8 +29,7 @@ public class FlightState : State
         _isGrounded = player.controller.isGrounded;
         _gravityValue = player.gravityValue;
         gravityVelocity.y = 0;
-        
-        player.animator.ResetTrigger(Landing);
+
         player.animator.SetFloat(Speed, 0);
         player.animator.SetTrigger(Flight);
     }

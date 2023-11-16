@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using IPariUtility;
@@ -14,7 +15,7 @@ public class Player : MonoBehaviour
     //==================================
     // 1. Player에 있는 수치값들은 특수한 이유가 없으면 상수로 선언해야함.
     //==================================
-    public float playerSpeed = 15.0f;
+    public float playerSpeed = 10.0f;
     // =======================================
     public float jumpHeight = 0.8f;
     public float gravityMultiplier = 2;
@@ -26,6 +27,8 @@ public class Player : MonoBehaviour
     public float slopeSpeed = 0f;
     public float respawnTime;
     public bool isSwimming = false;
+    public float invincibleTime = 0f;
+    [HideInInspector] public float invincibleDurTime = 0f;// 무적 시간
     
     [Header("HoldSearch")]
     public float rotateAngle;
@@ -65,8 +68,26 @@ public class Player : MonoBehaviour
     public bool isCarry = false;
     public bool isThrow = false;
     public bool isFlight = false;
-    public bool isDead = false;
+    public bool isDead
+    {
+        get => _isDead;
+        set
+        {
+            if (invincibleDurTime <= 0)
+            {
+                _isDead = value;
+                return;
+            }
+
+            if(invincibleDurTime > 0)
+            {
+                _isDead = false;
+            }
+        }
+    }
     public bool isPull = false;
+
+    private bool _isDead = false;
     //public bool isSlide = true;
     
     //============================================//
@@ -208,6 +229,11 @@ public class Player : MonoBehaviour
 
         movementSM.currentState.LogicUpdate();
 
+        if (invincibleDurTime > 0)
+        {
+            invincibleDurTime -= Time.deltaTime;
+        }
+        
         if(isCarry)
         {
             EnemySearching();

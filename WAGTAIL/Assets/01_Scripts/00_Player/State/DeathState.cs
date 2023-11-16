@@ -94,6 +94,7 @@ public class DeathState : State
         player.isDead = false;
         _isAlive = false;
         _currentTime = 0;
+        player.invincibleDurTime = player.invincibleTime;
     }
 
     // 체크포인트로 보낼 시

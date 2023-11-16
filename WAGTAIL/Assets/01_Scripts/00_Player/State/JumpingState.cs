@@ -22,10 +22,16 @@ public class JumpingState : State
         _isGrounded = false;
         _jump = false;
         gravityVelocity.y = 0;
-        
-        player.animator.ResetTrigger(Landing);
+
         player.animator.SetFloat(Speed, 0);
-        player.animator.SetTrigger("jump");
+        if (player.currentInteractable == null)
+        {
+            player.animator.Play("JumpStart", 0, 0f);
+        }
+        else if (player.currentInteractable != null)
+        {
+            player.animator.Play("LiftJump", 0, 0f);
+        }
         Jump();
     }
 

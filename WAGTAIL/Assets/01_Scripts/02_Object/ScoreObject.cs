@@ -483,7 +483,24 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                           FModSFXEventType.Put_KoKoShi
                     );
 
-                    gm.cocosi[CocosiChapter][CocosiIndex] = true;
+                    int index = CocosiIndex;
+                    
+                    if (CocosiChapter == 0)
+                    {
+                        index = CocosiIndex;
+                    }
+
+                    if (CocosiChapter == 1)
+                    {
+                        index = 5 + CocosiIndex;
+                    }
+
+                    if (CocosiChapter == 2)
+                    {
+                        index = 5 + 3 + CocosiIndex;
+                    }
+                    
+                    gm.cocosi[index] = true;
                     UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).gameObject.GetComponent<CollectionCocosiUI>()
                         .SetCocosiUI(CocosiChapter, CocosiIndex, true);
                     transform.GetChild(2).gameObject.SetActive(false);
