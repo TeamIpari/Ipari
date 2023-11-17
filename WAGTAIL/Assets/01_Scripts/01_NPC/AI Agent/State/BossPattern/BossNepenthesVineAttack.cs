@@ -148,13 +148,8 @@ public class BossNepenthesVineAttack : AIAttackState
                             (1 << LayerMask.NameToLayer("Platform")),
                             QueryTriggerInteraction.Ignore
                         );
-                        Debug.Log($"{Count}");
                         if (Count > 0)
                         {
-                            for (int i = 0; i < Count; i++)
-                            {
-                                Debug.Log($"{colliders[i].name}");
-                            }
                             boss.CoroutineFunc(ShakePlatforms, 0.3f);
                         }
                     }
@@ -185,12 +180,13 @@ public class BossNepenthesVineAttack : AIAttackState
             GameObject.Destroy(tempFx, 1f);
             vec += Vector3.forward * -3f;
         }
-
+        Debug.Log($"AA{BombPools == null} ? {BombPools[0] == null}");
         if (BombPools[0] == null)
             CreateReActionObject();
+        
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_VineSmash, Vector3.zero, 2f);
         CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, 0.8f, .05f);
-
+        
         foreach (var fruit in BombPools)
         {
             x = Random.Range(-6f, 6f);
@@ -198,7 +194,7 @@ public class BossNepenthesVineAttack : AIAttackState
 
             fruit.SetActive(true);
             fruit.transform.position = new Vector3(x, 13f, z);
-            yield return new WaitForSeconds(0.050f);
+            yield return new WaitForSeconds(0.150f);
         }
         vineAnim.speed = 1f;
 
@@ -206,8 +202,12 @@ public class BossNepenthesVineAttack : AIAttackState
 
     private void CreateReActionObject()
     {
-        BombPools = new GameObject[3];
-
+        if (BombPools.Length <= 0)
+        {
+            Debug.Log("Create Bomb Array");
+            BombPools = new GameObject[3];
+        }
+        Debug.Log($"{BombPools.Length}");
         // 생성 하는 기능.
         for (int i = 0; i < 3; i++)
         {

@@ -529,13 +529,13 @@ public sealed class BossNepenthes : Enemy
             if (curTImer > 1.5f)
             {
                 GameObject obj = GameObject.Find("Floor2");
-                Debug.Log($"{obj.transform.childCount}");
-                for (int i = 0; i < obj.transform.childCount; i++)
-                {
-                    Transform child = obj.transform.GetChild(i);
-                    child.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
-                }
-                //StartCoroutine(DestroyPlatforms());
+                //Debug.Log($"{obj.transform.childCount}");
+                //for (int i = 0; i < obj.transform.childCount; i++)
+                //{
+                //    Transform child = obj.transform.GetChild(i);
+                //    child.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
+                //}
+                StartCoroutine(DestroyPlatforms());
                 deathZone.SetActive(false);
                 potal.SetActive(true);
                 isOne = true;
@@ -547,7 +547,7 @@ public sealed class BossNepenthes : Enemy
     {
         #region Omit
         // 공격을 받음.
-        if (other.CompareTag("Bullet"))
+        if ( AiSM.CurrentState != AiDie && other.CompareTag("Bullet"))
         {
             // 데미지는 얼마나?
             HP -= other.GetComponent<Bullet>().Damage;
