@@ -41,6 +41,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     [SerializeField] public TextMeshProUGUI TextViewer;
     [SerializeField] public TextMeshProUGUI NameTag;
     [SerializeField] public GameObject      TextBoxPrefab;
+    [SerializeField] public GameObject      LookTarget;
     [SerializeField] public Vector3         PossibleExtraOffset = Vector3.zero;
 
     [SerializeField] public GameObject      QuestIcon;
@@ -255,13 +256,20 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         if (player.movementSM.currentState != player.idle) return;
 
         // 족장을 바라보라우 
-        Vector3 lookDir = (transform.position - player.transform.position).normalized;
+        Vector3 lookDir;
+        if(LookTarget == null)
+            lookDir = (transform.position - player.transform.position).normalized;
+        else 
+            lookDir = (LookTarget.transform.position - player.transform.position).normalized;
+
         lookDir.y = 0f;
         player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, lookDir) * player.transform.rotation);
-
+        Vector3 ArrivalPoint;
         // 목표지점은 어떻게 지정할 것인가? 
-        Vector3 ArrivalPoint = transform.localPosition - lookDir * 1.5f;
-
+        if (LookTarget == null)
+            ArrivalPoint = transform.localPosition - lookDir * 1.5f;
+        else
+            ArrivalPoint = LookTarget.transform.localPosition - lookDir * 1.5f;
         // 방향 벡터를 구하고 속도를 조절
         player.controller.Move((ArrivalPoint - player.transform.position).normalized * Time.deltaTime * (player.playerSpeed * 0.5f));
 
