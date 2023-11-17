@@ -58,7 +58,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
         isBroken = false;
         bossNepenthes = GameObject.Find("NewBoss").GetComponent<BossNepenthes>();
         spawnDelay = spawnDelay == 0.0f ? 1.5f : spawnDelay;
-        pieceDownDelay = pieceDownDelay == 0.0f ? 0.25f : pieceDownDelay;
+        pieceDownDelay = pieceDownDelay <= 0.0f ? 0.25f : pieceDownDelay;
         // 파괴되는 방식이 여러 바리에이션으로 파괴되게 세팅
         for (int i = 0; i < PlatformArray.Length; i++)
         {
@@ -180,6 +180,10 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
             if (col != null) col.enabled = true;
             if (mesh != null) mesh.enabled = true;
             isBroken = false;
+        }
+        else
+        {
+
         }
 
     }
