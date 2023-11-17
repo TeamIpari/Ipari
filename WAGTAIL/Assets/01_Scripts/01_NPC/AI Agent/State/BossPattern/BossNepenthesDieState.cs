@@ -33,6 +33,8 @@ public class BossNepenthesDieState : AIDieState
         AISM.Animator.SetTrigger("isDeath");
         animLeftVine.SetTrigger("isDeath");
         animRightVine.SetTrigger("isDeath");
+        // Player 무적 넣어줌
+        Player.Instance.invincibleDurTime = 1000f;
         leftVine.AddComponent<Rigidbody>().useGravity = true;
         rightVine.AddComponent<Rigidbody>().useGravity = true;
         curTimer = 0;
