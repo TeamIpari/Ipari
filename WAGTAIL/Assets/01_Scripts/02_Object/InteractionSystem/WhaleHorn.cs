@@ -85,11 +85,6 @@ public sealed class WhaleHorn : MonoBehaviour
         #endregion
     }
 
-    private void OnDestroy()
-    {
-        
-    }
-
 
 
     //==================================================
@@ -126,7 +121,7 @@ public sealed class WhaleHorn : MonoBehaviour
                     if(_ShineSFXIns!=null) 
                         _ShineSFXIns.position += (Vector3.right*99999999f);
 
-                    GameObject.Find("---Camera").transform.GetChild(0).gameObject.SetActive(true);
+                    GameObject.Find("---Camera").transform.Find("BossRoomCM").gameObject.SetActive(false);
 
                     TalkableWhale.gameObject.SetActive(true);
                     _state = HornState.Enter_CutScene;
@@ -300,7 +295,7 @@ public sealed class WhaleHorn : MonoBehaviour
 
         #region Player_Move
         /**연출을 적용하기 위해 조작방지 및 레터박스를 활성화한다....*/
-        UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
+        try { UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox); } catch { }
         Player.Instance.playerInput.enabled = false;
 
         Transform talkTr     = TalkableWhale.transform;
