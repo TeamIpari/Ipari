@@ -121,6 +121,11 @@ public sealed class WaterScript : MonoBehaviour
     //=======================================
     /////         Core methods          /////
     //=======================================
+    public void DestroyScript()
+    {
+        Destroy(this);
+    }
+
     private ParticleSystem GetWaterFX()
     {
         #region Omit

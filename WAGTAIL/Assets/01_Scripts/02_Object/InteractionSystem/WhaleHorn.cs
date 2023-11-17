@@ -85,11 +85,6 @@ public sealed class WhaleHorn : MonoBehaviour
         #endregion
     }
 
-    private void OnDestroy()
-    {
-        
-    }
-
 
 
     //==================================================
@@ -126,7 +121,8 @@ public sealed class WhaleHorn : MonoBehaviour
                     if(_ShineSFXIns!=null) 
                         _ShineSFXIns.position += (Vector3.right*99999999f);
 
-                    GameObject.Find("---Camera").transform.GetChild(0).gameObject.SetActive(true);
+                    GameObject.Find("---Camera").transform.Find("BossRoomCM").gameObject.SetActive(false);
+                    GameObject.Find("---Camera").transform.Find("CM vcam1").gameObject.SetActive(true);
 
                     TalkableWhale.gameObject.SetActive(true);
                     _state = HornState.Enter_CutScene;
@@ -300,7 +296,7 @@ public sealed class WhaleHorn : MonoBehaviour
 
         #region Player_Move
         /**연출을 적용하기 위해 조작방지 및 레터박스를 활성화한다....*/
-        UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
+        try { UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox); } catch { }
         Player.Instance.playerInput.enabled = false;
 
         Transform talkTr     = TalkableWhale.transform;
@@ -326,7 +322,7 @@ public sealed class WhaleHorn : MonoBehaviour
             playerAnim.SetFloat("speed", Vector3.Distance(ArrivalPoint, playerTr.position) - 0.2f, playerDmp, Time.deltaTime);
 
             /**적절한 위치에 진입하면 이동을 마무리짓는다...*/
-            if (floatdst < 1.4f){
+            if (floatdst < 13.5f){
 
                 playerAnim.SetFloat("speed", 0f, playerDmp, Time.deltaTime);
                 break;
@@ -336,6 +332,8 @@ public sealed class WhaleHorn : MonoBehaviour
             #endregion
         }
         while (true);
+
+        GameObject.Find("---Camera").transform.Find("CM vcam1").gameObject.SetActive(false);
         #endregion
 
 
