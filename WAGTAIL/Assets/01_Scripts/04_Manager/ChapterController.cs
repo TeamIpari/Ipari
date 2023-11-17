@@ -49,7 +49,7 @@ public class ChapterController : MonoBehaviour
             case ChapterType.BossRoom:
                 GameManager.GetInstance().StartChapter(ChapterType.BossRoom);
                 UIManager.GetInstance().SwitchCanvas(CanvasType.GameUI);
-                UIManager.GetInstance().ActiveGameUI(GameUIType.Coin, true);
+                //UIManager.GetInstance().ActiveGameUI(GameUIType.Coin, true);
                 UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).GetComponent<CollectionCocosiUI>().SetCanvas(2,false);
                 break;
             case ChapterType.EndCredits:
