@@ -736,7 +736,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
                 len += (_datas[i].Tr.position - _datas[i - 1].Tr.position).magnitude;
             }
-            _fullyExtendedLen = len;
+            _cachedMaxLength = _fullyExtendedLen = len;
 
             return len;
         }
@@ -825,7 +825,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
                 /**고정 최대길이를 사용할 경우...*/
                 if (UseFixedMaxLength){
 
-                    _fullyExtendedLen = MaxLength;
+                    _fullyExtendedLen = _cachedMaxLength;
                     _fullyExtendedDiv = (1f / _fullyExtendedLen);
                 }
             }
@@ -862,6 +862,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     private float       _fullyExtendedLen = -1f;
     private float       _fullyExtendedDiv  = -1f;
     private float       _boneCountDiv      = 1f;
+    private bool        _unpackParents     = false;
 
     /**줄의 반동에 관련된 필드...*/
     private float  _lastExtendedLen = 0f;
@@ -872,6 +873,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     /**줄의 끊어짐과 관련된 필드...*/
     private float       _brokenTime = .1f;
     private float       _brokenDiv  = 0f;
+    private float       _cachedMaxLength = 0f;
 
 
 
@@ -881,48 +883,14 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     private void Awake()
     {
         #region Omit
-        _fullyExtendedLen      = MaxLength;
-        _fullyExtendedDiv      = (1f/ _fullyExtendedLen);
-        _boneCountDiv          = (1f/(_datas.Length-1));
-        _brokenDiv             = (1f/_brokenTime);
-
         gameObject.layer = LayerMask.NameToLayer("Interactable");
-        if (OnPullStart == null)     OnPullStart = new PullableObjEvent();
+            
+        if (OnPullStart == null)     OnPullStart     = new PullableObjEvent();
         if (OnFullyExtended == null) OnFullyExtended = new PullableObjEvent();
-        if (OnPullRelease == null)   OnPullRelease = new PullableObjEvent();
-        if (OnBreak == null)         OnBreak = new PullableObjEvent();
+        if (OnPullRelease == null)   OnPullRelease   = new PullableObjEvent();
+        if (OnBreak == null)         OnBreak         = new PullableObjEvent();
 
-
-        /**************************************
-         *  본 정보 초기화....
-         * ***/
-        if (_datas==null){
-
-            _datas = new BoneData[10];
-        }
-
-        _dataCount = _datas.Length;
-        for(int i=0; i<_dataCount-1; i++){
-
-            ref BoneData data = ref _datas[i];
-            ref BoneData next = ref _datas[i+1];
-
-            /**연결이 끊겨있다면 마무리...*/
-            if(data.Tr==null)
-            {
-                _dataCount = (i+1);
-                return;
-            }
-
-            data.Tr.parent       = transform;
-            data.OriginPos       = data.Tr.position;
-            data.OriginQuat      = data.Tr.rotation;
-            data.PrevQuat        = data.Tr.rotation;
-            data.originDir       = (next.Tr.position-data.Tr.position).normalized;
-            data.originLength    = (next.Tr.position - data.Tr.position).magnitude;
-            data.originLengthDiv = (1f / data.originLength);
-            data.lengthRatio     = (data.originLength * _fullyExtendedDiv);
-        }
+        Init(true, ApplyUpdate);
 
         /**마지막 본의 자식부모 관계를 해지한다...*/
         #endregion
@@ -935,7 +903,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         /*************************************
          *   외부로부터 당겨질 경우의 처리를 한다..
          * ***/
-        if(HoldingPoint!=null){
+        if (HoldingPoint!=null){
 
             /**팽팽하게 당겨졌을 때의 처리...*/
             if (!UpdateFullExtendedVibration())
@@ -1247,6 +1215,66 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         #endregion
     }
 
+    private void UnpackParent()
+    {
+        #region Omit
+        if (_unpackParents) return;
+
+        int Count = BoneCount;
+        for(int i=0; i<Count; i++){
+
+            ref BoneData data = ref _datas[i];
+            data.Tr.parent    = transform;
+        }
+
+        _unpackParents = true;
+        #endregion
+    }
+
+    private void Init(bool Apply, bool unpackParent=true)
+    {
+        #region Omit
+        if (Apply == false) return;
+        
+        _fullyExtendedLen = MaxLength;
+        _fullyExtendedDiv = (1f / _fullyExtendedLen);
+        _boneCountDiv     = (1f / (_datas.Length - 1));
+        _brokenDiv        = (1f / _brokenTime);
+
+
+        /**************************************
+         *  본 정보 초기화....
+         * ***/
+        if (_datas == null) {
+
+            _datas = new BoneData[10];
+        }
+
+        _dataCount = _datas.Length;
+        for (int i = 0; i < _dataCount - 1; i++){
+
+            ref BoneData data = ref _datas[i];
+            ref BoneData next = ref _datas[i + 1];
+
+            /**연결이 끊겨있다면 마무리...*/
+            if (data.Tr == null)
+            {
+                _dataCount = (i + 1);
+                return;
+            }
+
+            if(unpackParent) data.Tr.parent = transform;
+            data.OriginPos = data.Tr.position;
+            data.OriginQuat = data.Tr.rotation;
+            data.PrevQuat = data.Tr.rotation;
+            data.originDir = (next.Tr.position - data.Tr.position).normalized;
+            data.originLength = (next.Tr.position - data.Tr.position).magnitude;
+            data.originLengthDiv = (1f / data.originLength);
+            data.lengthRatio = (data.originLength * _fullyExtendedDiv);
+        }
+        #endregion
+    }
+
 
 
 
@@ -1388,6 +1416,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         #region Omit
         if (!interactor.CompareTag("Player")) return false;
 
+        Init(true);
         /**플레이어가 당기기 상태로 전환되도록 한다.....*/
         Player player              = Player.Instance;
         player.currentInteractable = gameObject;

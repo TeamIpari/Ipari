@@ -210,6 +210,17 @@ public sealed class FlyingBird : MonoBehaviour
 #endif
     #endregion
 
+    public enum RotationAxis
+    {
+        X = 1,
+        Y = 2,
+        Z = 4,
+
+        XY  = (X|Y),
+        XYZ = (X|Y|Z),
+        YZ  = (Y|Z)
+    }
+
     //===================================
     //////       Property           /////
     //===================================
@@ -219,23 +230,23 @@ public sealed class FlyingBird : MonoBehaviour
     public int       FlyType             { get{ return _FlyType; } set { _FlyType = value; } }
     public float     FlightDuration      { get { return _FlightDuration; } set { if (value < 0) value = .1f; _FlightDuration = value; } }
 
-    [SerializeField] public  Vector3  FlyRotation           = Vector3.zero;
-    [SerializeField] private float    _DurationUntilFlight   = 1f;
-    [SerializeField] private float    _FlightDuration        = 5f;
-    [SerializeField] public float     RotationDuration       = .3f; 
-    [SerializeField] public  bool     DestroyAtArrived      = true;
-    [SerializeField] public  bool     UseFlyLoop            = false;
-    [SerializeField] public  bool     FlyOnStart            = false;
-    [SerializeField] public  string   IdleAnimState         = string.Empty;
-    [SerializeField] public  string   ReadyAnimState        = string.Empty;
-    [SerializeField] public  string   FlyAnimState          = string.Empty;
-
+    [SerializeField] public  Vector3     FlyRotation            = Vector3.zero;
+    [SerializeField] private float       _DurationUntilFlight   = 1f;
+    [SerializeField] private float       _FlightDuration        = 5f;
+    [SerializeField] public float        RotationDuration       = .3f; 
+    [SerializeField] public  bool        DestroyAtArrived       = true;
+    [SerializeField] public  bool        UseFlyLoop             = false;
+    [SerializeField] public  bool        FlyOnStart             = false;
+    [SerializeField] public  string      IdleAnimState          = string.Empty;
+    [SerializeField] public  string      ReadyAnimState         = string.Empty;
+    [SerializeField] public  string      FlyAnimState           = string.Empty;
+    [SerializeField] public RotationAxis RotationAxisType       = FlyingBird.RotationAxis.XYZ;
 
 
     //===================================
     //////         Fields          /////
     //===================================
-    [HideInInspector] [SerializeField] 
+    [SerializeField, HideInInspector] 
     private Vector3[]   _FlyPoints;
 
     [HideInInspector] [SerializeField] 
@@ -344,16 +355,33 @@ public sealed class FlyingBird : MonoBehaviour
         _flyCoroutine = StartCoroutine(FlyProgress());
     }
 
-    private void BirdLookAt( Quaternion startQuat, Vector3 prevDir, Vector3 lookPos, float ratio )
+    private void BirdLookAt( Vector3 lookPos, float ratio )
     {
         #region Omit
         Transform birdTr = transform;
 
-        Vector3 currDir = (_dirTr.position - transform.position).normalized;
-        Vector3 goalDir = (lookPos - transform.position).normalized;
+        Vector3 currDir = (_dirTr.position - birdTr.position).normalized;
+        Vector3 goalDir = (lookPos - birdTr.position).normalized;
 
-        Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(currDir, goalDir, ratio);
-        birdTr.rotation    = (rotQuat * startQuat);
+        float   angle   = Vector3.Angle(currDir, goalDir) * ratio;
+        Vector3 cross   = Vector3.Cross(currDir, goalDir);
+
+
+        /**X축 회전을 제거한다...*/
+        if ((RotationAxisType & RotationAxis.X) == 0)
+                cross.x = 0f;
+
+        /**Y축 회전을 제거한다...*/
+        if ((RotationAxisType & RotationAxis.Y) == 0)
+                cross.y = 0f;
+
+        /**Z축 회전을 제거한다...*/
+        if ((RotationAxisType & RotationAxis.Z) == 0)
+                cross.z = 0f;
+
+
+        Quaternion rotQuat = Quaternion.AngleAxis(angle, cross);
+        birdTr.rotation    = (rotQuat * birdTr.rotation);
         #endregion
     }
 
@@ -377,7 +405,7 @@ public sealed class FlyingBird : MonoBehaviour
         {
             currTime += Time.deltaTime;
             float progressRatio = Mathf.Clamp((currTime * goalTimeDiv), 0f, 1f);
-            BirdLookAt(startQuat, startForward, _FlyPoints[1], progressRatio);
+            BirdLookAt(_FlyPoints[1], progressRatio);
             yield return null;
         }
 
@@ -393,38 +421,43 @@ public sealed class FlyingBird : MonoBehaviour
         /**베지어를 사용할 경우...*/
         if (_FlyType == 1)
         {
-            Count       = (_FlyPointsCount - 1)/2;
-            goalTime    = (FlightDuration / Count);
+            Count = (_FlyPointsCount - 1) / 2;
+            goalTime = (FlightDuration / Count);
             goalTimeDiv = (1f / goalTime);
             currTime = 0f;
 
-            for (int i = 0; i < Count; i += 1)
+            do
             {
-                Vector3 prevDir = birdTr.forward;
-                int real = (i * 2);
-                startQuat = transform.rotation;
+                for (int i = 0; i < Count; i += 1)
+                {
+                    Vector3 prevDir = birdTr.forward;
+                    int real = (i * 2);
+                    startQuat = transform.rotation;
 
-                while (currTime < goalTime){
+                    while (currTime < goalTime)
+                    {
 
-                    currTime += Time.deltaTime;
-                    float progressRatio = Mathf.Clamp01(currTime * goalTimeDiv);
-                    float rotRatio      = Mathf.Clamp01(currTime * rotDiv);
+                        currTime += Time.deltaTime;
+                        float progressRatio = Mathf.Clamp01(currTime * goalTimeDiv);
+                        float rotRatio = Mathf.Clamp01(currTime * rotDiv);
 
-                    /**회전에 필요한 모든값들을 구한다...*/
-                    Vector3 nextPos = IpariUtility.GetBezier(
-                        ref _FlyPoints[real],
-                        ref _FlyPoints[real + 1], 
-                        ref _FlyPoints[real + 2], 
-                        progressRatio
-                    );
+                        /**회전에 필요한 모든값들을 구한다...*/
+                        Vector3 nextPos = IpariUtility.GetBezier(
+                            ref _FlyPoints[real],
+                            ref _FlyPoints[real + 1],
+                            ref _FlyPoints[real + 2],
+                            progressRatio
+                        );
 
-                    BirdLookAt(startQuat, prevDir, _FlyPoints[real+2], rotRatio);
-                    birdTr.position = nextPos;
-                    yield return null;
+                        BirdLookAt(_FlyPoints[real + 2], rotRatio);
+                        birdTr.position = nextPos;
+                        yield return null;
+                    }
+
+                    currTime -= goalTime;
                 }
-
-                currTime -= goalTime;
             }
+            while (UseFlyLoop);
         }
 
         /**기본값..*/
@@ -435,25 +468,31 @@ public sealed class FlyingBird : MonoBehaviour
             goalTimeDiv = (1f / goalTime);
             currTime    = 0f;
 
-            for (int i = 0; i < Count; i += 1){
 
-                Vector3 prevDir = birdTr.forward;
-                startQuat = transform.rotation;
+            do
+            {
+                /**날아가는 로직을 적용한다....*/
+                for (int i = 0; i < Count; i += 1){
 
-                while (currTime < goalTime)
-                {
-                    currTime += Time.deltaTime;
-                    float progressRatio = Mathf.Clamp01(currTime * goalTimeDiv);
-                    float rotRatio      = Mathf.Clamp01(currTime * rotDiv);
-                    Vector3 nextPos     = _FlyPoints[i] + (_FlyPoints[i + 1] - _FlyPoints[i]) * progressRatio;
+                    Vector3 prevDir = birdTr.forward;
+                    startQuat = transform.rotation;
 
-                    BirdLookAt(startQuat, prevDir, _FlyPoints[i+1], rotRatio);
-                    birdTr.position = nextPos;
-                    yield return null;
+                    while (currTime < goalTime)
+                    {
+                        currTime += Time.deltaTime;
+                        float progressRatio = Mathf.Clamp01(currTime * goalTimeDiv);
+                        float rotRatio = Mathf.Clamp01(currTime * rotDiv);
+                        Vector3 nextPos = _FlyPoints[i] + (_FlyPoints[i + 1] - _FlyPoints[i]) * progressRatio;
+
+                        BirdLookAt(_FlyPoints[i + 1], rotRatio);
+                        birdTr.position = nextPos;
+                        yield return null;
+                    }
+
+                    currTime = 0;
                 }
-
-                currTime = 0;
             }
+            while (UseFlyLoop);
         }
 
         /**도착 후 파괴해야 한다면 파괴...*/
