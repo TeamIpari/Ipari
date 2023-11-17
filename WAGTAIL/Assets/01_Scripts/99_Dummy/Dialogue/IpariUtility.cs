@@ -353,11 +353,12 @@ namespace IPariUtility
                  * *******/
                 else if((renderer=ret.collider.GetComponent<Renderer>()))
                 {
-                    Vector2    hitCoord = ret.textureCoord2;
+                    Vector2    hitCoord = ret.textureCoord;
                     Texture2D  tex      = renderer.sharedMaterial.mainTexture as Texture2D;
 
                     if(tex==null)
                     {
+                        UnityEngine.Debug.Log($"밟은 땅(Name: {ret.collider.name})/ (텍스쳐를 읽어올 수 없음!!)");
                         FModParameterReference paramRefFail = new FModParameterReference();
                         paramRefFail.SetParameter(FModLocalParamType.EnvironmentType, FModParamLabel.EnvironmentType.Wood);
                         return paramRefFail;
@@ -368,6 +369,9 @@ namespace IPariUtility
                     int   index  = 0;
                     Color sample = tex.GetPixel(Mathf.FloorToInt(hitCoord.x), Mathf.FloorToInt(hitCoord.y));
                     paramValue   = GetSFXTypeFromColorSamples(sample, out index);
+
+                    Vector3 sample2 = new Vector3(sample.r * 255f, sample.g * 255f, sample.b * 255f);
+                    UnityEngine.Debug.Log($"밟은 땅 (Name: {ret.collider.name})/ (index: {index})/ (Color: {sample2})");
                 }
 
 
@@ -521,14 +525,11 @@ namespace IPariUtility
             /***************************************************
              *   레이어의 이름에 따른 적절한 SFX Type을 채워넣는다...
              * ******/
-            UnityEngine.Debug.LogWarning("터레인 레이어 테이블 갱신-----------------------------------------------");
             for(int i=0; i<layerCount; i++){
 
                 string str;
                 _layerSFXTypes[i] = GetSFXTypeFromTerrainLayer(layers[i], out str);
-                UnityEngine.Debug.LogWarning($"({i}): {str}");
             }
-            UnityEngine.Debug.LogWarning("---------------------------------------------------------------------");
 
             #endregion
         }

@@ -25,7 +25,15 @@ public sealed class BossCrabHitState : AIHitState
     public BossCrabHitState(AIStateMachine stateMachine, BossCrab bossCrab)
     : base(stateMachine)
     {
+        #region Omit
         _bossCrab = bossCrab;
+
+        /**BossCrab의 Rednerer로부터 필요한 머터리얼을 가져온다...*/
+        Renderer renderer = AISM.Transform.Find("Boss_Crab_Mesh").GetComponent<Renderer>();
+        _dissolveMats = renderer.sharedMaterials;
+        _dissolveMats[0].SetFloat("_Dissolve", 0f);
+        _dissolveMats[1].SetFloat("_Dissolve", 0f);
+        #endregion
     }
 
     public override void Enter()
@@ -33,21 +41,17 @@ public sealed class BossCrabHitState : AIHitState
         #region Omit
         base.Enter();
 
-        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
-        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Hit, _bossCrab.transform.position, 3f);
-        IpariUtility.PlayGamePadVibration(1f, 1f, .08f);
-
-        _bossCrab.StateTrigger = false;
-        _bossCrab.ClearStateTriggerDelay();
-        _bossCrab.PopHPUIStack();
-
         AISM.Animator.speed = 1f;
+        _bossCrab.CurrentSuperArmorCount = _bossCrab.GetSuperArmorGainCount;
 
         /************************************
          *   보스가 죽을 경우....
          * ****/
-        if((AISM.character.HP-=10)<=0f)
+        if(AISM.character.HP<=0f)
         {
+            _dissolveMats[0].SetFloat("_Dissolve", 0f);
+            _dissolveMats[1].SetFloat("_Dissolve", 0f);
+
             _progress = 1;
             AISM.Animator.speed = 0f;
             AISM.Animator.Play(BossCrabAnimation.Die, 0, .32f);
@@ -63,7 +67,7 @@ public sealed class BossCrabHitState : AIHitState
         AISM.Animator.CrossFade(BossCrabAnimation.Hit, .1f, 0, 0f);
         _progress = 0;
         _bossCrab.SetStateTrigger(.3f);
-        CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, .6f, .022f);
+        CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, .6f, .027f);
         #endregion
     }
 
@@ -79,7 +83,7 @@ public sealed class BossCrabHitState : AIHitState
         /************************************************
          *   디졸브 효과를 적용한다....
          * *****/
-        if (_progress >= 4 && _dissolveMats != null){
+        if (_progress > 4 && _dissolveMats != null){
 
             float progressRatio = Mathf.Clamp((curTimer += Time.deltaTime) * _dissolveDurationDiv, 0f, 1.02f);
             _dissolveMats[0].SetFloat("_Dissolve", progressRatio);
@@ -148,10 +152,6 @@ public sealed class BossCrabHitState : AIHitState
                 /**쓰러진 후 디졸브 효과를 적용한다.*/
                 case (4):
                 {
-                    /**BossCrab의 Rednerer로부터 필요한 머터리얼을 가져온다...*/
-                    Renderer renderer = AISM.Transform.Find("Boss_Crab_Mesh").GetComponent<Renderer>();
-                    _dissolveMats     = renderer.materials;
-
                     curTimer = 0f;
                     _bossCrab.SetStateTrigger(_dissolveDuration);
                     break;
