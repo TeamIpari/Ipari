@@ -8,9 +8,16 @@ public class VineHit : MonoBehaviour
 
     private void Start()
     {
-        targetBoss = GameObject.Find("NewBoss").GetComponent<BossNepenthes>();
-        if (targetBoss == null)
+        try
+        {
+            targetBoss = GameObject.Find("NewBoss").GetComponent<BossNepenthes>();
+            if (targetBoss == null)
+                Debug.LogWarning("Boss Nepenthes가 탐색되지 않았습니다.");
+        }
+        catch
+        {
             Debug.LogWarning("Boss Nepenthes가 탐색되지 않았습니다.");
+        }
     }
 
     private void OnTriggerEnter(Collider other)
