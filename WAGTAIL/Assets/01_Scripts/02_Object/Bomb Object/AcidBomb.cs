@@ -9,6 +9,7 @@ public class AcidBomb : Bullet
     [SerializeField] private LayerMask passedMask;
 
     #region DrawGizmos
+    /*
     private void OnDrawGizmos()
     {
         Gizmos.color = new Color32(255, 255, 255, 150);
@@ -16,7 +17,7 @@ public class AcidBomb : Bullet
         Gizmos.color = new Color(0, 0, 0);
         Gizmos.DrawWireSphere(bombMarker.transform.position, transform.GetChild(0).localScale.x * .3f);
     }
-
+    */
     #endregion
     //======================================
     /////          magic Methods        ////
