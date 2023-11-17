@@ -73,6 +73,10 @@ MonoBehaviour:
     normalAlignmentSetting:
       alignmentMode: 0
       adjustmentTransform: {fileID: 0}
+    cullingSettings:
+      cameraCullingMode: 30
+      cameraCullingMethod: 0
+      cameraCullingRenderers: []
     normalAxis: 1
     gravity: 2
     gravityDirection:
@@ -136,19 +140,28 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
     inertiaConstraint:
-      movementInertia: 1
-      rotationInertia: 1
-      depthInertia: 1
-      centrifualAcceleration: 0
+      worldInertia: 1
       movementSpeedLimit:
         value: 5
         use: 1
       rotationSpeedLimit:
         value: 720
         use: 1
+      localInertia: 1
+      localMovementSpeedLimit:
+        value: 5
+        use: 0
+      localRotationSpeedLimit:
+        value: 720
+        use: 0
+      depthInertia: 1
+      centrifualAcceleration: 0
       particleSpeedLimit:
         value: 4
         use: 1
+      teleportMode: 0
+      teleportDistance: 0.5
+      teleportRotation: 90
     tetherConstraint:
       distanceCompression: 0.4
     distanceConstraint:
@@ -305,6 +318,34 @@ MonoBehaviour:
       mode: 1
       friction: 0.05
       colliderList: []
+      collisionBones: []
+      limitDistance:
+        value: 0.05
+        useCurve: 0
+        curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
     selfCollisionConstraint:
       selfMode: 0
       surfaceThickness:
@@ -345,87 +386,93 @@ MonoBehaviour:
       synchronization: 0.7
       depthWeight: 0
       movingWind: 0
+    springConstraint:
+      useSpring: 1
+      springPower: 0.04
+      limitDistance: 0.1
+      normalLimitRatio: 1
+      springNoise: 0
   serializeData2:
     selectionData:
       positions:
       - x: -0.03265381
         y: 1.1591988
-        z: -0.33744812
+        z: -0.33745766
       - x: -0.020080566
         y: 1.1060333
-        z: -0.39007568
+        z: -0.39007187
       - x: -0.2710266
-        y: 1.2375126
-        z: -0.05357361
+        y: 1.2375145
+        z: -0.053577423
       - x: -0.33065796
         y: 1.0997772
-        z: -0.07929993
-      - x: 0.27105713
-        y: 1.2375126
-        z: -0.05357361
+        z: -0.079301834
+      - x: 0.27104187
+        y: 1.2375145
+        z: -0.053577423
       - x: 0.33068848
         y: 1.0998001
-        z: -0.07929993
+        z: -0.079307556
       - x: -0.25906372
         y: 1.197752
-        z: 0.032073975
-      - x: -0.2600708
-        y: 1.1284046
-        z: 0.032073975
+        z: 0.032072067
+      - x: -0.26005554
+        y: 1.1284065
+        z: 0.032072067
       - x: -0.26113892
-        y: 1.0517044
-        z: 0.032089233
+        y: 1.0517063
+        z: 0.03207779
       - x: -0.26229858
         y: 0.97055435
-        z: 0.032089233
+        z: 0.032087326
       - x: 0.25906372
         y: 1.1977539
-        z: 0.032073975
-      - x: 0.2600708
-        y: 1.1284046
-        z: 0.032073975
+        z: 0.032072067
+      - x: 0.26005554
+        y: 1.1284065
+        z: 0.032072067
       - x: 0.2611084
-        y: 1.0517044
-        z: 0.032073975
+        y: 1.0517063
+        z: 0.032072067
       - x: 0.26226807
         y: 0.97055435
-        z: 0.032073975
+        z: 0.032072067
       - x: -0.00039672852
         y: 1.5536652
-        z: -0.33351135
+        z: -0.3335247
       - x: 0.11605835
-        y: 1.4949989
-        z: -0.4002533
-      - x: 0.15661621
+        y: 1.4950008
+        z: -0.4002571
+      - x: 0.15660095
         y: 1.4583492
-        z: -0.4058075
+        z: -0.4058113
       - x: -0.00039672852
         y: 1.5536671
-        z: -0.33351135
+        z: -0.3335247
       - x: -0.11663818
-        y: 1.5136337
+        y: 1.5136356
         z: -0.41316223
-      - x: -0.16503906
+      - x: -0.16505432
         y: 1.5025806
-        z: -0.43667603
+        z: -0.43667984
       - x: -0.00079345703
         y: 1.5538063
         z: -0.33242798
       - x: 0.14178467
         y: 1.6017647
-        z: -0.24052429
+        z: -0.2405281
       - x: 0.19714355
         y: 1.643055
-        z: -0.21702576
+        z: -0.21702957
       - x: -0.00079345703
         y: 1.5538063
         z: -0.33242798
-      - x: -0.14346313
+      - x: -0.14344788
         y: 1.6113186
-        z: -0.24629211
-      - x: -0.19778442
-        y: 1.6557102
-        z: -0.22639465
+        z: -0.24630165
+      - x: -0.19776917
+        y: 1.6557121
+        z: -0.22638893
       attributes:
       - Value: 1
       - Value: 2
@@ -453,7 +500,7 @@ MonoBehaviour:
       - Value: 1
       - Value: 2
       - Value: 2
-      maxConnectionDistance: 0.17629999
+      maxConnectionDistance: 0.17628299
       userEdit: 0
   gizmoSerializeData:
     always: 0
@@ -469,6 +516,7 @@ MonoBehaviour:
       animatedPosition: 0
       animatedAxis: 0
       animatedShape: 0
+      inertiaCenter: 1
 --- !u!1 &391198652
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,6 +565,7 @@ MonoBehaviour:
   size: {x: 0.098, y: 0.001, z: 0.36}
   direction: 0
   radiusSeparation: 0
+  alignedOnCenter: 1
 --- !u!1 &1151473986
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,6 +633,10 @@ MonoBehaviour:
     normalAlignmentSetting:
       alignmentMode: 0
       adjustmentTransform: {fileID: 0}
+    cullingSettings:
+      cameraCullingMode: 30
+      cameraCullingMethod: 0
+      cameraCullingRenderers: []
     normalAxis: 1
     gravity: 7
     gravityDirection:
@@ -647,19 +700,28 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
     inertiaConstraint:
-      movementInertia: 1
-      rotationInertia: 1
-      depthInertia: 0.7
-      centrifualAcceleration: 0
+      worldInertia: 1
       movementSpeedLimit:
         value: 5
         use: 1
       rotationSpeedLimit:
         value: 720
         use: 1
+      localInertia: 1
+      localMovementSpeedLimit:
+        value: 5
+        use: 0
+      localRotationSpeedLimit:
+        value: 720
+        use: 0
+      depthInertia: 0.7
+      centrifualAcceleration: 0
       particleSpeedLimit:
         value: 4
         use: 1
+      teleportMode: 0
+      teleportDistance: 0.5
+      teleportRotation: 90
     tetherConstraint:
       distanceCompression: 0.5
     distanceConstraint:
@@ -818,6 +880,34 @@ MonoBehaviour:
       colliderList:
       - {fileID: 1304690469}
       - {fileID: 391198654}
+      collisionBones: []
+      limitDistance:
+        value: 0.05
+        useCurve: 0
+        curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
     selfCollisionConstraint:
       selfMode: 0
       surfaceThickness:
@@ -858,30 +948,36 @@ MonoBehaviour:
       synchronization: 0.7
       depthWeight: 0
       movingWind: 0
+    springConstraint:
+      useSpring: 1
+      springPower: 0.04
+      limitDistance: 0.1
+      normalLimitRatio: 1
+      springNoise: 0
   serializeData2:
     selectionData:
       positions:
       - x: 0
-        y: 0.7357693
-        z: 0.1181488
+        y: 0.65550613
+        z: 0.12872696
       - x: 0
-        y: 0.6555042
-        z: 0.12872314
+        y: 0.6078205
+        z: 0.12993622
       - x: 0
-        y: 0.6078186
-        z: 0.12994385
+        y: 0.5458069
+        z: 0.13023949
       - x: 0
         y: 0.545805
-        z: 0.13024902
+        z: 0.13024521
       - x: 0
         y: 0.47428894
-        z: 0.13024902
+        z: 0.13023949
       - x: 0
         y: 0.4336815
-        z: 0.13024902
+        z: 0.12994194
       - x: 0
         y: 0.3767681
-        z: 0.12994385
+        z: 0.1181469
       attributes:
       - Value: 1
       - Value: 2
@@ -890,7 +986,7 @@ MonoBehaviour:
       - Value: 2
       - Value: 2
       - Value: 2
-      maxConnectionDistance: 0.0809586
+      maxConnectionDistance: 0.08095745
       userEdit: 0
   gizmoSerializeData:
     always: 0
@@ -906,6 +1002,7 @@ MonoBehaviour:
       animatedPosition: 0
       animatedAxis: 0
       animatedShape: 0
+      inertiaCenter: 1
 --- !u!1 &1304690467
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,6 +1051,7 @@ MonoBehaviour:
   size: {x: 0.098, y: 0.001, z: 0.36}
   direction: 0
   radiusSeparation: 0
+  alignedOnCenter: 1
 --- !u!1 &1929207110120388781
 GameObject:
   m_ObjectHideFlags: 0
@@ -5839,6 +5937,8 @@ GameObject:
   - component: {fileID: 3721331665275117614}
   - component: {fileID: 3721331665275117613}
   - component: {fileID: 3721331665275117615}
+  - component: {fileID: 847198917}
+  - component: {fileID: 847198918}
   m_Layer: 7
   m_Name: NewPlayer
   m_TagString: Player
@@ -5855,7 +5955,7 @@ Transform:
   m_GameObject: {fileID: 3721331665275117607}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6132359365043461152}
@@ -5927,14 +6027,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSpeed: 10
-  jumpHeight: 1.2
-  gravityMultiplier: 3
+  jumpHeight: 1.37
+  gravityMultiplier: 3.5
   rotationSpeed: 5
   climbingSpeed: 3.2
   pullingSpeed: 3.5
   slopeSpeed: 0
   respawnTime: 1.2
   isSwimming: 0
+  invincibleTime: 0
+  invincibleDurTime: 0
   rotateAngle: 0
   m_viewRotateZ: 0
   holdTargetMask:
@@ -5960,7 +6062,6 @@ MonoBehaviour:
   isCarry: 0
   isThrow: 0
   isFlight: 0
-  isDead: 0
   isPull: 0
   gravityValue: -9.81
   normalColliderHeight: 0
@@ -5976,6 +6077,31 @@ MonoBehaviour:
   UIManager: {fileID: 0}
   GameManager: {fileID: 0}
   CameraManager: {fileID: 0}
+--- !u!114 &847198917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3721331665275117607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
+--- !u!114 &847198918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3721331665275117607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b26dbd039fabae469f33a9b5562c366, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3721331665509980940
 GameObject:
   m_ObjectHideFlags: 0
@@ -11147,6 +11273,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8032893415622124067}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3130174603954183459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7186614508565438322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b26dbd039fabae469f33a9b5562c366, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7023678598651895111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11168,18 +11306,6 @@ MonoBehaviour:
   onEnd:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3130174603954183459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7186614508565438322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b26dbd039fabae469f33a9b5562c366, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &7561591590796805576 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2c859fe54df13bd41b62f47a58b1a39b,
