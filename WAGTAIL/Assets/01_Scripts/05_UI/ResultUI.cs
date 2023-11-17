@@ -34,7 +34,11 @@ public class ResultUI : MonoBehaviour
     private void Update()
     {
         if (check.activeSelf && Input.GetKeyDown(KeyCode.F))
+        {
             SceneLoader.GetInstance().LoadScene(ChapterType.Title.ToString());
+            check.SetActive(false);
+        }
+           
     }
 
     public void SetResult()

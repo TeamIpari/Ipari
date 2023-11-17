@@ -3,19 +3,12 @@ using FMODUnity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using System.IO;
 using System.Text;
-using UnityEngine.UIElements;
 using System;
-using FMOD;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
-using UnityEngine.Rendering;
 using UnityEngine.Events;
 using System.Xml;
-using static UnityEngine.InputSystem.Layouts.InputControlLayout;
-using UnityEditor.Animations.Rigging;
 
 #if UNITY_EDITOR
 using UnityEditor;
