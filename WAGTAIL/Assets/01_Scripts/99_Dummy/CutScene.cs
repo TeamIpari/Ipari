@@ -13,18 +13,21 @@ public class CutScene : MonoBehaviour
 
     public bool IsIntro;
     public int SayType;
-    public bool ISText;
+    public bool isText;
     public bool isSpeedUp = false;
+    public bool isSkip;
 
     [Header("Timer")]
     public float LastTimeLineTime = 5f;
     public float WaitTime = 0;
-
+    public float FKeyWaitTime = 0;
     private float colorValue = 255;
 
     private bool isCutScene;
     public bool GetisCutScene { get { return isCutScene; } }
     private int sceneCount;
+    private float FKeyWaitTimer = 0;
+   
     [SerializeField] private Dialogue dialogue = new Dialogue();
 
     public GameObject ChapterCanvas;
@@ -37,6 +40,7 @@ public class CutScene : MonoBehaviour
         sceneCount = 0;
         colorValue = 255;
         colorCurve = -51f;
+        FKeyWaitTimer = 0;
     }
 
     // Start is called before the first frame update
@@ -64,12 +68,21 @@ public class CutScene : MonoBehaviour
     private float colorCurve = -51f;
     private float WaitTimer = 0;
 
+    private bool FKeyCooldown()
+    {
+        if (FKeyWaitTime < FKeyWaitTimer)
+            return false;
+        else
+            return true;
+    }
+
     private void SceneChange()
     {
-        bool bInputNextKey = Input.GetKeyDown(KeyCode.F);
+        bool bInputNextKey = Input.GetKeyDown(KeyCode.F) && isSkip && FKeyCooldown();
         bool bSceneState = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
         if(bInputNextKey || bSceneState)
         {
+            FKeyWaitTimer = 0;
             if (sceneCount >= CutScenes.Length && CutScenes[sceneCount - 1].state == PlayState.Paused)
             {
                 Player.Instance.playerInput.enabled = true;
@@ -119,6 +132,7 @@ public class CutScene : MonoBehaviour
     {
         if(isCutScene)
         {
+            FKeyWaitTimer += Time.deltaTime;
             DoubleSpeed();
             SceneChange();
         }
