@@ -21,11 +21,12 @@ public class BombObject : MonoBehaviour
     private Vector3 _vDir;
     
     // Test property // 
+    private bool _isHit = false;
     private float force = 13f;
     [SerializeField] private bool _isStart;
     private bool _isExplosionVFXNotNull;
     private const float PushTime = 0.075f;
-
+    
     // Start is called before the first frame update
     private void Start()
     {
@@ -116,9 +117,9 @@ public class BombObject : MonoBehaviour
     {
         if (enabled == false) return;
 
-        if (other.gameObject.CompareTag("Platform"))
+        if (other.gameObject.CompareTag("Platform") && !_isHit)
         {
-            Debug.Log($"{explosionTime}");
+            _isHit = true;
             StartCoroutine(StartTimeBomb(explosionTime));
         }
 

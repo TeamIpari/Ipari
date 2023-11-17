@@ -30,6 +30,11 @@ public class CarryState : State
         if (jumpAction.triggered) player.isJump = true;
         if (interactAction.triggered && player.currentInteractable != null)
         {
+            var bomb = player.currentInteractable.GetComponent<BombObject>();
+            if (bomb != null)
+            {
+                bomb.StopAllCoroutines();
+            }
             player.Interaction();
             
             player.animator.SetLayerWeight(1, 1);
