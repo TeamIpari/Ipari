@@ -47,5 +47,12 @@ public sealed class PlayerAnimationHelper : MonoBehaviour
         #endregion
     }
 
+    public void PlayerLanding()
+    {
+        var player = Player.Instance;
+        if (player.isCarry) player.movementSM.ChangeState(player.carry);
+        else if (player.isIdle) player.movementSM.ChangeState(player.idle);
+    }
+
 
 }

@@ -52,12 +52,12 @@ public class LandingState : State
             stateMachine.ChangeState(player.death);
             return;
         }
-        
+        /*
         if (_timePassed > _landingTime)
         {
             if (player.isCarry) stateMachine.ChangeState(player.carry);
             else if (player.isIdle) stateMachine.ChangeState(player.idle);
-        }
+        }*/
         _timePassed += Time.deltaTime;
     }
 }
