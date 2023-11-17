@@ -122,6 +122,7 @@ public sealed class WhaleHorn : MonoBehaviour
                         _ShineSFXIns.position += (Vector3.right*99999999f);
 
                     GameObject.Find("---Camera").transform.Find("BossRoomCM").gameObject.SetActive(false);
+                    GameObject.Find("---Camera").transform.Find("CM vcam1").gameObject.SetActive(true);
 
                     TalkableWhale.gameObject.SetActive(true);
                     _state = HornState.Enter_CutScene;
@@ -321,7 +322,7 @@ public sealed class WhaleHorn : MonoBehaviour
             playerAnim.SetFloat("speed", Vector3.Distance(ArrivalPoint, playerTr.position) - 0.2f, playerDmp, Time.deltaTime);
 
             /**적절한 위치에 진입하면 이동을 마무리짓는다...*/
-            if (floatdst < 1.4f){
+            if (floatdst < 13.5f){
 
                 playerAnim.SetFloat("speed", 0f, playerDmp, Time.deltaTime);
                 break;
@@ -331,6 +332,8 @@ public sealed class WhaleHorn : MonoBehaviour
             #endregion
         }
         while (true);
+
+        GameObject.Find("---Camera").transform.Find("CM vcam1").gameObject.SetActive(false);
         #endregion
 
 

@@ -6279,7 +6279,6 @@ MonoBehaviour:
       m_Calls: []
   GizmosColor: {r: 1, g: 0, b: 0, a: 1}
   _InspectorAddTags:
-  - interactable
   - Player
 --- !u!65 &427942934
 BoxCollider:
@@ -8710,7 +8709,9 @@ MonoBehaviour:
   FlyRotation: {x: 0, y: 0, z: 0}
   _DurationUntilFlight: 0.17
   _FlightDuration: 5
-  DestroyAtArrived: 1
+  DestroyAtArrived: 0
+  UseFlyLoop: 0
+  FlyOnStart: 0
   IdleAnimState: 
   ReadyAnimState: 
   FlyAnimState: 
