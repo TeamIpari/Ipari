@@ -80,7 +80,6 @@ public class CutScene : MonoBehaviour
     {
         bool bInputNextKey = Input.GetKeyDown(KeyCode.F) && isSkip && FKeyCooldown();
         bool bSceneState = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
-        Debug.Log($"AA{bInputNextKey}");
         if(bInputNextKey || bSceneState)
         {
             FKeyWaitTimer = 0;
@@ -116,16 +115,16 @@ public class CutScene : MonoBehaviour
 
         }
 
-        if (sceneCount >= CutScenes.Length && TextViewer != null)
-        {
-            if (WaitTime > WaitTimer)
-                WaitTimer  += Time.deltaTime;
-            else
-            {
-                colorValue -= Time.deltaTime * (255f / LastTimeLineTime);
-                TextViewer.color = new Color32((byte)(colorValue), (byte)(colorValue), (byte)(colorValue), (byte)colorValue);
-            }
-        }
+        //if (sceneCount >= CutScenes.Length && TextViewer != null)
+        //{
+        //    if (WaitTime > WaitTimer)
+        //        WaitTimer  += Time.deltaTime;
+        //    else
+        //    {
+        //        colorValue -= Time.deltaTime * (255f / LastTimeLineTime);
+        //        TextViewer.color = new Color32((byte)(colorValue), (byte)(colorValue), (byte)(colorValue), (byte)colorValue);
+        //    }
+        //}
     }
 
     // Update is called once per frame

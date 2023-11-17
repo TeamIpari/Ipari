@@ -397,17 +397,24 @@ public class ThrowObject : MonoBehaviour, IInteractable
 
     private void FlightRotate()
     {
-        if (flight && _animator == null)
+        try
         {
-            transform.RotateAround(_center.transform.position, Forward, (Rot / flightTime));
+            if (flight && _animator == null)
+            {
+                transform.RotateAround(_center.transform.position, Forward, (Rot / flightTime));
+            }
+            else if (!flight && _animator != null)
+            {
+                ;
+            }
+            else
+            {
+                _rigidbody.velocity += -Vector3.up * (correctionGravity * 1.4f);
+            }
         }
-        else if (!flight && _animator != null)
+        catch
         {
-            ;
-        }
-        else
-        {
-            _rigidbody.velocity += -Vector3.up * (correctionGravity * 1.4f);
+            Debug.Log("Rotate Bug");
         }
     }
 }
