@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public sealed class MagicLeaf : MonoBehaviour, IInteractable
 {
@@ -17,7 +18,7 @@ public sealed class MagicLeaf : MonoBehaviour, IInteractable
     //===============================================
     public string  InteractionPrompt   { get; set; } = "¾É±â";
     public Vector3 InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
-
+    public TimelineController timelineController;
 
 
     //=================================================
@@ -38,7 +39,7 @@ public sealed class MagicLeaf : MonoBehaviour, IInteractable
         InteractPopupOffset = (Vector3.up*999999f);
         Player.Instance.stiffen.StiffenTime = -1f;
         Player.Instance.movementSM.ChangeState(Player.Instance.stiffen);
-        SceneLoader.GetInstance().LoadScene("Boss_Crap_FINAL_Front");
+        timelineController.StartTimeline();
         return true;
         #endregion
     }
