@@ -26,6 +26,7 @@ public class DeathState : State
             player.currentInteractable.GetComponent<ThrowObject>().ResetPoint();
         }
         player.isDead = false;
+        GameManager.GetInstance().deathCount++;
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.GameOver);
         _isAlive = false;
         _gravityValue = player.gravityValue;

@@ -15889,6 +15889,7 @@ GameObject:
   - component: {fileID: 1671430576}
   - component: {fileID: 1671430575}
   - component: {fileID: 1671430579}
+  - component: {fileID: 1671430580}
   m_Layer: 5
   m_Name: Result_Canvas
   m_TagString: Untagged
@@ -15999,6 +16000,36 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1671430580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671430574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91584e522de9eee4c9ad8e2084cfee53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberSprite:
+  - {fileID: 828275970, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: -643554026, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: 1057560328, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: -1214581545, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: 438514, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: 1563285795, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: -651437957, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: 1670537786, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: -888721294, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  - {fileID: -1569003523, guid: 660fa6b33f2a2fb4894a5ad735b21d60, type: 3}
+  coinTens: {fileID: 1656886770}
+  coinUnits: {fileID: 1109439001}
+  cocosiTens: {fileID: 658804218}
+  cocosiUnits: {fileID: 549385667}
+  deathTens: {fileID: 572882344}
+  deathUnits: {fileID: 1288353045}
+  check: {fileID: 312268710}
 --- !u!4 &1673439655 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2460368906613520370, guid: def13c7425045114f86bfa5e1a410bc0,
@@ -17620,74 +17651,6 @@ Transform:
   m_Father: {fileID: 1507193885}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1902272998
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1902273001}
-  - component: {fileID: 1902273000}
-  - component: {fileID: 1902272999}
-  m_Layer: 0
-  m_Name: EventSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1902272999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902272998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
---- !u!114 &1902273000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902272998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
---- !u!4 &1902273001
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902272998}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1910786525 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4622082765535121764, guid: cbb78aa21a7e9224e853beba2a248794,
@@ -18832,7 +18795,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2116498443
 GameObject:
