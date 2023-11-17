@@ -42,7 +42,7 @@ public class GameManager : Singleton<GameManager>
     // Score
     private int _coin = 0;
     public bool[] cocosi = new bool[11];
-    
+    public int deathCount = 0;
     //================================================
     // Chapter
     private List<Chapter> _chapterList;
