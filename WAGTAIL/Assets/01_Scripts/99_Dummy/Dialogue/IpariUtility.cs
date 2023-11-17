@@ -52,19 +52,27 @@ namespace IPariUtility
         private static float[]            _layerSFXTypes = new float[10];
         private static SFXColorSample[]   _texColors = new SFXColorSample[]
         {
-            new SFXColorSample{ Color=new Vector3(117f/255f, 106f/255f, 73f/255f), ParamValue=FModParamLabel.EnvironmentType.Ground}, //흙
+            new SFXColorSample{ Color=new Vector3(117f/255f, 106f/255f, 73f/255f), ParamValue=FModParamLabel.EnvironmentType.Ground}, //흙(1)
+            new SFXColorSample{ Color=new Vector3(194f/255f, 143f/255f, 93f/255f), ParamValue=FModParamLabel.EnvironmentType.Ground}, //흙(2)
+            new SFXColorSample{ Color=new Vector3(123f/255f, 95/255f, 62/255f), ParamValue=FModParamLabel.EnvironmentType.Ground}, //흙(3)
 
-            new SFXColorSample{ Color=new Vector3(58f/255f, 95f/255f, 40f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲
-            new SFXColorSample{ Color=new Vector3(97f/255f, 126f/255f, 67f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲
-            new SFXColorSample{ Color=new Vector3(63f/255f, 98f/255f, 29f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲
+            new SFXColorSample{ Color=new Vector3(58f/255f, 95f/255f, 40f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲(1)
+            new SFXColorSample{ Color=new Vector3(97f/255f, 126f/255f, 67f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲(2)
+            new SFXColorSample{ Color=new Vector3(63f/255f, 98f/255f, 29f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲(3)
+            new SFXColorSample{ Color=new Vector3(56f/255f, 94f/255f, 38f/255f),   ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲(4)
+            new SFXColorSample{ Color=new Vector3(225f/255f, 171f/255f, 110f/255f), ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲(5)
+            new SFXColorSample{ Color=new Vector3(231f/255f, 184/255f, 120/255f), ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲(5)
+            new SFXColorSample{ Color=new Vector3(142/255f, 171/255f, 66f/255f), ParamValue=FModParamLabel.EnvironmentType.Grass}, //풀숲(6)
 
-            new SFXColorSample{ Color=new Vector3(208f/255f, 168f/255f, 101f/255f), ParamValue=FModParamLabel.EnvironmentType.Sand }, //모래
+            new SFXColorSample{ Color=new Vector3(208f/255f, 168f/255f, 101f/255f), ParamValue=FModParamLabel.EnvironmentType.Sand }, //모래(1)
 
-            new SFXColorSample{ Color=new Vector3(121f/255f, 118f/255f, 104f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone}, //돌
-            new SFXColorSample{ Color=new Vector3(140f/255f, 129f/255f, 111f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone}, //돌
+            new SFXColorSample{ Color=new Vector3(121f/255f, 118f/255f, 104f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone}, //돌(1)
+            new SFXColorSample{ Color=new Vector3(140f/255f, 129f/255f, 111f/255f), ParamValue=FModParamLabel.EnvironmentType.Stone}, //돌(2)
+            new SFXColorSample{ Color=new Vector3(230f/255f, 223/255f, 206/255f), ParamValue=FModParamLabel.EnvironmentType.Stone}, //돌(3)
 
-            new SFXColorSample{ Color=new Vector3(213f/255f, 173f/255f, 110f/255f), ParamValue=FModParamLabel.EnvironmentType.Wood }, //나무
-            new SFXColorSample{ Color=new Vector3(205f/255f, 156f/255f, 93f/255f), ParamValue=FModParamLabel.EnvironmentType.Wood }, //나무
+            new SFXColorSample{ Color=new Vector3(213f/255f, 173f/255f, 110f/255f), ParamValue=FModParamLabel.EnvironmentType.Wood }, //나무(1)
+            new SFXColorSample{ Color=new Vector3(205f/255f, 156f/255f, 93f/255f), ParamValue=FModParamLabel.EnvironmentType.Wood }, //나무(2)
+            new SFXColorSample{ Color=new Vector3(123f/255f, 81/255f, 57/255f), ParamValue=FModParamLabel.EnvironmentType.Wood }, //나무(3)
         };
 
 
@@ -316,8 +324,10 @@ namespace IPariUtility
                                    QueryTriggerInteraction.Ignore ))
             {
                 /**터레인인지 확인한다....*/
-                bool isTerrain = (_lastTerrain != null && _lastTerrain.gameObject.Equals(ret.collider.gameObject))
-                                 || ((_lastTerrain=ret.collider.GetComponent<Terrain>())!=null);
+                bool TerrainIsChanged = (_lastTerrain != null && !_lastTerrain.gameObject.Equals(ret.collider.gameObject) && (_lastTerrain = ret.collider.GetComponent<Terrain>()) != null)
+                                        || (_lastTerrain == null && (_lastTerrain = ret.collider.GetComponent<Terrain>()) != null);
+
+                bool isTerrain = (_lastTerrain!=null);
 
 
                 /*********************************************
@@ -327,10 +337,15 @@ namespace IPariUtility
                 Renderer renderer = null;
                 if (isTerrain){
 
-                    TerrainLayer[] layers = _lastTerrain.terrainData.terrainLayers;
-                    UpdateTerrainLayerSFXLists(layers);
+                    /**터레인이 변경되었을 경우, 터레인 레이어 룩업테이블을 갱신한다.....*/
+                    if(TerrainIsChanged)
+                    {
+                        TerrainLayer[] layers = _lastTerrain.terrainData.terrainLayers;
+                        UpdateTerrainLayerSFXLists(layers);
+                    }
 
-                    paramValue = _layerSFXTypes[GetTerrainLayer(ConvertTerrainPosition(worldPosition, _lastTerrain), _lastTerrain)];
+                    int index = GetTerrainLayer(ConvertTerrainPosition(worldPosition, _lastTerrain), _lastTerrain);
+                    paramValue = _layerSFXTypes[index];
                 }
 
                 /**********************************************
@@ -338,18 +353,21 @@ namespace IPariUtility
                  * *******/
                 else if((renderer=ret.collider.GetComponent<Renderer>()))
                 {
-                    Vector2    hitCoord = ret.textureCoord;
+                    Vector2    hitCoord = ret.textureCoord2;
                     Texture2D  tex      = renderer.sharedMaterial.mainTexture as Texture2D;
 
                     if(tex==null)
                     {
                         FModParameterReference paramRefFail = new FModParameterReference();
+                        paramRefFail.SetParameter(FModLocalParamType.EnvironmentType, FModParamLabel.EnvironmentType.Wood);
                         return paramRefFail;
                     }
                     hitCoord.x *= tex.width;
                     hitCoord.y *= tex.height;
 
-                    paramValue = GetSFXTypeFromColorSamples(tex.GetPixel(Mathf.FloorToInt(hitCoord.x), Mathf.FloorToInt(hitCoord.y)));
+                    int   index  = 0;
+                    Color sample = tex.GetPixel(Mathf.FloorToInt(hitCoord.x), Mathf.FloorToInt(hitCoord.y));
+                    paramValue   = GetSFXTypeFromColorSamples(sample, out index);
                 }
 
 
@@ -487,13 +505,14 @@ namespace IPariUtility
         private static void UpdateTerrainLayerSFXLists(TerrainLayer[] layers)
         {
             #region Omit
-            if (_layerSFXTypes == null || layers == null) return;
+            if (layers == null) return;
 
             /**************************************************
              *   터레인 레이어 수에 알맞게 SFXLists를 확장한다...
              * ***/
-            int layerCount = layers.Length;
-            if(_layerSFXTypes.Length<layerCount){
+            int tableLength = (_layerSFXTypes==null? 0:_layerSFXTypes.Length);
+            int layerCount  = layers.Length;
+            if(tableLength < layerCount){
 
                 _layerSFXTypes = new float[layerCount];
             }
@@ -502,36 +521,43 @@ namespace IPariUtility
             /***************************************************
              *   레이어의 이름에 따른 적절한 SFX Type을 채워넣는다...
              * ******/
+            UnityEngine.Debug.LogWarning("터레인 레이어 테이블 갱신-----------------------------------------------");
             for(int i=0; i<layerCount; i++){
 
-                _layerSFXTypes[i] = GetSFXTypeFromTerrainLayer(layers[i]);
+                string str;
+                _layerSFXTypes[i] = GetSFXTypeFromTerrainLayer(layers[i], out str);
+                UnityEngine.Debug.LogWarning($"({i}): {str}");
             }
-
+            UnityEngine.Debug.LogWarning("---------------------------------------------------------------------");
 
             #endregion
         }
 
-        private static float GetSFXTypeFromTerrainLayer(TerrainLayer layer)
+        private static float GetSFXTypeFromTerrainLayer(TerrainLayer layer, out string str)
         {
             #region Omit
+            str = "??";
             if (layer == null) return -1;
 
             string layerName = layer.name;
 
             /**퓰을 밟았을 경우...*/
-            if (layerName.Contains("Grass") || layerName.Contains("Moss")) {
+            if (layerName.Contains("Grass") || layerName.Contains("Moss") || layerName.Contains("cliff")) {
 
+                str = "Grass";
                 return FModParamLabel.EnvironmentType.Grass;
             }
 
             /**모래을 밟았을 경우...*/
             if (layerName.Contains("Sand") || layerName.Contains("New")){
 
+                str = "Sand";
                 return FModParamLabel.EnvironmentType.Sand;
             }
 
             if(layerName.Contains("Wood"))
             {
+                str = "Wood";
                 return FModParamLabel.EnvironmentType.Wood;
             }
 
@@ -539,7 +565,7 @@ namespace IPariUtility
             #endregion
         }
 
-        private static float GetSFXTypeFromColorSamples(Color inputColor)
+        private static float GetSFXTypeFromColorSamples(Color inputColor, out int index)
         {
             #region Omit
             Vector3 color = new Vector3(inputColor.r, inputColor.g, inputColor.b);
@@ -554,13 +580,21 @@ namespace IPariUtility
             for( int i=0; i<Count; i++ ){
 
                 float distance = (_texColors[i].Color - color).sqrMagnitude;
-                if (distance<minDst)
+
+                /**완전히 일치할 경우...*/
+                if(distance==0)
+                {
+                    index = i;
+                    return _texColors[i].ParamValue;
+                }
+                else if (distance<minDst)
                 {
                     minDst = distance;
                     minIdx = i;
                 }
             }
 
+            index = minIdx;
             return _texColors[minIdx].ParamValue;
             #endregion
         }
