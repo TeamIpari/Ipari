@@ -78,10 +78,6 @@ public sealed class WaterScript : MonoBehaviour
         {
             if(JumpPowRedution) Player.Instance.jumpHeight = 0.2f;
         }
-        else if (other.gameObject.CompareTag("Platform"))
-        {
-
-        }
         else if (LayerMask.NameToLayer("Interactable") == other.gameObject.layer)
         {
 

@@ -358,7 +358,9 @@ namespace IPariUtility
 
                     if(tex==null)
                     {
+#if UNITY_EDITOR
                         UnityEngine.Debug.Log($"¹âÀº ¶¥(Name: {ret.collider.name})/ (ÅØ½ºÃÄ¸¦ ÀÐ¾î¿Ã ¼ö ¾øÀ½!!)");
+#endif
                         FModParameterReference paramRefFail = new FModParameterReference();
                         paramRefFail.SetParameter(FModLocalParamType.EnvironmentType, FModParamLabel.EnvironmentType.Wood);
                         return paramRefFail;
@@ -370,8 +372,10 @@ namespace IPariUtility
                     Color sample = tex.GetPixel(Mathf.FloorToInt(hitCoord.x), Mathf.FloorToInt(hitCoord.y));
                     paramValue   = GetSFXTypeFromColorSamples(sample, out index);
 
+#if UNITY_EDITOR
                     Vector3 sample2 = new Vector3(sample.r * 255f, sample.g * 255f, sample.b * 255f);
                     UnityEngine.Debug.Log($"¹âÀº ¶¥ (Name: {ret.collider.name})/ (index: {index})/ (Color: {sample2})");
+#endif
                 }
 
 
