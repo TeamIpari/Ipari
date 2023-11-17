@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using FMODUnity;
 using static BossCrabSowingSeedsState;
+using IPariUtility;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -475,20 +476,28 @@ public sealed class BossCrab : Enemy
     //===========================================
     //////          Property                /////
     //===========================================
-    public float    SeedSpawnRange     { get { return _SeedSpawnRange; } set { _SeedSpawnRange = (value < 0f ? 0f : value); } }
-    public float    SeedExplodeTime    { get { return _SeedExplodeTime; } set { _SeedExplodeTime = (value < 0f ? 0f : value); } }
-    public float    SeedExplodeRange   { get { return _SeedExplodeTime; } set { _SeedExplodeTime = (value < 0f ? 0f : value); } }
-    public float    EgoAtkWaitTime     { get { return _EgoAtkWaitTime; } set { _EgoAtkWaitTime = (value < 0f ? 0f : value); } }
-    public float    EgoAtkCompleteRate { get { return _EgoAtkCompleteRate; } set { _EgoAtkCompleteRate = (value < 0f ? 0f : value); } }
-    public float    AntHellDuration    { get { return _AntHellDuration; } set { _AntHellDuration = (value < 0f ? 0f : value); } }
-    public float    EgoAtkRange        { get { return _EgoAtkRange; } set { _EgoAtkRange = (value < 0f ? 0f : value); } }
-    public int      SandWaveCount      { get { return _SandWaveCount; } set { _SandWaveCount = (value < 0 ? 0 : value); } }
-    public int      SeedCount          { get { return _SeedCount; } set { _SeedCount = (value < 0 ? 0 : value); } }
-    public Collider Collider           { get { return _collider; } }
+    public float    SeedSpawnRange              { get { return _SeedSpawnRange; } set { _SeedSpawnRange = (value < 0f ? 0f : value); } }
+    public float    SeedExplodeTime             { get { return _SeedExplodeTime; } set { _SeedExplodeTime = (value < 0f ? 0f : value); } }
+    public float    SeedExplodeRange            { get { return _SeedExplodeTime; } set { _SeedExplodeTime = (value < 0f ? 0f : value); } }
+    public float    EgoAtkWaitTime              { get { return _EgoAtkWaitTime; } set { _EgoAtkWaitTime = (value < 0f ? 0f : value); } }
+    public float    EgoAtkCompleteRate          { get { return _EgoAtkCompleteRate; } set { _EgoAtkCompleteRate = (value < 0f ? 0f : value); } }
+    public float    AntHellDuration             { get { return _AntHellDuration; } set { _AntHellDuration = (value < 0f ? 0f : value); } }
+    public float    EgoAtkRange                 { get { return _EgoAtkRange; } set { _EgoAtkRange = (value < 0f ? 0f : value); } }
+    public int      SandWaveCount               { get { return _SandWaveCount; } set { _SandWaveCount = (value < 0 ? 0 : value); } }
+    public int      SeedCount                   { get { return _SeedCount; } set { _SeedCount = (value < 0 ? 0 : value); } }
+    public int      CurrentSuperArmorCount      { get { return _CurrentSuperArmorCount; } set { _CurrentSuperArmorCount = (value < 0 ? 0 : value); } }
+    public int      GetSuperArmorGainCount      { get { return _GetSuperArmorCountOnDamage; } set { _GetSuperArmorCountOnDamage = (value < 0 ? 0 : value); } }
+    public Collider Collider                    { get { return _collider; } }
 
     /************************************
      *   씨앗 뱉는 패턴 관련 프로퍼티...
      * ***/
+    [SerializeField, Min(0f)]
+    private int          _GetSuperArmorCountOnDamage = 3;
+
+    [SerializeField, Min(0f)]
+    private int          _CurrentSuperArmorCount = 0;
+
     [SerializeField,HideInInspector, Min(0f)]
     private float        _SeedSpawnRange    = 3f;
 
@@ -586,8 +595,12 @@ public sealed class BossCrab : Enemy
     private Animator         _HPAnim;
     private Stack<Transform> _HPstack;
 
+    /**상태 관련....*/
     private float _stateTriggerDelay = 0f;
 
+    /**히트스탑 관련....*/
+    private float _hitStopDuration   = 0f;
+    private float _lastAnimSpeed     = 0f;
 
 
     //===============================================
@@ -606,15 +619,39 @@ public sealed class BossCrab : Enemy
         #endregion
     }
 
+    private void Start()
+    {
+        FModAudioManager.PlayBGM(FModBGMEventType.Chapter4BGM);
+    }
+
     private void Update()
     {
         #region Omit
-        if (AiSM.CurrentState!=null){
+        float deltaTime = Time.deltaTime;
 
+        /****************************************
+         *    히트스탑을 처리한다....
+         * ******/
+        if(_hitStopDuration>0f){
+
+            /**히트스탑이 마무리되었을 경우....*/
+            if((_hitStopDuration -= deltaTime)<=0f)
+            {
+                AiSM.Animator.speed = _lastAnimSpeed;
+            }
+        }
+
+
+        /*******************************************
+         *   상태 트리거를 처리한다....
+         * *****/
+        else if (AiSM.CurrentState!=null){
+
+            AIState lastState = AiSM.CurrentState;
             if(_stateTriggerDelay>0f)
             {
                 /**딜레이가 끝나면 StateTrigger를 발생시킨다...*/
-                if((_stateTriggerDelay-=Time.deltaTime)<=0f){
+                if((_stateTriggerDelay-= deltaTime) <=0f){
 
                     StateTrigger = true;
                 }
@@ -622,8 +659,20 @@ public sealed class BossCrab : Enemy
             }
 
             AiSM?.CurrentState.Update();
+
+            /**패턴이 변화가 있을 경우, 슈퍼아머 카운트를 줄인다...*/
+            if(lastState!=AiSM.CurrentState)
+            {
+                CurrentSuperArmorCount--;
+            }
+
         }
         #endregion
+    }
+
+    private void OnDestroy()
+    {
+        FModAudioManager.StopBGM();
     }
 
 
@@ -703,7 +752,25 @@ public sealed class BossCrab : Enemy
 
     public override void Hit()
     {
-        AiSM.ChangeState(AiHit);
+        #region Omit
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_BoomBurst);
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Crab_Hit, transform.position, 3f);
+        IpariUtility.PlayGamePadVibration(1f, 1f, .08f);
+
+        PopHPUIStack();
+        HP -= 10;
+
+        /**보스가 죽거나, 슈퍼아머가 아닐 때만 경직을 먹는다...*/
+        if(HP>0 && _CurrentSuperArmorCount > 0)
+        {
+            _hitStopDuration    = .27f;
+            _lastAnimSpeed      = AiSM.Animator.speed;
+            AiSM.Animator.speed = 0f;
+            CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, .6f, .022f);
+        }
+        else AiSM.ChangeState(AiHit);
+
+        #endregion
     }
 
 

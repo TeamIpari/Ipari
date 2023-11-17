@@ -54,7 +54,7 @@ public sealed class BossCrabMagicCrabHandState : AIAttackState
              * ***/
             Transform arm  = AISM.Transform.Find("Boss_Crab_Con").Find("Crab_Body_Bone").Find("L_Tong01");
             Transform tong = arm.Find("Bone011").Find("Bone012");
-            _collectFX = tong.Find("Cras ( ready) Ver.3 180").GetComponent<ParticleSystem>();
+            _collectFX     = tong.Find("Cras ( ready) Ver.3 180").GetComponent<ParticleSystem>();
             _collectFX.gameObject.SetActive(false);
 
 
@@ -62,7 +62,7 @@ public sealed class BossCrabMagicCrabHandState : AIAttackState
              *   집게의 머터리얼에 대한 복사본의 참조를 가져온다.... 
              * ****/
             _renderer = AISM.Transform.Find("Boss_Crab_Mesh").GetComponent<Renderer>();
-            _EgoMat = _renderer.materials[2];
+            _EgoMat   = _renderer.sharedMaterials[2];
             _EgoMat.SetFloat("_alpha", 0f);
 
         }

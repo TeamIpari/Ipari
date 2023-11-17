@@ -63,7 +63,6 @@ public sealed class WhaleHorn : MonoBehaviour
 
         Transform bossCanvas = GameObject.Find("Boss_Canvas").transform;
         _fadeUI = bossCanvas.GetChild(1).GetComponent<Image>();
-        DontDestroyOnLoad(bossCanvas);
 
         _body.isKinematic = true;
         #endregion
@@ -346,27 +345,36 @@ public sealed class WhaleHorn : MonoBehaviour
         time = .7f;
         while ((time -= Time.deltaTime) > 0f) yield return null;
 
-        /**고래신이 나오기전에 잠깐의 진동이 발생한다....*/
-        CameraManager cm = CameraManager.GetInstance();   
-        cm.MainCamBrain.ActiveVirtualCamera.Follow = null;
-        cm.CameraShake(.15f, CameraManager.ShakeDir.ROTATE, 8f, .032f);
-        IpariUtility.PlayGamePadVibration(.01f, .01f, 8f);
+        /**고래신의 디졸브 머터리얼 관련 요소들을 모두 구한다....*/
+        Transform  whaleTr    = TalkableWhale.transform.GetChild(0).Find("Whale");
+        Material[] sharedMats = whaleTr.GetComponent<SkinnedMeshRenderer>().sharedMaterials;
 
-        time = 1f;
-        while ((time -= Time.deltaTime) > 0f) yield return null;
+        string mainBodyEmissive = "_emissive";
+        string mainBodyFresnel  = "_fresnel";
+        string mainBodyDissolve = "Main_Cutoff_Height";
 
-        /**고래신이 등장한다....*/
-        Transform whaleTr  = TalkableWhale.transform.GetChild(0);
-        Vector3  startPos  = whaleTr.position; 
+        string outLineScale  = "_Scale";
+        string outLineHeight = "Out_Cutoff_Height";
+        string outLineWidth  = "_Edge_Width";
+
         whaleTr.gameObject.SetActive(true);
 
-        time          = 5f;
+        time          = 3f;
         float timeDiv = (1f / time);
 
         do
         {
-            float progressRatio = Mathf.Clamp01((time -= Time.deltaTime)*timeDiv);
-            whaleTr.position = startPos + (Vector3.down * 10f * progressRatio);
+            float progressRatio = (1f - Mathf.Clamp01((time -= Time.deltaTime)*timeDiv));
+
+            /**MainBody....*/
+            sharedMats[0].SetFloat(mainBodyEmissive, (.32f * progressRatio));
+            sharedMats[0].SetFloat(mainBodyFresnel, (15.2f * progressRatio));
+            sharedMats[0].SetFloat(mainBodyDissolve, (8f * progressRatio));
+
+            /**OutLine*/
+            sharedMats[1].SetFloat(outLineHeight, (6.78f * progressRatio));
+            sharedMats[1].SetFloat(outLineWidth, (10f * progressRatio));
+
             yield return null;
         }
         while (time>0f);
@@ -380,7 +388,7 @@ public sealed class WhaleHorn : MonoBehaviour
         }
 
         /**고래신이 물에서 두둥실 떠다니는 효과를 적용한다....*/
-        StartCoroutine(WhaleWaveProgress());
+        //StartCoroutine(WhaleWaveProgress());
         #endregion
 
 
