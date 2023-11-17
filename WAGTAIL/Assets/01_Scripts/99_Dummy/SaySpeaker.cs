@@ -42,6 +42,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     [SerializeField] public TextMeshProUGUI NameTag;
     [SerializeField] public GameObject      TextBoxPrefab;
     [SerializeField] public GameObject      LookTarget;
+    [SerializeField] public GameObject      MoveTarget;
     [SerializeField] public Vector3         PossibleExtraOffset = Vector3.zero;
 
     [SerializeField] public GameObject      QuestIcon;
@@ -266,10 +267,10 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, lookDir) * player.transform.rotation);
         Vector3 ArrivalPoint;
         // 목표지점은 어떻게 지정할 것인가? 
-        if (LookTarget == null)
+        if (MoveTarget == null)
             ArrivalPoint = transform.localPosition - lookDir * 1.5f;
         else
-            ArrivalPoint = LookTarget.transform.localPosition - lookDir * 1.5f;
+            ArrivalPoint = MoveTarget.transform.localPosition - lookDir * 1.5f;
         // 방향 벡터를 구하고 속도를 조절
         player.controller.Move((ArrivalPoint - player.transform.position).normalized * Time.deltaTime * (player.playerSpeed * 0.5f));
 
@@ -282,6 +283,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         {
             _IsMoving = false;
             Player.Instance.playerInput.enabled = true;
+            
             PlaySay();
         }
 
@@ -292,7 +294,14 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     {
         #region Omit
         // 연출이라는걸 알리기 위한 LetterBox 추가
-        if(UseLetterBox) UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
+        try
+        {
+            if (UseLetterBox) UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox);
+        }
+        catch
+        {
+
+        }
         // 강제로 이동시키기 위해 InputSystem을 꺼줌.
         Player.Instance.playerInput.enabled = false;
         // 내 앞까지 와라
