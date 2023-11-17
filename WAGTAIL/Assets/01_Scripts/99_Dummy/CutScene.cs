@@ -70,7 +70,7 @@ public class CutScene : MonoBehaviour
 
     private bool FKeyCooldown()
     {
-        if (FKeyWaitTime < FKeyWaitTimer)
+        if (FKeyWaitTime > FKeyWaitTimer)
             return false;
         else
             return true;
@@ -80,6 +80,7 @@ public class CutScene : MonoBehaviour
     {
         bool bInputNextKey = Input.GetKeyDown(KeyCode.F) && isSkip && FKeyCooldown();
         bool bSceneState = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
+        Debug.Log($"AA{bInputNextKey}");
         if(bInputNextKey || bSceneState)
         {
             FKeyWaitTimer = 0;
