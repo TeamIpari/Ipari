@@ -528,7 +528,14 @@ public sealed class BossNepenthes : Enemy
             curTImer += Time.deltaTime;
             if (curTImer > 1.5f)
             {
-                StartCoroutine(DestroyPlatforms());
+                GameObject obj = GameObject.Find("Floor2");
+                Debug.Log($"{obj.transform.childCount}");
+                for (int i = 0; i < obj.transform.childCount; i++)
+                {
+                    Transform child = obj.transform.GetChild(i);
+                    child.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
+                }
+                //StartCoroutine(DestroyPlatforms());
                 deathZone.SetActive(false);
                 potal.SetActive(true);
                 isOne = true;

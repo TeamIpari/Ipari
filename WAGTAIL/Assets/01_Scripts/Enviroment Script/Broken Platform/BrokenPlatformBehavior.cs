@@ -1,10 +1,5 @@
-using JetBrains.Annotations;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
-using UnityEngine.ProBuilder.Shapes;
 
 public class BrokenPlatformBehavior : PlatformBehaviorBase
 {
@@ -41,7 +36,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
     private MeshRenderer mesh;
     private Collider col;
     private GameObject curBrokenPlatform;
-    private BossNepenthes bossNepenthes;
+    public BossNepenthes bossNepenthes;
 
 
 
@@ -56,7 +51,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
         mesh = GetComponent<MeshRenderer>();
         col = GetComponent<Collider>();
         isBroken = false;
-        bossNepenthes = GameObject.Find("NewBoss").GetComponent<BossNepenthes>();
+        //bossNepenthes = GameObject.Find("NewBoss").GetComponent<BossNepenthes>();
         spawnDelay = spawnDelay == 0.0f ? 1.5f : spawnDelay;
         pieceDownDelay = pieceDownDelay <= 0.0f ? 0.25f : pieceDownDelay;
         // 파괴되는 방식이 여러 바리에이션으로 파괴되게 세팅
@@ -157,10 +152,11 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
             yield return new WaitForSeconds(pieceDownDelay);
         }
         yield return new WaitForSeconds(spawnDelay);
+        //Vector3 v = new Vector3(0, 0, 0);
+
+
         if (bossNepenthes.AiSM.CurrentState != bossNepenthes.AiDie)
         {
-            //Vector3 v = new Vector3(0, 0, 0);
-
             for (int i = 0; i < curBrokenPlatform.transform.childCount; i++)
             {
                 var piece = curBrokenPlatform.transform.GetChild(i);
