@@ -79,6 +79,7 @@ public class LoadManager : Singleton<LoadManager>
     private Queue<string> sentences = new Queue<string>();
     private string sentence;
     private bool bTyping = false;
+    private Coroutine ICoroutine;
     #endregion
 
     //====================================================
@@ -190,8 +191,10 @@ public class LoadManager : Singleton<LoadManager>
 
         if (NameTag != null) NameTag.text = dialogue.name;
 
-        foreach (string sentence in dialogue.sentences) sentences.Enqueue(sentence);
-
+        foreach (string sentence in dialogue.sentences)
+        {
+            sentences.Enqueue(sentence);
+        }
         DisplayNextSentence();
         #endregion
     }
@@ -201,14 +204,20 @@ public class LoadManager : Singleton<LoadManager>
         #region Omit
         if (bTyping)
         {
-            StopAllCoroutines();
+            StopCoroutine(ICoroutine);
+            //StopAllCoroutines();
             Tmps.text = sentence;
             bTyping = false;
             return;
         }
-        if (EndDialogue()) return;
+        if (EndDialogue())
+        {
+            Tmps.text = string.Empty;
+            return;
+        }
         sentence = sentences.Dequeue();
-        StartCoroutine(TypeSentence(sentence));
+        if (ICoroutine != null) StopCoroutine(ICoroutine);
+        ICoroutine = StartCoroutine(TypeSentence(sentence));
         #endregion
     }
 
@@ -241,6 +250,8 @@ public class LoadManager : Singleton<LoadManager>
         Tmps.text = string.Empty;
         foreach (char letter in sentence.ToCharArray())
         {
+            if (bTyping == false) break;
+
             if (letter == '<' || strType == true)
             {
                 strType = true;
