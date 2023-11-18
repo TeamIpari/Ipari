@@ -142,6 +142,12 @@ public class ThrowObject : MonoBehaviour, IInteractable
             ResetPoint();
             return;
         }*/
+        if (collision.gameObject.GetComponent<Deathzone>() != null)
+        {
+            ResetPoint();
+            return;
+        }
+        
         bool bTagHit = !collision.gameObject.CompareTag("PassCollision") &&
                        !collision.gameObject.CompareTag("Player");
         if (bTagHit)
