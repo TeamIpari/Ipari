@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.ProBuilder;
 using IPariUtility;
+using FMOD.Studio;
 
 /**********************************************************
  *    고래신의 뿔과 상호작용하는 기능이 구현된 컴포넌트입니다...
@@ -37,6 +38,8 @@ public sealed class WhaleHorn : MonoBehaviour
     [SerializeField] public SaySpeaker     TalkableWhale;
     [SerializeField] private float         MoveDuration = 1f;
     [SerializeField] private float         MoveMaxHeight;
+    [SerializeField] public  float         MainBodyDissolveDuration = 1f;
+    [SerializeField] public  float         OutLineDissolveDuration  = .5f;
     [SerializeField] public  string        MoveScene = "Credit";
 
 
@@ -349,35 +352,27 @@ public sealed class WhaleHorn : MonoBehaviour
         Transform  whaleTr    = TalkableWhale.transform.GetChild(0).Find("Whale");
         Material[] sharedMats = whaleTr.GetComponent<SkinnedMeshRenderer>().sharedMaterials;
 
-        string mainBodyEmissive = "_emissive";
-        string mainBodyFresnel  = "_fresnel";
         string mainBodyDissolve = "Main_Cutoff_Height";
-
-        string outLineScale  = "_Scale";
-        string outLineHeight = "Out_Cutoff_Height";
-        string outLineWidth  = "_Edge_Width";
-
+        string outLineHeight    = "Out_Cutoff_Height";
         whaleTr.gameObject.SetActive(true);
 
-        time          = 3f;
-        float timeDiv = (1f / time);
+        time = 0f;
+        float timeDiv     = (1f / time);
+        float mainBodyDiv = (1f / MainBodyDissolveDuration);
+        float outLineDiv  = (1f / OutLineDissolveDuration);
 
         do
         {
-            float progressRatio = (1f - Mathf.Clamp01((time -= Time.deltaTime)*timeDiv));
+            time += Time.deltaTime;
+            float mainBodyRatio = Mathf.Clamp01(time * mainBodyDiv);
+            float outLineRatio  = Mathf.Clamp01(time * outLineDiv);
 
-            /**MainBody....*/
-            sharedMats[0].SetFloat(mainBodyEmissive, (.32f * progressRatio));
-            sharedMats[0].SetFloat(mainBodyFresnel, (15.2f * progressRatio));
-            sharedMats[0].SetFloat(mainBodyDissolve, (8f * progressRatio));
-
-            /**OutLine*/
-            sharedMats[1].SetFloat(outLineHeight, (6.78f * progressRatio));
-            sharedMats[1].SetFloat(outLineWidth, (10f * progressRatio));
+            sharedMats[0].SetFloat(mainBodyDissolve, (8f * mainBodyRatio));
+            sharedMats[1].SetFloat(outLineHeight, (6.78f * outLineRatio));
 
             yield return null;
         }
-        while (time>0f);
+        while (time<3f);
 
         /**고래 소환 이펙트를 적용한다...*/
         if(WhaleSpawnSFXPrefab)
@@ -472,8 +467,8 @@ public sealed class WhaleHorn : MonoBehaviour
             transform.localScale = ( startScale * progressRatio2 );
 
             /**샤인 이펙트의 위치도 갱신한다...*/
-            if (_ShineSFXIns != null)
-                _ShineSFXIns.position = collider.bounds.center;
+            //if (_ShineSFXIns != null)
+            //    _ShineSFXIns.position = collider.bounds.center;
 
             yield return null;
         }

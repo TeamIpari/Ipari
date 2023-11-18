@@ -761,7 +761,7 @@ public sealed class BossCrab : Enemy
         HP -= 10;
 
         /**º¸½º°¡ Á×°Å³ª, ½´ÆÛ¾Æ¸Ó°¡ ¾Æ´Ò ¶§¸¸ °æÁ÷À» ¸Ô´Â´Ù...*/
-        if(HP>0 && _CurrentSuperArmorCount > 0)
+        if((HP>0 && _CurrentSuperArmorCount > 0) || (AiSM.CurrentState==AiSM.character.AiHit && HP<=0 && _CurrentSuperArmorCount > 0))
         {
             _hitStopDuration    = .27f;
             _lastAnimSpeed      = AiSM.Animator.speed;
