@@ -73,13 +73,13 @@ public sealed class ShatterObject : MonoBehaviour
                             _originalObject.transform.position, _explosionForceRadius); 
                     }
 
-                    if (_explosionVFX != null )         
-                    {           
-                        GameObject exploVFX = Instantiate(_explosionVFX, _originalObject.transform.position, transform.rotation);
-                        Destroy(exploVFX, 7);
-                    }
                 }
 
+                if (_explosionVFX != null)
+                {
+                    GameObject exploVFX = Instantiate(_explosionVFX, _originalObject.transform.position, _explosionVFX.transform.rotation);
+                    Destroy(exploVFX, 7);
+                }
                 StartCoroutine(Shrink(2f, 2f));
             }
         }
