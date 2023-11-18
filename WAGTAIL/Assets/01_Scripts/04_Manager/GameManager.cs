@@ -196,7 +196,11 @@ public class GameManager : Singleton<GameManager>
         set
         {
             if (_coin is < 0 or >= 999) return;
-            if (value < 0) return;
+            if (value < 0)
+            {
+                _coin = 0;
+                return;
+            }
             _coin = value;
         }
     }
