@@ -47,6 +47,22 @@ public sealed class PlayerAnimationHelper : MonoBehaviour
         #endregion
     }
 
+    public void PlayLandingSound()
+    {
+        #region Omit
+        /**현재 밟은 부분의 환경 파라미터를 가져온다...*/
+        FModParameterReference paramRef = IpariUtility.GetFloorSFXType(transform.position,
+                                                                        ~(1 << LayerMask.NameToLayer("Player")));
+
+        /**플레이어가 걷는 소리를 재생한다...*/
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.Player_Landed,
+                                         paramRef,
+                                         transform.position,
+                                         8f,
+                                         400);
+        #endregion
+    }
+
     public void PlayerLanding()
     {
         var player = Player.Instance;

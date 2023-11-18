@@ -208,6 +208,7 @@ public sealed class FlyingBird : MonoBehaviour
 #endif
     #endregion
 
+    #region Define
     public enum RotationAxis
     {
         X = 1,
@@ -218,6 +219,7 @@ public sealed class FlyingBird : MonoBehaviour
         XYZ = (X|Y|Z),
         YZ  = (Y|Z)
     }
+    #endregion
 
     //===================================
     //////       Property           /////
@@ -228,17 +230,39 @@ public sealed class FlyingBird : MonoBehaviour
     public int       FlyType             { get{ return _FlyType; } set { _FlyType = value; } }
     public float     FlightDuration      { get { return _FlightDuration; } set { if (value < 0) value = .1f; _FlightDuration = value; } }
 
-    [SerializeField] public  Vector3     FlyRotation            = Vector3.zero;
-    [SerializeField] private float       _DurationUntilFlight   = 1f;
-    [SerializeField] private float       _FlightDuration        = 5f;
-    [SerializeField] public float        RotationDuration       = .3f; 
-    [SerializeField] public  bool        DestroyAtArrived       = true;
-    [SerializeField] public  bool        UseFlyLoop             = false;
-    [SerializeField] public  bool        FlyOnStart             = false;
-    [SerializeField] public  string      IdleAnimState          = string.Empty;
-    [SerializeField] public  string      ReadyAnimState         = string.Empty;
-    [SerializeField] public  string      FlyAnimState           = string.Empty;
-    [SerializeField] public RotationAxis RotationAxisType       = FlyingBird.RotationAxis.XYZ;
+    [SerializeField] 
+    public  Vector3 FlyRotation           = Vector3.zero;
+
+    [SerializeField, Min(.1f)] 
+    private float   _DurationUntilFlight  = 1f;
+
+    [SerializeField] 
+    private float  _FlightDuration        = 5f;
+
+    [SerializeField] 
+    public float   RotationDuration       = .3f; 
+
+    [SerializeField] 
+    public bool    DestroyAtArrived       = true;
+
+    [SerializeField] 
+    public  bool   UseFlyLoop             = false;
+
+    [SerializeField] 
+    public  bool   FlyOnStart             = false;
+
+    [SerializeField] 
+    public  string IdleAnimState          = string.Empty;
+
+    [SerializeField] 
+    public  string ReadyAnimState         = string.Empty;
+
+    [SerializeField] 
+    public  string FlyAnimState           = string.Empty;
+
+    [SerializeField] 
+    public RotationAxis RotationAxisType  = FlyingBird.RotationAxis.XYZ;
+
 
 
     //===================================
@@ -366,16 +390,22 @@ public sealed class FlyingBird : MonoBehaviour
 
 
         /**X축 회전을 제거한다...*/
-        if ((RotationAxisType & RotationAxis.X) == 0)
-                cross.x = 0f;
+        //if ((RotationAxisType & RotationAxis.X) == 0)
+        //{
+        //    currDir.
+        //}
 
-        /**Y축 회전을 제거한다...*/
-        if ((RotationAxisType & RotationAxis.Y) == 0)
-                cross.y = 0f;
+        ///**Y축 회전을 제거한다...*/
+        //if ((RotationAxisType & RotationAxis.Y) == 0)
+        //{
 
-        /**Z축 회전을 제거한다...*/
-        if ((RotationAxisType & RotationAxis.Z) == 0)
-                cross.z = 0f;
+        //}
+
+        ///**Z축 회전을 제거한다...*/
+        //if ((RotationAxisType & RotationAxis.Z) == 0)
+        //{
+
+        //}
 
 
         Quaternion rotQuat = Quaternion.AngleAxis(angle, cross);
@@ -386,7 +416,6 @@ public sealed class FlyingBird : MonoBehaviour
     private IEnumerator FlyProgress()
     {
         #region Omit
-        if (FlightDuration == 0f || DurationUntilFlight == 0f) yield break;
 
         /*******************************
          *   날기전의 대기동작...
