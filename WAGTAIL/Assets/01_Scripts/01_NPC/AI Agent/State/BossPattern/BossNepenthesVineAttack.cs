@@ -45,7 +45,7 @@ public class BossNepenthesVineAttack : AIAttackState
     private Vector3 leftOriginPos;
     private Vector3 movingPos;
     private Collider[] colliders = new Collider[10];
-    private GameObject[] BombPools = new GameObject[3];
+    //private GameObject[] BombPools = new GameObject[3];
 
 
 
@@ -180,20 +180,16 @@ public class BossNepenthesVineAttack : AIAttackState
             GameObject.Destroy(tempFx, 1f);
             vec += Vector3.forward * -3f;
         }
-        Debug.Log($"AA{BombPools == null} ? {BombPools[0] == null}");
-        if (BombPools[0] == null)
-            CreateReActionObject();
         
         FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_VineSmash, Vector3.zero, 2f);
         CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, 0.8f, .05f);
-        
-        foreach (var fruit in BombPools)
+        for (int i = 0; i < 3; i++)
         {
+            GameObject obj = GameObject.Instantiate<GameObject>(bomb);
+            obj.transform.position = Vector3.zero;
             x = Random.Range(-6f, 6f);
             z = Random.Range(-6f, -12f);
-
-            fruit.SetActive(true);
-            fruit.transform.position = new Vector3(x, 13f, z);
+            obj.transform.position = new Vector3(x, 13f, z);
             yield return new WaitForSeconds(0.150f);
         }
         vineAnim.speed = 1f;
@@ -202,20 +198,14 @@ public class BossNepenthesVineAttack : AIAttackState
 
     private void CreateReActionObject()
     {
-        if (BombPools.Length <= 0)
-        {
-            Debug.Log("Create Bomb Array");
-            BombPools = new GameObject[3];
-        }
-        Debug.Log($"{BombPools.Length}");
-        // 생성 하는 기능.
-        for (int i = 0; i < 3; i++)
-        {
-            GameObject obj = GameObject.Instantiate<GameObject>(bomb);
-            obj.transform.position = Vector3.zero;
-            BombPools[i] = obj;
-            BombPools[i].SetActive(false);
-        }
+        //if (BombPools.Length <= 0)
+        //{
+        //    Debug.Log("Create Bomb Array");
+        //    BombPools = new GameObject[3];
+        //}
+        //Debug.Log($"{BombPools.Length}");
+        //// 생성 하는 기능.
+
     }
 
 
