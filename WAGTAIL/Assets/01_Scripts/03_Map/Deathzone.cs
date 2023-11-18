@@ -16,4 +16,12 @@ public class Deathzone : MonoBehaviour
             other.GetComponent<Player>().isDead = true;
         }
     }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            other.gameObject.GetComponent<Player>().isDead = true;
+        }
+    }
 }
