@@ -50,6 +50,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
     [SerializeField] public CutScene        CutScenePlayer;
     [SerializeField] public Dialogue        Dialogue;
+    IEnumerator ICoroutine;
 
     public OnTalkCompleteNotify OnTalkComplete;
     public bool                 UseLetterBox = true;
@@ -125,13 +126,10 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
             boxAnim.Play("TextBox_FadeIn");
         }
 
-
-
         /**************************************************
          *   대화내역 및 대화를 출력할 텍스트를 갱신한다....
          * ****/
         try{
-
             Dialogue = LoadManager.GetInstance().IO_GetScriptable(SayType);
             LoadManager.GetInstance().NameTagSet(NameTag);
             LoadManager.GetInstance().TmpSet(TextViewer);
