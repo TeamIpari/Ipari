@@ -31,6 +31,7 @@ public class TutorialUI : MonoBehaviour
         if(other.CompareTag("Player") && tutorialUI.activeSelf == true)
         {
             _animator.SetTrigger(Fadeout);
+            Destroy(this);
         }
     }
 }
