@@ -38,8 +38,9 @@ public sealed class WhaleHorn : MonoBehaviour
     [SerializeField] public SaySpeaker     TalkableWhale;
     [SerializeField] private float         MoveDuration = 1f;
     [SerializeField] private float         MoveMaxHeight;
-    [SerializeField] public  float         MainBodyDissolveDuration = 1f;
-    [SerializeField] public  float         OutLineDissolveDuration  = .5f;
+    [SerializeField] public  float         MainBodyDisDuration = 1f;
+    [SerializeField] public  float         NextDisWaitTime     = .3f; 
+    [SerializeField] public  float         OutLineDisDuration  = .5f;
     [SerializeField] public  string        MoveScene = "Credit";
 
 
@@ -357,22 +358,57 @@ public sealed class WhaleHorn : MonoBehaviour
         whaleTr.gameObject.SetActive(true);
 
         time = 0f;
-        float timeDiv     = (1f / time);
-        float mainBodyDiv = (1f / MainBodyDissolveDuration);
-        float outLineDiv  = (1f / OutLineDissolveDuration);
+        float timeDiv       = (1f / time);
+        float mainBodyDiv   = (1f / MainBodyDisDuration);
+        float outLineDiv    = (1f / OutLineDisDuration);
+        float dissolveRatio = 0f;
 
+        sharedMats[0].SetFloat(mainBodyDissolve, -4f);
+
+        /**아웃라인 디졸브를 적용한다.....*/
         do
         {
-            time += Time.deltaTime;
-            float mainBodyRatio = Mathf.Clamp01(time * mainBodyDiv);
-            float outLineRatio  = Mathf.Clamp01(time * outLineDiv);
-
-            sharedMats[0].SetFloat(mainBodyDissolve, (8f * mainBodyRatio));
-            sharedMats[1].SetFloat(outLineHeight, (6.78f * outLineRatio));
-
+            dissolveRatio = Mathf.Clamp01((time += Time.deltaTime) * outLineDiv);
+            sharedMats[1].SetFloat(outLineHeight, (6.78f * dissolveRatio));
+            Debug.Log($"outLine: {dissolveRatio}%");
             yield return null;
         }
-        while (time<3f);
+        while (dissolveRatio < 1f);
+
+
+        /**다음 이펙트를 기다린다.....*/
+        time = NextDisWaitTime;
+        while ((time -= Time.deltaTime) > 0f)
+        {
+            Debug.Log($"wait Left: {time}");
+            yield return null;
+        }
+
+
+        /**메인바디 디졸브를 적용한다...*/
+        time = 0f;
+        do
+        {
+            dissolveRatio = Mathf.Clamp01((time += Time.deltaTime) * mainBodyDiv);
+            sharedMats[0].SetFloat(mainBodyDissolve, -4f+(12f * dissolveRatio));
+            Debug.Log($"mainBody: {dissolveRatio}%");
+            yield return null;
+        }
+        while (dissolveRatio < 1f);
+
+
+        //do
+        //{
+        //    time += Time.deltaTime;
+        //    float mainBodyRatio = Mathf.Clamp01(time * mainBodyDiv);
+        //    float outLineRatio  = Mathf.Clamp01(time * outLineDiv);
+
+        //    sharedMats[0].SetFloat(mainBodyDissolve, (8f * mainBodyRatio));
+        //    sharedMats[1].SetFloat(outLineHeight, (6.78f * outLineRatio));
+
+        //    yield return null;
+        //}
+        //while (time<3f);
 
         /**고래 소환 이펙트를 적용한다...*/
         if(WhaleSpawnSFXPrefab)
@@ -426,6 +462,7 @@ public sealed class WhaleHorn : MonoBehaviour
         Transform whaleHornTr    = TalkableWhale.transform.GetChild(0).Find("Jewelry");
         Transform whaleHornDirTr = whaleHornTr.GetChild(0);
         Transform hornDirTr      = transform.GetChild(0);
+        GameObject whaleFX       = TalkableWhale.transform.GetChild(0).Find("Whale").GetChild(0).gameObject;     
 
         Vector3 whaleHornDir = (whaleHornDirTr.position - whaleHornTr.position).normalized;
         Vector3 hornDir      = (hornDirTr.position - transform.position).normalized;
@@ -466,16 +503,14 @@ public sealed class WhaleHorn : MonoBehaviour
             transform.position   = pos;
             transform.localScale = ( startScale * progressRatio2 );
 
-            /**샤인 이펙트의 위치도 갱신한다...*/
-            //if (_ShineSFXIns != null)
-            //    _ShineSFXIns.position = collider.bounds.center;
-
             yield return null;
         }
         while (time > 0f);
 
+        whaleFX.SetActive(true);
+
         /**화면이 빛난다.....*/
-        if(PutSFXPrefab!=null)
+        if (PutSFXPrefab!=null)
         {
             GameObject newIns = Instantiate(PutSFXPrefab);
             newIns.transform.position = transform.position;
