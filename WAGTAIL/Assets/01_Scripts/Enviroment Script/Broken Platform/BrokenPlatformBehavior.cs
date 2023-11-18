@@ -149,7 +149,7 @@ public class BrokenPlatformBehavior : PlatformBehaviorBase
                 rigidbody.gameObject.layer = LayerMask.NameToLayer("Pass");
                 StartCoroutine(SmallHidePiece(rigidbody.gameObject));
             }
-            yield return new WaitForSeconds(pieceDownDelay);
+            //yield return new WaitForSeconds(pieceDownDelay);
         }
         yield return new WaitForSeconds(spawnDelay);
         //Vector3 v = new Vector3(0, 0, 0);
