@@ -55,7 +55,7 @@ public class ChapterController : MonoBehaviour
                 break;
             case ChapterType.EndCredits:
                 FModAudioManager.PlayBGM(FModBGMEventType.tavuti_Credit);
-                GameManager.GetInstance().StartChapter(ChapterType.EndCredits);
+                //GameManager.GetInstance().StartChapter(ChapterType.EndCredits);
                 break;
             case ChapterType.Test:
                 //GameManager.GetInstance().StartChapter(ChapterType.Test);

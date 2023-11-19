@@ -294,7 +294,10 @@ public class ThrowObject : MonoBehaviour, IInteractable
         //Debug.Log($"{_player.target}");
         yield return new WaitForSecondsRealtime(0.1f);
         if (_animator != null)
+        {
+            _animator.ResetTrigger("Grounded");
             _animator.SetTrigger("Flight");
+        }
         
         // 머리 위에서 움직이는걸 방지하기 위한 것들 해제
         _rigidbody.useGravity = true;
