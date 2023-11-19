@@ -59,7 +59,7 @@ public sealed class BossCrabMagicCrabHandState : AIAttackState
 
 
             /***************************************************
-             *   집게의 머터리얼에 대한 복사본의 참조를 가져온다.... 
+             *   집게의 머터리얼에 대한 참조를 가져온다.... 
              * ****/
             _renderer = AISM.Transform.Find("Boss_Crab_Mesh").GetComponent<Renderer>();
             _EgoMat   = _renderer.sharedMaterials[2];
