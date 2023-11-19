@@ -239,6 +239,7 @@ GameObject:
   - component: {fileID: 1244425805122109697}
   - component: {fileID: 8800009497399917052}
   - component: {fileID: 6438612123393326791}
+  - component: {fileID: 8103465467991144172}
   m_Layer: 0
   m_Name: Interaction
   m_TagString: Untagged
@@ -326,3 +327,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8103465467991144172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6310425167614350263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99cb5409efa16f0478a4b7004a13b527, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChangeDatas:
+  - TargetImage: {fileID: 3431090219017263741}
+    KeyboardSprite: {fileID: 21300000, guid: 90a44a7a39f64b641b0c565d07da5a27, type: 3}
+    XboxSprite: {fileID: 21300000, guid: 7eb17f8fb1949f3448281c5d8268a387, type: 3}
+    NintendoSprite: {fileID: 21300000, guid: 42cbeb33c75becd4ea79fbb3b80c7f08, type: 3}
+    PSSprite: {fileID: 21300000, guid: 277bddf1829b9694fa242382c72947d7, type: 3}
+  OnChangedKeyboard:
+    m_PersistentCalls:
+      m_Calls: []
+  OnChangedGamePad:
+    m_PersistentCalls:
+      m_Calls: []
+  _UsedEventFlags: 0

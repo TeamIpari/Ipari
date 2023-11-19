@@ -106,7 +106,6 @@ public sealed class InterativeUI : GamePadInputSpriteChanger
         _animator   = GetComponent<Animator>();
         _text       = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         _rectTr     = _animator.GetComponent<RectTransform>();
-        TargetImage = transform.GetChild(0).GetChild(0).GetComponent<Image>();
 
         _rectTr.position = new Vector3(99999f, 99999f);
         #endregion

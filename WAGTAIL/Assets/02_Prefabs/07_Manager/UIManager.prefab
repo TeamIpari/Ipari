@@ -1384,6 +1384,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tutorial_Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 6428013941605808280, guid: 106f5c9da2f002246bfe38fda96d79fb,
+        type: 3}
+      propertyPath: ChangeDatas.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8428366829940660743, guid: 106f5c9da2f002246bfe38fda96d79fb,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2252,23 +2257,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4182900557099408826}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1476481793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7899181412256255501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99cb5409efa16f0478a4b7004a13b527, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ButtonFSprite: {fileID: 21300000, guid: 90a44a7a39f64b641b0c565d07da5a27, type: 3}
-  ButtonXSprite: {fileID: 21300000, guid: 7eb17f8fb1949f3448281c5d8268a387, type: 3}
-  ButtonYSprite: {fileID: 21300000, guid: 42cbeb33c75becd4ea79fbb3b80c7f08, type: 3}
-  ButtonSquareSprite: {fileID: 0}
-  TargetImage: {fileID: 0}
 --- !u!114 &1814291024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3684,11 +3672,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b43ff80c9627cd345bf606bd966922ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ButtonFSprite: {fileID: 21300000, guid: 90a44a7a39f64b641b0c565d07da5a27, type: 3}
-  ButtonXSprite: {fileID: 21300000, guid: 7eb17f8fb1949f3448281c5d8268a387, type: 3}
-  ButtonYSprite: {fileID: 21300000, guid: 42cbeb33c75becd4ea79fbb3b80c7f08, type: 3}
-  ButtonSquareSprite: {fileID: 0}
-  TargetImage: {fileID: 5307096920699694902}
+  ChangeDatas:
+  - TargetImage: {fileID: 5307096920699694902}
+    KeyboardSprite: {fileID: 21300000, guid: 90a44a7a39f64b641b0c565d07da5a27, type: 3}
+    XboxSprite: {fileID: 21300000, guid: 7eb17f8fb1949f3448281c5d8268a387, type: 3}
+    NintendoSprite: {fileID: 21300000, guid: 42cbeb33c75becd4ea79fbb3b80c7f08, type: 3}
+    PSSprite: {fileID: 21300000, guid: 277bddf1829b9694fa242382c72947d7, type: 3}
+  OnChangedKeyboard:
+    m_PersistentCalls:
+      m_Calls: []
+  OnChangedGamePad:
+    m_PersistentCalls:
+      m_Calls: []
+  _UsedEventFlags: 0
 --- !u!114 &5307096920699694902 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1598021263725925768, guid: 6b8d8bbe9d6b4d04eb0ae4659d2c2e7f,
