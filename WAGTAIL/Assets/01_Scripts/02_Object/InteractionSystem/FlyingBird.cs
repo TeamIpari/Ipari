@@ -87,6 +87,8 @@ public sealed class FlyingBird : MonoBehaviour
 
             GUI_ShowFlyType();
 
+            GUI_MoveFlyPointButton();
+
             GUI_ShowFlyPoints();
 
             /**값에 변경요소가 있다면 갱신...*/
@@ -101,6 +103,29 @@ public sealed class FlyingBird : MonoBehaviour
         //========================================
         /////          GUI methods            ////
         //========================================
+        private void GUI_MoveFlyPointButton()
+        {
+            #region Omit
+
+            if(GUILayout.Button("MoveFlyPointOffset"))
+            {
+                int Count = flyingBird._FlyPoints.Length;
+                if (Count == 0) return;
+
+                /**원점의 오프셋을 구한다....*/
+                Vector3 offset = (flyingBird.transform.position - flyingBird._FlyPoints[0]);
+
+                for(int i=0; i<Count; i++)
+                {
+                    ref Vector3 point = ref flyingBird._FlyPoints[i];
+                    point += offset;
+                }
+
+            }
+
+            #endregion
+        }
+
         private void GUI_Initialized()
         {
             #region Omit
@@ -539,7 +564,7 @@ public sealed class FlyingBird : MonoBehaviour
             totalRatio += desc.lengthRatio;
         }
 
-        return Vector3.zero;
+        return transform.position;
         #endregion
     }
 
@@ -577,7 +602,7 @@ public sealed class FlyingBird : MonoBehaviour
          * *****/
         float currTime      = 0f;
         float goalTimeDiv   = (1f / DurationUntilFlight);
-        float rotDiv        = (1f / RotationDuration);
+        float rotDiv        = (1f / .8f);
         float progressRatio = 0f;
 
         while (currTime < DurationUntilFlight)
@@ -608,10 +633,9 @@ public sealed class FlyingBird : MonoBehaviour
             do{
 
                 /**진행도에 따른 배지어 곡선을 계산한다....*/
-                currTime = 0f;
                 do
                 {
-                    progressRatio  = Mathf.Clamp01((currTime+=Time.deltaTime)*goalTimeDiv);
+                    progressRatio  = (((currTime+=Time.deltaTime)%FlightDuration)*goalTimeDiv);
                     float rotRatio = Mathf.Clamp01((currTime * rotDiv)); 
 
                     Vector3 nextPos = GetFlyBezierPoint(progressRatio, descs);
@@ -621,8 +645,6 @@ public sealed class FlyingBird : MonoBehaviour
                     yield return null;
                 }
                 while (progressRatio<1f);
-
-                /**반복을 사용할 경우, 반복한다.....*/
             }
             while (UseFlyLoop);
         }
@@ -633,14 +655,12 @@ public sealed class FlyingBird : MonoBehaviour
          * *****/
         LineDesc[] descs2 = GetLineDescTable();
 
-        do
-        {
+        do{
 
             /**진행도에 따른 배지어 곡선을 계산한다....*/
-            currTime = 0f;
             do
             {
-                progressRatio = Mathf.Clamp01((currTime += Time.deltaTime) * goalTimeDiv);
+                progressRatio = ((currTime += Time.deltaTime) * goalTimeDiv);
                 float rotRatio = Mathf.Clamp01((currTime * rotDiv));
 
                 Vector3 nextPos = GetFlyLinePoint(progressRatio, descs2);
@@ -652,6 +672,7 @@ public sealed class FlyingBird : MonoBehaviour
             while (progressRatio < 1f);
 
             /**반복을 사용할 경우, 반복한다.....*/
+            currTime -= FlightDuration;
         }
         while (UseFlyLoop);
 

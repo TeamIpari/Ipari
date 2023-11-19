@@ -3,16 +3,26 @@ using IPariUtility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public sealed class TestScript : MonoBehaviour
 {
-    [SerializeField] FModParameterReference paramRef;
+    FModEventInstance Ins;
 
-    private void OnCollisionEnter(Collision collision)
+    private void Start()
     {
-        Debug.Log($"{name}이 {collision.gameObject.name}과 충돌!!!");
+        Ins = FModAudioManager.CreateInstance(FModSFXEventType.Water_Stream);
+        Ins.Play();
+        Ins.Position = transform.position;
+        Ins.Volume = 10f;
+        Ins.Set3DDistance(8f, 30f);
+    }
+
+    private void OnDestroy()
+    {
+        Ins.Destroy();
     }
 
 }

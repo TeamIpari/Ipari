@@ -201,5 +201,12 @@ public sealed class FModInspectorHelper : MonoBehaviour
         PlayStop_Internal(ref EventDescs[index], FModEventApplyTiming.ALL, true, false);
         #endregion
     }
+
+    public void StopBGM()
+    {
+        #region Omit
+        FModAudioManager.StopBGM();
+        #endregion
+    }
 }
 #endif
