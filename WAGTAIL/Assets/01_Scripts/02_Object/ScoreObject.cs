@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using IPariUtility;
 using UnityEngine.Serialization;
@@ -130,6 +131,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
         private SerializedProperty MagnetMoveDelayTimeProperty;
         private SerializedProperty GetRaiseUpTimeProperty;
         private SerializedProperty InteractionVFXProperty;
+        private SerializedProperty CocosivFXProperty;
 
 
 
@@ -209,6 +211,11 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             if ( InteractionVFXProperty== null){
 
                 InteractionVFXProperty = serializedObject.FindProperty("InteractionVFX");
+            }
+
+            if (CocosivFXProperty == null)
+            {
+                CocosivFXProperty = serializedObject.FindProperty("CocosiVFX");
             }
 
             #endregion
@@ -316,6 +323,15 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                    true
 
             );
+            
+            if(CocosivFXProperty==null) return;
+            
+            CocosivFXProperty.objectReferenceValue = EditorGUILayout.ObjectField(
+                "Cocosi VFX",
+                CocosivFXProperty.objectReferenceValue,
+                typeof(GameObject),
+                true
+            );
 
             #endregion
         }
@@ -365,6 +381,9 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
     [SerializeField,FormerlySerializedAs("_interactionVFX")] 
     public GameObject   InteractionVFX;
+    
+    [SerializeField]
+    public GameObject   CocosiVFX;
 
     
 
@@ -425,7 +444,7 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
             if ((_currTime+=Time.deltaTime) >= MagnetMoveDelayTime)
             {
                 /**지연시간이 끝났을 경우...*/
-                ApplyTimeout();
+                if(ScoreType != ScoreType.Cocosi) ApplyTimeout();
             }
             else return;
         }
@@ -541,7 +560,6 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
 
         /**획득되었을 경우...*/
         if(_collider!=null && _collider.enabled==false){
-
             SpawnVFX();
             Destroy(gameObject);
             return;
@@ -569,12 +587,33 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
                 gameObject.transform.rotation
             );
 
-            Destroy(exploVFX, 2);
+            Destroy(exploVFX, 2f);
+            StartCoroutine(CocosiTimer());
             return;
         }
 
         Debug.LogWarning("InteractionVFX was missing!");
         #endregion
+    }
+
+    public IEnumerator CocosiTimer()
+    {
+        yield return new WaitForSeconds(2f);
+        
+        if (CocosiVFX != null)
+        {
+            GameObject exploVFX = Instantiate(
+                CocosiVFX,
+                gameObject.transform.position,
+                gameObject.transform.rotation
+            );
+            Destroy(gameObject);
+            Destroy(exploVFX, 2);
+        }
+        else
+        {
+            Debug.LogWarning("CocosiVFX was missing!");
+        }
     }
 
     public void UseRigidbody(bool isTrigger=true, bool useGravity=false)
@@ -598,12 +637,6 @@ public sealed class ScoreObject : MonoBehaviour, IEnviroment
     {
         GetItem();
         return true;
-    }
-
-    public void AnimationEvent()
-    {
-        SpawnVFX();
-        //Destroy(gameObject);
     }
 
     public void ExecutionFunction(float time)

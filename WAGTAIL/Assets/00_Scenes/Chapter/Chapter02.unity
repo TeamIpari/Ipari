@@ -11782,6 +11782,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
         type: 3}
+      propertyPath: CocosiVFX
+      value: 
+      objectReference: {fileID: 7158735444649316134, guid: b48132578951f72449ea411119b4f4b4,
+        type: 3}
+    - target: {fileID: 7745129930737121374, guid: 2fc7d418fec87af498526a3202e5af2f,
+        type: 3}
       propertyPath: ScoreType
       value: 1
       objectReference: {fileID: 0}
@@ -13954,6 +13960,8 @@ MonoBehaviour:
   _MagnetMoveDelayTime: 0
   _GetRaiseUpTime: 0.25
   InteractionVFX: {fileID: 9214601806930611182, guid: cc57167b035c1434c9ef17395cdccb18,
+    type: 3}
+  CocosiVFX: {fileID: 7158735444649316134, guid: b48132578951f72449ea411119b4f4b4,
     type: 3}
 --- !u!135 &469619851
 SphereCollider:
@@ -31906,48 +31914,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8f4010582b4a9145bc1611709fa89f6, type: 3}
---- !u!21 &1110649292
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Grass(Clone)
-  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
-    type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Blend: 0
-    - _BlendMult: 1
-    - _BlendOff: 0
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!4 &1113168375 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d8624167e5fafc546ad3e4f3f28a9b19,
@@ -48781,6 +48747,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1301880209a53a04eb61dd79bd7f731d, type: 3}
+--- !u!21 &1619604737
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Grass(Clone)
+  m_Shader: {fileID: -6465566751694194690, guid: 21895207466b500438a1b61afa42075b,
+    type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blend: 0
+    - _BlendMult: 1
+    - _BlendOff: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1001 &1619858789
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50592,6 +50600,8 @@ MonoBehaviour:
   _MagnetMoveDelayTime: 0
   _GetRaiseUpTime: 0.25
   InteractionVFX: {fileID: 9214601806930611182, guid: cc57167b035c1434c9ef17395cdccb18,
+    type: 3}
+  CocosiVFX: {fileID: 7158735444649316134, guid: b48132578951f72449ea411119b4f4b4,
     type: 3}
 --- !u!135 &1694202445
 SphereCollider:
@@ -71700,7 +71710,7 @@ MonoBehaviour:
     normal: {x: 0.00000019644845, y: 1, z: 0.00000027539056}
     length: {x: 0.277, y: 0.01}
     color: {x: 0.13091353, y: 0.41419014, z: 0.45362574}
-  m_InstantiatedMaterial: {fileID: 1110649292}
+  m_InstantiatedMaterial: {fileID: 1619604737}
 --- !u!4 &2105538654
 Transform:
   m_ObjectHideFlags: 0
