@@ -21,6 +21,7 @@ public class DeathState : State
     public override void Enter()
     {
         base.Enter();
+        InterativeUI.HideUI();
         if (player.currentInteractable != null)
         {
             player.currentInteractable.GetComponent<ThrowObject>().ResetPoint();
