@@ -333,6 +333,7 @@ GameObject:
   - component: {fileID: 6117957803589484774}
   - component: {fileID: 6117957803589484775}
   - component: {fileID: 6117957803589484768}
+  - component: {fileID: 3705708415261330167}
   m_Layer: 5
   m_Name: Skip
   m_TagString: Untagged
@@ -399,7 +400,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4280373872
+    rgba: 2854310512
   m_fontColor: {r: 0.43921572, g: 0.32156864, b: 0.12941177, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -473,6 +474,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 0
+--- !u!114 &3705708415261330167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6117957803589484770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b43ff80c9627cd345bf606bd966922ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChangeDatas:
+  - TargetImage: {fileID: 6117957804276203941}
+    KeyboardSprite: {fileID: 21300000, guid: 90a44a7a39f64b641b0c565d07da5a27, type: 3}
+    XboxSprite: {fileID: 21300000, guid: 7eb17f8fb1949f3448281c5d8268a387, type: 3}
+    NintendoSprite: {fileID: 21300000, guid: 42cbeb33c75becd4ea79fbb3b80c7f08, type: 3}
+    PSSprite: {fileID: 21300000, guid: 277bddf1829b9694fa242382c72947d7, type: 3}
+  OnChangedKeyboard:
+    m_PersistentCalls:
+      m_Calls: []
+  OnChangedGamePad:
+    m_PersistentCalls:
+      m_Calls: []
+  _UsedEventFlags: 0
 --- !u!1 &6117957803671559886
 GameObject:
   m_ObjectHideFlags: 0

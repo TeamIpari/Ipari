@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class CutScene : MonoBehaviour
 {
@@ -78,8 +79,8 @@ public class CutScene : MonoBehaviour
 
     private void SceneChange()
     {
-        bool bInputNextKey = Input.GetKeyDown(KeyCode.F) && isSkip && FKeyCooldown();
-        bool bSceneState = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
+        bool bInputNextKey = (Input.GetKeyDown(KeyCode.F) || (Gamepad.current!=null && Gamepad.current.buttonWest.value!=0)) && isSkip && FKeyCooldown();
+        bool bSceneState   = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
         if(bInputNextKey || bSceneState)
         {
             FKeyWaitTimer = 0;

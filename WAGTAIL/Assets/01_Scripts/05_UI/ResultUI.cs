@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class ResultUI : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class ResultUI : MonoBehaviour
 
     private void Update()
     {
-        if (check.activeSelf && Input.GetKeyDown(KeyCode.F))
+        if (check.activeSelf && (Input.GetKeyDown(KeyCode.F) || (Gamepad.current != null && Gamepad.current.buttonWest.value != 0)))
         {
             SceneLoader.GetInstance().LoadScene(ChapterType.Title.ToString());
             check.SetActive(false);
