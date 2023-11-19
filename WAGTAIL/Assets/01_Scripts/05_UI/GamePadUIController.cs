@@ -501,7 +501,7 @@ public sealed class GamePadUIController : MonoBehaviour
     //=========================================================
     private void Awake()
     {
-        OnDeviceChange = null;
+        if(UICoroutine==null) OnDeviceChange = null;
     }
 
     private void Start()

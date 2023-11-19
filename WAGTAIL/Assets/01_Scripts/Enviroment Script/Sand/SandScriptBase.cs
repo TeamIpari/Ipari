@@ -336,7 +336,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
             sfxIns.Set3DDistance(10f, 30f);
             sfxIns.Play();
 
-            FModAudioManager.ApplyInstanceFade(sfxIns, 2.5f, 3f);
+            FModAudioManager.ApplyInstanceFade(sfxIns, 1.4f, 3f);
         }
         else if (sfxIns.IsValid){
 
