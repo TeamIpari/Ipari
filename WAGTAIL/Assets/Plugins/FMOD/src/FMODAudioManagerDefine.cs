@@ -108,17 +108,17 @@ public struct FModParamValueRange
 
 public enum FModBGMEventType
 {
-   tavuti_Credit=27,
-   CrabBossBGM=28,
-   Chapter5BGM=29,
-   NepenthesBossBGM=30,
-   Chapter4BGM=31,
-   NepenthesRoad=32,
-   tavuti_ingame2=33,
-   test=34,
-   tavuti_ingame1=35,
-   Wagtail_bgm_title=36,
-   test2=37
+   test22=27,
+   tavuti_Credit=28,
+   CrabBossBGM=29,
+   Chapter5BGM=30,
+   NepenthesBossBGM=31,
+   Chapter4BGM=32,
+   NepenthesRoad=33,
+   tavuti_ingame2=34,
+   test=35,
+   tavuti_ingame1=36,
+   Wagtail_bgm_title=37
 }
 
 public enum FModSFXEventType
@@ -132,8 +132,8 @@ public enum FModSFXEventType
    Collision_Ground=6,
    Interacting_Vine=7,
    Broken=8,
-   ResultPaper=9,
-   ResultStamp=10,
+   ResultStamp=9,
+   ResultPaper=10,
    GameOver=11,
    Death_CutScene=12,
    UI_Button=13,
@@ -177,7 +177,7 @@ public sealed class FModReferenceList
     public static readonly FMOD.GUID[] Events = new FMOD.GUID[]
     {
         new FMOD.GUID{ Data1=872762981, Data2=1252467944, Data3=-1386457176, Data4=-908974919 },
-        new FMOD.GUID{ Data1=-120603783, Data2=1075879319, Data3=-475783489, Data4=1680564650 },
+        new FMOD.GUID{ Data1=1469482788, Data2=1203784929, Data3=1774485694, Data4=1735257830 },
         new FMOD.GUID{ Data1=521967865, Data2=1095037392, Data3=-2000264523, Data4=1766900301 },
         new FMOD.GUID{ Data1=1783667186, Data2=1173746128, Data3=1226250647, Data4=1383568854 },
         new FMOD.GUID{ Data1=524088536, Data2=1209241081, Data3=979799986, Data4=1160229082 },
@@ -185,8 +185,8 @@ public sealed class FModReferenceList
         new FMOD.GUID{ Data1=-1866121864, Data2=1339704136, Data3=1908183699, Data4=-1513147371 },
         new FMOD.GUID{ Data1=-990469295, Data2=1254419191, Data3=1519357069, Data4=-1122432260 },
         new FMOD.GUID{ Data1=2066250762, Data2=1228276510, Data3=2128100538, Data4=1940932632 },
-        new FMOD.GUID{ Data1=622737741, Data2=1108472267, Data3=835929011, Data4=148488193 },
-        new FMOD.GUID{ Data1=-968633315, Data2=1259551607, Data3=-1779628122, Data4=632207153 },
+        new FMOD.GUID{ Data1=-1823148614, Data2=1208119206, Data3=1783896219, Data4=259215846 },
+        new FMOD.GUID{ Data1=-598847078, Data2=1146523901, Data3=-781241420, Data4=1196704268 },
         new FMOD.GUID{ Data1=106925798, Data2=1271508359, Data3=327143578, Data4=974880928 },
         new FMOD.GUID{ Data1=1315365849, Data2=1266621721, Data3=-1860747614, Data4=1802208756 },
         new FMOD.GUID{ Data1=-738566357, Data2=1166266538, Data3=1971146173, Data4=-1481470806 },
@@ -203,7 +203,8 @@ public sealed class FModReferenceList
         new FMOD.GUID{ Data1=-356480811, Data2=1261563164, Data3=-1823479120, Data4=-733505655 },
         new FMOD.GUID{ Data1=61617350, Data2=1314310624, Data3=-766163584, Data4=319510773 },
         new FMOD.GUID{ Data1=594495364, Data2=1183593499, Data3=849544592, Data4=732205388 },
-        new FMOD.GUID{ Data1=-248247204, Data2=1295731246, Data3=1140246709, Data4=1910538902 },
+        new FMOD.GUID{ Data1=-839459200, Data2=1158110859, Data3=-183060576, Data4=1601068035 },
+        new FMOD.GUID{ Data1=946562116, Data2=1224649017, Data3=1256572040, Data4=-58052879 },
         new FMOD.GUID{ Data1=2087680138, Data2=1137614030, Data3=-974458185, Data4=-1355772786 },
         new FMOD.GUID{ Data1=718605923, Data2=1331647710, Data3=838851234, Data4=-72285666 },
         new FMOD.GUID{ Data1=1035370724, Data2=1231878928, Data3=1320145589, Data4=790482389 },
@@ -213,7 +214,6 @@ public sealed class FModReferenceList
         new FMOD.GUID{ Data1=-1059833457, Data2=1253542699, Data3=-338358873, Data4=775534634 },
         new FMOD.GUID{ Data1=948676747, Data2=1227712620, Data3=-1017469557, Data4=-1232547804 },
         new FMOD.GUID{ Data1=942327427, Data2=1305162648, Data3=144500900, Data4=-1687243536 },
-        new FMOD.GUID{ Data1=-839459200, Data2=1158110859, Data3=-183060576, Data4=1601068035 },
         new FMOD.GUID{ Data1=-1534411595, Data2=1086887801, Data3=134488995, Data4=-828819004 },
         new FMOD.GUID{ Data1=-1007401708, Data2=1308172674, Data3=128069518, Data4=245650646 },
         new FMOD.GUID{ Data1=2106052319, Data2=1313870343, Data3=385983629, Data4=-1703552368 },
