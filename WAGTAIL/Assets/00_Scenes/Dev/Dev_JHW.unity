@@ -11848,7 +11848,7 @@ MonoBehaviour:
   IdleAnimState: 
   ReadyAnimState: 
   FlyAnimState: 
-  RotationAxisType: 7
+  UnusedAxisType: 0
   _FlyPoints:
   - {x: 12.67, y: 8.033, z: -22.72}
   - {x: 12.67, y: 26.644447, z: -22.72}
@@ -12056,6 +12056,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Bird@Rig (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5931406539999252085, guid: 18380e24e2c90ab4cb0fd04a6807f6b0,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.036
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18380e24e2c90ab4cb0fd04a6807f6b0, type: 3}
@@ -21032,15 +21037,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FlyRotation: {x: 0, y: 0, z: 0}
   _DurationUntilFlight: 0
-  _FlightDuration: 4
-  RotationDuration: 0.5
+  _FlightDuration: 10
+  RotationDuration: 0.4
   DestroyAtArrived: 0
   UseFlyLoop: 1
   FlyOnStart: 1
   IdleAnimState: 
   ReadyAnimState: 
   FlyAnimState: 
-  RotationAxisType: 7
+  UnusedAxisType: 2
   _FlyPoints:
   - {x: 0, y: 10.69, z: -36.97}
   - {x: 4.115273, y: 11.889999, z: -44.852333}
@@ -21048,7 +21053,7 @@ MonoBehaviour:
   - {x: 3.5107539, y: 13.096319, z: -32.68601}
   - {x: 0.061767697, y: 11.16575, z: -37.291157}
   _FlyPointsCount: 5
-  _FlyType: 1
+  _FlyType: 0
 --- !u!4 &1350196965 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3052055940821391024, guid: 326afd151d9fb464c869919d7f871a73,

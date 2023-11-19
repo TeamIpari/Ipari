@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using IPariUtility;
+using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -211,6 +212,7 @@ public sealed class FlyingBird : MonoBehaviour
     #region Define
     public enum RotationAxis
     {
+        None = 0,
         X = 1,
         Y = 2,
         Z = 4,
@@ -218,6 +220,19 @@ public sealed class FlyingBird : MonoBehaviour
         XY  = (X|Y),
         XYZ = (X|Y|Z),
         YZ  = (Y|Z)
+    }
+
+    public struct BezierDesc
+    {
+        public int      startIndex;
+        public float    lengthRatio;
+        public float    lengthRatioDiv;
+    }
+
+    public struct LineDesc
+    {
+        public float lengthRatio;
+        public float lengthRatioDiv;
     }
     #endregion
 
@@ -260,8 +275,8 @@ public sealed class FlyingBird : MonoBehaviour
     [SerializeField] 
     public  string FlyAnimState           = string.Empty;
 
-    [SerializeField] 
-    public RotationAxis RotationAxisType  = FlyingBird.RotationAxis.XYZ;
+    [SerializeField]
+    public RotationAxis UnusedAxisType    = FlyingBird.RotationAxis.None;
 
 
 
@@ -280,6 +295,7 @@ public sealed class FlyingBird : MonoBehaviour
     private Animator  _animator;
     private Coroutine _flyCoroutine;
     private Transform _dirTr;
+    private Quaternion _oriQuat;
 
 
 
@@ -290,6 +306,7 @@ public sealed class FlyingBird : MonoBehaviour
     {
         _dirTr    = transform.Find("dir");
         _animator = GetComponent<Animator>();
+        _oriQuat  = transform.rotation;
     }
 
     private void Start()
@@ -374,7 +391,7 @@ public sealed class FlyingBird : MonoBehaviour
     public void Fly()
     {
         if (_flyCoroutine != null) return;
-        _flyCoroutine = StartCoroutine(FlyProgress());
+        _flyCoroutine = StartCoroutine(FlyProgress2());
     }
 
     private void BirdLookAt( Vector3 lookPos, float ratio )
@@ -385,149 +402,259 @@ public sealed class FlyingBird : MonoBehaviour
         Vector3 currDir = (_dirTr.position - birdTr.position).normalized;
         Vector3 goalDir = (lookPos - birdTr.position).normalized;
 
-        float   angle   = Vector3.Angle(currDir, goalDir) * ratio;
-        Vector3 cross   = Vector3.Cross(currDir, goalDir);
+        /**지정한 회전축을 제거한다.....*/
+        if((UnusedAxisType & RotationAxis.Y)!=0)
+                currDir.y = goalDir.y = 0f;
 
+        if ((UnusedAxisType & RotationAxis.X) != 0)
+            currDir.x = goalDir.x = 0f;
 
-        /**X축 회전을 제거한다...*/
-        //if ((RotationAxisType & RotationAxis.X) == 0)
-        //{
-        //    currDir.
-        //}
+        if ((UnusedAxisType & RotationAxis.Z) != 0)
+            currDir.z = goalDir.z = 0f;
 
-        ///**Y축 회전을 제거한다...*/
-        //if ((RotationAxisType & RotationAxis.Y) == 0)
-        //{
-
-        //}
-
-        ///**Z축 회전을 제거한다...*/
-        //if ((RotationAxisType & RotationAxis.Z) == 0)
-        //{
-
-        //}
-
-
+        float   angle      = Vector3.Angle(currDir, goalDir);
+        Vector3 cross      = Vector3.Cross(currDir, goalDir);
         Quaternion rotQuat = Quaternion.AngleAxis(angle, cross);
         birdTr.rotation    = (rotQuat * birdTr.rotation);
         #endregion
     }
 
-    private IEnumerator FlyProgress()
+    private float GetBezierLength(int startIndex)
+    {
+        #region Omit
+        float ratio  = 0f;
+        float length = 0f;
+
+        ref Vector3 s = ref _FlyPoints[startIndex];
+        ref Vector3 c = ref _FlyPoints[startIndex + 1];
+        ref Vector3 g = ref _FlyPoints[startIndex + 2];
+
+        Vector3 prevPos = s;
+        do
+        {
+            Vector3 curr = IpariUtility.GetBezier(ref s, ref c, ref g, ratio);
+            length += (curr-prevPos).magnitude;
+            prevPos = curr;
+        }
+        while ((ratio += .1f) <= 1f);
+
+        return length;
+        #endregion
+    }
+
+    private float GetBezierMaxLength()
+    {
+        #region Omit
+        float length = 0f;
+        int Count    = (_FlyPointsCount - 1) / 2;
+        int index    = -2;
+
+        for (int i = 0; i < Count; i++)
+        {
+            length += GetBezierLength(index += 2);
+        }
+
+        return length;
+        #endregion
+    }
+
+    private float GetLineMaxLength()
+    {
+        #region Omit
+        int   Count    = (_FlyPointsCount - 1);
+        float totalLen = 0f;
+
+        for(int i=0; i<Count; i++)
+        {
+            totalLen += (_FlyPoints[i+1] - _FlyPoints[i]).magnitude;
+        }
+
+        return totalLen;
+        #endregion
+    }
+
+    private BezierDesc[] GetBezierDescTable()
+    {
+        #region Omit
+        int          Count = (_FlyPointsCount - 1) / 2;
+        float  totalLenDiv = (1f / GetBezierMaxLength()); 
+        BezierDesc[] descs = new BezierDesc[Count];
+
+        /**********************************************
+         *   룩업테이블을 채워넣는다.....
+         * *****/
+        int startIndex = -2;
+        for(int i=0; i<Count; i++)
+        {
+            ref BezierDesc desc = ref descs[i];
+            desc.startIndex     = (startIndex+=2);
+            desc.lengthRatio    = (GetBezierLength(startIndex) * totalLenDiv); 
+            desc.lengthRatioDiv = (1f/desc.lengthRatio);
+        }
+
+        return descs;
+        #endregion
+    }
+
+    private LineDesc[] GetLineDescTable()
+    {
+        #region Omit
+        int Count         = (_FlyPointsCount - 1);
+        float totalLenDiv = (1f/GetLineMaxLength());
+        LineDesc[] descs  = new LineDesc[Count];
+
+        for(int i=0; i<Count; i++)
+        {
+            ref LineDesc desc   = ref descs[i];
+            desc.lengthRatio    = ((_FlyPoints[i+1] - _FlyPoints[i]).magnitude * totalLenDiv);
+            desc.lengthRatioDiv = (1f/desc.lengthRatio);
+        }
+
+        return descs;
+        #endregion
+    }
+
+    private Vector3 GetFlyBezierPoint( float progressRatio, BezierDesc[] descs )
     {
         #region Omit
 
-        /*******************************
-         *   날기전의 대기동작...
-         * ***/
-        float currTime    = 0f;
-        float goalTimeDiv = (1f / DurationUntilFlight);
-        float rotDiv      = (1f / RotationDuration);
+        float totalRatio = 0f;
 
-        //_animator?.Play(ReadyAnimState);
-        Vector3 startForward = transform.forward;
-        Quaternion startQuat = transform.rotation;
+        int Count = descs.Length;
+        for(int i=0; i<Count; i++){
+
+            /**범위 안의 베지어 곡선을 계산한다.....*/
+            ref BezierDesc desc = ref descs[i];
+            if ((totalRatio+desc.lengthRatio)>=progressRatio)
+            {
+                progressRatio -= totalRatio;
+
+                ref Vector3 s = ref _FlyPoints[desc.startIndex];
+                ref Vector3 c = ref _FlyPoints[desc.startIndex + 1];
+                ref Vector3 g = ref _FlyPoints[desc.startIndex + 2];
+
+                return IpariUtility.GetBezier(ref s, ref c, ref g, (progressRatio * desc.lengthRatioDiv));
+            }
+
+            totalRatio += desc.lengthRatio;
+        }
+
+        return Vector3.zero;
+        #endregion
+    }
+
+    private Vector3 GetFlyLinePoint( float progressRatio, LineDesc[] descs )
+    {
+        #region Omit
+        float totalRatio = 0f;
+
+        int Count = descs.Length;
+        for (int i = 0; i < Count; i++){
+
+            /**범위 안의 베지어 곡선을 계산한다.....*/
+            ref LineDesc desc = ref descs[i];
+            if ((totalRatio + desc.lengthRatio) >= progressRatio)
+            {
+                progressRatio -= totalRatio;
+
+                Vector3 distance = (_FlyPoints[i + 1] - _FlyPoints[i]) * (progressRatio * desc.lengthRatioDiv);
+                return (_FlyPoints[i] + distance);
+            }
+
+            totalRatio += desc.lengthRatio;
+        }
+
+        return Vector3.zero;
+        #endregion
+    }
+
+    private IEnumerator FlyProgress2()
+    {
+        #region Omit
+
+        /***************************************
+         *    날기전의 대기동작이 있다면 적용한다....
+         * *****/
+        float currTime      = 0f;
+        float goalTimeDiv   = (1f / DurationUntilFlight);
+        float rotDiv        = (1f / RotationDuration);
+        float progressRatio = 0f;
 
         while (currTime < DurationUntilFlight)
         {
-            currTime += Time.deltaTime;
-            float progressRatio = Mathf.Clamp((currTime * goalTimeDiv), 0f, 1f);
+            currTime      += Time.deltaTime;
+            progressRatio = Mathf.Clamp((currTime * goalTimeDiv), 0f, 1f);
             BirdLookAt(_FlyPoints[1], progressRatio);
             yield return null;
         }
 
 
+        /****************************************
+         *    날아가는데 필요한 요소들을 구한다....
+         * ******/
+        currTime    = 0f;
+        goalTimeDiv = (1f / FlightDuration);
+
+        Transform birdTr = transform;
+
+
         /*****************************************
-         *   날아가는데 필요한 모든 요소들을 구한다...
-         * ***/
-        int Count           = 0;
-        float goalTime      = 0f;
-        goalTimeDiv         = 0f;
-        Transform birdTr    = transform;
-
-        /**베지어를 사용할 경우...*/
-        if (_FlyType == 1)
+         *   배지어를 사용할 경우...
+         * ****/
+        if(FlyType==1)
         {
-            Count = (_FlyPointsCount - 1) / 2;
-            goalTime = (FlightDuration / Count);
-            goalTimeDiv = (1f / goalTime);
-            currTime = 0f;
+            BezierDesc[] descs = GetBezierDescTable();
 
-            do
-            {
-                for (int i = 0; i < Count; i += 1)
+            do{
+
+                /**진행도에 따른 배지어 곡선을 계산한다....*/
+                currTime = 0f;
+                do
                 {
-                    Vector3 prevDir = birdTr.forward;
-                    int real = (i * 2);
-                    startQuat = transform.rotation;
+                    progressRatio  = Mathf.Clamp01((currTime+=Time.deltaTime)*goalTimeDiv);
+                    float rotRatio = Mathf.Clamp01((currTime * rotDiv)); 
 
-                    while (currTime < goalTime)
-                    {
+                    Vector3 nextPos = GetFlyBezierPoint(progressRatio, descs);
+                    BirdLookAt(nextPos, rotRatio);
+                    birdTr.position = nextPos;
 
-                        currTime += Time.deltaTime;
-                        float progressRatio = Mathf.Clamp01(currTime * goalTimeDiv);
-                        float rotRatio = Mathf.Clamp01(currTime * rotDiv);
-
-                        /**회전에 필요한 모든값들을 구한다...*/
-                        Vector3 nextPos = IpariUtility.GetBezier(
-                            ref _FlyPoints[real],
-                            ref _FlyPoints[real + 1],
-                            ref _FlyPoints[real + 2],
-                            progressRatio
-                        );
-
-                        BirdLookAt(_FlyPoints[real + 2], rotRatio);
-                        birdTr.position = nextPos;
-                        yield return null;
-                    }
-
-                    currTime -= goalTime;
+                    yield return null;
                 }
+                while (progressRatio<1f);
+
+                /**반복을 사용할 경우, 반복한다.....*/
             }
             while (UseFlyLoop);
         }
 
-        /**기본값..*/
-        else
+
+        /*****************************************
+         *   일반 직선을 사용할 경우.....
+         * *****/
+        LineDesc[] descs2 = GetLineDescTable();
+
+        do
         {
-            Count       = (_FlyPointsCount-1);
-            goalTime    = (FlightDuration / Count);
-            goalTimeDiv = (1f / goalTime);
-            currTime    = 0f;
 
-
+            /**진행도에 따른 배지어 곡선을 계산한다....*/
+            currTime = 0f;
             do
             {
-                /**날아가는 로직을 적용한다....*/
-                for (int i = 0; i < Count; i += 1){
+                progressRatio = Mathf.Clamp01((currTime += Time.deltaTime) * goalTimeDiv);
+                float rotRatio = Mathf.Clamp01((currTime * rotDiv));
 
-                    Vector3 prevDir = birdTr.forward;
-                    startQuat = transform.rotation;
+                Vector3 nextPos = GetFlyLinePoint(progressRatio, descs2);
+                BirdLookAt(nextPos, rotRatio);
+                birdTr.position = nextPos;
 
-                    while (currTime < goalTime)
-                    {
-                        currTime += Time.deltaTime;
-                        float progressRatio = Mathf.Clamp01(currTime * goalTimeDiv);
-                        float rotRatio = Mathf.Clamp01(currTime * rotDiv);
-                        Vector3 nextPos = _FlyPoints[i] + (_FlyPoints[i + 1] - _FlyPoints[i]) * progressRatio;
-
-                        BirdLookAt(_FlyPoints[i + 1], rotRatio);
-                        birdTr.position = nextPos;
-                        yield return null;
-                    }
-
-                    currTime = 0;
-                }
+                yield return null;
             }
-            while (UseFlyLoop);
-        }
+            while (progressRatio < 1f);
 
-        /**도착 후 파괴해야 한다면 파괴...*/
-        if(DestroyAtArrived){
-
-            Destroy(gameObject);
+            /**반복을 사용할 경우, 반복한다.....*/
         }
+        while (UseFlyLoop);
+
         #endregion
     }
-
 }
