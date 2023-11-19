@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ChapterController : MonoBehaviour
@@ -53,6 +54,7 @@ public class ChapterController : MonoBehaviour
                 UIManager.GetInstance().GetGameUI(GameUIType.CoCosi).GetComponent<CollectionCocosiUI>().SetCanvas(2,false);
                 break;
             case ChapterType.EndCredits:
+                FModAudioManager.PlayBGM(FModBGMEventType.tavuti_Credit);
                 GameManager.GetInstance().StartChapter(ChapterType.EndCredits);
                 break;
             case ChapterType.Test:

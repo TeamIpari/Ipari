@@ -62,6 +62,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
      * ***/
     private Collider   _collider;
     protected Material _SandMat;
+    private FModEventInstance sfxIns;
 
 
     /*****************************************
@@ -150,6 +151,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
             if(_currStopTime>0f && (_currStopTime-=deltaTime)<=0f)
             {
                 IpariUtility.StopGamePadVibration(10);
+                FModAudioManager.ApplyInstanceFade(sfxIns, 0f, 3f, 0, true);
                 IntakeSand(false);
             }
         }
@@ -288,6 +290,11 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         #endregion
     }
 
+    private void OnDestroy()
+    {
+        sfxIns.Destroy();
+    }
+
 
 
 
@@ -318,6 +325,8 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         _intakeDiv          = (1f / _intakeDuration);
         _startCenterOffset  = _currCenterOffset;
         _startPullSpeed     = _currPullSpeed;
+
+        //FModAudioManager.ApplyInstanceFade(sfxIns, 1f, 3f);
         #endregion
     }
 

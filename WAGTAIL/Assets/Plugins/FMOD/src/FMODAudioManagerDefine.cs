@@ -108,16 +108,17 @@ public struct FModParamValueRange
 
 public enum FModBGMEventType
 {
-   CrabBossBGM=27,
-   Chapter5BGM=28,
-   NepenthesBossBGM=29,
-   Chapter4BGM=30,
-   NepenthesRoad=31,
-   tavuti_ingame2=32,
-   test=33,
-   tavuti_ingame1=34,
-   Wagtail_bgm_title=35,
-   test2=36
+   tavuti_Credit=27,
+   CrabBossBGM=28,
+   Chapter5BGM=29,
+   NepenthesBossBGM=30,
+   Chapter4BGM=31,
+   NepenthesRoad=32,
+   tavuti_ingame2=33,
+   test=34,
+   tavuti_ingame1=35,
+   Wagtail_bgm_title=36,
+   test2=37
 }
 
 public enum FModSFXEventType
@@ -149,22 +150,22 @@ public enum FModSFXEventType
    Player_Hit=24,
    Player_Jump=25,
    Player_Landed=26,
-   BossNepen_SpitAttack=37,
-   BossNepen_Hit=38,
-   BossNepen_VineSmash=39,
-   BossNepen_Roar=40,
-   BossNepen_AcidBoom=41,
-   BossNepen_BombBurst=42,
-   BossNepen_Dead=43,
-   Crab_Hit=44,
-   Crab_SeedSpitOut=45,
-   Crab_Roar=46,
-   Crab_Smash=47,
-   Crab_ChangeSand=48,
-   Crab_BoomBurst=49,
-   Crab_SandWave=50,
-   Crab_Dead=51,
-   Crab_Atk3Smash=52
+   BossNepen_SpitAttack=38,
+   BossNepen_Hit=39,
+   BossNepen_VineSmash=40,
+   BossNepen_Roar=41,
+   BossNepen_AcidBoom=42,
+   BossNepen_BombBurst=43,
+   BossNepen_Dead=44,
+   Crab_Hit=45,
+   Crab_SeedSpitOut=46,
+   Crab_Roar=47,
+   Crab_Smash=48,
+   Crab_ChangeSand=49,
+   Crab_BoomBurst=50,
+   Crab_SandWave=51,
+   Crab_Dead=52,
+   Crab_Atk3Smash=53
 }
 
 public enum FModNoGroupEventType
@@ -176,7 +177,7 @@ public sealed class FModReferenceList
     public static readonly FMOD.GUID[] Events = new FMOD.GUID[]
     {
         new FMOD.GUID{ Data1=872762981, Data2=1252467944, Data3=-1386457176, Data4=-908974919 },
-        new FMOD.GUID{ Data1=1469482788, Data2=1203784929, Data3=1774485694, Data4=1735257830 },
+        new FMOD.GUID{ Data1=-120603783, Data2=1075879319, Data3=-475783489, Data4=1680564650 },
         new FMOD.GUID{ Data1=521967865, Data2=1095037392, Data3=-2000264523, Data4=1766900301 },
         new FMOD.GUID{ Data1=1783667186, Data2=1173746128, Data3=1226250647, Data4=1383568854 },
         new FMOD.GUID{ Data1=524088536, Data2=1209241081, Data3=979799986, Data4=1160229082 },
@@ -202,6 +203,7 @@ public sealed class FModReferenceList
         new FMOD.GUID{ Data1=-356480811, Data2=1261563164, Data3=-1823479120, Data4=-733505655 },
         new FMOD.GUID{ Data1=61617350, Data2=1314310624, Data3=-766163584, Data4=319510773 },
         new FMOD.GUID{ Data1=594495364, Data2=1183593499, Data3=849544592, Data4=732205388 },
+        new FMOD.GUID{ Data1=-248247204, Data2=1295731246, Data3=1140246709, Data4=1910538902 },
         new FMOD.GUID{ Data1=2087680138, Data2=1137614030, Data3=-974458185, Data4=-1355772786 },
         new FMOD.GUID{ Data1=718605923, Data2=1331647710, Data3=838851234, Data4=-72285666 },
         new FMOD.GUID{ Data1=1035370724, Data2=1231878928, Data3=1320145589, Data4=790482389 },
