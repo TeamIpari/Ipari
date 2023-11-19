@@ -252,8 +252,8 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
         // 접촉된 객체를 특정 지점으로 강제로 이동시켜주는 스크립트.
         Player player = Player.Instance;
-        if (player.movementSM.currentState != player.idle) return;
 
+        if (player.movementSM.currentState != player.idle && player.movementSM.currentState != player.carry) return;
         // 족장을 바라보라우 
         Vector3 lookDir;
         if(LookTarget == null)
