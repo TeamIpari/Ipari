@@ -151,7 +151,6 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
             if(_currStopTime>0f && (_currStopTime-=deltaTime)<=0f)
             {
                 IpariUtility.StopGamePadVibration(10);
-                FModAudioManager.ApplyInstanceFade(sfxIns, 0f, 3f, 0, true);
                 IntakeSand(false);
             }
         }
@@ -292,7 +291,7 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
 
     private void OnDestroy()
     {
-        sfxIns.Destroy();
+        if(sfxIns.IsValid) sfxIns.Destroy();
     }
 
 
@@ -326,7 +325,23 @@ public abstract class SandScriptBase : MonoBehaviour, IEnviroment
         _startCenterOffset  = _currCenterOffset;
         _startPullSpeed     = _currPullSpeed;
 
-        //FModAudioManager.ApplyInstanceFade(sfxIns, 1f, 3f);
+        /****************************************************
+         *   모래 침식 사운드를 재생시킨다.....
+         * ****/
+        if (apply)
+        {
+            sfxIns = FModAudioManager.CreateInstance(FModSFXEventType.SandFall3D);
+            sfxIns.Volume = 0f;
+            sfxIns.Position = (transform.position + SandIdleCenterOffset);
+            sfxIns.Set3DDistance(10f, 30f);
+            sfxIns.Play();
+
+            FModAudioManager.ApplyInstanceFade(sfxIns, 2.5f, 3f);
+        }
+        else if (sfxIns.IsValid){
+
+            FModAudioManager.ApplyInstanceFade(sfxIns, 0f, 3f, -999, true);
+        }
         #endregion
     }
 
