@@ -335,7 +335,6 @@ public sealed class MagicCrabHand : MonoBehaviour
             timeLeft -= deltaTime;
 
             progressRatio = Mathf.Clamp01(timeLeft * sizeupDiv);
-            //tr.localScale = (goalScale * progressRatio);
             _glowMat.SetFloat("_alpha", progressRatio);
 
             yield return null;

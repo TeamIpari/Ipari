@@ -181,6 +181,7 @@ public sealed class WhaleHorn : MonoBehaviour
         /****************************************************
          *   뿔을 분리시키고, 물리 작용이 가능하도록 한다....
          * *****/
+        #region Drop_Horn
         transform.parent  = null;
         _body.isKinematic = false;
         _body.AddTorque(Vector3.left * 50f);
@@ -188,7 +189,7 @@ public sealed class WhaleHorn : MonoBehaviour
 
         float time = 3f;
         while ((time -= Time.deltaTime)>0f) yield return null;
-
+        #endregion
 
 
         /************************************************
@@ -208,6 +209,9 @@ public sealed class WhaleHorn : MonoBehaviour
         float   scale    = 0f;
         float  rotDelay  = 1.2f;
         WaitForFixedUpdate waitTime = new WaitForFixedUpdate();
+
+        /**플레이어와 접촉함으로써 발생하는 영향을 제거한다....*/
+        Physics.IgnoreCollision(collider, Player.Instance.controller, true);
 
         _body.AddTorque((goalPos - collider.bounds.center).normalized * 200f, ForceMode.Acceleration);
         do 
@@ -303,7 +307,7 @@ public sealed class WhaleHorn : MonoBehaviour
         try { UIManager.GetInstance().GetGameUI(GameUIType.Fade).GetComponent<FadeUI>().FadeIn(FadeType.LetterBox); } catch { }
         Player.Instance.playerInput.enabled = false;
 
-        Transform talkTr     = TalkableWhale.transform;
+        Transform talkTr     = GameObject.Find("TalkPosition").transform;
         Transform playerTr   = Player.Instance.transform;
         Animator  playerAnim = Player.Instance.animator; 
         float     playerSpd  = Player.Instance.playerSpeed;
@@ -326,7 +330,7 @@ public sealed class WhaleHorn : MonoBehaviour
             playerAnim.SetFloat("speed", Vector3.Distance(ArrivalPoint, playerTr.position) - 0.2f, playerDmp, Time.deltaTime);
 
             /**적절한 위치에 진입하면 이동을 마무리짓는다...*/
-            if (floatdst < 13.5f){
+            if (floatdst < 1.5f){
 
                 playerAnim.SetFloat("speed", 0f, playerDmp, Time.deltaTime);
                 break;
