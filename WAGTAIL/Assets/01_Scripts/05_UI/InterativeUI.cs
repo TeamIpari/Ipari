@@ -27,6 +27,21 @@ public sealed class InterativeUI : GamePadInputSpriteChanger
             return (_ins._show==ShowType.Visible);
         }
     }
+    public static bool         Showable
+    {
+        get { return (_ins!=null? _ins._showable:false); }
+        set
+        {
+            if (_ins == null) return;
+
+            /**보여질 수 없다면 숨긴다...*/
+            if((_ins._showable = value)){
+
+                HideUI();
+                Debug.Log("이제 안보임!!!");
+            }
+        }
+    }
     public static string       Text
     {
         get
@@ -45,7 +60,7 @@ public sealed class InterativeUI : GamePadInputSpriteChanger
     {
         get
         {
-            if(_ins== null || _ins._mainCam == null) return Vector3.zero;
+            if(_ins== null || _ins._mainCam == null) return (Vector3.up*99999f);
             return _ins._mainCam.ScreenToWorldPoint(_ins._rectTr.position);   
         }
         set
@@ -58,7 +73,7 @@ public sealed class InterativeUI : GamePadInputSpriteChanger
     {
         get
         {
-            if (_ins == null) return Vector3.zero;
+            if (_ins == null) return (Vector3.up*99999f);
             return _ins._rectTr.position;
         }
         set
@@ -79,6 +94,7 @@ public sealed class InterativeUI : GamePadInputSpriteChanger
     private TextMeshProUGUI _text;
     private RectTransform   _rectTr;
     private ShowType        _show = ShowType.InVisible;
+    private bool            _showable = true;
 
     private static InterativeUI _ins;
     private readonly static string[] _anims = new string[2] { "Interaction_FadeIn", "Interaction_FadeOut" };
@@ -127,7 +143,12 @@ public sealed class InterativeUI : GamePadInputSpriteChanger
     public static void PopupUI(ShowType showType, string msg, Vector3 worldPosition, bool forceAnimPlay=false)
     {
         #region Omit
-        if (_ins == null) return;
+        if (_ins == null || _ins._showable == false)
+        {
+            HideUI();
+            return;
+        }
+
 
         /**표시여부에 알맞은 애니메이션을 실행한다...*/
         if(_ins._show != showType || forceAnimPlay) {

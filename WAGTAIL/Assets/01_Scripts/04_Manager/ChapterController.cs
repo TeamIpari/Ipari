@@ -6,13 +6,21 @@ using UnityEngine;
 public class ChapterController : MonoBehaviour
 {
     public ChapterType Type;
+    private static GamePadUIController _startBtn;
     
     // Start is called before the first frame update
     void Start()
     {
+        if(_startBtn==null)
+        {
+            UIManager ui = UIManager.GetInstance();
+            _startBtn    = ui.transform.Find("MainMenu").Find("Title_Canvas").Find("TitleBtnArea").Find("Btn_Start").GetComponent<GamePadUIController>();
+        }
+
         switch (Type)
         {
             case ChapterType.Title:
+                GamePadUIController.Current = _startBtn;
                 UIManager.GetInstance().SwitchCanvas(CanvasType.MainMenu);
                 UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(true);
                 FModAudioManager.UsedBGMAutoFade = true;
