@@ -265,18 +265,19 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         if (LookTarget == null)
         {
             dir = (transform.position - player.transform.position).normalized;
-            lookDir = IpariUtility.AngleToDirY(this.transform.eulerAngles, 0f);
+            lookDir = IpariUtility.AngleToDirY(player.transform.eulerAngles, 0f);
         }
         else
         {
             dir = (LookTarget.transform.position - player.transform.position).normalized;
-            lookDir = IpariUtility.AngleToDirY(this.transform.eulerAngles, 0f);
+            lookDir = IpariUtility.AngleToDirY(player.transform.eulerAngles, 0f);
         }
         player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, dir) * player.transform.rotation);
 
         dot = Vector3.Dot(lookDir, dir);
         angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-        if(angle < 0.1f)
+        Debug.Log($"{angle}");
+        if(angle < 50f)
         {
             _isRotate = false;
             Player.Instance.playerInput.enabled = true;
@@ -302,10 +303,10 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
         if (player.movementSM.currentState != player.idle && player.movementSM.currentState != player.carry)
         {
-            player.transform.rotation = Quaternion.LookRotation(lookDir);
             //player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, lookDir) * player.transform.rotation);
             return;
         }
+        //player.transform.rotation = Quaternion.LookRotation(lookDir);
 
         Vector3 ArrivalPoint;
         // 목표지점은 어떻게 지정할 것인가? 
@@ -345,6 +346,13 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         InterativeUI.Showable = false;
         Player.Instance.playerInput.enabled = false;
         // 내 앞까지 와라
+        Player.Instance.transform.rotation = Quaternion.LookRotation(LookTarget == null ? transform.position : LookTarget.transform.position ).normalized ;
+        Vector3 lookDir;
+        if (LookTarget == null)
+            lookDir = (transform.position - Player.Instance.transform.position).normalized;
+        else
+            lookDir = (LookTarget.transform.position - Player.Instance.transform.position).normalized;
+        Player.Instance.transform.rotation = (IpariUtility.GetQuatBetweenVector(Player.Instance.transform.forward, lookDir) * Player.Instance.transform.rotation);
 
         _IsMoving = true;
 
