@@ -15,9 +15,14 @@ public class SceneLoader : Singleton<SceneLoader>
     [SerializeField] private CanvasGroup _canvasGruop;
     [SerializeField] private Image _loadingBar;
     private string _loadSceneName;
+
+    private bool _isLoading = false;
     
     public void LoadScene(string sceneName)
     {
+        if (_isLoading) return;
+
+        _isLoading = true;
         gameObject.SetActive(true);
         SceneManager.sceneLoaded += LoadSceneEnd;
         _loadSceneName = sceneName;
@@ -64,6 +69,8 @@ public class SceneLoader : Singleton<SceneLoader>
         if(scene.name == _loadSceneName)
         {
             StartCoroutine(Fade(false));
+            _isLoading = false;
+            InterativeUI.Showable = true;
             SceneManager.sceneLoaded -= LoadSceneEnd;
         }
     }

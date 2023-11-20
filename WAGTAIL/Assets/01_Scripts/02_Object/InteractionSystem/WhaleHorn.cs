@@ -252,6 +252,7 @@ public sealed class WhaleHorn : MonoBehaviour
                     {
                         /**상호작용을 불가능하게 하고, 페이드를 적용한다....*/
                         dispatcher.IsInteractable = false;
+                        InterativeUI.Showable = false;
 
                         Player.Instance.stiffen.StiffenTime = -1f;
                         Player.Instance.movementSM.ChangeState(Player.Instance.stiffen);

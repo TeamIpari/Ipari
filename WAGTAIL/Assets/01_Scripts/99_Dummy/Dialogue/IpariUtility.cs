@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace IPariUtility
 {
@@ -388,9 +389,12 @@ namespace IPariUtility
             #endregion
         }
 
-        internal static void ApplyImageFade(FadeOutType type, Image target, float changeTime, float secondChangeDelay = 0f, int id = 0, Color startColor = default, float whiteAlpha = 0f, float darkAlpha = 1f, float startDelay = 0f, Color? goalColor = null)
+        internal static void ApplyImageFade(FadeOutType type, Image target, float changeTime, float secondChangeDelay = 0f, int id = 0, Color startColor = default, float whiteAlpha = 0f, float darkAlpha = 1f, float startDelay = 0f, Color? goalColor = null, UnityEvent subEvent=null, UnityEvent subEvent2=null)
         {
-            GameManager.GetInstance().StartCoroutine(FadeOutProcess(type, target, changeTime, secondChangeDelay, id, startColor, whiteAlpha, darkAlpha, startDelay, goalColor));
+            if (target == null) return;
+
+            target.StopAllCoroutines();
+            target.StartCoroutine(FadeOutProcess(type, target, changeTime, secondChangeDelay, id, startColor, whiteAlpha, darkAlpha, startDelay, goalColor, subEvent, subEvent2));
         }
 
 
@@ -604,7 +608,7 @@ namespace IPariUtility
             #endregion
         }
 
-        private static IEnumerator FadeOutProcess(FadeOutType type, Image handler, float taktTime, float delayTime = 0f, int id = 0, Color color = default, float whiteAlpha = 0f, float darkAlpha = 1f, float startDelay = 0f, Color? goalColor = null)
+        private static IEnumerator FadeOutProcess(FadeOutType type, Image handler, float taktTime, float delayTime = 0f, int id = 0, Color color = default, float whiteAlpha = 0f, float darkAlpha = 1f, float startDelay = 0f, Color? goalColor = null, UnityEvent subEvent = null, UnityEvent subEvent2=null)
         {
             #region Omit
             float start = ((int)type & 0b100) == 0 ? whiteAlpha : darkAlpha;
@@ -614,8 +618,7 @@ namespace IPariUtility
             if (taktTime < 0) yield break;
 
             //알파 초기화
-            Color imgColor = handler.color;
-            imgColor       = color;
+            Color imgColor = color;
             imgColor.a     = start;
             handler.color  = imgColor;
 
@@ -649,6 +652,7 @@ namespace IPariUtility
             handler.color = imgColor;
 
             OnFadeChange?.Invoke(imgColor.a == 1.0f, id);
+            subEvent?.Invoke();
 
             //중간 마무리 여부
             if (goal1 == goal2) yield break;
@@ -676,6 +680,7 @@ namespace IPariUtility
             handler.color = imgColor;
 
             OnFadeChange?.Invoke(imgColor.a == 1.0f, id);
+            subEvent2?.Invoke();
             #endregion
         }
     }
