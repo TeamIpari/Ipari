@@ -20,7 +20,8 @@ public class ChapterController : MonoBehaviour
         switch (Type)
         {
             case ChapterType.Title:
-                GamePadUIController.Current = _startBtn;
+                GamePadUIController.UseCursorAutoVisible = true;
+                GamePadUIController.Current              = _startBtn;
                 UIManager.GetInstance().SwitchCanvas(CanvasType.MainMenu);
                 UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(true);
                 FModAudioManager.UsedBGMAutoFade = true;

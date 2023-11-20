@@ -143,6 +143,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
             }
             player.movementSM.ChangeState(player.idle);
             player.currentInteractable = null;
+            InterativeUI.Showable      = true;
             Debug.LogWarning("SaySpeaker -> LoadManager: 출력할 대화내역이 존재하지않습니다..");
             yield break;
         }
@@ -204,6 +205,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
         player.movementSM.ChangeState(player.idle);
         player.currentInteractable = null;
+        InterativeUI.Showable      = true;
         #endregion
     }
 
@@ -301,6 +303,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
 
         }
         // 강제로 이동시키기 위해 InputSystem을 꺼줌.
+        InterativeUI.Showable = false;
         Player.Instance.playerInput.enabled = false;
         // 내 앞까지 와라
 
