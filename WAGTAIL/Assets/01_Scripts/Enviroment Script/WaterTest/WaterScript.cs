@@ -153,7 +153,7 @@ public sealed class WaterScript : MonoBehaviour
                 ParticleSystem system = GetWaterFX();
                 system.gameObject.SetActive(true);
 
-                Vector3 pos = result.point;
+                Vector3 pos = result.point + (result.normal*.05f);
                 system.transform.position = pos;
                 system.Play();
 
