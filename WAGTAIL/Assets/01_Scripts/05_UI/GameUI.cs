@@ -36,6 +36,7 @@ public class GameUI : MonoBehaviour
     
     public void Continue()
     {
+        InterativeUI.Showable = true;
         GamePadUIController.UseCursorAutoVisible = false;
         GamePadUIController.Current.OnDisSelect?.Invoke();
         GamePadUIController.Current = null;
@@ -63,7 +64,7 @@ public class GameUI : MonoBehaviour
         _pauseAnimator.Play("Pause_FadeIn", 0, 0f);
         _lastBGMVoulme = FModAudioManager.GetBusVolume(FModBusType.BGM);
         FModAudioManager.SetBusVolume(FModBusType.BGM, _lastBGMVoulme*.5f);
-        InterativeUI.HideUI();
+        InterativeUI.Showable = false;
         Time.timeScale = 0f;
     }
 

@@ -621,7 +621,7 @@ public sealed class BossCrab : Enemy
 
     private void Start()
     {
-        FModAudioManager.PlayBGM(FModBGMEventType.Chapter4BGM);
+        FModAudioManager.PlayBGM(FModBGMEventType.Chapter5BGM);
     }
 
     private void Update()

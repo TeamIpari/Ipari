@@ -82,7 +82,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         /**************************************
          *   로직을 갱신한다....
          * ***/
-        ApplySeedsIgonre();
+        //ApplySeedsIgonre();
 
 
         /*************************************
@@ -271,6 +271,7 @@ public sealed class BossCrabSowingSeedsState : AIAttackState
         Vector3 unitDir  = Random.onUnitSphere;
         float   randRad  = Random.Range(0.0f, _desc.rad);
         unitDir.y = 0f;
+        unitDir.z = -Mathf.Abs(unitDir.z);
 
         RaycastHit result;
         bool isHit = IpariUtility.GetPlayerFloorinfo(
