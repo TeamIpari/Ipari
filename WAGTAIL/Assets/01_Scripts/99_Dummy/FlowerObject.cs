@@ -159,9 +159,9 @@ public sealed class FlowerObject : MonoBehaviour
                 newCoin.UseRigidbody(true,true);
                 newCoin.Body.velocity = IpariUtility.CaculateVelocity(Search(), flowerPos, CoinFlightTime, .5f);
 
-                Transform coinTr = newCoin.transform;
-                Vector3 coinPos = flowerPos;
-                Quaternion coinQuat = Quaternion.Euler(90f, 0f, 0f);
+                Transform  coinTr      = newCoin.transform;
+                Vector3    coinPos     = flowerPos;
+                Quaternion coinQuat    = Quaternion.Euler(90f, 0f, 0f);
                 coinTr.SetPositionAndRotation(coinPos, coinQuat);
             }
         }
@@ -173,6 +173,8 @@ public sealed class FlowerObject : MonoBehaviour
         if(FoldoutSFX!=null){
 
             GameObject foldoutVFX = Instantiate(FoldoutSFX, transform.position, transform.rotation);
+            foldoutVFX.transform.position   = transform.position + (_upLeafs[0].leafTr.forward * 3f);
+            foldoutVFX.transform.localScale = (Vector3.one*.6f);
             Destroy(foldoutVFX, 7);
         }
 
