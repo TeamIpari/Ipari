@@ -34,6 +34,7 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
     [SerializeField] private bool           _IsSaying    = false;
     [SerializeField] private bool           _IsTalkable  = true;
     [SerializeField] private bool           _IsMoving    = false;
+    [SerializeField] private bool           _isRotate    = false;
     [SerializeField] private bool           IsOneshot    = false;
     [SerializeField] public  int            SayType     = 1;
     [SerializeField, DefaultValue(1.5f)] public float           TargetDistance = 1.5f;
@@ -92,6 +93,10 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         if(_IsMoving)
         {
             MoveToArrivalPoint();
+        }
+        else if(_isRotate)
+        {
+            RotateToTargetPoint();
         }
 
         #endregion
@@ -248,23 +253,60 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         return false;
     }
 
+    public void RotateToTargetPoint()
+    {
+        Player player = Player.Instance;
+        // 족장을 바라보라우 
+        Vector3 lookDir, dir;
+        float dot, angle ;
+        lookDir.y = 0f;
+
+        // 접촉된 객체를 특정 지점으로 강제로 이동시켜주는 스크립트.
+        if (LookTarget == null)
+        {
+            dir = (transform.position - player.transform.position).normalized;
+            lookDir = IpariUtility.AngleToDirY(this.transform.eulerAngles, 0f);
+        }
+        else
+        {
+            dir = (LookTarget.transform.position - player.transform.position).normalized;
+            lookDir = IpariUtility.AngleToDirY(this.transform.eulerAngles, 0f);
+        }
+        player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, dir) * player.transform.rotation);
+
+        dot = Vector3.Dot(lookDir, dir);
+        angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+        if(angle < 0.1f)
+        {
+            _isRotate = false;
+            Player.Instance.playerInput.enabled = true;
+
+            PlaySay();
+        }
+    }
+
     public void MoveToArrivalPoint()
     {
         #region Omit
 
-        // 접촉된 객체를 특정 지점으로 강제로 이동시켜주는 스크립트.
         Player player = Player.Instance;
-
-        if (player.movementSM.currentState != player.idle && player.movementSM.currentState != player.carry) return;
         // 족장을 바라보라우 
         Vector3 lookDir;
-        if(LookTarget == null)
+        lookDir.y = 0f;
+
+        // 접촉된 객체를 특정 지점으로 강제로 이동시켜주는 스크립트.
+        if (LookTarget == null)
             lookDir = (transform.position - player.transform.position).normalized;
-        else 
+        else
             lookDir = (LookTarget.transform.position - player.transform.position).normalized;
 
-        lookDir.y = 0f;
-        player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, lookDir) * player.transform.rotation);
+        if (player.movementSM.currentState != player.idle && player.movementSM.currentState != player.carry)
+        {
+            player.transform.rotation = Quaternion.LookRotation(lookDir);
+            //player.transform.rotation = (IpariUtility.GetQuatBetweenVector(player.transform.forward, lookDir) * player.transform.rotation);
+            return;
+        }
+
         Vector3 ArrivalPoint;
         // 목표지점은 어떻게 지정할 것인가? 
         if (MoveTarget == null)
@@ -278,15 +320,12 @@ public sealed class SaySpeaker : MonoBehaviour, IInteractable
         player.animator.SetFloat("speed", Vector3.Distance(ArrivalPoint, player.transform.position) - 0.2f, player.speedDampTime, Time.deltaTime);
 
         // 거리에 따른 속도 변화 Max를 넘어가면 Max값으로 고정하고 가까워질수록 느려지게
-        //Debug.Log($"{Vector3.Distance(ArrivalPoint, player.transform.position)}");
+
         if (Vector3.Distance(ArrivalPoint, player.transform.position) < 1.4f)
         {
             _IsMoving = false;
-            Player.Instance.playerInput.enabled = true;
-            
-            PlaySay();
+            _isRotate = true;
         }
-
         #endregion
     }
 
