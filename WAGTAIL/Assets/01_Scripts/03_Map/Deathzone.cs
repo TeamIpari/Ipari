@@ -13,7 +13,7 @@ public class Deathzone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("¹âÀº DeathZone" + gameObject.name);
+            Debug.Log("ï¿½ï¿½ï¿½ï¿½ DeathZone : " + gameObject.name);
             other.GetComponent<Player>().isDead = true;
         }
     }
@@ -22,7 +22,7 @@ public class Deathzone : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("¹âÀº DeathZone" + gameObject.name);
+            Debug.Log("ï¿½ï¿½ï¿½ï¿½ DeathZone : " + gameObject.name);
             other.gameObject.GetComponent<Player>().isDead = true;
         }
     }
