@@ -53,26 +53,27 @@ public class AcidBomb : Bullet
 
     private void OnTriggerEnter(Collider other)
     {
+        FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNepen_AcidBoom);
+        BulletHit(other.transform);
+        Destroy(this.gameObject);
         // 강띵호가 추가함
         if (other.CompareTag("Player"))
         {
-            Debug.Log("맞음");
             FModAudioManager.PlayOneShotSFX(
                 FModSFXEventType.Player_Hit,
                 FModLocalParamType.PlayerHitType,
                 FModParamLabel.PlayerHitType.MiniNepenthes_Attack,
-                other.transform.position,
-                10f
+                other.transform.position
             );
             other.GetComponent<Player>().isDead = true;
         }
         // ==========================================================
+        // 부서지는거 해결하려면 여기.
         if (other.CompareTag("Platform"))
         {
-            other.GetComponent<IEnviroment>().ExecutionFunction(0.5f);
+            DestroyPlatform();
+            //collision.collider.GetComponent<IEnviroment>().ExecutionFunction(0.0f);
         }
-        BulletHit(other.transform);
-        Destroy(this.gameObject);
     }
 
     private void OnCollisionEnter(Collision collision)
