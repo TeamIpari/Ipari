@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using FMODUnity;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -539,8 +540,22 @@ public sealed class PlatformObject : MonoBehaviour, IEnviroment
             Transform objTransform = _onPlatformObjects[i].transform;
 
             if (objTransform.parent==transform){
-
-                objTransform.transform.SetParent(null);
+                /* 플레이어일 경우 부모를 해제해줄 때 버그가 생겨서 임시로 예외처리 진행. */
+                if (objTransform.GetComponent<Player>() != null)
+                {
+                    //Debug.Log("Player parent is null");
+                    var player = objTransform.GetComponent<Player>();
+                    objTransform.transform.SetParent(null);
+                    player.enabled = true;
+                    player.playerInput.enabled = true;
+                    player.gameObject.GetComponent<StudioListener>().enabled = true;
+                }
+                
+                else
+                {
+                    //Debug.Log("Object parent is null");
+                    objTransform.transform.parent = null;
+                }
             }
         }
         #endregion

@@ -49,6 +49,7 @@ public class LandingState : State
         
         if (player.isDead && player.movementSM.currentState != player.death)
         {
+            player.animator.Rebind();
             stateMachine.ChangeState(player.death);
             return;
         }

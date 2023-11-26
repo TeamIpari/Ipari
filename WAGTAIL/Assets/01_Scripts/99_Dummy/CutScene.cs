@@ -81,11 +81,11 @@ public class CutScene : MonoBehaviour
     {
         bool bInputNextKey = (Input.GetKeyDown(KeyCode.F) || (Gamepad.current!=null && Gamepad.current.buttonWest.value!=0)) && isSkip && FKeyCooldown();
         bool bSceneState   = sceneCount > 0 && CutScenes[sceneCount - 1].state == PlayState.Paused;
-        Debug.Log($"{bInputNextKey} && { bSceneState}");
+        //Debug.Log($"{bInputNextKey} && { bSceneState}");
         if (bInputNextKey || bSceneState)
         {
             FKeyWaitTimer = 0;
-            Debug.Log($"{sceneCount >= CutScenes.Length} &&{ CutScenes[sceneCount - 1].state == PlayState.Paused}");
+            //Debug.Log($"{sceneCount >= CutScenes.Length} &&{ CutScenes[sceneCount - 1].state == PlayState.Paused}");
             if (sceneCount >= CutScenes.Length)
                 //&& CutScenes[sceneCount - 1].state == PlayState.Paused) 
                 //|| sceneCount >= CutScenes.Length && )
