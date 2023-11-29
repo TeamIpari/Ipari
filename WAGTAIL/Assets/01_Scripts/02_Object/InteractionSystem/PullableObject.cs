@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using IPariUtility;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -118,6 +117,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         private SerializedProperty UseFixedMaxLengthProperty;
         private SerializedProperty FixedMaxLengthProperty;
         private SerializedProperty EventFlagsProperty;
+        private SerializedProperty LineRendererProperty;
 
 
         //=====================================================
@@ -352,6 +352,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
                 OnFullyExtendedProperty          = serializedObject.FindProperty("OnFullyExtended");
                 OnPullStartProperty              = serializedObject.FindProperty("OnPullStart");
                 OnBreakProperty                  = serializedObject.FindProperty("OnBreak");
+                LineRendererProperty             = serializedObject.FindProperty("_LineRenderer");
             }
 
             /**스타일 룩업테이블 초기화....*/
@@ -515,11 +516,15 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         private void GUI_ShowGrabTarget()
         {
             #region Omit
-            if (GrabTargetProperty == null) return;
+            if (GrabTargetProperty == null || LineRendererProperty==null) return;
 
             /**IK적용 여부...*/
             ApplyUpdateProperty.boolValue = EditorGUILayout.Toggle("Apply Update", ApplyUpdateProperty.boolValue);
 
+
+            /**********************************************************
+             *   잡는 지점을 나타내는 GameObject의 참조필드를 표시한다...
+             * ****/
             EditorGUILayout.BeginHorizontal();
             {
                 /**GrabTarget 참조필드...*/
@@ -531,6 +536,17 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
             }
             EditorGUILayout.EndHorizontal();
+
+
+            /***************************************************
+             *   라인 랜더러의 참조필드를 표시한다....
+             * ****/
+            using (var scope = new EditorGUI.ChangeCheckScope()){
+
+                Object value = EditorGUILayout.ObjectField("Line Renderer", LineRendererProperty.objectReferenceValue, typeof(LineRenderer), true);
+                if (scope.changed) LineRendererProperty.objectReferenceValue = value;
+            }
+
 
             #endregion
         }
@@ -692,6 +708,8 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     #endregion
 
     #region Define
+    public delegate void PullableDelegate();
+
     [System.Serializable]
     public sealed class PullableObjEvent : UnityEvent
     {
@@ -714,12 +732,12 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         [System.NonSerialized] public float     lengthRatio;
     }
     #endregion
-    
+
     //=========================================
     /////            Property             /////
     //=========================================
-    public string       InteractionPrompt   { get; set; } = "당기기";
-    public Vector3      InteractPopupOffset { get; set; } = (Vector3.up*1.5f);
+    public string       InteractionPrompt { get; set; } = "당기기";
+    public Vector3      InteractPopupOffset { get; set; } = (Vector3.up * 1.5f);
     public float        MaxLength
     {
         get
@@ -727,10 +745,10 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             /*************************************
              *   각 본들의 길이의 총합을 구한다.
              * ***/
-            if(_fullyExtendedLen>0f) return _fullyExtendedLen;
+            if(_fullyExtendedLen>0f && IsValid) return _fullyExtendedLen;
 
             float len = 0f;
-            int Count = _datas.Length;
+            int Count = (!_awakeInit? _datas.Length:_dataCount);
 
             for (int i = 1; i < Count; i++){
 
@@ -774,6 +792,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         }
     }
     public bool         IsBroken            { get; private set; } = false;
+    public bool         IsValid             { get; private set; } = false;
     public bool         IsDestroy           { get; private set; } = false;
     public int          BoneCount           { get { return _dataCount; } }
     public Vector3      StartPosition
@@ -815,7 +834,6 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
                     _fullyExtendedLen = 5f;
                     _fullyExtendedDiv = (1f / _fullyExtendedLen);
-
                 }
             }
             else
@@ -831,6 +849,21 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             }
         }
     }
+    public LineRenderer LineRenderer
+    {
+        get { return _LineRenderer; }
+        set
+        {
+            _LineRenderer = value;
+            
+            /**라인 랜더러가 유효할 경우 개수를 갱신한다....*/
+            if(_LineRenderer!=null)
+            {
+                _LineRenderer.positionCount = _dataCount;
+                _LineRenderer.useWorldSpace = true;
+            }
+        }
+    }
 
     [SerializeField] public float            MaxScale          = 1.5f;
     [SerializeField] public float            StrechVibePow     = 3f;
@@ -838,11 +871,14 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     [SerializeField] public bool             UseFixedVibe      = false;
     [SerializeField] public bool             UseFixedMaxLength = false;
     [SerializeField] public bool             ApplyUpdate       = true;
-    [SerializeField] private GameObject       _GrabTarget; 
+    [SerializeField] private GameObject       _GrabTarget;
+    [SerializeField] private LineRenderer     _LineRenderer;
     [SerializeField] public  PullableObjEvent OnPullRelease;
     [SerializeField] public  PullableObjEvent OnBreak;
     [SerializeField] public  PullableObjEvent OnPullStart;
     [SerializeField] public  PullableObjEvent OnFullyExtended;
+
+    public PullableDelegate OnLateUpdate;
 
 
 
@@ -863,6 +899,8 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     private float       _fullyExtendedDiv  = -1f;
     private float       _boneCountDiv      = 1f;
     private bool        _unpackParents     = false;
+    private bool        _awakeInit         = false;
+
 
     /**줄의 반동에 관련된 필드...*/
     private float  _lastExtendedLen = 0f;
@@ -892,13 +930,15 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
         Init(true, ApplyUpdate);
 
-        /**마지막 본의 자식부모 관계를 해지한다...*/
+        LineRenderer = _LineRenderer;
+        _awakeInit   = true;
         #endregion
     }
 
     private void LateUpdate()
     {
-        if (_dataCount < 2 || ApplyUpdate==false) return;
+        #region Omit
+        if (_dataCount < 2 || ApplyUpdate==false || IsValid==false) return;
 
         /*************************************
          *   외부로부터 당겨질 경우의 처리를 한다..
@@ -911,6 +951,9 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
                 /**완전히 당겨지지 않았을 경우의 처리...*/
                 UpdateLookAtTarget(HoldingPoint.transform.position);
             }
+
+            UpdateLineRenderer();
+            OnLateUpdate?.Invoke();
             return;
         }
 
@@ -925,6 +968,10 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             /**천천히 원상복귀되는 경우의 처리...*/
             UpdateExtendedRestore();
         }
+
+        UpdateLineRenderer();
+        OnLateUpdate?.Invoke();
+        #endregion
     }
 
     private void OnDrawGizmos()
@@ -1006,7 +1053,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         ref BoneData nextBone = ref _datas[applyIndex+1];
 
         Vector3 bone2Target = (target - bone.OriginPos).normalized;
-        Quaternion rotQuat  = IpariUtility.GetQuatBetweenVector(bone.originDir, bone2Target);
+        Quaternion rotQuat  = GetQuatBetweenVector(bone.originDir, bone2Target);
 
         bone.Tr.position        = target + bone2Target*(-bone.originLength);
         bone.Tr.rotation        = (rotQuat*bone.OriginQuat);
@@ -1115,10 +1162,10 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
                 ref BoneData curr = ref _datas[i];
                 ref BoneData next = ref _datas[i+1];
 
-                Vector3 currBezier = IpariUtility.GetBezier(ref a, ref cp, ref b, ratio);
-                Vector3 nextBezier = IpariUtility.GetBezier(ref a, ref cp, ref b, (ratio += curr.lengthRatio));
+                Vector3 currBezier = GetBezier(ref a, ref cp, ref b, ratio);
+                Vector3 nextBezier = GetBezier(ref a, ref cp, ref b, (ratio += curr.lengthRatio));
                 Vector3 curr2Next  = (nextBezier-currBezier).normalized;
-                Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(curr.originDir, curr2Next);
+                Quaternion rotQuat = GetQuatBetweenVector(curr.originDir, curr2Next);
 
                 next.Tr.position = nextBezier;
                 curr.Tr.rotation = (rotQuat * curr.OriginQuat);
@@ -1157,7 +1204,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             ref BoneData next = ref _datas[i + 1];
 
             Vector3 currDir    = (next.Tr.position - curr.Tr.position).normalized;
-            Quaternion rotQuat = IpariUtility.GetQuatBetweenVector(currDir, curr.originDir, delta);
+            Quaternion rotQuat = GetQuatBetweenVector(currDir, curr.originDir, delta);
 
             curr.Tr.position +=  (curr.OriginPos - curr.Tr.position) * delta;
             curr.Tr.rotation =  (rotQuat * curr.Tr.rotation);
@@ -1234,7 +1281,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
     private void Init(bool Apply, bool unpackParent=true)
     {
         #region Omit
-        if (Apply == false) return;
+        if (Apply == false || _awakeInit) return;
         
         _fullyExtendedLen = MaxLength;
         _fullyExtendedDiv = (1f / _fullyExtendedLen);
@@ -1257,30 +1304,132 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             ref BoneData next = ref _datas[i + 1];
 
             /**연결이 끊겨있다면 마무리...*/
-            if (data.Tr == null)
+            if (data.Tr == null || next.Tr==null)
             {
                 _dataCount = (i + 1);
+                IsValid    = (_dataCount >= 2);
                 return;
             }
 
             if(unpackParent) data.Tr.parent = transform;
-            data.OriginPos = data.Tr.position;
-            data.OriginQuat = data.Tr.rotation;
-            data.PrevQuat = data.Tr.rotation;
-            data.originDir = (next.Tr.position - data.Tr.position).normalized;
+            data.OriginPos    = data.Tr.position;
+            data.OriginQuat   = data.Tr.rotation;
+            data.PrevQuat     = data.Tr.rotation;
+            data.originDir    = (next.Tr.position - data.Tr.position).normalized;
             data.originLength = (next.Tr.position - data.Tr.position).magnitude;
             data.originLengthDiv = (1f / data.originLength);
-            data.lengthRatio = (data.originLength * _fullyExtendedDiv);
+            data.lengthRatio     = (data.originLength * _fullyExtendedDiv);
         }
+
+        IsValid = true;
         #endregion
     }
 
+    private Vector3 GetBezier(ref Vector3 s, ref Vector3 c, ref Vector3 d, float w = 0f)
+    {
+        #region Omit
+        Vector3 sc = (c - s);
+        Vector3 cd = (d - c);
+
+        Vector3 a2 = s + (sc * w);
+        Vector3 b2 = c + (cd * w);
+        Vector3 c2 = (b2 - a2);
+
+        return a2 + (c2 * w);
+        #endregion
+    }
+
+    private Quaternion GetQuatBetweenVector(Vector3 from, Vector3 to, float ratio = 1f)
+    {
+        #region Omit
+
+        /********************************************
+         *   주어진 두 벡터사이의 쿼터니언 값을 계산한다...
+         * ***/
+        float angle   = Vector3.Angle(from, to) * ratio;
+        Vector3 cross = Vector3.Cross(from, to);
+        return Quaternion.AngleAxis(angle, cross);
+        #endregion
+    }
+
+    private void UpdateLineRenderer()
+    {
+        #region Omit
+
+        /***************************************************
+         *   라인랜더러의 참조가 유효할 경우 위치를 갱신합니다.
+         * ****/
+        if (LineRenderer == null) return;
+
+        LineRenderer.positionCount = _dataCount;
+
+        for(int i=0; i<_dataCount; i++){
+
+            ref BoneData data = ref _datas[i];
+            LineRenderer.SetPosition(i, data.Tr.position);
+        }
+
+        #endregion
+    }
 
 
 
     //============================================
     //////          Public methods           /////
     //============================================
+    public void AddBone(Transform newBoneTr)
+    {
+        #region Omit
+        if (newBoneTr == null) return;
+
+        /**컨테이너가 유효하지 않다면 할당한다....*/
+        if(_datas==null){
+
+            _datas = new BoneData[10];
+        }
+
+        /**컨테이너의 공간이 부족하면 배로 할당한다....*/
+        if(_datas.Length < _dataCount+1){
+
+            BoneData[] newDatas = new BoneData[_dataCount*2];
+            _datas.CopyTo(newDatas, 0);
+            _datas = newDatas;
+        }
+
+        /*********************************************
+         *   새로운 본을 삽입한다....
+         * ****/
+        ref BoneData newBone = ref _datas[_dataCount++];
+        newBone.Tr = newBoneTr;
+
+        IsValid = false;
+        #endregion
+    }
+
+    public void RemoveBone(int removeBoneIndex)
+    {
+        #region Omit
+        if (removeBoneIndex < 0 || removeBoneIndex >= _dataCount) 
+                return;
+
+        ref BoneData last   = ref _datas[_dataCount-1];
+        ref BoneData remove = ref _datas[removeBoneIndex];
+        remove = last;
+        _dataCount--;
+
+        IsValid = false;
+        #endregion
+    }
+
+    public void RecalculateBoneDatas()
+    {
+        #region Omit
+
+        Init(true);
+
+        #endregion
+    }
+
     public void UsePullableUpdate(bool apply=true)
     {
         ApplyUpdate = apply;
@@ -1300,7 +1449,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
             if (_datas[i].Tr == null) continue;
             
             ref BoneData currBone = ref _datas[i];
-            Quaternion   rotQut   = IpariUtility.GetQuatBetweenVector(currBone.originDir, rootDir);
+            Quaternion   rotQut   = GetQuatBetweenVector(currBone.originDir, rootDir);
             currBone.Tr.rotation  = (rotQut * currBone.OriginQuat);
         }
         #endregion
@@ -1313,6 +1462,16 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
         index = Mathf.Clamp(index, 0, _dataCount - 1);
         return _datas[index].Tr.position;
+        #endregion
+    }
+
+    public Transform GetBoneTransform( int index )
+    {
+        #region Omit
+        if (_dataCount == 0 || _datas == null) return null;
+
+        index = Mathf.Clamp(index, 0, _dataCount - 1);
+        return _datas[index].Tr;
         #endregion
     }
 
@@ -1385,32 +1544,44 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
         #endregion
     }
 
-    public void GetBonePositionAndDirFromLength(float length, out Vector3 outPos, out Vector3 outDir)
+    public void GetNearBonePositionAndDir(Vector3 Position, out Vector3 outPos, out Vector3 outDir)
     {
         #region Omit
-        for (int i = 0; i < _dataCount; i++)
-        {
-            ref BoneData data = ref _datas[i];
+        /**본 정보가 유효하지 않다면 스킵한다....*/
+        if(_dataCount<2){
 
-            /**해당 본의 길이를 반환한다....*/
-            if (length <= data.originLength){
-
-                Vector3 dataDir = GetBoneDir(i);
-                float lenRatio = (length * data.originLengthDiv);
-
-                outPos = data.Tr.position + (dataDir * lenRatio * data.originLength);
-                outDir = dataDir;
-                return;
-            }
-
-            length -= data.originLength;
+            outPos = outDir = Vector3.zero;
+            return;
         }
 
-        outPos = Vector3.zero;
-        outDir = Vector3.zero;
+        int   selectIdx = 0;
+        float selectDst = float.MaxValue;
+
+        /****************************************
+         *   가장 근접한 본을 검색한다......
+         * *****/
+        for(int i=0; i<_dataCount-1; i++){
+
+            ref BoneData data = ref _datas[i];
+            float        dst  = (Position - data.Tr.position).sqrMagnitude;
+
+            /**가장 근접한 인덱스를 선택한다...*/
+            if(dst < selectDst)
+            {
+                selectIdx = i;
+                selectDst = dst;
+            }
+        }
+
+        /**가장 근접한 위치의 본을 반환한다...*/
+        ref BoneData result    = ref _datas[selectIdx];
+        ref BoneData resultDir = ref _datas[selectIdx+1];
+
+        outPos = result.Tr.position;
+        outDir = (resultDir.Tr.position - outPos).normalized;
         #endregion
     }
-    
+
     public bool Interact(GameObject interactor)
     {
         #region Omit
@@ -1418,7 +1589,7 @@ public sealed class PullableObject : MonoBehaviour, IInteractable
 
         Init(true);
         /**플레이어가 당기기 상태로 전환되도록 한다.....*/
-        Player player              = Player.Instance;
+        Player player = Player.Instance;
         player.currentInteractable = gameObject;
         player.movementSM.ChangeState(player.pullInout);
 

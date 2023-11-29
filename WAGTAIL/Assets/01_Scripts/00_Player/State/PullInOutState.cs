@@ -183,7 +183,7 @@ public sealed class PullInOutState : State
         Vector3     movDir          = (grabPoint - playerGrabPos).normalized;
         Quaternion  startQuat       = playerTr.rotation;
 
-        float movDistance   = (grabPoint - playerPos).magnitude;
+        float movDistance   = (grabPoint - playerPos).magnitude * 1.2f;
         float progressRatio = 0f;
         float currTime      = 0f;
         float goalTimeDiv   = (1f / _LookAtTime);
@@ -195,7 +195,7 @@ public sealed class PullInOutState : State
         /*********************************************
          *   대상을 바라본다...
          * ***/
-        animator.Play(PullAnimation.HOLD);
+        animator.CrossFade(PullAnimation.HOLD, .2f, 0);
 
         do{
 
@@ -224,6 +224,8 @@ public sealed class PullInOutState : State
         float fullLenDiv    = (1f / fullLen);
         float limitLenDiv   = (1f / PulledTarget.MaxScale);
         bool isMove         = false;
+
+        animator.CrossFade(PullAnimation.IDLE, .1f);
         _applyIK            = true;
 
         while (PulledTarget.IsBroken==false)
@@ -280,13 +282,14 @@ public sealed class PullInOutState : State
             if(interactAction.triggered)
             {
                 GamePadShake(.1f, .1f, .1f);
-                _applyIK = false;
-                animator.SetFloat("speed", 0f);
 
-                animator.Play(PullAnimation.PLAYER_IDLE);
+                _applyIK                  = false;
+                player.isPull             = false;
                 PulledTarget.HoldingPoint = null;
+
+                animator.SetFloat("speed", 0f);
+                animator.CrossFade(PullAnimation.PLAYER_IDLE, .3f);
                 player.movementSM.ChangeState(player.idle);
-                player.isPull = false;
                 yield break;
             }
 
@@ -374,58 +377,55 @@ public sealed class PullInOutState : State
 
         /**손이 잡게될 위치를 얻어온다...*/
         Vector3 grabPos, grabDir;
-        PulledTarget.GetBonePositionAndDirFromLength(
-            (PulledTarget.MaxLength - .1f), 
+        Transform playerTr = player.transform;
+
+        PulledTarget.GetNearBonePositionAndDir(
+            playerTr.position + (playerTr.forward*.1f), 
             out grabPos, 
             out grabDir
         );
 
         /**양손이 향하게될 오프셋을 구한다....*/
         Vector3 grabRight = -Vector3.Cross(Vector3.up, grabDir);
-
+        grabPos += (Vector3.down * .1f) + (grabRight*.03f);
 
         /******************************************************
          *   각 본들이 위치해야할 위치와 회전값과 방향을 구한다...
          * ******/
 
         /**Hands...*/
-        Vector3 LHandGoalPos  = grabPos + (grabRight * -.02f);
-        Vector3 LHandDir      = _LHand.transform.up;
-        Vector3 RHandGoalPos  = grabPos + (grabRight * .1f);
-        Vector3 RHandDir      = _RHand.transform.up;
+        Vector3 LHandGoalPos = grabPos;
+        Vector3 LHandDir = _LHand.transform.up;
+        Vector3 RHandGoalPos = grabPos + (grabRight * .1f);
+        Vector3 RHandDir = _RHand.transform.up;
 
         /**ForeArms....*/
-        Vector3 LForeArmDir     = (_LHand.position - _LForearm.position).normalized;
+        Vector3 LForeArmDir = (_LHand.position - _LForearm.position).normalized;
         Vector3 LForeArmGoalDir = (LHandGoalPos - _LForearm.position).normalized;
-        Vector3 LForeArmPos     = LHandGoalPos + (_LHand.right*_forearm2HandLen);
-        Vector3 RForeArmDir       = (_RHand.position - _RForearm.position).normalized;
-        Vector3 RForeArmGoalDir   = (RHandGoalPos - _RForearm.position).normalized;
-        Vector3 RForeArmPos       = RHandGoalPos + (_RHand.right * _forearm2HandLen);
+        Vector3 LForeArmPos = LHandGoalPos + (_LHand.right * _forearm2HandLen);
+        Vector3 RForeArmDir = (_RHand.position - _RForearm.position).normalized;
+        Vector3 RForeArmGoalDir = (RHandGoalPos - _RForearm.position).normalized;
+        Vector3 RForeArmPos = RHandGoalPos + (_RHand.right * _forearm2HandLen);
 
         /**Arms...*/
-        Vector3 LArmDir     = (_LForearm.position - _LArm.position).normalized;
+        Vector3 LArmDir = (_LForearm.position - _LArm.position).normalized;
         Vector3 LArmGoalDir = (LHandGoalPos - _LArm.position).normalized;
-        Vector3 LArmPos     = LForeArmPos - (LArmGoalDir * _arm2ForearmLen);
-        Vector3 RArmDir        = (_RForearm.position - _RArm.position).normalized;
-        Vector3 RArmGoalDir    = (RHandGoalPos - _RArm.position).normalized;
-        Vector3 RArmPos        = RForeArmPos - (RArmGoalDir * _arm2ForearmLen);
+        Vector3 LArmPos = LForeArmPos - (LArmGoalDir * _arm2ForearmLen);
+        Vector3 RArmDir = (_RForearm.position - _RArm.position).normalized;
+        Vector3 RArmGoalDir = (RHandGoalPos - _RArm.position).normalized;
+        Vector3 RArmPos = RForeArmPos - (RArmGoalDir * _arm2ForearmLen);
 
 
         /************************************************
          *    각 본들에게 최종 적용을 한다.....
          * ****/
+        Debug.DrawLine(grabPos, grabPos + (Vector3.up * 10f), Color.red);
+
         _LArm.rotation = (IpariUtility.GetQuatBetweenVector(LArmDir, LArmGoalDir) * _LArm.rotation);
         _RArm.rotation = (IpariUtility.GetQuatBetweenVector(RArmDir, RArmGoalDir) * _RArm.rotation);
 
-        //_LForearm.position = LForeArmPos;
-        //_LForearm.rotation = (IpariUtility.GetQuatBetweenVector(LForeArmDir, LForeArmGoalDir) * _LForearm.rotation);
-        //_RForearm.position = RForeArmPos;
-        //_RForearm.rotation = (IpariUtility.GetQuatBetweenVector(RForeArmDir, RForeArmGoalDir) * _RForearm.rotation);
-
         _LHand.rotation = (IpariUtility.GetQuatBetweenVector(LHandDir, grabRight) * _LHand.transform.rotation);
-        //_LHand.position = LHandGoalPos;
         _RHand.rotation = (IpariUtility.GetQuatBetweenVector(RHandDir, -grabRight) * _RHand.transform.rotation);
-       // _RHand.position = RHandGoalPos;
 
         #endregion
     }
