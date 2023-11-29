@@ -23,6 +23,7 @@ public sealed class MagicCrabHand : MonoBehaviour
     [SerializeField] public  GameObject     SpawnSFXprefab;
     [SerializeField] public  GameObject     AttackSFXPrefab;
     [SerializeField] public  GameObject     SonicBoomSFXPrefab;
+    [SerializeField] public  GameObject HandGFX;
     [SerializeField] public  AnimationCurve curve;
     [SerializeField] private float          _AttackReadyDuration = 1f;
     [SerializeField] private float          _AttackDuration      = .5f;
@@ -161,6 +162,8 @@ public sealed class MagicCrabHand : MonoBehaviour
          * ****/
         do
         {
+            HandGFX.SetActive(true);
+            
             float deltaTime = Time.deltaTime;
             timeLeft -= deltaTime;
 
@@ -337,6 +340,9 @@ public sealed class MagicCrabHand : MonoBehaviour
             progressRatio = Mathf.Clamp01(timeLeft * sizeupDiv);
             _glowMat.SetFloat("_alpha", progressRatio);
 
+            if (progressRatio < 0.01f)
+                HandGFX.SetActive(false);
+            
             yield return null;
 
         } 
