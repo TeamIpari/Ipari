@@ -28,7 +28,7 @@ public class basket : MonoBehaviour
             try
             {
                 ThrowObject _throw = other.GetComponent<ThrowObject>();
-                if(_throw.GetPhyscisCheck && _throw.enabled == true)
+                if(_throw.enabled == true)
                 {
                     if (TargetCount >= 0)
                     {
