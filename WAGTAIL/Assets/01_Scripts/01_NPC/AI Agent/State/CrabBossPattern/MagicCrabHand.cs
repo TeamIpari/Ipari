@@ -70,7 +70,7 @@ public sealed class MagicCrabHand : MonoBehaviour
         }
 
         /**집게 머터리얼을 가져온다....*/
-        _glowMat = transform.GetChild(0).GetComponent<Renderer>().material;
+        _glowMat = transform.GetChild(0).GetComponent<Renderer>().sharedMaterial;
         #endregion
     }
 
@@ -160,10 +160,9 @@ public sealed class MagicCrabHand : MonoBehaviour
         /****************************************
          *   손이 등장한다...
          * ****/
+        HandGFX.SetActive(true);
         do
-        {
-            HandGFX.SetActive(true);
-            
+        {   
             float deltaTime = Time.deltaTime;
             timeLeft -= deltaTime;
 
@@ -332,21 +331,15 @@ public sealed class MagicCrabHand : MonoBehaviour
          * ****/
         timeLeft = .3f;
 
-        do{
-
-            float deltaTime = Time.deltaTime;
-            timeLeft -= deltaTime;
-
-            progressRatio = Mathf.Clamp01(timeLeft * sizeupDiv);
+        do
+        {
+            progressRatio = Mathf.Clamp01((timeLeft -= Time.deltaTime) * sizeupDiv);
             _glowMat.SetFloat("_alpha", progressRatio);
-
-            if (progressRatio < 0.01f)
-                HandGFX.SetActive(false);
-            
             yield return null;
+        }
+        while (timeLeft>0f);
 
-        } 
-        while (progressRatio < 1f);
+        HandGFX.SetActive(false);
 
         #endregion
     }
