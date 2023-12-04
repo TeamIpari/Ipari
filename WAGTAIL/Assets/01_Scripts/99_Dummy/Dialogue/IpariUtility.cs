@@ -362,8 +362,10 @@ namespace IPariUtility
 #if UNITY_EDITOR
                         //UnityEngine.Debug.Log($"밟은 땅(Name: {ret.collider.name})/ (텍스쳐를 읽어올 수 없음!!)");
 #endif
-                        FModParameterReference paramRefFail = new FModParameterReference();
-                        paramRefFail.SetParameter(FModLocalParamType.EnvironmentType, FModParamLabel.EnvironmentType.Wood);
+                        FModParameterReference paramRefFail = new FModParameterReference(
+                            FModLocalParamType.EnvironmentType, 
+                            FModParamLabel.EnvironmentType.Wood
+                        );
                         return paramRefFail;
                     }
                     hitCoord.x *= tex.width;
@@ -382,8 +384,10 @@ namespace IPariUtility
 
             }
 
-            FModParameterReference paramRef = new FModParameterReference();
-            paramRef.SetParameter(FModLocalParamType.EnvironmentType, paramValue);   
+            FModParameterReference paramRef = new FModParameterReference(
+                FModLocalParamType.EnvironmentType,
+                paramValue
+            ); 
 
             return paramRef;
             #endregion
