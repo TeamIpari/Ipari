@@ -143,9 +143,9 @@ public class SandWave : MonoBehaviour
     private float _delayTime        = 0f;
 
     /**SandWaveMaterial 관련...*/
-    private Material _waveMat;
-    private float    _waveTotalFrame = 0f;
-    private float[]  _waveMatRadiusTable = new float[]{
+    private Material        _waveMat;
+    private float           _waveTotalFrame     = 0f;
+    private static float[]  _waveMatRadiusTable = new float[]{
 
         0.74f, 1.26f, 1.82f, 2.24f, 2.71f,      //( 0~4 )
         3.08f, 4f, 4.5f, 4.9f, 5.25f, 5.33f,    //( 5~9 )
@@ -247,19 +247,20 @@ public class SandWave : MonoBehaviour
         if(UseWaveMaterial)
         {
             _collider.radius = _waveMatRadiusTable[System.Math.Clamp(Mathf.FloorToInt(_waveTotalFrame*progressRatio)-4, 0, 40)];
+            _waveMat.SetFloat("_NormalizedTime", Mathf.Clamp01(progressRatio));
         }
-        else _collider.radius = currRadius;
 
-        if (UseWaveMaterial) _waveMat.SetFloat("_NormalizedTime", Mathf.Clamp01(progressRatio));
+        /**파티클 이펙트를 사용할 경우....*/
         else
         {
+            _collider.radius = currRadius;
+
             /********************************************
              *    이펙트들을 진행된 구간으로 이동시킨다...
              * ****/
             float radius = _collider.radius;
             int layer = (1 << LayerMask.NameToLayer("Platform"));
-            for (int i = 0; i < Pricision; i++)
-            {
+            for (int i = 0; i < Pricision; i++){
 
                 Vector3 dir = new Vector3(Mathf.Cos(currRadian), 0f, Mathf.Sin(currRadian));
                 Vector3 newPos = center + (dir * radius);
@@ -271,8 +272,7 @@ public class SandWave : MonoBehaviour
                     float center2newPosLen = (newPos - LimitCircleCenter).sqrMagnitude;
                     float limitCenterRadius = (LimitCircleRadius * LimitCircleRadius);
 
-                    if (center2newPosLen > limitCenterRadius)
-                    {
+                    if (center2newPosLen > limitCenterRadius){
 
                         center2newPos.Normalize();
                         newPos = LimitCircleCenter + (center2newPos * LimitCircleRadius);
@@ -325,7 +325,7 @@ public class SandWave : MonoBehaviour
         Vector3 center2Target  = (other.transform.position - transform.position);
         float center2TargetLen = center2Target.sqrMagnitude;
         float progressRatio    = Mathf.Clamp(1f - (_timeLeft * _timeDiv), 0f, 1f);
-        float compareLen       = WaveMaxRadius * waveCurve.Evaluate(progressRatio) - 3f;
+        float compareLen       = (_collider.radius - 1f);
 
         /**충돌했는지 체크를 한다...*/
         if (SandTarget != null && SandTarget.PlayerOnSand == false) return;
@@ -350,11 +350,22 @@ public class SandWave : MonoBehaviour
          * ****/
         else if(other.CompareTag("interactable") && !other.CompareTag("Boss") && (body=other.attachedRigidbody)!=null){
 
-            float dst   = (compareLen - center2TargetLen);
+            float   dst = (compareLen - center2TargetLen);
             Vector3 pow = (-center2Target.normalized * dst *.3f * body.mass);
 
             body.velocity = pow;
         }
+
+        #endregion
+    }
+
+    private void OnDrawGizmos()
+    {
+        #region Omit
+        if (Application.isPlaying == false) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _collider.radius - 1f);
 
         #endregion
     }
@@ -395,13 +406,14 @@ public class SandWave : MonoBehaviour
         #endregion
     }
 
-    private bool CheckHitWave( Vector3 worldPos )
+    private bool CheckHitWave(Vector3 worldPos)
     {
         #region Omit
 
         /**************************************************
          *   주어진 worldPos가 판정안으로 들어왔는지 검사한다.
          * ***/
+
         float center2TargetLen = ( worldPos - transform.position ).sqrMagnitude;
         float progressRatio    = Mathf.Clamp(1f - (_timeLeft * _timeDiv), 0f, 1f);
         float compareLen       = WaveMaxRadius * waveCurve.Evaluate(progressRatio)-1f;

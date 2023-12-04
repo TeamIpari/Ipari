@@ -52,15 +52,15 @@ Shader "Custom/SandWaveMat" {
 
             fixed4 frag(v2f i) : SV_Target{
 
-                fixed frame       = floor(_NormalizedTime * _TotalFrame);
+                fixed frame = floor(_NormalizedTime * _TotalFrame);
 
-                const fixed div13 = (1.f/_Width);
-                const fixed div5  = (1.f/_Height);
+                const static fixed div13 = (1.f/_Width);
+                const static fixed div5  = (1.f/_Height);
 
                 fixed xOffset = (i.uv.x * div13);
                 fixed yOffset = (i.uv.y * div5);
 
-                fixed xPos   = ((floor(frame % _Width) * div13) + xOffset);
+                fixed xPos   = (floor(frame % _Width) * div13) + xOffset;
                 fixed yPos   = ((1.f-div5) - (floor(frame * div13) * div5)) + yOffset;
                 fixed4 color = tex2D(_SubTex, fixed2(xPos, yPos));
                 return color;

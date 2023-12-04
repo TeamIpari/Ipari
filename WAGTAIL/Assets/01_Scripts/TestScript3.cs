@@ -15,5 +15,10 @@ public sealed class TestScript3 : MonoBehaviour
             Time.timeScale = targetScale;
             TargetWave.StartWave();
         }
+
+        if(TargetWave && Input.GetKeyDown(KeyCode.O))
+        {
+            TargetWave.SandTarget.IntakeSand(true);
+        }
     }
 }
