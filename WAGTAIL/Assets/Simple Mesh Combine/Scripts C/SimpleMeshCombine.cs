@@ -101,7 +101,7 @@ public class SimpleMeshCombine : MonoBehaviour
 #if UNITY_EDITOR
 					Debug.LogWarning("SimpleMeshCombine : " + meshFilters[i].gameObject + "has a [Mesh Filter] but no [Mesh Renderer], mesh will not be included in combine.");
 #endif
-					break;
+					continue;
 				}
 				if (o < meshRenderer.sharedMaterials.Length && o < meshFilters[i].sharedMesh.subMeshCount) {
 					int materialArrayIndex = Contains(materials, meshRenderer.sharedMaterials[o]);
