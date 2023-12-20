@@ -54,7 +54,7 @@ Shader "Custom/SandWaveMat" {
 
             fixed4 frag(v2f i) : SV_Target{
 
-                fixed frame = floor(_NormalizedTime * _TotalFrame);
+                fixed frame = floor((_Time.y % 1)*_TotalFrame);
 
                 const static fixed div13 = (1.f/_Width);
                 const static fixed div5  = (1.f/_Height);
