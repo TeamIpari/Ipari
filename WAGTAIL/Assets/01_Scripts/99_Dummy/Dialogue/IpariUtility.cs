@@ -357,7 +357,8 @@ namespace IPariUtility
                 else if((renderer=ret.collider.GetComponent<Renderer>()))
                 {
                     Vector2    hitCoord = ret.textureCoord;
-                    Texture2D  tex    = renderer.sharedMaterial.mainTexture as Texture2D;
+                    Material   mat      = renderer.sharedMaterial;
+                    Texture2D  tex      = mat.mainTexture as Texture2D;
 
                     if(tex==null)
                     {
@@ -366,7 +367,7 @@ namespace IPariUtility
 #endif
                         FModParameterReference paramRefFail = new FModParameterReference(
                             FModLocalParamType.EnvironmentType, 
-                            FModParamLabel.EnvironmentType.Wood
+                            FModParamLabel.EnvironmentType.Grass
                         );
                         return paramRefFail;
                     }
