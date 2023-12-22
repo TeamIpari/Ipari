@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5423791323303214932
+--- !u!1 &1913315934
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5167764902695104320}
-  - component: {fileID: 7571603954028429319}
-  - component: {fileID: 6932223195523179117}
+  - component: {fileID: 1913315935}
+  - component: {fileID: 1913315938}
+  - component: {fileID: 1913315937}
+  - component: {fileID: 1913315936}
   m_Layer: 0
-  m_Name: _Combined Mesh [BananaTree_basics (8)]
+  m_Name: _Combined Mesh [BananaTree_basics]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!4 &5167764902695104320
+--- !u!4 &1913315935
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5423791323303214932}
-  m_LocalRotation: {x: 0.09815491, y: -0.40957868, z: -0.010896724, w: 0.9069136}
-  m_LocalPosition: {x: -654.3906, y: 350.75967, z: -3321.6487}
-  m_LocalScale: {x: 13.803665, y: 13.803665, z: 13.803665}
+  m_GameObject: {fileID: 1913315934}
+  m_LocalRotation: {x: -0.047829486, y: 0.0023159487, z: 0.048308782, w: 0.997684}
+  m_LocalPosition: {x: -215.93341, y: 46.32101, z: 691.83826}
+  m_LocalScale: {x: 9.817232, y: 9.817232, z: 9.817232}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8840130426971992111}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7571603954028429319
+--- !u!33 &1913315938
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5423791323303214932}
-  m_Mesh: {fileID: 4300000, guid: 3797dd6f3daea1046929650ebe68358b, type: 2}
---- !u!23 &6932223195523179117
+  m_GameObject: {fileID: 1913315934}
+  m_Mesh: {fileID: 4300000, guid: 9d23ec5955cc3da4aba097f0e6c65070, type: 2}
+--- !u!23 &1913315937
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5423791323303214932}
+  m_GameObject: {fileID: 1913315934}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -84,6 +85,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1913315936
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913315934}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 9d23ec5955cc3da4aba097f0e6c65070, type: 2}
 --- !u!1 &8207145553654049429
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,7 +108,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8840130426971992111}
-  - component: {fileID: 108832532726765008}
   m_Layer: 0
   m_Name: BananaTree_basics
   m_TagString: Untagged
@@ -113,21 +127,7 @@ Transform:
   m_LocalScale: {x: 0.07244453, y: 0.07244453, z: 0.07244453}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5167764902695104320}
+  - {fileID: 1913315935}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &108832532726765008
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8207145553654049429}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
