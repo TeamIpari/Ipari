@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using Unity.Rendering.Universal;
+using UnityEditor;
 
 namespace IPariUtility
 {
@@ -355,12 +357,12 @@ namespace IPariUtility
                 else if((renderer=ret.collider.GetComponent<Renderer>()))
                 {
                     Vector2    hitCoord = ret.textureCoord;
-                    Texture2D  tex      = renderer.sharedMaterial.mainTexture as Texture2D;
+                    Texture2D  tex    = renderer.sharedMaterial.mainTexture as Texture2D;
 
                     if(tex==null)
                     {
 #if UNITY_EDITOR
-                        //UnityEngine.Debug.Log($"밟은 땅(Name: {ret.collider.name})/ (텍스쳐를 읽어올 수 없음!!)");
+                        UnityEngine.Debug.Log($"밟은 땅(Name: {ret.collider.name})/ (텍스쳐를 읽어올 수 없음!!)");
 #endif
                         FModParameterReference paramRefFail = new FModParameterReference(
                             FModLocalParamType.EnvironmentType, 
