@@ -26,7 +26,7 @@ public class ChapterController : MonoBehaviour
                 UIManager.GetInstance().GetActiveCanvas().gameObject.SetActive(true);
                 FModAudioManager.UsedBGMAutoFade = true;
                 FModAudioManager.BGMAutoFadeDuration = 2f;
-                //FModAudioManager.SetBusMute(FModBusType.Player, true);
+                FModAudioManager.SetBusMute(FModBusType.Player, true);
                 FModAudioManager.PlayBGM(FModBGMEventType.Wagtail_bgm_title);
                 break;
             case ChapterType.Chapter01:
