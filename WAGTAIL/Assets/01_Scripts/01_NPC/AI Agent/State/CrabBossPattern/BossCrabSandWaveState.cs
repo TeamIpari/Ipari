@@ -97,8 +97,10 @@ public class BossCrabSandWaveState : AIAttackState
                     CameraManager.GetInstance().CameraShake(.4f,CameraManager.ShakeDir.ROTATE,.5f);
                     IpariUtility.PlayGamePadVibration(1f, 1f, .3f, 1);
 
-                    _waves[--_waveLeft]?.StartWave();
-                    if(_waveLeft>0)
+                    _waves[0].StartWave();
+
+                    //_waves[--_waveLeft]?.StartWave();
+                    if(--_waveLeft>0)
                     {
                         AISM.Animator.speed = 0f;
                         _progress = -1;
