@@ -6,8 +6,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using Unity.Rendering.Universal;
-using UnityEditor;
 
 namespace IPariUtility
 {

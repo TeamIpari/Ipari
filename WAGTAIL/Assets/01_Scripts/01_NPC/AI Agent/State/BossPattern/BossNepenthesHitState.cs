@@ -1,3 +1,4 @@
+using IPariUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,18 +33,27 @@ public class BossNepenthesHitState : AIHitState
         #region Omit
         base.Enter();
         // 맞는 상태임을 인지
-        AISM.Animator.SetTrigger("isHit");
+        //AISM.Animator.SetTrigger("isHit");
+        AISM.Animator.Play("Hit", 0);
+
         if (animLeftVine != null) animLeftVine.SetTrigger("isHit");
         if (animRightVine != null) animRightVine.SetTrigger("isHit");
-        if (AISM.character.IsHit)
-            AISM.character.HP -= 10;
-        if (AISM.character.HP <= nextPhaseHp)
+
+        CameraManager.GetInstance().CameraShake(.5f, CameraManager.ShakeDir.ROTATE, .5f, .025f);
+        IpariUtility.PlayGamePadVibration(1f, 1f, .08f);
+
+        if ((AISM.character.HP-=10)<=0)
+        {
+            AISM.ChangeState(AISM.character.AiDie);
+            return;
+        }
+        else if (AISM.character.HP <= nextPhaseHp)
         {
             // 다음 패턴
             SetPhaseHp();
             SetNextPhase();
         }
-        //FModAudioManager.PlayOneShotSFX(FModSFXEventType.BossNep);
+
         AISM.character.IsHit = false;
         curTimer = 0;
         #endregion

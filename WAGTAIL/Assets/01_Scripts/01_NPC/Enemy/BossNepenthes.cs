@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using IPariUtility;
 
 [Serializable]
 public struct BossNepenthesProfile
@@ -576,6 +577,8 @@ public sealed class BossNepenthes : Enemy
             Transform child = obj.transform.GetChild(i);
             if (child.GetComponent<BrokenPlatformBehavior>().isBroken) continue;
             child.GetComponent<IEnviroment>().ExecutionFunction(0f);  // 이걸 코루틴으로?
+            CameraManager.GetInstance().CameraShake(.3f, CameraManager.ShakeDir.ROTATE, .6f, .022f);
+            IpariUtility.PlayGamePadVibration(1f, 1f, .08f);
             yield return new WaitForSeconds(0.1f);
             //if (obj.transform.childCount % 6 == 0)
             //{
@@ -603,7 +606,10 @@ public sealed class BossNepenthes : Enemy
     public override void Hit()
     {
         #region Omit
-        base.Hit();
+
+        if (AiSM.CurrentState == AiDie) return;
+        //base.Hit();
+        AiSM.ChangeState(AiHit);
         GameObject hpGage = HpCanvas.Pop();
         hpGage.GetComponent<Animator>().SetTrigger("isDamaged");
         GameObject FX_Hit = GameObject.Instantiate(FX_Hitprefab, HitTrasnform.position, FX_Hitprefab.transform.rotation, this.transform.parent);
