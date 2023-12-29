@@ -31,16 +31,16 @@ public class TitleUI : MonoBehaviour
         switch (loadChapter)
         {
             case ChapterType.Chapter01:
-                SceneLoader.GetInstance().LoadScene("Chapter01_Heejin4");
+                SceneLoader.GetInstance().LoadScene("Chapter01");
                 break;
             case ChapterType.Chapter02 or ChapterType.MiddleBossRoom:
-                SceneLoader.GetInstance().LoadScene("Chapter02_Heejin");
+                SceneLoader.GetInstance().LoadScene("Chapter02");
                 break;
             case ChapterType.Chapter03:
-                SceneLoader.GetInstance().LoadScene("Chapter04_mini2");
+                SceneLoader.GetInstance().LoadScene("Chapter03");
                 break;
             case ChapterType.BossRoom:
-                SceneLoader.GetInstance().LoadScene("Boss_Crap_FINAL_Front");
+                SceneLoader.GetInstance().LoadScene("BossRoom");
                 break;
         }
     }
